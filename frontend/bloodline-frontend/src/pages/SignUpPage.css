@@ -1,0 +1,179 @@
+/* Trang đăng ký chia đôi, đồng bộ style với LoginPage */
+.signup-root {
+  min-height: 100vh;
+  display: flex;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  background: linear-gradient(90deg, #f7faff 0%, #eaf0fa 100%);
+}
+
+.signup-left {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px 40px 20px;
+}
+
+.signup-form {
+  width: 100%;
+  max-width: 370px;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 4px 32px rgba(10,61,98,0.10);
+  padding: 40px 32px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: formFadeIn 0.8s ease-out;
+}
+
+.signup-form h2 {
+  color: #2563eb;
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+.input-group input {
+  width: 100%;
+  padding: 13px 44px 13px 16px;
+  border: 1.5px solid #b0c4de;
+  border-radius: 18px;
+  font-size: 1.04rem;
+  outline: none;
+  background: #f7faff;
+  color: #222;
+  transition: border 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 1px 4px rgba(10,61,98,0.03);
+}
+.input-group input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+  transform: translateY(-1px);
+}
+
+.error-msg {
+  color: #d32f2f;
+  background: #ffeaea;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 1.01rem;
+  text-align: center;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.signup-btn {
+  background: linear-gradient(90deg, #2563eb 60%, #34A853 100%);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 13px 0;
+  font-size: 1.13rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(10,61,98,0.07);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.signup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(10,61,98,0.10);
+  background: linear-gradient(90deg, #34A853 60%, #2563eb 100%);
+}
+
+.signup-right {
+  flex: 1;
+  background: linear-gradient(135deg, #0a3d62 80%, #2563eb 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px 40px 20px;
+  box-shadow: -2px 0 16px 0 rgba(10,61,98,0.07);
+}
+
+.signup-logo {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 32px;
+  border-radius: 50%;
+  background: #fff;
+  object-fit: contain;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: logoFadeIn 0.8s ease-out;
+}
+.signup-logo:hover {
+  transform: scale(1.05) rotate(5deg);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+.signup-right h2 {
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.signup-right p {
+  font-size: 1.08rem;
+  margin-bottom: 32px;
+  text-align: center;
+  max-width: 260px;
+  opacity: 0.95;
+}
+
+.signin-btn {
+  background: linear-gradient(90deg, #34A853 60%, #0a3d62 100%);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 13px 38px;
+  font-size: 1.13rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  margin-top: 10px;
+}
+.signin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(10,61,98,0.10);
+  background: linear-gradient(90deg, #0a3d62 60%, #34A853 100%);
+}
+
+@media (max-width: 900px) {
+  .signup-root {
+    flex-direction: column;
+  }
+  .signup-left, .signup-right {
+    flex: unset;
+    width: 100%;
+    min-height: 320px;
+    padding: 32px 8px 24px 8px;
+  }
+  .signup-form {
+    max-width: 100%;
+    padding: 28px 8px 20px 8px;
+  }
+  .signup-logo {
+    width: 100px;
+    height: 100px;
+  }
+} 

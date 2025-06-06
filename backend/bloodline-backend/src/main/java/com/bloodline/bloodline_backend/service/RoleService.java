@@ -1,18 +1,31 @@
 package com.bloodline.bloodline_backend.service;
 
-import com.bloodline.bloodline_backend.entity.Role;
-import com.bloodline.bloodline_backend.repository.RoleRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class RoleService {
+import com.bloodline.bloodline_backend.entity.Role;
+import com.bloodline.bloodline_backend.repository.RoleRepository;
 
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor // Lombok sẽ tự tạo constructor với các final fields
+public class RoleService {
     private final RoleRepository roleRepository;
 
-    public Role findByName(String name) {
-        return roleRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Role not found: " + name));
+    // Xóa bỏ annotation @Autowired ở đây
+    // Constructor được tạo tự động bởi @RequiredArgsConstructor
+    
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
+    
+    public Role getRoleByName(String roleName) {
+        return roleRepository.findByRoleName(roleName);
+    }
+    
+    public Role getRoleById(Integer id) {
+        return roleRepository.findById(id).orElse(null);
     }
 }

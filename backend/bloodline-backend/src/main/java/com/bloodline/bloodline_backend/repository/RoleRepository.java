@@ -1,11 +1,15 @@
-package com.bloodline.bloodline_backend.entity;
+package com.bloodline.bloodline_backend.repository;
 
-import com.bloodline.dnatesting.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.bloodline.bloodline_backend.entity.Role;
 
-public interface RoleRepository extends JpaRepository<Role, Long> {
+@Repository
+public interface RoleRepository extends JpaRepository<Role, Integer> {
 
-    Optional<Role> findByName(String name);
+    // Phương thức này phù hợp với cách gọi trong RoleService
+    @Query("SELECT r FROM Role r WHERE r.roleName = ?1")
+    Role findByRoleName(String roleName);
 }
