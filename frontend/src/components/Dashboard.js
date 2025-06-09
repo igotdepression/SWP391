@@ -4,7 +4,6 @@ export default function Dashboard({ user, onLogout }) {
   return (
     <div style={{ maxWidth: 400, margin: "auto" }}>
       <h2>Dashboard</h2>
-      <h3> chao ban</h3>
       {user ? (
         <>
           <p>
