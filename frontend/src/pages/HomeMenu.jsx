@@ -1,0 +1,253 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './HomeMenu.css';
+
+const labSlides = [
+  { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRemWZjv5ir6K4K2RMsjfA5-KCMN5rUDgBVkA&s', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://img.docnhanh.vn/images/uploads/2024/04/08/xet-nghiem-adn-585.png', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://zalo-article-photo.zadn.vn/c2707386aad0438e1ac1#333778904', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://phuongnamhospital.com/wp-content/uploads/2024/08/cac-dich-vu-xet-nghiem-adn-tai-da-khoa-phuong-nam-da-lat.jpg', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://static-images.vnncdn.net/vps_images_publish/000001/000003/2024/6/17/giam-dinh-adn-680.jpg?width=260&s=kEz5ph5JV8GCloNtIBNw1g', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://ccrd.org.vn/wp-content/uploads/2023/10/p31.jpg', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://ccrd.org.vn/wp-content/uploads/2023/10/BV-DK-Tam-Tri-Dong-Thap-4.jpg', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://genplus.vn/wp-content/uploads/2022/07/xet-nghiem-ADN-tai-TP-HCM-24-1.jpg', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://genplus.vn/wp-content/uploads/2022/10/xet-nghiem-adn-thai-nguyen-4.jpg', icon: '/img/icon-lab-blue.png'},
+  { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDgmiwU7-l35jziKuayzp9_KVgfYl65-UnVQ&s', icon: '/img/icon-lab-blue.png'}
+];
+
+const services = [
+  {
+    id: 1,
+    name: 'Xét nghiệm ADN cha con',
+    description: 'Dịch vụ xác định mối quan hệ huyết thống giữa cha và con với độ chính xác lên đến 99.999%.',
+    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCJ5A6YSvh59XtclfXWw-aPPSAQ_wEu6TyFA&s'
+  },
+  {
+    id: 2,
+    name: 'Xét nghiệm ADN mẹ con',
+    description: 'Xác định mối quan hệ huyết thống giữa mẹ và con, cam kết bảo mật và chính xác.',
+    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWNpWoDGmekMYkfIqMbrrunR5kNUtmul7RtA&s'
+  },
+  {
+    id: 3,
+    name: 'Xét nghiệm ADN ông cháu',
+    description: 'Dịch vụ kiểm tra mối quan hệ huyết thống giữa ông và cháu, áp dụng trong các trường hợp đặc biệt.',
+    img: 'data:image/jpeg;base64,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'
+  },
+  {
+    id: 4,
+    name: 'Xét nghiệm ADN bà cháu',
+    description: 'Kiểm chứng mối liên hệ huyết thống giữa bà và cháu một cách chính xác.',
+    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzv8GihBuCraZppBlTs7Pw7JkXt6KobneZig&s'
+  }
+];
+
+class HomeMenu extends React.Component {
+  state = {
+    labSlideIdx: 0,
+  };
+
+  handlePrevLabSlide = () => {
+    this.setState((state) => ({
+      labSlideIdx: state.labSlideIdx === 0 ? labSlides.length - 1 : state.labSlideIdx - 1,
+    }));
+  };
+
+  handleNextLabSlide = () => {
+    this.setState((state) => ({
+      labSlideIdx: (state.labSlideIdx + 1) % labSlides.length,
+    }));
+  };
+
+  handleHomeClick = (e) => {
+    e.preventDefault();
+    if (this.props.onHomeNav) {
+      this.props.onHomeNav();
+    }
+    window.history.pushState({}, '', '/');
+  };
+
+  render() {
+    const { labSlideIdx } = this.state;
+    const labSlide = labSlides[labSlideIdx];
+
+    return (
+      <div className="adn-home">
+        <header className="adn-header">
+          <div className="adn-header-bar">
+            <div className="adn-header-logo">
+              <img src="/img/logo.png" alt="Logo ADN Chain" />
+            </div>
+            <div className="adn-header-search-login">
+              <div className="adn-header-search">
+                <input type="text" placeholder="Search" />
+              </div>
+              <div className="adn-header-login">
+                <a href="#login">
+                  <img
+                    src="/img/user-icon.png"
+                    alt="User Icon"
+                    className="adn-header-usericon"
+                  />
+                  <span>Login</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <nav className="adn-nav">
+            <ul>
+              <li>
+                <a href="/" onClick={this.handleHomeClick}>
+                  TRANG CHỦ
+                </a>
+              </li>
+              <li><Link to="/about">GIỚI THIỆU</Link></li>
+              <li><a href="#services">DỊCH VỤ</a></li>
+              <li><a href="#info">THÔNG TIN</a></li>
+              <li><a href="#register">ĐĂNG KÝ DỊCH VỤ</a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <div className="adn-main">
+          <div className="adn-banner">
+            <div className="adn-banner-img">
+              <img src="https://login.medlatec.vn//ImagePath/images/20200306/20200306_xet-nghiem-adn-het-bao-nhieu-tien-01.jpg" alt="ADN Test Banner" />
+            </div>
+            <div className="adn-banner-content adn-banner-center">
+              <div className="adn-banner-intro">
+                <h1>ADN CHAIN</h1>
+                <div className="adn-banner-sub">
+                  Chính xác - Nhanh chóng - Bảo mật
+                </div>
+                <div className="adn-banner-quote">
+                  <span>
+                    "Chuyên nghiệp trong từng kết quả, tận tâm trong từng bước"
+                  </span>
+                </div>
+              </div>
+              <div className="adn-banner-actions">
+                <a href="#register" className="adn-btn adn-btn-main">Đăng ký xét nghiệm ngay</a>
+                <a href="#advice" className="adn-btn adn-btn-outline">Đặt lịch tư vấn miễn phí</a>
+              </div>
+            </div>
+          </div>
+
+          <section className="adn-section" id="about">
+            <div className="adn-section-title-group">
+              <span className="adn-section-icon">+</span>
+              <span className="adn-section-title">GIỚI THIỆU</span>
+            </div>
+            <div className="adn-about-content adn-about-content--custom">
+              <div className="adn-about-text adn-about-text--custom">
+                <span className="adn-about-headline">
+                  Trung tâm xét nghiệm ADN chuyên sâu
+                </span>
+                <p>
+                  ADN CHAIN là trung tâm xét nghiệm ADN chuyên sâu, cung cấp các dịch vụ xác minh huyết thống phục vụ mục đích dân sự và pháp lý. Chúng tôi kết hợp đội ngũ chuyên gia hàng đầu trong lĩnh vực sinh học phân tử với công nghệ phân tích ADN hiện đại, đảm bảo độ chính xác tuyệt đối và tính bảo mật tối đa trong từng kết quả.
+                </p>
+                <p>
+                  Với phương châm hoạt động “Chính xác – Bảo mật – Tận tâm”, ADN CHAIN không ngừng hoàn thiện dịch vụ, hỗ trợ khách hàng thu mẫu tận nhà, gửi kit tận nơi hoặc xét nghiệm trực tiếp tại trung tâm – giúp việc kiểm tra huyết thống trở nên dễ dàng, minh bạch và đáng tin cậy.
+                </p>
+                <p className="adn-about-center">
+                  Sự thật có thể khó nói – nhưng chúng tôi luôn ở đây để giúp bạn tìm thấy nó.
+                </p>
+                <div className="adn-about-more adn-about-more--flexend">
+                  <Link to="/about" className="adn-btn adn-btn-more">Xem thêm &gt;&gt;</Link>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="adn-section" id="services">
+            <div className="adn-section-title-group">
+              <span className="adn-section-icon">+</span>
+              <span className="adn-section-title">DỊCH VỤ CHÍNH</span>
+            </div>
+            <div className="adn-service-list">
+              {services.map((s) => (
+                <div className="adn-service-card" key={s.id}>
+                  <div className="adn-service-image">
+                    <img src={s.img} alt={s.name} />
+                  </div>
+                  <div className="adn-service-name">{s.name}</div>
+                  <div className="adn-service-desc">{s.description}</div>
+                  <div>
+                    <a href="#detail" className="adn-btn adn-btn-small">Xem chi tiết</a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="modernlab-section">
+            <div className="modernlab-box">
+              <div className="modernlab-left">
+                <div className="modernlab-titlebar">TRANG THIẾT BỊ HIỆN ĐẠI</div>
+                <h2 className="modernlab-title">Phòng thí nghiệm chuẩn Quốc tế</h2>
+                <div className="modernlab-desc">
+                  Phòng thí nghiệm được trang bị những thiết bị tiên tiến nhất trong sinh học phân tử và phân tích di truyền. Đặc biệt, các hệ thống giải trình tự gen và hệ gen thế hệ mới đã được lắp đặt và vận hành, phục vụ nghiên cứu và dịch vụ xét nghiệm.
+                </div>
+                <div className="modernlab-progress-list">
+                  {[
+                    { label: 'ĐỘ CHÍNH XÁC', value: '99.99%', percent: 99.99 },
+                    { label: 'BẢO MẬT THÔNG TIN KHÁCH HÀNG', value: '100%', percent: 100 },
+                    { label: 'TỶ LỆ KHÁCH HÀNG HÀI LÒNG', value: '95%', percent: 95 }
+                  ].map((item, i) => (
+                    <div className="modernlab-progress-item" key={i}>
+                      <span className="modernlab-progress-label">{item.label}</span>
+                      <div className="modernlab-progress-bar">
+                        <div
+                          className="modernlab-progress-bar-inner"
+                          style={{ width: `${item.percent}%` }}
+                        ></div>
+                      </div>
+                      <span className="modernlab-progress-value">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="modernlab-right">
+                <div className="modernlab-imgbox">
+                  <img className="modernlab-img" src={labSlide.img} alt="Lab" />
+                  <div className="modernlab-slider-nav">
+                    <button onClick={this.handlePrevLabSlide} aria-label="slide-prev">&lt;</button>
+                    <button onClick={this.handleNextLabSlide} aria-label="slide-next">&gt;</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <footer className="adn-footer">
+          <div className="adn-footer-content">
+            <div className="adn-footer-logo">
+              <img src="/img/logo-footer.png" alt="ADN Logo" />
+            </div>
+            <div className="adn-footer-info">
+              <div className="adn-footer-section">
+                <span className="adn-footer-label">LOCATION</span>
+                <div>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</div>
+              </div>
+              <div className="adn-footer-section">
+                <span className="adn-footer-label">CONTACT US</span>
+                <div>02020202304</div>
+                <div>abc123@gmail.com</div>
+              </div>
+              <div className="adn-footer-section">
+                <span className="adn-footer-label">PAYMENT</span>
+                <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
+                  <img src="https://cdn.tgdd.vn/2020/04/GameApp/image-180x180.png" alt="ZaloPay" style={{height: 32}} />
+                  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAkFBMVEWtAGz///+rAGepAGOoAGHGap2rAGjTjrPeqsbfrsju2OKnAF7AU5CoAGKnAF2tAGr79Pj57/X++v3WlrjaocDits326PDz3+rKdqOzInfFZJnCXJTIbp/04uy6QYXNgKnoxtjszt63NX/r0t61KHrmv9TRh66+TYzbpMG5OoLWmbjBWJKxFHPQha3Vk7i9R4noJkqkAAAJOUlEQVR4nO2da3eqOhCGIYloGzFeKt6qeMFaW3f9///uQNUWzQQBM2zdZ54vXasBzEvuyczgOARBEARBEARBEARBEARBEARBEARBEARBEARBEMT/BsUY94XwOfP0NI/xODFOY6rwc73Dc5MHF77ZHh4XUe3jab5azRu9yUjyVF4Ul6NJr5GkPX3UIsH1N2CECb4cfzTWq9Vq3eiNI99n9jOfJx9+86njpggaM8FOeZy9B+m0Tr+ZM5ue2IXzdvpet70eOqLAG7IDE/UzCQcGQxnrYHI40NOCeg6NrDVe6LfGzCetSgtSybALZsQNxlKOO3BaNxTZbYqJ0HBr8uShrK4cWQSU0Yn12pw2iLIKQkyAapFi2hQVCRSvmRnJpGbMJFMZr+ZIH+iyEZC98gJdtyfhp/obQ70/oz3j+ALFyy0CXfcFlCjfct4+RK+p/M9tAl33DSgG+Z77dlMlsAVr3irQdZtad9N6KnA7skTVvp6Fa7QvH1qw4n9hVlTRv11g3CWeZ5GHBe9/xRv81dKGQNddpkd+b1/4/ghtNi7mdhTO04XIi1f8AGvMUCM7Al1391sIpSr+u4+jkN001qfp/bQkVbyOJixx6qnMmI4WY/BTTUW5Zy5whowd/GuBeUHgdgyT6d3xkV7NeGs7GATmJtrEmKF64Gjfc6TcNeBsPO2kdMCqfcqgqVqswohJIdnyzzN8wQJjUGR14JcmyS+pFjitfGslrUVMgKT6oSGqGaxvJo97O4rJDfwSMEYMBkw95sf20AKyMWgd0iSwLHo5KPTBjjRsnY2XLejNuu8IIwYH6uLwtDPzAag45oEN9bSnQxqHlkzNy6FAjIGrOhUprB3bEwfec/2kHuhNDgrVJ5D1Tz3rPtQfzexXU1DhSUUphdAT61AXAs3Ne/Znp/YVAoPhFB7ohD4iIfSmWQrL1VJHb4YTuGSAttx9AIXAUqXTMv24PviPrDdE67XU0/tI4xjA9XGlef8KgZsmpskYUE3tL4TtK9QndMaZClCj3+5fIdfGgK751/W16Uc1Cj27Cs1NS1/YVKTwplqqT/V2ph8H9hfsD/n2FX5p/zdOxdRGuzZ8AIX6NqIx18DbMPa796PQ08tlbpqoyJV2rf2pt/15KbB3Z/htaJvPtj4Mhb4+n36B9wmBPcfA/mYUgkJghxmcbXrAZnvf/hLYvkLorgFUND6wZTe03pUiKAQ30de6RLEArjMOnfekEN4Pnl+YFzEGCcTYTkRQCG5QusEsZVii5AbccUaopBgKHQVlPq6pM8mZ53mMyyZ83tXFOH7CUMhN59tB/23cHNf7phODj0dRaDoLuQqCPiSFfn4rjDRfKGekKAodVsb2AekQGEkhdHBzjQ2O9RfCfmmCLH7M/Y5kb4Kk0BHTggKfTZuqmArL19J4TNwVa4odNFsTrDIEVw5muiM0E0ysMoyv2OYxvTwKjPBsTPEUOmyZt6IGO0QjWuv7pSk8x2CRcMFCYbpfoLXDBCXzGCh+4VpeItbSBH92bdR4XiIZe1Wk0PFEmNUaO8Mrzgz3rzBZzf8xrZaCkOO7lOArTJxmmn29IDv9TSUuM9Bq9fXUl+qb7u7XSSHgn2HeCvR8tu/NO6cBshvM6zPOq3FgU8vmJZ+jU2KkpTWjU9pIT9tmZVkxXzrRbNPczCIl/eLOfaVRyvvm+CfhN1FLSjkOakk5nArVAQwdBEEQROVkdepxgle6w7+HwUIxLpxou99vR0pcThsZl2qUpEWOKOhuHo/4Qo2Ws/1sGT+4yhH/HCZ24To4zq660/7QET9CPOEM+9P2aeK1Dncir0iP+9v6+scPIb75bSkqmrWdwXiorcoXtYMOJmuLy7TnfGsDJjdPwMz7aVats3qyzPkC946SNZwSQ3AJ1P1i13IZvzaTO/d0WMHq6RdhcrmPc7LdGv18OuPMvWrTqzkSvKKvgH9zUtrPsi/NmfTNr+bIKqrAkzvG22UHBsjEuBmoJOCxoVFHdnM+CBzd5Archjd0laNbdUHM8YO5KOdGX+e2A+SRRVktMA3qjvA3/IYqesyj3ieyZf5d/TbescU3Npy5+5c9qhcVub29w6yoDPKxKsz4vBSLVvwAU6GwEHAgLoXzQizsKLvCOiE1mTAVp54uRFkkZMSBF7SoCjxvj3eFTiqHpSwV9ki9DeDFU5Lxbw5ZmbcWIBWifz0KUE7WP4dIfrlwN3Ukgxor/UxC+6chlrT6ynA9uQG1BTP7Xns19hWN19o7OJifYiJApz3fdPr12qRmttxD8CCNmyEUAWvBOWO+Ax5uTh2fMc4XQNKPhzSc//m+FT/W85jf+oRuR/GvhP2124c1m3KgXBwmHwqwyD8VAQP9+IN9aiXoyU+wcaBY0AJmhL1ji4dmc6fZGQeiKrxnWEEvLq2gPWjd8RhW0KAl+1xbAyq5AK6zLxDDGwGopAOobKAVzUN4I0AeJaAXqQd04w/hUQL0QYboQUA7N3ju35XCAu5aClhCWheIoPCf984r5GGpDzkP4GEJ5NpYLkCAo0fwkv3nPZ0fylu9lPWlHpYpI+LAYyr856NGADd93m3kj1JlWCh6i77Kth+Uzv6Ir882A9NWqP+QEXjAKEpwwQAWnFVFUbrJVh9YAIOu3PGk7UEjYYHRzKDFBRTNzP5ggVBLPWi/Ww8V7XBoK3r/CBHpHAZtNW4u+1MfehGVRRW8TSEcGXJ4ERkS3JBrPIZCQ4zdxTYV3XMP+wthRPfE8HsyRWhdDEdcCsFHocGCASVCK4a/BZR2pBM8Z0TZNU7v7k1h2ejLOJGSURQCkZTykOmvcV8Ky1l3NHBOSJH8nkqEHMCKOo+ksEQ9XSId42P5rvlFP3uCcbCGqtCRpoNgmB6erQma/2GrSG8Df4rnzhUWKcUPRBNTTB9SkdfaKsT8yAyql6zfzPVFqz2qHTSuHzBzrn/iZe3h2utjezpneAB8E0ywv9eFGlPh+0JhdFaPlxoh/tcBK/BWZ+IVXg8uxrndiv6GQsCWyuSPH2scvS3OO53uPNxV85VOVh88XzCdHFcxbDjV0k6TKzXR0gYZZ3+KCb59Tb7g+vz9mdalX533GhMaKiPtR4TKSINR3x/aFeU+tUsQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBEEQBIHHf+GPpmMiew23AAAAAElFTkSuQmCC" alt="Momo" style={{height: 32}} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+}
+
+export default HomeMenu;
