@@ -30,13 +30,28 @@ public class CustomUserDetailsService implements UserDetailsService {
         try {
             log.info("Attempting to find user with email: {}", email);
             
+            if (email == null || email.trim().isEmpty()) {
+                throw new IllegalArgumentException("Email cannot be empty");
+            }
+            
             Account account = accountRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                    .orElseThrow(() -> {
+                        log.error("Account not found for email: {}", email);
+                        return new UsernameNotFoundException("User not found with email: " + email);
+                    });
             
             log.info("Found account: {}", account.getEmail());
             
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User details not found"));
+                    .orElseThrow(() -> {
+                        log.error("User details not found for email: {}", email);
+                        return new UsernameNotFoundException("User details not found for email: " + email);
+                    });
+            
+            if (user.getRole() == null) {
+                log.error("User role is null for email: {}", email);
+                throw new IllegalStateException("User role is not set");
+            }
             
             String roleName = user.getRole().getRoleName();
             log.info("User role: {}", roleName);
@@ -49,9 +64,15 @@ public class CustomUserDetailsService implements UserDetailsService {
                     account.getPassword(),
                     Collections.singletonList(new SimpleGrantedAuthority(authority))
             );
-        } catch (Exception e) {
-            log.error("Error in loadUserByUsername: {}", e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid input in loadUserByUsername: {}", e.getMessage());
             throw e;
+        } catch (UsernameNotFoundException e) {
+            log.error("User not found in loadUserByUsername: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error in loadUserByUsername: {}", e.getMessage(), e);
+            throw new RuntimeException("Error loading user: " + e.getMessage());
         }
     }
 }

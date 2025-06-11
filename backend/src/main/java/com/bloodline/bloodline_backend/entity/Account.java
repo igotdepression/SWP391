@@ -19,12 +19,13 @@ import lombok.NoArgsConstructor;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "AccountID")
     private Integer accountID;
     
-    @Column(nullable = false, unique = true)
+    @Column(name = "Email", nullable = false, unique = true)
     private String email;
     
-    @Column(nullable = false)
+    @Column(name = "Password", nullable = false)
     private String password;
     
     @OneToOne(mappedBy = "account")
