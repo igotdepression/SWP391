@@ -1,0 +1,22 @@
+.adn-home {
+  background-color: var(--gray-bg);
+}
+
+.adn-main {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.adn-banner-content {
+  margin-top: 30px;
+}
+
+.adn-banner-sub {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.adn-banner-quote {
+  font-style: italic;
+  margin-top: 10px;
+}

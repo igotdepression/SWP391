@@ -1,0 +1,56 @@
+.adn-header, .adn-footer {
+  background-color: var(--main-blue);
+  color: white;
+  font-family: var(--menu-font);
+}
+
+.adn-header-bar, .adn-footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.adn-header-logo img, .adn-footer-logo img {
+  height: 40px;
+}
+
+.adn-header-search input {
+  padding: 6px;
+  border-radius: 4px;
+  border: none;
+}
+
+.adn-header-login {
+  margin-left: 20px;
+}
+
+.adn-header-usericon {
+  width: 24px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.adn-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+}
+
+.adn-nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.adn-footer-section {
+  margin-top: 10px;
+}
+
+.adn-footer-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}

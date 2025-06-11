@@ -1,0 +1,19 @@
+.adn-about-main {
+  padding: 20px;
+  background-color: white;
+}
+
+.adn-about-banner-img {
+  width: 100%;
+  height: auto;
+}
+
+.adn-about-content-box {
+  margin-top: 20px;
+}
+
+.adn-about-title {
+  font-size: 28px;
+  color: var(--section-title);
+  font-family: var(--menu-font);
+}
