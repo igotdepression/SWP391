@@ -13,26 +13,34 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.Builder;
 
 @Entity
-@Table(name = "User")
+@Table(name = "[User]")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "UserID")
     private Integer userID;
 
-    @Column(nullable = false)
+    @Column(name = "FullName", nullable = false, length = 100)
     private String fullName;
 
-    @Column(nullable = false)
+    @Column(name = "Email", nullable = false, length = 100)
     private String email;
 
+    @Column(name = "PhoneNumber", length = 15)
     private String phoneNumber;
 
+    @Column(name = "Address", length = 200)
+    private String address;
+
+    @Column(name = "Status", length = 20)
     private String status;
 
     @OneToOne
@@ -40,7 +48,7 @@ public class User {
     private Account account;
 
     @ManyToOne
-    @JoinColumn(name = "roleID")
+    @JoinColumn(name = "RoleID")
     @ToString.Exclude  // Để tránh vòng lặp vô hạn khi gọi toString()
     private Role role;
 

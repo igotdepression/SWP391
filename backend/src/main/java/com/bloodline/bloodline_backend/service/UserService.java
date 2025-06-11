@@ -40,6 +40,7 @@ public class UserService {
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setRole(user.getRole().getRoleName());
         dto.setStatus(user.getStatus());
+        dto.setAddress(user.getAddress());
         return dto;
     }
 }
