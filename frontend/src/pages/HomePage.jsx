@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getAvatarColor, getInitials } from '../utils/avatarUtils';
+import { useNavigation } from '../hooks/useNavigation';
 
 const labSlides = [
   { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRemWZjv5ir6K4K2RMsjfA5-KCMN5rUDgBVkA&s', icon: '/img/icon-lab-blue.png'},
@@ -51,6 +52,7 @@ function HomePage() {
   const [labSlideIdx, setLabSlideIdx] = useState(0);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { goToBookingCreate, goToContact } = useNavigation();
 
   const handlePrevLabSlide = () => {
     setLabSlideIdx(labSlideIdx === 0 ? labSlides.length - 1 : labSlideIdx - 1);
@@ -63,6 +65,18 @@ function HomePage() {
   const handleHomeClick = (e) => {
     e.preventDefault();
     navigate('/');
+  };
+
+  const handleRestrictedAction = (actionType) => {
+    if (!user || user.role === 'GUEST') {
+      alert('Bạn chưa đăng nhập. Vui lòng đăng nhập để sử dụng chức năng này.');
+    } else {
+      if (actionType === 'register') {
+        goToBookingCreate();
+      } else if (actionType === 'advice') {
+        goToContact();
+      }
+    }
   };
 
   const labSlide = labSlides[labSlideIdx];
@@ -89,8 +103,8 @@ function HomePage() {
                 </div>
               </div>
               <div className="adn-banner-actions">
-                <a href="#register" className="adn-btn adn-btn-main">Đăng ký xét nghiệm ngay</a>
-                <a href="#advice" className="adn-btn adn-btn-outline">Đặt lịch tư vấn miễn phí</a>
+                <button className="adn-btn adn-btn-main" onClick={() => handleRestrictedAction('register')}>Đăng ký xét nghiệm ngay</button>
+                <button className="adn-btn adn-btn-outline" onClick={() => handleRestrictedAction('advice')}>Đặt lịch tư vấn miễn phí</button>
               </div>
             </div>
           </div>

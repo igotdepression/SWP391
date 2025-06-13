@@ -12,6 +12,8 @@ export const useNavigation = () => {
     const goToDonor = () => navigate('/donor');
     const goToHospital = () => navigate('/hospital');
     const goToHistory = () => navigate('/booking-history');
+    const goToBookingCreate = () => navigate('/booking-create');
+    const goToContact = () => navigate('/contact');
 
     return {
         goToHome,
@@ -22,6 +24,8 @@ export const useNavigation = () => {
         goToManager,
         goToDonor,
         goToHospital,
-        goToHistory
+        goToHistory,
+        goToBookingCreate,
+        goToContact
     };
 }; 
