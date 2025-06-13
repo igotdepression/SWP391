@@ -3,6 +3,7 @@ import { Card, Button, Input, Select } from "../components/ui/ui";
 import "./ManagerPage.css";
 import { useAuth } from '../context/AuthContext'; // Assuming useAuth is needed for login/user info
 import { useNavigate } from 'react-router-dom';
+import { getAvatarColor, getInitials } from '../utils/avatarUtils';
 
 export default function ManagerPage() {
   // eslint-disable-next-line no-unused-vars
@@ -179,8 +180,8 @@ export default function ManagerPage() {
                   <tr key={emp.id}>
                     <td>{emp.id}</td>
                     <td className="employee-name-cell">
-                      <div className="avatar" style={getRandomAvatarColors()}>
-                        {emp.name.split(" ").map(n=>n[0]).join("").toUpperCase()}
+                      <div className="avatar" style={{ backgroundColor: getAvatarColor(emp.name) }}>
+                        {getInitials(emp.name)}
                       </div>
                       <span>{emp.name}</span>
                     </td>
@@ -207,14 +208,14 @@ export default function ManagerPage() {
                   <tr key={ord.id}>
                     <td>{ord.id}</td>
                     <td className="employee-name-cell">
-                      <div className="avatar" style={getRandomAvatarColors()}>
-                        {ord.name.split(" ").map(n=>n[0]).join("").toUpperCase()}
+                      <div className="avatar" style={{ backgroundColor: getAvatarColor(ord.name) }}>
+                        {getInitials(ord.name)}
                       </div>
                       <span>{ord.name}</span>
                     </td>
                     <td>
-                      <span className={`status-badge status-badge-${ord.status==="Đang giao"?"active":"inactive"}`} style={getRandomAvatarColors()}>
-                        {ord.status}
+                      <span className={`status-badge status-badge-${ord.status==="Đang giao"?"active":"inactive"}`} style={{ backgroundColor: getAvatarColor(ord.status) }}>
+                        {getInitials(ord.status)}
                       </span>
                     </td>
                     <td>{ord.date}</td>
@@ -227,24 +228,6 @@ export default function ManagerPage() {
       </Card>
     </div>
   );
-
-  const getRandomAvatarColors = () => {
-    // Generate a random light background color (RGB values between 200 and 255)
-    const rBg = Math.floor(Math.random() * 56) + 200; // 200-255
-    const gBg = Math.floor(Math.random() * 56) + 200; // 200-255
-    const bBg = Math.floor(Math.random() * 56) + 200; // 200-255
-
-    const bgColor = `rgb(${rBg}, ${gBg}, ${bBg})`;
-
-    // Generate a darker text color from the background color
-    const rText = Math.max(0, rBg - 100);
-    const gText = Math.max(0, gBg - 100);
-    const bText = Math.max(0, bBg - 100);
-
-    const textColor = `rgb(${rText}, ${gText}, ${bText})`;
-
-    return { backgroundColor: bgColor, color: textColor };
-  };
 
   const renderDashboard = () => (
     <div className="dashboard-grid">
@@ -583,11 +566,11 @@ export default function ManagerPage() {
             </h1>
             <div className="header-user-profile-area" onClick={() => { /* Add navigation to user profile here if needed */ }}>
               <span className="header-user-info">{currentUser.name || currentUser.email}</span>
-              <div className="header-profile-icon-placeholder" style={getRandomAvatarColors()}>
+              <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName) }}>
                 {currentUser.avatar ? (
                   <img src={currentUser.avatar} alt={currentUser.name} />
                 ) : (
-                  currentUser.name ? currentUser.name.split(" ").map(n => n[0]).join("").toUpperCase() : ''
+                  currentUser.name ? getInitials(currentUser.name) : ''
                 )}
               </div>
             </div>

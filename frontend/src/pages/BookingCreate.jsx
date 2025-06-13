@@ -3,43 +3,16 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigation } from '../hooks/useNavigation'; // Import useNavigation hook
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import './BookingCreate.css';
 
 
 export default function BookingCreatePage() {
     const { user, loading: authLoading } = useAuth(); // Get user info and loading state
-    const navigate = useNavigate(); // To navigate
+    const { goToLogin, goToProfile } = useNavigation(); // Use navigation hook
     
-    // Function to generate random avatar colors (copied from ManagerPage)
-    const getRandomAvatarColors = () => {
-      const rBg = Math.floor(Math.random() * 56) + 200;
-      const gBg = Math.floor(Math.random() * 56) + 200;
-      const bBg = Math.floor(Math.random() * 56) + 200;
-      const bgColor = `rgb(${rBg}, ${gBg}, ${bBg})`;
-  
-      const rText = Math.max(0, rBg - 100);
-      const gText = Math.max(0, gBg - 100);
-      const bText = Math.max(0, bBg - 100);
-      const textColor = `rgb(${rText}, ${gText}, ${bText})`;
-  
-      return { backgroundColor: bgColor, color: textColor };
-    };
-  
-    // Function to navigate to user profile page
-    const goToProfile = () => {
-      if (user) { // Ensure user is logged in before navigating
-        navigate('/personal-info'); // Navigate to the correct profile route
-      }
-    };
-
-    // Placeholder functions for navigation
-    const goToAbout = () => navigate('/about'); // Assuming /about route exists or will be created
-    const goToServices = () => navigate('/services'); // Assuming /services route exists or will be created
-    const goToInfo = () => navigate('/info'); // Assuming /info route exists or will be created
-    const goToBookingCreate = () => navigate('/booking/create'); // Navigate to booking create page
-    const goToLogin = () => navigate('/login');
-
     // === State cho Form đặt lịch ===
     const [serviceType, setServiceType] = useState(''); // Loại dịch vụ (vd: Cha con)
     const [numSamples, setNumSamples] = useState(2); // Số mẫu cần xét nghiệm, mặc định 2
@@ -69,9 +42,9 @@ export default function BookingCreatePage() {
     // === Redirect nếu chưa đăng nhập ===
     useEffect(() => {
         if (!authLoading && !user) {
-            navigate('/login');
+            goToLogin(); // Use goToLogin from useNavigation hook
         }
-    }, [user, authLoading, navigate]);
+    }, [user, authLoading, goToLogin]);
 
     // === useEffect để tự động tạo số lượng participants dựa trên numSamples ===
     useEffect(() => {
@@ -153,49 +126,7 @@ export default function BookingCreatePage() {
     if (currentStep === 'confirmation') {
         return (
             <div className="homepage-container">
-                {/* Header Section */}
-                <header className="homepage-header">
-                    <div className="header-left">
-                        {/* Logo */}
-                        <div className="header-logo-container">
-                            <img src="/logo.png" alt="Bloodline Logo" className="header-logo" />
-                        </div>
-                        {/* Navigation Links */}
-                        <nav className="header-nav">
-                            <ul>
-                                <li><Link to="/home">TRANG CHỦ</Link></li>
-                                <li><Link to="/about">GIỚI THIỆU</Link></li>
-                                <li><Link to="/#">DỊCH VỤ</Link></li>
-                                <li><Link to="/personal-info">THÔNG TIN</Link></li>
-                                <li>
-                <NavLink
-                  to="/booking/create"
-                  className={({ isActive }) => isActive ? "active" : ""}
-                >
-                  <span className="nav-icon"></span> ĐĂNG KÍ DỊCH VỤ
-                </NavLink>
-              </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div className="header-right">
-                        {/* Search Bar Placeholder */}
-                        <input type="text" placeholder="Search" className="header-search-input" />
-                        {/* User/Login Area */}
-                        {user ? (
-                            <div className="header-user-profile-area" onClick={goToProfile}>
-                                <span className="header-user-info">Chào, {user.fullName || user.email}</span>
-                                <div className="header-profile-icon-placeholder" style={getRandomAvatarColors()}>
-                                    {user.fullName ? user.fullName.split(" ").map(n => n[0]).join("").toUpperCase() : ''}
-                                </div>
-                            </div>
-                        ) : (
-                            <button className="header-login-button" onClick={goToLogin}>Login</button>
-                        )}
-                    </div>
-                </header>
-        
-
+                <Header />
                 <main className="booking-create-content">
                     <section className="confirmation-section">
                         <h2>Xác nhận thông tin đặt lịch</h2>
@@ -236,33 +167,7 @@ export default function BookingCreatePage() {
                         </div>
                     </section>
                 </main>
-
-                {/* Footer */}
-                <footer className="adn-footer">
-                    <div className="adn-footer-content">
-                        <div className="adn-footer-logo">
-                            <img src="/logo.png" alt="ADN Logo" />
-                        </div>
-                        <div className="adn-footer-info">
-                            <div className="adn-footer-section">
-                                <span className="adn-footer-label">LOCATION</span>
-                                <div>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</div>
-                            </div>
-                            <div className="adn-footer-section">
-                                <span className="adn-footer-label">CONTACT US</span>
-                                <div>02020202304</div>
-                                <div>abc123@gmail.com</div>
-                            </div>
-                            <div className="adn-footer-section">
-                                <span className="adn-footer-label">PAYMENT</span>
-                                <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-                                    <img src="https://cdn.tgdd.vn/2020/04/GameApp/image-180x180.png" alt="ZaloPay" style={{height: 32}} />
-                                    <img src="data:image/png;base64,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" alt="Momo" style={{height: 32}} />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+                <Footer />
             </div>
         );
     }
@@ -270,48 +175,7 @@ export default function BookingCreatePage() {
     // === Render Booking Form (Default) ===
     return (
         <div className="homepage-container">
-          {/* Header Section */}
-          <header className="homepage-header">
-            <div className="header-left">
-              {/* Logo */}
-              <div className="header-logo-container">
-                <img src="/logo.png" alt="Bloodline Logo" className="header-logo" />
-              </div>
-              {/* Navigation Links */}
-              <nav className="header-nav">
-                            <ul>
-                                <li><Link to="/home">TRANG CHỦ</Link></li>
-                                <li><Link to="/about">GIỚI THIỆU</Link></li>
-                                <li><Link to="/#">DỊCH VỤ</Link></li>
-                                <li><Link to="/personal-info">THÔNG TIN</Link></li>
-                                <li>
-                <NavLink
-                  to="/booking/create"
-                  className={({ isActive }) => isActive ? "active" : ""}
-                >
-                  <span className="nav-icon"></span> ĐĂNG KÍ DỊCH VỤ
-                </NavLink>
-              </li>
-                            </ul>
-                        </nav>
-            </div>
-            <div className="header-right">
-              {/* Search Bar Placeholder */}
-              <input type="text" placeholder="Search" className="header-search-input" />
-              {/* User/Login Area */}
-              {user ? (
-                <div className="header-user-profile-area" onClick={goToProfile}>
-                  <span className="header-user-info">Chào, {user.fullName || user.email}</span>
-                  <div className="header-profile-icon-placeholder" style={getRandomAvatarColors()}>
-                    {user.fullName ? user.fullName.split(" ").map(n => n[0]).join("").toUpperCase() : ''}
-                  </div>
-                </div>
-              ) : (
-                <button className="header-login-button" onClick={goToLogin}>Login</button>
-              )}
-            </div>
-          </header>
-            {/* Main content of Booking Create page */}
+            <Header />
             <main className="booking-create-content">
                 <form className="booking-form-section" onSubmit={handleSubmitBooking}>
                     <h2>Tạo Lịch Hẹn Mới</h2>
@@ -534,33 +398,7 @@ export default function BookingCreatePage() {
                     <button type="submit" className="submit-booking-btn">Hoàn thành</button>
                 </form>
             </main>
-
-            {/* Footer */}
-            <footer className="adn-footer">
-                <div className="adn-footer-content">
-                    <div className="adn-footer-logo">
-                        <img src="/logo.png" alt="ADN Logo" />
-                    </div>
-                    <div className="adn-footer-info">
-                        <div className="adn-footer-section">
-                            <span className="adn-footer-label">LOCATION</span>
-                            <div>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</div>
-                        </div>
-                        <div className="adn-footer-section">
-                            <span className="adn-footer-label">CONTACT US</span>
-                            <div>02020202304</div>
-                            <div>abc123@gmail.com</div>
-                        </div>
-                        <div className="adn-footer-section">
-                            <span className="adn-footer-label">PAYMENT</span>
-                            <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-                                <img src="https://cdn.tgdd.vn/2020/04/GameApp/image-180x180.png" alt="ZaloPay" style={{height: 32}} />
-                                <img src="data:image/png;base64,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" alt="Momo" style={{height: 32}} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

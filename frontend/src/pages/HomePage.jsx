@@ -3,6 +3,9 @@ import { Link, NavLink } from 'react-router-dom';
 import './HomePage.css';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { getAvatarColor, getInitials } from '../utils/avatarUtils';
 
 const labSlides = [
   { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRemWZjv5ir6K4K2RMsjfA5-KCMN5rUDgBVkA&s', icon: '/img/icon-lab-blue.png'},
@@ -59,219 +62,134 @@ function HomePage() {
 
   const handleHomeClick = (e) => {
     e.preventDefault();
-    window.history.pushState({}, '', '/');
-  };
-
-  // Placeholder functions for navigation
-  const goToAbout = () => navigate('/about');
-  const goToServices = () => navigate('/services');
-  const goToInfo = () => navigate('/info');
-  const goToBookingCreate = () => navigate('/booking/create');
-  const goToLogin = () => navigate('/login');
-
-  // Function to generate random avatar colors (copied from ManagerPage)
-  const getRandomAvatarColors = () => {
-    const rBg = Math.floor(Math.random() * 56) + 200;
-    const gBg = Math.floor(Math.random() * 56) + 200;
-    const bBg = Math.floor(Math.random() * 56) + 200;
-    const bgColor = `rgb(${rBg}, ${gBg}, ${bBg})`;
-
-    const rText = Math.max(0, rBg - 100);
-    const gText = Math.max(0, gBg - 100);
-    const bText = Math.max(0, bBg - 100);
-    const textColor = `rgb(${rText}, ${gText}, ${bText})`;
-
-    return { backgroundColor: bgColor, color: textColor };
-  };
-
-  // Function to navigate to user profile page
-  const goToProfile = () => {
-    if (user) {
-      navigate('/personal-info');
-    }
+    navigate('/');
   };
 
   const labSlide = labSlides[labSlideIdx];
 
   return (
     <div className="homepage-container">
-      {/* Header Section */}
-      <header className="homepage-header">
-        <div className="header-left">
-          {/* Logo */}
-          <div className="header-logo-container">
-            <img src="/logo.png" alt="Bloodline Logo" className="header-logo" />
-          </div>
-          {/* Navigation Links */}
-          <nav className="header-nav">
-            <ul>
-              <li>
-                <NavLink
-                  to="/home"
-                  className={({ isActive }) => isActive ? "active" : ""}
-                >
-                  <span className="nav-icon"></span> TRANG CHỦ
-                </NavLink>
-              </li>
-              <li><Link to="/about">GIỚI THIỆU</Link></li>
-              <li><a href="#" onClick={goToServices}>DỊCH VỤ</a></li>
-              <li><a href="#" onClick={goToInfo}>THÔNG TIN</a></li>
-              <li><a href="#" onClick={goToBookingCreate}>ĐĂNG KÝ DỊCH VỤ</a></li>
-            </ul>
-          </nav>
-        </div>
-        <div className="header-right">
-          {/* Search Bar Placeholder */}
-          <input type="text" placeholder="Search" className="header-search-input" />
-          {/* User/Login Area */}
-          {user ? (
-            <div className="header-user-profile-area" onClick={goToProfile}>
-              <span className="header-user-info">Chào, {user.fullName || user.email}</span>
-              <div className="header-profile-icon-placeholder" style={getRandomAvatarColors()}>
-                {user.fullName ? user.fullName.split(" ").map(n => n[0]).join("").toUpperCase() : ''}
+      <Header />
+      <main className="homepage-content">
+        <div className="adn-main">
+          <div className="adn-banner">
+            <div className="adn-banner-img">
+              <img src="https://login.medlatec.vn//ImagePath/images/20200306/20200306_xet-nghiem-adn-het-bao-nhieu-tien-01.jpg" alt="ADN Test Banner" />
+            </div>
+            <div className="adn-banner-content adn-banner-center">
+              <div className="adn-banner-intro">
+                <h1>ADN CHAIN</h1>
+                <div className="adn-banner-sub">
+                  Chính xác - Nhanh chóng - Bảo mật
+                </div>
+                <div className="adn-banner-quote">
+                  <span>
+                    "Chuyên nghiệp trong từng kết quả, tận tâm trong từng bước"
+                  </span>
+                </div>
+              </div>
+              <div className="adn-banner-actions">
+                <a href="#register" className="adn-btn adn-btn-main">Đăng ký xét nghiệm ngay</a>
+                <a href="#advice" className="adn-btn adn-btn-outline">Đặt lịch tư vấn miễn phí</a>
               </div>
             </div>
-          ) : (
-            <button className="header-login-button" onClick={goToLogin}>Login</button>
-          )}
-        </div>
-      </header>
-
-      <div className="adn-main">
-        <div className="adn-banner">
-          <div className="adn-banner-img">
-            <img src="https://login.medlatec.vn//ImagePath/images/20200306/20200306_xet-nghiem-adn-het-bao-nhieu-tien-01.jpg" alt="ADN Test Banner" />
           </div>
-          <div className="adn-banner-content adn-banner-center">
-            <div className="adn-banner-intro">
-              <h1>ADN CHAIN</h1>
-              <div className="adn-banner-sub">
-                Chính xác - Nhanh chóng - Bảo mật
-              </div>
-              <div className="adn-banner-quote">
-                <span>
-                  "Chuyên nghiệp trong từng kết quả, tận tâm trong từng bước"
+
+          <section className="adn-section" id="about">
+            <div className="adn-section-title-group">
+              <span className="adn-section-icon">+</span>
+              <span className="adn-section-title">GIỚI THIỆU</span>
+            </div>
+            <div className="adn-about-content adn-about-content--custom">
+              <div className="adn-about-text adn-about-text--custom">
+                <span className="adn-about-headline">
+                  Trung tâm xét nghiệm ADN chuyên sâu
                 </span>
-              </div>
-            </div>
-            <div className="adn-banner-actions">
-              <a href="#register" className="adn-btn adn-btn-main">Đăng ký xét nghiệm ngay</a>
-              <a href="#advice" className="adn-btn adn-btn-outline">Đặt lịch tư vấn miễn phí</a>
-            </div>
-          </div>
-        </div>
-
-        <section className="adn-section" id="about">
-          <div className="adn-section-title-group">
-            <span className="adn-section-icon">+</span>
-            <span className="adn-section-title">GIỚI THIỆU</span>
-          </div>
-          <div className="adn-about-content adn-about-content--custom">
-            <div className="adn-about-text adn-about-text--custom">
-              <span className="adn-about-headline">
-                Trung tâm xét nghiệm ADN chuyên sâu
-              </span>
-              <p>
-                ADN CHAIN là trung tâm xét nghiệm ADN chuyên sâu, cung cấp các dịch vụ xác minh huyết thống phục vụ mục đích dân sự và pháp lý. Chúng tôi kết hợp đội ngũ chuyên gia hàng đầu trong lĩnh vực sinh học phân tử với công nghệ phân tích ADN hiện đại, đảm bảo độ chính xác tuyệt đối và tính bảo mật tối đa trong từng kết quả.
-              </p>
-              <p>
-                Với phương châm hoạt động "Chính xác – Bảo mật – Tận tâm", ADN CHAIN không ngừng hoàn thiện dịch vụ, hỗ trợ khách hàng thu mẫu tận nhà, gửi kit tận nơi hoặc xét nghiệm trực tiếp tại trung tâm – giúp việc kiểm tra huyết thống trở nên dễ dàng, minh bạch và đáng tin cậy.
-              </p>
-              <p className="adn-about-center">
-                Sự thật có thể khó nói – nhưng chúng tôi luôn ở đây để giúp bạn tìm thấy nó.
-              </p>
-              <div className="adn-about-more adn-about-more--flexend">
-                <Link to="/about" className="adn-btn adn-btn-more">Xem thêm &gt;&gt;</Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="adn-section" id="services">
-          <div className="adn-section-title-group">
-            <span className="adn-section-icon">+</span>
-            <span className="adn-section-title">DỊCH VỤ CHÍNH</span>
-          </div>
-          <div className="adn-service-list">
-            {services.map((s) => (
-              <div className="adn-service-card" key={s.id}>
-                <div className="adn-service-image">
-                  <img src={s.img} alt={s.name} />
-                </div>
-                <div className="adn-service-name">{s.name}</div>
-                <div className="adn-service-desc">{s.description}</div>
-                <div>
-                  <a href="#detail" className="adn-btn adn-btn-small">Xem chi tiết</a>
+                <p>
+                  ADN CHAIN là trung tâm xét nghiệm ADN chuyên sâu, cung cấp các dịch vụ xác minh huyết thống phục vụ mục đích dân sự và pháp lý. Chúng tôi kết hợp đội ngũ chuyên gia hàng đầu trong lĩnh vực sinh học phân tử với công nghệ phân tích ADN hiện đại, đảm bảo độ chính xác tuyệt đối và tính bảo mật tối đa trong từng kết quả.
+                </p>
+                <p>
+                  Với phương châm hoạt động "Chính xác – Bảo mật – Tận tâm", ADN CHAIN không ngừng hoàn thiện dịch vụ, hỗ trợ khách hàng thu mẫu tận nhà, gửi kit tận nơi hoặc xét nghiệm trực tiếp tại trung tâm – giúp việc kiểm tra huyết thống trở nên dễ dàng, minh bạch và đáng tin cậy.
+                </p>
+                <p className="adn-about-center">
+                  Sự thật có thể khó nói – nhưng chúng tôi luôn ở đây để giúp bạn tìm thấy nó.
+                </p>
+                <div className="adn-about-more adn-about-more--flexend">
+                  <Link to="/about" className="adn-btn adn-btn-more">Xem thêm &gt;&gt;</Link>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+          </section>
 
-        <section className="modernlab-section">
-          <div className="modernlab-box">
-            <div className="modernlab-left">
-              <div className="modernlab-titlebar">TRANG THIẾT BỊ HIỆN ĐẠI</div>
-              <h2 className="modernlab-title">Phòng thí nghiệm chuẩn Quốc tế</h2>
-              <div className="modernlab-desc">
-                Phòng thí nghiệm được trang bị những thiết bị tiên tiến nhất trong sinh học phân tử và phân tích di truyền. Đặc biệt, các hệ thống giải trình tự gen và hệ gen thế hệ mới đã được lắp đặt và vận hành, phục vụ nghiên cứu và dịch vụ xét nghiệm.
-              </div>
-              <div className="modernlab-progress-list">
-                {[
-                  { label: 'ĐỘ CHÍNH XÁC', value: '99.99%', percent: 99.99 },
-                  { label: 'BẢO MẬT THÔNG TIN KHÁCH HÀNG', value: '100%', percent: 100 },
-                  { label: 'TỶ LỆ KHÁCH HÀNG HÀI LÒNG', value: '95%', percent: 95 }
-                ].map((item, i) => (
-                  <div className="modernlab-progress-item" key={i}>
-                    <span className="modernlab-progress-label">{item.label}</span>
-                    <div className="modernlab-progress-bar">
-                      <div
-                        className="modernlab-progress-bar-inner"
-                        style={{ width: `${item.percent}%` }}
-                      ></div>
-                    </div>
-                    <span className="modernlab-progress-value">{item.value}</span>
+          <section className="adn-section" id="services">
+            <div className="adn-section-title-group">
+              <span className="adn-section-icon">+</span>
+              <span className="adn-section-title">DỊCH VỤ CHÍNH</span>
+            </div>
+            <div className="adn-service-list">
+              {services.map((s) => (
+                <div className="adn-service-card" key={s.id}>
+                  <div className="adn-service-image">
+                    <img src={s.img} alt={s.name} />
                   </div>
-                ))}
-              </div>
-            </div>
-            <div className="modernlab-right">
-              <div className="modernlab-imgbox">
-                <img className="modernlab-img" src={labSlide.img} alt="Lab" />
-                <div className="modernlab-slider-nav">
-                  <button onClick={handlePrevLabSlide} aria-label="slide-prev">&lt;</button>
-                  <button onClick={handleNextLabSlide} aria-label="slide-next">&gt;</button>
+                  <div className="adn-service-name">{s.name}</div>
+                  <div className="adn-service-desc">{s.description}</div>
+                  <div>
+                    <a href="#detail" className="adn-btn adn-btn-small">Xem chi tiết</a>
+                  </div>
                 </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="adn-section" id="labs">
+            <div className="adn-section-title-group">
+              <span className="adn-section-icon">+</span>
+              <span className="adn-section-title">PHÒNG THÍ NGHIỆM TIÊU BIỂU</span>
+            </div>
+            <div className="adn-lab-slides">
+              <button className="adn-lab-slides-arrow adn-lab-slides-arrow-left" onClick={handlePrevLabSlide}>&#10094;</button>
+              <div className="adn-lab-slide-container">
+                <img src={labSlide.img} alt="Lab Slide" className="adn-lab-slide-img" />
+                <img src={labSlide.icon} alt="Lab Icon" className="adn-lab-slide-icon" />
+              </div>
+              <button className="adn-lab-slides-arrow adn-lab-slides-arrow-right" onClick={handleNextLabSlide}>&#10095;</button>
+            </div>
+          </section>
+
+          <section className="adn-section" id="news">
+            <div className="adn-section-title-group">
+              <span className="adn-section-icon">+</span>
+              <span className="adn-section-title">TIN TỨC</span>
+            </div>
+            <div className="adn-news-items">
+              <div className="adn-news-card">
+                <img src="/img/news-img-1.jpg" alt="News 1" className="adn-news-img" />
+                <div className="adn-news-title">ADN CHAIN - Nâng tầm sức khỏe Việt bằng công nghệ di truyền</div>
+                <div className="adn-news-date">10/05/2024</div>
+                <div className="adn-news-desc">ADN CHAIN không ngừng đổi mới, ứng dụng các công nghệ sinh học tiên tiến nhất, hợp tác cùng các viện nghiên cứu, bệnh viện hàng đầu trong và ngoài nước, góp phần nâng cao chất lượng sống và sức khỏe cộng đồng.</div>
+                <a href="#" className="adn-btn adn-btn-small">Xem chi tiết</a>
+              </div>
+              <div className="adn-news-card">
+                <img src="/img/news-img-2.jpg" alt="News 2" className="adn-news-img" />
+                <div className="adn-news-title">Chính xác - Nhanh chóng - Bảo mật: 3 tiêu chí vàng của ADN CHAIN</div>
+                <div className="adn-news-date">08/05/2024</div>
+                <div className="adn-news-desc">Với phương châm hoạt động "Chính xác – Bảo mật – Tận tâm", ADN CHAIN không ngừng hoàn thiện dịch vụ, hỗ trợ khách hàng thu mẫu tận nhà, gửi kit tận nơi hoặc xét nghiệm trực tiếp tại trung tâm – giúp việc kiểm tra huyết thống trở nên dễ dàng, minh bạch và đáng tin cậy.</div>
+                <a href="#" className="adn-btn adn-btn-small">Xem chi tiết</a>
+              </div>
+              <div className="adn-news-card">
+                <img src="/img/news-img-3.jpg" alt="News 3" className="adn-news-img" />
+                <div className="adn-news-title">Dịch vụ xét nghiệm ADN tận nhà: Tiện lợi và bảo mật</div>
+                <div className="adn-news-date">05/05/2024</div>
+                <div className="adn-news-desc">ADN CHAIN cung cấp dịch vụ thu mẫu tận nhà, mang đến sự tiện lợi tối đa cho khách hàng. Đội ngũ chuyên gia của chúng tôi sẽ đến tận nơi để thực hiện thu mẫu, đảm bảo quá trình diễn ra nhanh chóng, an toàn và bảo mật thông tin.</div>
+                <a href="#" className="adn-btn adn-btn-small">Xem chi tiết</a>
               </div>
             </div>
-          </div>
-        </section>
-      </div>
-      <footer className="adn-footer">
-        <div className="adn-footer-content">
-          <div className="adn-footer-logo">
-            <img src="/logo.png" alt="ADN Logo" />
-          </div>
-          <div className="adn-footer-info">
-            <div className="adn-footer-section">
-              <span className="adn-footer-label">LOCATION</span>
-              <div>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</div>
-            </div>
-            <div className="adn-footer-section">
-              <span className="adn-footer-label">CONTACT US</span>
-              <div>02020202304</div>
-              <div>abc123@gmail.com</div>
-            </div>
-            <div className="adn-footer-section">
-              <span className="adn-footer-label">PAYMENT</span>
-              <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-                <img src="https://cdn.tgdd.vn/2020/04/GameApp/image-180x180.png" alt="ZaloPay" style={{height: 32}} />
-                <img src="data:image/png;base64,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" alt="Momo" style={{height: 32}} />
-              </div>
-            </div>
-          </div>
+          </section>
+
         </div>
-      </footer>
+      </main>
+      <Footer />
     </div>
   );
 }

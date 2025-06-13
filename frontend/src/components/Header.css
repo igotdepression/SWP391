@@ -1,0 +1,104 @@
+.adn-header {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.adn-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.adn-header-logo {
+    display: flex;
+    align-items: center;
+}
+
+.adn-header-logo img {
+    height: 40px;
+}
+
+.adn-header-nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.adn-header-nav a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.adn-header-nav a:hover {
+    color: #e74c3c;
+}
+
+.adn-header-nav a.active {
+    background-color: #fff;
+    color: #004080;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    border-bottom: none;
+    padding-bottom: initial;
+}
+
+.adn-header-search {
+    display: flex;
+    align-items: center;
+    background: #f5f5f5;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+}
+
+.adn-header-search input {
+    border: none;
+    background: none;
+    outline: none;
+    width: 200px;
+}
+
+.adn-header-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.adn-header-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.adn-header-user-name {
+    font-weight: 500;
+}
+
+.adn-header-login-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.adn-header-login-btn:hover {
+    background: #c0392b;
+} 
