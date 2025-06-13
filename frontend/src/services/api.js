@@ -69,6 +69,9 @@ export const userAPI = {
     getUserProfile: () => {
         return api.get('/users/profile');
     },
+    updateUserProfile: (profileData) => {
+        return api.put('/users/profile', profileData);
+    },
 };
 
 export default api; 

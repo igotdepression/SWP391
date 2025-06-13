@@ -51,6 +51,11 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    const updateUser = (newUserData) => {
+        setUser(prevUser => ({ ...prevUser, ...newUserData }));
+        localStorage.setItem('user', JSON.stringify(newUserData));
+    };
+
     const loginAsGuest = () => {
         localStorage.clear(); // Clear any previous user data
         const guestUser = {
@@ -68,6 +73,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         logout,
+        updateUser,
         loginAsGuest,
         isAuthenticated: !!user,
     };
