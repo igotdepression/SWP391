@@ -142,18 +142,42 @@ function HomePage() {
             </div>
           </section>
 
-          <section className="adn-section" id="labs">
-            <div className="adn-section-title-group">
-              <span className="adn-section-icon">+</span>
-              <span className="adn-section-title">PHÒNG THÍ NGHIỆM TIÊU BIỂU</span>
-            </div>
-            <div className="adn-lab-slides">
-              <button className="adn-lab-slides-arrow adn-lab-slides-arrow-left" onClick={handlePrevLabSlide}>&#10094;</button>
-              <div className="adn-lab-slide-container">
-                <img src={labSlide.img} alt="Lab Slide" className="adn-lab-slide-img" />
-                <img src={labSlide.icon} alt="Lab Icon" className="adn-lab-slide-icon" />
+          <section className="modernlab-section" id="labs">
+            <div className="modernlab-box">
+              <div className="modernlab-left">
+                <div className="modernlab-titlebar">TRANG THIẾT BỊ HIỆN ĐẠI</div>
+                <h2 className="modernlab-title">Phòng thí nghiệm chuẩn Quốc tế</h2>
+                <div className="modernlab-desc">
+                  Phòng thí nghiệm được trang bị những thiết bị tiên tiến nhất trong sinh học phân tử và phân tích di truyền. Đặc biệt, các hệ thống giải trình tự gen và hệ gen thế hệ mới đã được lắp đặt và vận hành, phục vụ nghiên cứu và dịch vụ xét nghiệm.
+                </div>
+                <div className="modernlab-progress-list">
+                  {[
+                    { label: 'ĐỘ CHÍNH XÁC', value: '99.99%', percent: 99.99 },
+                    { label: 'BẢO MẬT THÔNG TIN KHÁCH HÀNG', value: '100%', percent: 100 },
+                    { label: 'TỶ LỆ KHÁCH HÀNG HÀI LÒNG', value: '95%', percent: 95 }
+                  ].map((item, i) => (
+                    <div className="modernlab-progress-item" key={i}>
+                      <span className="modernlab-progress-label">{item.label}</span>
+                      <div className="modernlab-progress-bar">
+                        <div
+                          className="modernlab-progress-bar-inner"
+                          style={{ width: `${item.percent}%` }}
+                        ></div>
+                      </div>
+                      <span className="modernlab-progress-value">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <button className="adn-lab-slides-arrow adn-lab-slides-arrow-right" onClick={handleNextLabSlide}>&#10095;</button>
+              <div className="modernlab-right">
+                <div className="modernlab-imgbox">
+                  <img className="modernlab-img" src={labSlide.img} alt="Lab" />
+                  <div className="modernlab-slider-nav">
+                    <button onClick={handlePrevLabSlide} aria-label="slide-prev">&lt;</button>
+                    <button onClick={handleNextLabSlide} aria-label="slide-next">&gt;</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
