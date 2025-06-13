@@ -187,8 +187,8 @@ function HomePage() {
                 <div className="modernlab-imgbox">
                   <img className="modernlab-img" src={labSlide.img} alt="Lab" />
                   <div className="modernlab-slider-nav">
-                    <button onClick={handlePrevLabSlide} aria-label="slide-prev">&lt;</button>
-                    <button onClick={handleNextLabSlide} aria-label="slide-next">&gt;</button>
+                    <button onClick={handlePrevLabSlide} aria-label="slide-prev">◀️</button>
+                    <button onClick={handleNextLabSlide} aria-label="slide-next">▶️</button>
                   </div>
                 </div>
               </div>

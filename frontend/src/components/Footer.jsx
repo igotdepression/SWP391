@@ -10,12 +10,12 @@ export default function Footer() {
                 <div className="adn-footer-info">
                     <div className="adn-footer-section">
                         <span className="adn-footer-label">LOCATION</span>
-                        <div>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</div>
+                        <div>🏢 7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</div>
                     </div>
                     <div className="adn-footer-section">
                         <span className="adn-footer-label">CONTACT US</span>
-                        <div>02020202304</div>
-                        <div>abc123@gmail.com</div>
+                        <div>☎️ 02020202304</div>
+                        <div>📧 abc123@gmail.com</div>
                     </div>
                     <div className="adn-footer-section">
                         <span className="adn-footer-label">PAYMENT</span>
