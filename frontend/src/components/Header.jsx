@@ -7,7 +7,7 @@ import './Header.css';
 
 export default function Header() {
     const { user, logout } = useAuth();
-    const { goToLogin, goToProfile, goToHistory } = useNavigation();
+    const { goToLogin, goToProfile, goToHistory, goToSignUp } = useNavigation();
     const navigate = useNavigate();
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -80,19 +80,26 @@ export default function Header() {
             <div className="header-right">
                 <input type="text" placeholder="Search" className="header-search-input" />
                 {user ? (
-                    <div className="header-user-profile-area" onClick={handleProfileClick}>
-                        <span className="header-user-info">Chào, {user.fullName || user.email}</span>
-                        <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName) }}>
-                            {getInitials(user.fullName)}
+                    user.role === 'GUEST' ? (
+                        <div className="header-login-register-buttons">
+                            <button className="header-button" onClick={goToLogin}>Đăng nhập</button>
+                            <button className="header-button" onClick={goToSignUp}>Đăng kí</button>
                         </div>
-                        {showDropdown && (
-                            <div className="profile-dropdown">
-                                <div className="dropdown-item" onClick={goToProfile}>Thông tin cá nhân</div>
-                                <div className="dropdown-item" onClick={goToHistory}>Lịch sử xét nghiệm</div>
-                                <div className="dropdown-item" onClick={handleLogout}>Đăng xuất</div>
+                    ) : (
+                        <div className="header-user-profile-area" onClick={handleProfileClick}>
+                            <span className="header-user-info">Chào, {user.fullName || user.email}</span>
+                            <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName) }}>
+                                {getInitials(user.fullName)}
                             </div>
-                        )}
-                    </div>
+                            {showDropdown && (
+                                <div className="profile-dropdown">
+                                    <div className="dropdown-item" onClick={goToProfile}>Thông tin cá nhân</div>
+                                    <div className="dropdown-item" onClick={goToHistory}>Lịch sử xét nghiệm</div>
+                                    <div className="dropdown-item" onClick={handleLogout}>Đăng xuất</div>
+                                </div>
+                            )}
+                        </div>
+                    )
                 ) : (
                     <button className="header-login-button" onClick={goToLogin}>Login</button>
                 )}

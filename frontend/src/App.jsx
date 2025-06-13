@@ -51,7 +51,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/home" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><HomePage /></ProtectedRoute>} />
+          <Route path="/home" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN', 'GUEST']}><HomePage /></ProtectedRoute>} />
           <Route path="/personal-info" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><PersonalInfoPage /></ProtectedRoute>} />
           <Route path="/staff" element={<ProtectedRoute allowedRoles={['STAFF', 'MANAGER', 'ADMIN']}><StaffPage /></ProtectedRoute>} />
           <Route path="/manager" element={<ProtectedRoute allowedRoles={['MANAGER', 'ADMIN']}><ManagerPage /></ProtectedRoute>} />
