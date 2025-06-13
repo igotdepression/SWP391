@@ -32,6 +32,20 @@ public class UserService {
                 .orElse(null);
     }
     
+    public UserDTO updateUser(String email, UserDTO userDTO) {
+        User existingUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        existingUser.setFullName(userDTO.getFullName());
+        existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+        existingUser.setAddress(userDTO.getAddress());
+        existingUser.setDateOfBirth(userDTO.getDateOfBirth());
+        existingUser.setGender(userDTO.getGender());
+
+        User updatedUser = userRepository.save(existingUser);
+        return mapToUserDto(updatedUser);
+    }
+    
     private UserDTO mapToUserDto(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getUserID());

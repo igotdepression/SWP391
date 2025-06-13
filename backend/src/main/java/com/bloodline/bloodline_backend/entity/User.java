@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.Builder;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "[User]")
@@ -39,6 +40,12 @@ public class User {
 
     @Column(name = "Address", length = 200)
     private String address;
+
+    @Column(name = "DateOfBirth")
+    private LocalDate dateOfBirth;
+
+    @Column(name = "Gender", length = 10)
+    private String gender;
 
     @Column(name = "Status", length = 20)
     private String status;

@@ -25,7 +25,7 @@ public class Service {
     @Column(name = "typeOfService", nullable = false, length = 100)
     private String typeOfService;
 
-    @Column(name = "typeOfCollection", nullable = false, length = 100)
+    @Column(name = "typeOfCollection", length = 100)
     private String typeOfCollection;
 
     @Column(name = "price")

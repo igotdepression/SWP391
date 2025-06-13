@@ -5,6 +5,7 @@ import com.bloodline.bloodline_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,5 +34,13 @@ public class UserController {
         String email = authentication.getName();
         UserDTO user = userService.getUserByEmail(email);
         return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/profile")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserDTO> updateUserProfile(@RequestBody UserDTO userDTO, Authentication authentication) {
+        String email = authentication.getName();
+        UserDTO updatedUser = userService.updateUser(email, userDTO);
+        return ResponseEntity.ok(updatedUser);
     }
 }
