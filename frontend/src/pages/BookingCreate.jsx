@@ -1,4 +1,4 @@
-// src/pages/BookingCreatePage.jsx
+// src/pages/BookingCreate.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
