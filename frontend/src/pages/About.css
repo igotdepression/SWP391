@@ -1,0 +1,411 @@
+:root {
+  --main-blue: #0066b3;
+  --main-blue-dark: #004d86;
+  --footer-blue: #15597d;
+  --menu-font: 'Roboto', Arial, Helvetica, sans-serif;
+  --gray-bg: #f7fafd;
+  --gray-titlebar: #efefef;
+  --btn-main: #22A9E1;
+  --btn-outline: #fff;
+  --btn-main-hover: #156ec7;
+  --section-title: #0070b6;
+  --section-icon: #22A9E1;
+}
+
+.homepage-container {
+  /* Basic container for the whole page */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure container takes at least full viewport height */
+}
+
+/* Header Styling */
+.homepage-header {
+  display: flex;
+  justify-content: space-between; /* Distribute items with space between */
+  align-items: center;
+  padding: 15px 40px; /* Increased padding */
+  background-color: var(--primary-dark-blue); /* Dark blue header */
+  color: var(--light-text); /* Light text color */
+  box-shadow: 0 3px 10px var(--shadow-medium); /* Stronger shadow */
+  position: sticky; /* Make header sticky */
+  top: 0;
+  z-index: 1000; /* Ensure header is on top */
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Header Logo */
+.header-logo-container {
+width: 60px; /* Adjust container size */
+height: 60px; /* Adjust container size */
+background-color: white; /* White background */
+border-radius: 50%; /* Circular shape */
+display: flex;
+justify-content: center;
+align-items: center;
+margin-right: 25px; /* Space between logo and nav */
+}
+
+.header-logo {
+  width: 50px; /* Adjust logo size inside the circle */
+  height: 50px; /* Adjust logo size inside the circle */
+  /* No margin here, as spacing is on the container */
+}
+
+.header-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  /* flex-grow: 1; */ /* Remove flex-grow */
+}
+
+.header-nav li {
+  margin: 0 15px; /* Spacing */
+}
+
+.header-nav a {
+  text-decoration: none;
+  color: var(--light-text); /* Light text color */
+  font-weight: 600;
+  font-size: 1.1rem; /* Slightly larger font */
+  transition: color 0.3s ease;
+}
+
+.header-nav a:hover {
+  color: var(--primary-green); /* Green on hover */
+}
+
+.header-nav .active {
+  background: #fff;
+  color: #0066b3 !important;
+  font-weight: bold;
+  border-bottom: 4px solid #fff;
+  border-radius: 6px 6px 0 0;
+  padding: 0 10px;
+}
+
+.nav-icon {
+color: var(--primary-blue); /* Blue color for the star */
+margin-right: 5px; /* Space between star and text */
+vertical-align: middle; /* Align icon vertically */
+font-size: 1.1rem; /* Slightly larger star */
+}
+
+.header-search-input {
+  padding: 8px 15px; /* Increased padding */
+  border: 1.5px solid var(--medium-gray-border); /* Consistent border */
+  border-radius: 24px; /* More rounded */
+  margin-right: 15px; /* Increased margin */
+  font-size: 1rem;
+  outline: none;
+  background-color: var(--light-gray-bg); /* Light background */
+  color: var(--dark-text); /* Dark text */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header-search-input:focus {
+  border-color: var(--primary-green); /* Green focus */
+  box-shadow: 0 0 5px rgba(52,168,83,0.5); /* Green shadow */
+}
+
+.header-user-info {
+  margin-right: 10px;
+  color: var(--medium-gray-border); /* Light blue/grey color as per image */
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.header-login-button {
+  background-color: var(--primary-green); /* Use green */
+  color: var(--light-text);
+  border: none;
+  border-radius: 24px; /* More rounded */
+padding: 8px 20px; /* Increased padding */
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.header-login-button:hover {
+  background-color: var(--button-hover-green); /* Darker green on hover */
+  transform: translateY(-2px);
+}
+
+.header-user-profile-area {
+display: flex;
+align-items: center;
+cursor: pointer;
+padding: 8px 12px;
+transition: all 0.3s ease;
+background: #1c528a; /* Solid, slightly lighter dark blue matching the image */
+}
+
+.header-user-profile-area:hover {
+background: #2a619c; /* Slightly darker on hover */
+}
+
+.header-profile-icon-placeholder {
+width: 32px;
+height: 32px;
+/* Background and color will be set by JS dynamically from getRandomAvatarColors */
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 600;
+font-size: 0.8rem;
+}
+
+.adn-about-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 0 44px 0;
+}
+.adn-about-banner {
+  width: 100vw;
+  background: #eaf2fb;
+  text-align: center;
+  padding: 0;
+  margin: 0 0 18px 0;
+}
+.adn-about-banner-img {
+  width: 100vw;
+  max-width: 100vw;
+  min-height: 220px;
+  max-height: 320px;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+  box-shadow: 0 2px 18px #b8d8fa33;
+  margin: 0 auto;
+}
+
+.adn-about-content-box {
+  background: #fff;
+  border-radius: 12px;
+  margin-top: 0;
+  box-shadow: 0 2px 12px #b8e0fa19;
+  padding: 40px 46px 38px 46px;
+}
+.adn-about-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 44px;
+}
+.adn-about-col-left {
+  flex: 3;
+  min-width: 0;
+}
+.adn-about-col-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: flex-end;
+  margin-top: 20px;
+}
+.adn-about-img-right {
+  width: 250px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px #b8e0fa33;
+  background: #f6fcff;
+}
+
+.adn-about-title {
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: #0066b3;
+  margin-bottom: 18px;
+  text-align: left;
+}
+.adn-about-description p {
+  font-size: 1.16rem;
+  color: #222e3d;
+  line-height: 1.7;
+}
+.adn-about-section {
+  margin-top: 32px;
+}
+.adn-about-section h2 {
+  color: #0070b6;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.adn-about-section ul, .adn-about-section p {
+  font-size: 1.08rem;
+  color: #2d3d55;
+  line-height: 1.7;
+}
+.adn-about-section ul {
+  margin: 0 0 0 20px;
+  padding-left: 10px;
+}
+.adn-about-section li {
+  margin-bottom: 7px;
+}
+.adn-about-section b,
+.adn-about-section strong {
+  color: #0066b3;
+  font-weight: 700;
+}
+.adn-about-back {
+  margin-top: 48px;
+  text-align: center;
+}
+.adn-btn.adn-btn-main {
+  display: inline-block;
+  padding: 14px 40px;
+  background: #22A9E1;
+  color: #fff;
+  border: none;
+  border-radius: 28px;
+  font-size: 1.17rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.17s, color 0.17s;
+}
+.adn-btn.adn-btn-main:hover {
+  background: #156ec7;
+  color: #fff;
+}
+
+/* Footer giống trang chủ */
+.adn-footer {
+  background: #135079;
+  color: #fff;
+  width: 100%;
+  padding: 0;
+  margin-top: 40px;
+}
+
+.adn-footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 38px;
+  max-width: 1100px;
+  padding: 0 30px;
+  margin: 0 auto;
+  min-height: 170px;
+}
+
+.adn-footer-logo img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 16px #0a2c4a33;
+  margin-right: 16px;
+}
+
+.adn-footer-info {
+  display: flex;
+  flex: 1 1 0;
+  align-items: flex-start;
+  gap: 46px;
+  flex-wrap: wrap;
+}
+
+.adn-footer-section {
+  min-width: 180px;
+  margin-top: 18px;
+}
+
+.adn-footer-label {
+  color: #3cd0ff;
+  font-weight: 700;
+  font-size: 1.17rem;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 1100px) {
+  .adn-about-content-box {
+    padding: 20px 5vw 20px 5vw;
+  }
+  .adn-about-banner-img {
+    max-width: 100vw;
+  }
+  .adn-about-row {
+    gap: 18px;
+  }
+  .adn-about-img-right {
+    width: 180px;
+    height: 120px;
+  }
+}
+@media (max-width: 900px) {
+  .adn-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 6px;
+  }
+  .adn-nav ul {
+    gap: 16px;
+  }
+  .adn-about-content-box {
+    padding: 11px 2vw;
+  }
+  .adn-about-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  .adn-about-col-right {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    justify-content: center;
+  }
+  .adn-about-img-right {
+    width: 42vw;
+    max-width: 130px;
+    height: 80px;
+  }
+  .adn-footer-content {
+    flex-direction: column;
+    gap: 18px;
+    padding: 18px 0 14px 0;
+  }
+  .adn-footer-info {
+    gap: 14px;
+    padding-left: 0;
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 600px) {
+  .adn-about-content-box {
+    padding: 3px 1vw;
+  }
+  .adn-about-title {
+    font-size: 1.13rem;
+  }
+  .adn-about-img-right {
+    width: 38vw;
+    max-width: 100px;
+    height: 62px;
+  }
+  .adn-footer-content {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0 8px 0;
+  }
+  .adn-footer-info {
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 0;
+  }
+}
