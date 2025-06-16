@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,13 +31,18 @@ public class User {
     @Column(name = "UserID")
     private Integer userID;
 
+
+    @NotEmpty(message = "Vui lòng điền thông tin họ và tên !!!")
     @Column(name = "FullName", nullable = false, length = 100)
     private String fullName;
 
+    @NotEmpty(message = "")
     @Column(name = "Email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "PhoneNumber", length = 15)
+    @NotEmpty(message = "Vui lòng điền số điện thoại, không được bỏ trống !!!")
+    @Size(min = 10, max = 11, message = "Số điện thoại Không hợp lệ !!!")
+    @Column(name = "PhoneNumber", length = 11)
     private String phoneNumber;
 
     @Column(name = "Address", length = 200)
