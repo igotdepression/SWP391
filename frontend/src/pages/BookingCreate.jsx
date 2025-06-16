@@ -1,29 +1,21 @@
-// src/pages/BookingCreate.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-
 import { useAuth } from '../context/AuthContext';
-import { useNavigation } from '../hooks/useNavigation'; // Import useNavigation hook
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
 import './BookingCreate.css';
 
+export default function BookingCreate() {
+    const { user, loading: authLoading } = useAuth();
+    const navigate = useNavigate();
 
-export default function BookingCreatePage() {
-    const { user, loading: authLoading } = useAuth(); // Get user info and loading state
-    const { goToLogin, goToProfile } = useNavigation(); // Use navigation hook
-    
     // === State cho Form đặt lịch ===
     const [serviceType, setServiceType] = useState(''); // Loại dịch vụ (vd: Cha con)
     const [numSamples, setNumSamples] = useState(2); // Số mẫu cần xét nghiệm, mặc định 2
     const [testType, setTestType] = useState(''); // Loại xét nghiệm (Dân sự / Hành chính)
-    const [collectionMethod, setCollectionMethod] = useState(''); // Phương pháp thu mẫu (Tự thu mẫu, Thu mẫu tại nhà/văn phòng, Thu mẫu tại trung tâm)
     const [appointmentDate, setAppointmentDate] = useState('');
-    const [appointmentTime, setAppointmentTime] = useState(''); // Đã sửa tên state
+    const [appointmentTime, setAppointmentTime] = useState('');
     const [notes, setNotes] = useState('');
 
     // State cho thông tin người tham gia
-    // participants sẽ tự động được tạo dựa trên numSamples
     const [participants, setParticipants] = useState([]);
 
     // State để quản lý bước của form (form điền / trang xác nhận)
@@ -39,31 +31,67 @@ export default function BookingCreatePage() {
         'Xét nghiệm ADN Thai nhi',
     ];
 
+    // Danh sách phương thức thu mẫu (có thể lấy từ API nếu cần)
+    const collectionMethodOptions = [
+        'Tự thu mẫu',
+        'Thu mẫu tại nhà/văn phòng',
+        'Thu mẫu tại trung tâm',
+    ];
+
     // === Redirect nếu chưa đăng nhập ===
     useEffect(() => {
         if (!authLoading && !user) {
-            goToLogin(); // Use goToLogin from useNavigation hook
+            navigate('/login');
         }
-    }, [user, authLoading, goToLogin]);
+    }, [user, authLoading, navigate]);
 
-    // === useEffect để tự động tạo số lượng participants dựa trên numSamples ===
+    // === useEffect để tự động tạo/cập nhật số lượng participants và collectionMethod mặc định ===
     useEffect(() => {
         setParticipants(prevParticipants => {
             const newParticipants = Array.from({ length: numSamples }, (_, i) => {
                 const existingParticipant = prevParticipants[i];
+
+                // Xác định phương thức thu mẫu mặc định dựa trên loại xét nghiệm và dịch vụ
+                let defaultCollectionMethod = '';
+                if (testType === 'Hành chính' || serviceType === 'Xét nghiệm ADN Thai nhi') {
+                    defaultCollectionMethod = 'Thu mẫu tại trung tâm';
+                }
+
+                // Nếu đã có người tham gia tồn tại, giữ lại thông tin cũ và cập nhật collectionMethod nếu cần
                 if (existingParticipant) {
-                    return existingParticipant;
+                    return {
+                        ...existingParticipant,
+                        // Cập nhật collectionMethod nếu loại xét nghiệm/dịch vụ yêu cầu mặc định
+                        collectionMethod: (testType === 'Hành chính' || serviceType === 'Xét nghiệm ADN Thai nhi')
+                            ? defaultCollectionMethod
+                            : (existingParticipant.collectionMethod || '') // Giữ lại giá trị cũ nếu có, hoặc rỗng
+                    };
                 } else {
+                    // Nếu là người tham gia mới, tạo đối tượng mới với collectionMethod mặc định
                     if (testType === 'Hành chính') {
-                        return { fullName: '', age: '', dob: '', gender: '', cccd: '', address: '', relationship: '' };
-                    } else { // Dân sự
-                        return { fullName: '', age: '', dob: '' };
+                        return { fullName: '', age: '', dob: '', gender: '', cccd: '', address: '', relationship: '', collectionMethod: defaultCollectionMethod };
+                    } else { // Dân sự hoặc Thai nhi
+                        return { fullName: '', age: '', dob: '', collectionMethod: defaultCollectionMethod };
                     }
                 }
             });
             return newParticipants;
         });
-    }, [numSamples, testType]); // Thêm testType vào dependency để cập nhật trường khi đổi loại xét nghiệm
+    }, [numSamples, testType, serviceType]); // Các dependencies để kích hoạt useEffect
+
+    // === Hàm tạo màu avatar ngẫu nhiên ===
+    const getRandomAvatarColors = useCallback(() => {
+        const rBg = Math.floor(Math.random() * 56) + 200;
+        const gBg = Math.floor(Math.random() * 56) + 200;
+        const bBg = Math.floor(Math.random() * 56) + 200;
+        const bgColor = `rgb(${rBg}, ${gBg}, ${bBg})`;
+
+        const rText = Math.max(0, rBg - 100);
+        const gText = Math.max(0, gBg - 100);
+        const bText = Math.max(0, bBg - 100);
+        const textColor = `rgb(${rText}, ${gText}, ${bText})`;
+        return { backgroundColor: bgColor, color: textColor };
+    }, []);
 
     // === Hàm xử lý thay đổi thông tin người tham gia ===
     const handleParticipantChange = (index, field, value) => {
@@ -76,36 +104,33 @@ export default function BookingCreatePage() {
     const handleSubmitBooking = (e) => {
         e.preventDefault();
 
-        // Kiểm tra các trường bắt buộc
-        if (!serviceType || !testType || !collectionMethod || !appointmentDate || !appointmentTime) {
+        // Kiểm tra các trường bắt buộc chung
+        if (!serviceType || !testType || !appointmentDate || !appointmentTime) {
             alert('Vui lòng điền đầy đủ các thông tin bắt buộc.');
             return;
         }
 
         // Kiểm tra số mẫu dựa trên loại dịch vụ
-        if (serviceType === 'Xét nghiệm ADN Thai nhi') {
-            if (numSamples !== 2) { // Thai nhi luôn là 2 mẫu
-                alert('Dịch vụ Xét nghiệm ADN Thai nhi yêu cầu chính xác 2 mẫu.');
-                return;
-            }
-        } else {
-            if (numSamples < 2) { // Các dịch vụ khác tối thiểu 2 mẫu
-                alert('Số mẫu xét nghiệm phải tối thiểu là 2 cho dịch vụ này.');
-                return;
-            }
+        if (serviceType === 'Xét nghiệm ADN Thai nhi' && numSamples !== 2) {
+            alert('Dịch vụ "Xét nghiệm ADN Thai nhi" yêu cầu chính xác 2 mẫu.');
+            return;
+        }
+        if (serviceType !== 'Xét nghiệm ADN Thai nhi' && numSamples < 2) {
+            alert('Số mẫu xét nghiệm phải tối thiểu là 2 cho dịch vụ này.');
+            return;
         }
 
-        // Kiểm tra xem tất cả thông tin participant đã được điền đầy đủ chưa
+        // Kiểm tra xem tất cả thông tin người tham gia đã được điền đầy đủ chưa
         const allParticipantsFilled = participants.every(p => {
             if (testType === 'Hành chính') {
-                return p.fullName && p.age && p.dob && p.gender && p.cccd && p.address && p.relationship;
-            } else { // Dân sự
-                return p.fullName && p.age && p.dob;
+                return p.fullName && p.age && p.dob && p.gender && p.cccd && p.address && p.relationship && p.collectionMethod;
+            } else { // Dân sự hoặc Thai nhi
+                return p.fullName && p.age && p.dob && p.collectionMethod;
             }
         });
 
         if (!allParticipantsFilled) {
-            alert('Vui lòng điền đầy đủ thông tin cho tất cả người tham gia.');
+            alert('Vui lòng điền đầy đủ thông tin cho tất cả người tham gia, bao gồm phương pháp thu mẫu.');
             return;
         }
 
@@ -125,16 +150,45 @@ export default function BookingCreatePage() {
     // === Render Confirmation Page ===
     if (currentStep === 'confirmation') {
         return (
-            <div className="homepage-container">
-                <Header />
+            <div className="homepage-root">
+                <header className="homepage-header">
+                    <div className="header-left">
+                        <nav className="header-nav">
+                            <ul>
+                                <li><button className="nav-link" onClick={() => navigate('/about')}>GIỚI THIỆU</button></li>
+                                <li><button className="nav-link" onClick={() => navigate('/services')}>DỊCH VỤ</button></li>
+                                <li><button className="nav-link" onClick={() => navigate('/info')}>THÔNG TIN</button></li>
+                                <li><button className="nav-link nav-link-highlight" onClick={() => navigate('/booking-create')}>ĐẶT LỊCH HẸN</button></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div className="header-right">
+                        <div className="header-search-box">
+                            <input type="text" placeholder="Tìm kiếm..." className="header-search-input" />
+                            <button className="header-search-btn">🔍</button>
+                        </div>
+                        {user && (
+                            <div className="header-user-profile" onClick={() => navigate('/personal-info')}>
+                                <span className="header-user-info">{user.fullName || user.email}</span>
+                                <div className="header-profile-icon" style={getRandomAvatarColors()}>
+                                    {user.avatar ? (
+                                        <img src={user.avatar} alt={user.fullName} />
+                                    ) : (
+                                        user.fullName ? user.fullName.split(" ").map(n => n[0]).join("").toUpperCase() : user.email?.charAt(0).toUpperCase() || ''
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </header>
+
                 <main className="booking-create-content">
                     <section className="confirmation-section">
                         <h2>Xác nhận thông tin đặt lịch</h2>
                         <div className="confirmation-details">
                             <p><strong>Loại dịch vụ:</strong> {serviceType}</p>
-                            <p><strong>Số mẫu:</strong> {numSamples}</p> {/* Luôn hiển thị số mẫu */}
+                            <p><strong>Số mẫu:</strong> {numSamples}</p>
                             <p><strong>Loại xét nghiệm:</strong> {testType}</p>
-                            <p><strong>Phương pháp thu mẫu:</strong> {collectionMethod}</p>
                             <p><strong>Ngày hẹn:</strong> {appointmentDate}</p>
                             <p><strong>Giờ hẹn:</strong> {appointmentTime}</p>
                             <p><strong>Ghi chú:</strong> {notes || 'Không có'}</p>
@@ -147,6 +201,7 @@ export default function BookingCreatePage() {
                                         <p>Họ và tên: {p.fullName || 'Chưa điền'}</p>
                                         <p>Tuổi: {p.age || 'Chưa điền'}</p>
                                         <p>Năm sinh: {p.dob || 'Chưa điền'}</p>
+                                        <p>Phương pháp thu mẫu: {p.collectionMethod || 'Chưa điền'}</p>
                                         {testType === 'Hành chính' && (
                                             <>
                                                 <p>Giới tính: {p.gender || 'Chưa điền'}</p>
@@ -167,15 +222,64 @@ export default function BookingCreatePage() {
                         </div>
                     </section>
                 </main>
-                <Footer />
+
+                <footer className="homepage-footer">
+                    <div className="footer-section">
+                        <h3>LOCATION</h3>
+                        <p>70, D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</p>
+                    </div>
+                    <div className="footer-section">
+                        <h3>CONTACT US</h3>
+                        <p>02020202304</p>
+                    </div>
+                    <div className="footer-section">
+                        <h3>PAYMENT</h3>
+                        <div className="payment-icons">
+                            <div className="payment-icon-placeholder">Pay1</div>
+                            <div className="payment-icon-placeholder">Pay2</div>
+                        </div>
+                    </div>
+                </footer>
             </div>
         );
     }
 
     // === Render Booking Form (Default) ===
     return (
-        <div className="homepage-container">
-            <Header />
+        <div className="homepage-root">
+            <header className="homepage-header">
+                <div className="header-left">
+                    <nav className="header-nav">
+                        <ul>
+                            <li><button className="nav-link" onClick={() => navigate('/about')}>GIỚI THIỆU</button></li>
+                            <li><button className="nav-link" onClick={() => navigate('/services')}>DỊCH VỤ</button></li>
+                            <li><button className="nav-link" onClick={() => navigate('/info')}>THÔNG TIN</button></li>
+                            <li><button className="nav-link nav-link-highlight" onClick={() => navigate('/booking-create')}>ĐẶT LỊCH HẸN</button></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div className="header-right">
+                    <div className="header-search-box">
+                        <input type="text" placeholder="Tìm kiếm..." className="header-search-input" />
+                        <button className="header-search-btn">🔍</button>
+                    </div>
+                    {user ? (
+                        <div className="header-user-profile" onClick={() => navigate('/personal-info')}>
+                            <span className="header-user-info">{user.fullName || user.email}</span>
+                            <div className="header-profile-icon" style={getRandomAvatarColors()}>
+                                {user.avatar ? (
+                                    <img src={user.avatar} alt={user.fullName} />
+                                ) : (
+                                    user.fullName ? user.fullName.split(" ").map(n => n[0]).join("").toUpperCase() : user.email?.charAt(0).toUpperCase() || ''
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <button className="header-login-button" onClick={() => navigate('/login')}>Đăng nhập</button>
+                    )}
+                </div>
+            </header>
+
             <main className="booking-create-content">
                 <form className="booking-form-section" onSubmit={handleSubmitBooking}>
                     <h2>Tạo Lịch Hẹn Mới</h2>
@@ -190,15 +294,12 @@ export default function BookingCreatePage() {
                                 const selectedService = e.target.value;
                                 setServiceType(selectedService);
                                 if (selectedService === 'Xét nghiệm ADN Thai nhi') {
-                                    setNumSamples(2); // THAY ĐỔI: Thai nhi luôn 2 mẫu
-                                    setCollectionMethod('Thu mẫu tại trung tâm'); // Thai nhi mặc định thu tại trung tâm
-                                    setTestType(''); // Reset test type nếu cần
+                                    setNumSamples(2); // Thai nhi luôn là 2 mẫu
                                 } else {
-                                    setNumSamples(2); // Mặc định 2 mẫu cho các loại khác
-                                    setCollectionMethod(''); // Reset collection method
-                                    setTestType('');
+                                    setNumSamples(2); // Các loại khác mặc định 2 mẫu
                                 }
-                                // Participants sẽ được cập nhật tự động bởi useEffect khi numSamples thay đổi
+                                setTestType(''); // Reset loại xét nghiệm khi đổi loại dịch vụ
+                                // participants sẽ được cập nhật bởi useEffect khi serviceType/numSamples thay đổi
                             }}
                             required
                         >
@@ -213,7 +314,7 @@ export default function BookingCreatePage() {
                     {serviceType === 'Xét nghiệm ADN Thai nhi' ? (
                         <div className="form-group">
                             <label>Số mẫu cần xét nghiệm:</label>
-                            <p className="static-option">2</p> {/* THAY ĐỔI: Giá trị cố định là 2 */}
+                            <p className="static-option">2</p>
                         </div>
                     ) : (
                         <div className="form-group">
@@ -222,29 +323,19 @@ export default function BookingCreatePage() {
                                 type="number"
                                 id="numSamples"
                                 value={numSamples}
-                                onChange={(e) => setNumSamples(Math.max(2, parseInt(e.target.value) || 2))} // Mặc định min 2 mẫu
+                                onChange={(e) => setNumSamples(Math.max(2, parseInt(e.target.value) || 2))}
                                 min="2"
                                 required
                             />
                         </div>
                     )}
 
-
                     <div className="form-group">
                         <label htmlFor="testType">Loại xét nghiệm:</label>
                         <select
                             id="testType"
                             value={testType}
-                            onChange={(e) => {
-                                const selectedTestType = e.target.value;
-                                setTestType(selectedTestType);
-                                if (selectedTestType === 'Hành chính') {
-                                    setCollectionMethod('Thu mẫu tại trung tâm'); // Hành chính mặc định thu tại trung tâm
-                                } else {
-                                    setCollectionMethod(''); // Reset cho dân sự
-                                }
-                                // Participants sẽ được cập nhật tự động bởi useEffect khi testType thay đổi
-                            }}
+                            onChange={(e) => setTestType(e.target.value)}
                             required
                         >
                             <option value="">Chọn loại xét nghiệm</option>
@@ -252,30 +343,6 @@ export default function BookingCreatePage() {
                             <option value="Hành chính">Hành chính</option>
                         </select>
                     </div>
-
-                    {testType === 'Dân sự' && serviceType !== 'Xét nghiệm ADN Thai nhi' && (
-                        <div className="form-group">
-                            <label htmlFor="collectionMethod">Phương pháp thu mẫu:</label>
-                            <select
-                                id="collectionMethod"
-                                value={collectionMethod}
-                                onChange={(e) => setCollectionMethod(e.target.value)}
-                                required
-                            >
-                                <option value="">Chọn phương pháp thu mẫu</option>
-                                <option value="Tự thu mẫu">Tự thu mẫu</option>
-                                <option value="Thu mẫu tại nhà/văn phòng">Thu mẫu tại nhà/văn phòng</option>
-                                <option value="Thu mẫu tại trung tâm">Thu mẫu tại trung tâm</option>
-                            </select>
-                        </div>
-                    )}
-
-                    {(testType === 'Hành chính' || serviceType === 'Xét nghiệm ADN Thai nhi') && (
-                        <div className="form-group">
-                            <label>Phương pháp thu mẫu:</label>
-                            <p className="static-option">Thu mẫu tại trung tâm</p>
-                        </div>
-                    )}
 
                     <div className="form-group">
                         <label htmlFor="appointmentDate">Ngày hẹn:</label>
@@ -294,7 +361,7 @@ export default function BookingCreatePage() {
                             type="time"
                             id="appointmentTime"
                             value={appointmentTime}
-                            onChange={(e) => setAppointmentTime(e.target.value)} // Đã sửa: dùng setAppointmentTime
+                            onChange={(e) => setAppointmentTime(e.target.value)}
                             required
                         />
                     </div>
@@ -347,6 +414,28 @@ export default function BookingCreatePage() {
                                     />
                                 </div>
 
+                                {/* Phương thức thu mẫu riêng cho từng người tham gia */}
+                                {(testType === 'Hành chính' || serviceType === 'Xét nghiệm ADN Thai nhi') ? (
+                                    <div className="form-group">
+                                        <label>Phương pháp thu mẫu:</label>
+                                        <p className="static-option">Thu mẫu tại trung tâm</p>
+                                    </div>
+                                ) : (
+                                    <div className="form-group">
+                                        <label>Phương pháp thu mẫu:</label>
+                                        <select
+                                            value={participants[index]?.collectionMethod || ''}
+                                            onChange={(e) => handleParticipantChange(index, 'collectionMethod', e.target.value)}
+                                            required
+                                        >
+                                            <option value="">Chọn phương pháp thu mẫu</option>
+                                            {collectionMethodOptions.map((method, methodIndex) => (
+                                                <option key={methodIndex} value={method}>{method}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
                                 {testType === 'Hành chính' && (
                                     <>
                                         <div className="form-group">
@@ -398,7 +487,24 @@ export default function BookingCreatePage() {
                     <button type="submit" className="submit-booking-btn">Hoàn thành</button>
                 </form>
             </main>
-            <Footer />
+
+            <footer className="homepage-footer">
+                <div className="footer-section">
+                    <h3>LOCATION</h3>
+                    <p>70, D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</p>
+                </div>
+                <div className="footer-section">
+                    <h3>CONTACT US</h3>
+                    <p>02020202304</p>
+                </div>
+                <div className="footer-section">
+                    <h3>PAYMENT</h3>
+                    <div className="payment-icons">
+                        <div className="payment-icon-placeholder">Pay1</div>
+                        <div className="payment-icon-placeholder">Pay2</div>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }
