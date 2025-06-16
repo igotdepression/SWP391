@@ -24,7 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://dna-chain.bloodline:3000")
 @Slf4j
 public class AuthController {
 

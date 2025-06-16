@@ -74,7 +74,7 @@ public class AuthService {
             );
         } catch (BadCredentialsException e) {
             log.error("Invalid credentials for user: {}", loginRequest.getEmail());
-            throw new BadCredentialsException("Invalid email or password");
+            throw new BadCredentialsException("Email hoặc mật khẩu không đúng");
         } catch (UsernameNotFoundException e) {
             log.error("User not found: {}", e.getMessage());
             throw new UsernameNotFoundException("User not found: " + e.getMessage());

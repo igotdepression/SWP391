@@ -1,382 +1,323 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Card, Button, Input, Select } from "../components/ui/ui";
-import './StaffPage.css';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import CreateModal from '../components/CreateModal';
+import React, { useState } from "react";
+import { Card, Button, Input, Select } from "../components/ui/ui"; // Add these imports
+import "./StaffPage.css";
 
-const StaffPage = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+// Menu cho quản lý xét nghiệm DNA
+const sidebarMenu = [
+  { key: "tests", label: "Đơn xét nghiệm", icon: "📋" },
+  { key: "samples", label: "Quản lý mẫu", icon: "🧪" },
+  { key: "statistics", label: "Thống kê", icon: "📊" },
+  { key: "history", label: "Lịch sử thao tác", icon: "🕒" },
+  { key: "profile", label: "Tài khoản", icon: "👤" }
+];
 
-  const [searchText, setSearchText] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [currentUser, setCurrentUser] = useState({
-    name: "",
-    role: "",
-    avatar: null
+// Dữ liệu mẫu cho đơn xét nghiệm
+const TEST_ORDERS = [
+  {
+    id: "TEST001",
+    customerName: "Nguyễn Văn A",
+    phone: "0123456789",
+    email: "nguyenvana@example.com",
+    testType: "Xét nghiệm ADN cha con",
+    registerDate: "2024-03-15",
+    status: "pending",
+    updateDate: "2024-03-15",
+    sampleStatus: "Đã nhận",
+    resultFile: null,
+    expertNotes: ""
+  },
+  // Thêm các đơn khác nếu cần
+];
+
+// Các tùy chọn trạng thái
+const statusOptions = [
+  { value: "pending", label: "Chờ xử lý" },
+  { value: "processing", label: "Đang xử lý" },
+  { value: "completed", label: "Hoàn thành" },
+  { value: "cancelled", label: "Đã hủy" }
+];
+
+// Các tùy chọn loại xét nghiệm
+const testTypeOptions = [
+  { value: "father_son", label: "Xét nghiệm ADN cha con" },
+  { value: "mother_son", label: "Xét nghiệm ADN mẹ con" },
+  { value: "siblings", label: "Xét nghiệm ADN anh chị em" },
+  { value: "grandparents", label: "Xét nghiệm ADN ông bà" }
+];
+
+export default function StaffPage() {
+  const [activeMenu, setActiveMenu] = useState("tests");
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [testType, setTestType] = useState("");
+  const [dateRange, setDateRange] = useState({ from: "", to: "" });
+  const [orders, setOrders] = useState(TEST_ORDERS);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+
+  // Lọc đơn xét nghiệm
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = search === "" || 
+      order.id.toLowerCase().includes(search.toLowerCase()) ||
+      order.customerName.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = status === "" || order.status === status;
+    const matchesTestType = testType === "" || order.testType === testType;
+    const matchesDateRange = (!dateRange.from || order.registerDate >= dateRange.from) &&
+      (!dateRange.to || order.registerDate <= dateRange.to);
+    return matchesSearch && matchesStatus && matchesTestType && matchesDateRange;
   });
 
-  // Data states
-  const [bookings, setBookings] = useState([]);
-  const [consultations, setConsultations] = useState([]);
-  const [samples, setSamples] = useState([]);
-  const [testResults, setTestResults] = useState([]);
-
-  // Dashboard data
-  const [stats, setStats] = useState({
-    totalBookings: 0,
-    pendingBookings: 0,
-    totalConsultations: 0,
-    pendingConsultations: 0,
-    totalSamples: 0,
-    pendingSamples: 0,
-    totalTestResults: 0,
-    pendingTestResults: 0
-  });
-
-  useEffect(() => {
-    fetchDashboardStats();
-    fetchData();
-  }, [activeTab]);
-
-  const fetchDashboardStats = async () => {
-    try {
-      const response = await axios.get('/api/staff/dashboard', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      setStats(response.data);
-    } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
-    }
+  // Xử lý cập nhật trạng thái
+  const handleUpdateStatus = (orderId, newStatus) => {
+    setOrders(orders.map(order => 
+      order.id === orderId 
+        ? { ...order, status: newStatus, updateDate: new Date().toISOString().split('T')[0] }
+        : order
+    ));
   };
 
-  const fetchData = async () => {
-    try {
-      switch (activeTab) {
-        case 'bookings':
-          const bookingsResponse = await axios.get('/api/staff/bookings', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          setBookings(bookingsResponse.data);
-          break;
-        case 'consultations':
-          const consultationsResponse = await axios.get('/api/staff/consultations', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          setConsultations(consultationsResponse.data);
-          break;
-        case 'samples':
-          const samplesResponse = await axios.get('/api/staff/samples', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          setSamples(samplesResponse.data);
-          break;
-        case 'test-results':
-          const testResultsResponse = await axios.get('/api/staff/test-results', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          setTestResults(testResultsResponse.data);
-          break;
-        default:
-          break;
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+  // Xử lý upload kết quả
+  const handleUploadResult = (orderId, file) => {
+    setOrders(orders.map(order => 
+      order.id === orderId 
+        ? { ...order, resultFile: file }
+        : order
+    ));
   };
 
-  const handleStatusUpdate = async (type, id, newStatus) => {
-    try {
-      switch (type) {
-        case 'booking':
-          await axios.patch(`/api/staff/bookings/${id}/status`, 
-            { status: newStatus },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-            }
-          );
-          break;
-        case 'sample':
-          await axios.patch(`/api/staff/samples/${id}/status`,
-            { status: newStatus },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-            }
-          );
-          break;
-        default:
-          break;
-      }
-      fetchData();
-      fetchDashboardStats();
-    } catch (error) {
-      console.error('Error updating status:', error);
-    }
+  // Xử lý thêm ghi chú
+  const handleAddNote = (orderId, note) => {
+    setOrders(orders.map(order => 
+      order.id === orderId 
+        ? { ...order, expertNotes: note }
+        : order
+    ));
   };
 
-  const handleCreateNew = () => {
-    setShowCreateModal(true);
-  };
+  // Render sidebar
+  const renderSidebar = () => (
+    <aside className="sidebar">
+      <div className="logo">
+        <img src="/logo.png" alt="Logo" className="logo" />
+      </div>
+      <nav>
+        <ul className="sidebar-menu">
+          {sidebarMenu.map((item) => (
+            <li key={item.key}>
+              <a
+                href="#"
+                className={`menu-item ${activeMenu === item.key ? "active" : ""}`}
+                onClick={() => setActiveMenu(item.key)}
+              >
+                <span className="icon">{item.icon}</span>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div className="footer">
+          © 2024 Bloodline. All rights reserved.
+        </div>
+      </nav>
+    </aside>
+  );
 
-  const handleCloseModal = () => {
-    setShowCreateModal(false);
-  };
-
-  const getStatusClass = (status) => {
-    const activeStatuses = [
-      "Đã xác nhận", "Đang thực hiện", "Hoàn thành", // Booking
-      "Đang làm việc", "Đang tư vấn", // Consultant
-      "Đã nhận mẫu", "Đang xử lý", "Đã xử lý xong", // Sample
-      "Đang xử lý", "Đã xử lý xong", "Đã xác nhận", "Đã gửi cho khách" // Test Result
-    ];
-    const inactiveStatuses = [
-      "Chờ xác nhận", "Đã hủy", // Booking
-      "Nghỉ phép", "Nghỉ việc", // Consultant
-      "Chờ nhận mẫu", "Đã hủy" // Sample (Test Result 'Đã hủy' covered if not in activeStatuses)
-    ];
-
-    if (activeStatuses.includes(status)) {
-      return "active";
-    } else if (inactiveStatuses.includes(status)) {
-      return "inactive";
-    } else {
-      // Default to inactive if not explicitly defined
-      return "inactive";
-    }
-  };
-
-  const renderToolbar = () => {
-    const placeholder = {
-      booking: "Tìm kiếm booking...",
-      consultant: "Tìm kiếm tư vấn viên...",
-      sample: "Tìm kiếm mẫu...",
-      result: "Tìm kiếm kết quả..."
-    }[activeTab];
-
-    return (
+  // Render bảng đơn xét nghiệm
+  const renderTestsTable = () => (
+    <>
+      {/* Bộ lọc */}
       <div className="toolbar">
         <Input
-          placeholder={placeholder}
-          className="flex-1"
-          value={searchText}
-          onChange={e => setSearchText(e.target.value)}
+          type="text"
+          placeholder="Tìm theo mã đơn, tên khách..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
         />
-        <Select value={statusFilter} onChange={setStatusFilter}>
-          <option value="">Tất cả trạng thái</option>
-          {getStatusOptions().map(s => 
-            <option key={s} value={s}>{s}</option>
-          )}
+        <Select
+          value={status}
+          onChange={e => setStatus(e.target.value)}
+        >
+          {statusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
         </Select>
-        <Button className="ml-auto primary-action-button" onClick={handleCreateNew}>
-          {getAddButtonText()}
+        <Select
+          value={testType}
+          onChange={e => setTestType(e.target.value)}
+        >
+          {testTypeOptions.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+        </Select>
+        <div className="date-range-group">
+          <Input
+            type="date"
+            value={dateRange.from}
+            onChange={e => setDateRange({...dateRange, from: e.target.value})}
+          />
+          <Input
+            type="date"
+            value={dateRange.to}
+            onChange={e => setDateRange({...dateRange, to: e.target.value})}
+          />
+        </div>
+        <Button className="ml-auto primary-action-button">
+          + Đơn mới
         </Button>
       </div>
-    );
-  };
 
-  const getStatusOptions = () => {
-    switch (activeTab) {
-      case "booking":
-        return ["Chờ xác nhận", "Đã xác nhận", "Đang thực hiện", "Hoàn thành", "Đã hủy"];
-      case "consultant":
-        return ["Đang làm việc", "Đang tư vấn", "Nghỉ phép", "Nghỉ việc"];
-      case "sample":
-        return ["Chờ nhận mẫu", "Đã nhận mẫu", "Đang xử lý", "Đã xử lý xong", "Đã hủy"];
-      case "result":
-        return ["Đang xử lý", "Đã xử lý xong", "Đã xác nhận", "Đã gửi cho khách", "Đã hủy"];
-      default:
-        return [];
-    }
-  };
-
-  const getAddButtonText = () => {
-    switch (activeTab) {
-      case "booking":
-        return "+ Booking mới";
-      case "consultant":
-        return "+ Tư vấn viên mới";
-      case "sample":
-        return "+ Mẫu mới";
-      case "result":
-        return "+ Kết quả mới";
-      default:
-        return "+ Thêm mới";
-    }
-  };
-
-  const renderTable = (data, type) => {
-    const headers = {
-      bookings: ['ID', 'User', 'Service', 'Date', 'Status', 'Total Price'],
-      consultations: ['ID', 'Booking', 'Consultant', 'Date', 'Mode', 'Status'],
-      samples: ['ID', 'Type', 'Booking', 'Participant', 'Received Date', 'Status'],
-      'test-results': ['ID', 'Booking', 'Date', 'Status', 'Content']
-    };
-
-    const headerKeyMap = {
-      bookings: ['bookingID', 'user', 'service', 'bookingDate', 'status', 'totalPrice'],
-      consultations: ['consultationID', 'booking', 'consultant', 'consultationDate', 'consultationMode', 'status'],
-      samples: ['sampleID', 'sampleType', 'booking', 'participant', 'receivedDate', 'status'],
-      'test-results': ['testResultID', 'booking', 'resultDate', 'resultStatus', 'resultContent']
-    };
-
-    return (
+      {/* Bảng đơn xét nghiệm */}
       <div className="overflow-x-auto">
         <Card>
-          <table>
+          <table className="data-table">
             <thead>
-              <tr>
-                {headers[type].map((header, index) => (
-                  <th key={index}>{header}</th>
-                ))}
-                {type === 'bookings' || type === 'samples' ? <th>Actions</th> : null}
+              <tr className="table-header-row">
+                <th className="table-header">Mã đơn</th>
+                <th className="table-header">Tên khách</th>
+                <th className="table-header">Loại xét nghiệm</th>
+                <th className="table-header">Ngày ĐK</th>
+                <th className="table-header">Trạng thái</th>
+                <th className="table-header">Ngày cập nhật</th>
+                <th className="table-header">Thao tác</th>
               </tr>
             </thead>
             <tbody>
-              {data.map((item) => (
-                <tr key={item[headerKeyMap[type][0]]}>
-                  {headerKeyMap[type].map((key, index) => (
-                    <td key={index}>
-                      {key.includes('.') ? 
-                        item[key.split('.')[0]]?.[key.split('.')[1]] : 
-                        item[key]}
-                    </td>
-                  ))}
-                  {(type === 'bookings' || type === 'samples') && (
-                    <td>
-                      <select
-                        value={item.status}
-                        onChange={(e) => handleStatusUpdate(type, item[headerKeyMap[type][0]], e.target.value)}
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </td>
-                  )}
+              {filteredOrders.map((order) => (
+                <tr key={order.id} className="table-row">
+                  <td className="table-cell">{order.id}</td>
+                  <td className="table-cell employee-name-cell">
+                    <div className="avatar" style={{ backgroundColor: '#0A3D62' }}>
+                      {order.customerName.charAt(0).toUpperCase()}
+                    </div>
+                    <span>{order.customerName}</span>
+                    <span className="customer-contact">{order.phone}</span>
+                    <span className="customer-contact">{order.email}</span>
+                  </td>
+                  <td className="table-cell">{order.testType}</td>
+                  <td className="table-cell">{order.registerDate}</td>
+                  <td className="table-cell">
+                    <span className={`status-badge status-badge-${order.status}`}>
+                      {statusOptions.find(s => s.value === order.status)?.label}
+                    </span>
+                  </td>
+                  <td className="table-cell">{order.updateDate}</td>
+                  <td className="table-cell manager-actions-cell">
+                    <Button 
+                      variant="outline" size="sm" className="outline-action-button"
+                      onClick={() => {
+                        setSelectedOrder(order);
+                        setShowDetailModal(true);
+                      }}
+                    >
+                      Chi tiết
+                    </Button>
+                    <Button 
+                      variant="outline" size="sm" className="outline-action-button"
+                      onClick={() => handleUpdateStatus(order.id, "completed")}
+                    >
+                      Cập nhật
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </Card>
       </div>
-    );
-  };
 
-  const renderDashboard = () => (
-    <div className="dashboard-grid">
-      <div className="dashboard-card">
-        <h3>Bookings</h3>
-        <p>Total: {stats.totalBookings}</p>
-        <p>Pending: {stats.pendingBookings}</p>
-      </div>
-      <div className="dashboard-card">
-        <h3>Consultations</h3>
-        <p>Total: {stats.totalConsultations}</p>
-        <p>Pending: {stats.pendingConsultations}</p>
-      </div>
-      <div className="dashboard-card">
-        <h3>Samples</h3>
-        <p>Total: {stats.totalSamples}</p>
-        <p>Pending: {stats.pendingSamples}</p>
-      </div>
-      <div className="dashboard-card">
-        <h3>Test Results</h3>
-        <p>Total: {stats.totalTestResults}</p>
-        <p>Pending: {stats.pendingTestResults}</p>
-      </div>
-    </div>
+      {/* Modal chi tiết đơn */}
+      {showDetailModal && selectedOrder && (
+        <div className="modal-overlay">
+          <Card className="modal-content">
+            <button
+              className="modal-close-button"
+              onClick={() => setShowDetailModal(false)}
+            >×</button>
+            
+            <h2 className="modal-title">Chi tiết đơn xét nghiệm #{selectedOrder.id}</h2>
+            
+            {/* Thông tin khách hàng */}
+            <div className="modal-section">
+              <h3 className="section-title">Thông tin khách hàng</h3>
+              <div className="grid-cols-2-layout">
+                <div>
+                  <p><span className="field-label">Họ tên:</span> {selectedOrder.customerName}</p>
+                  <p><span className="field-label">SĐT:</span> {selectedOrder.phone}</p>
+                  <p><span className="field-label">Email:</span> {selectedOrder.email}</p>
+                </div>
+                <div>
+                  <p><span className="field-label">Loại xét nghiệm:</span> {selectedOrder.testType}</p>
+                  <p><span className="field-label">Ngày đăng ký:</span> {selectedOrder.registerDate}</p>
+                  <p><span className="field-label">Trạng thái:</span> {statusOptions.find(s => s.value === selectedOrder.status)?.label}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Thông tin mẫu và kết quả */}
+            <div className="modal-section">
+              <h3 className="section-title">Thông tin mẫu và kết quả</h3>
+              <div className="grid-cols-2-layout">
+                <div>
+                  <p><span className="field-label">Tình trạng mẫu:</span> {selectedOrder.sampleStatus}</p>
+                  <p><span className="field-label">File kết quả:</span> 
+                    {selectedOrder.resultFile ? 
+                      <a href={URL.createObjectURL(selectedOrder.resultFile)} target="_blank" rel="noopener noreferrer">Xem file</a> 
+                      : "Chưa có"
+                    }
+                  </p>
+                  <Input 
+                    type="file" 
+                    className="file-input" 
+                    onChange={e => handleUploadResult(selectedOrder.id, e.target.files[0])}
+                  />
+                </div>
+                <div>
+                  <p><span className="field-label">Ghi chú chuyên gia:</span></p>
+                  <Input 
+                    as="textarea" 
+                    className="text-area-input" 
+                    value={selectedOrder.expertNotes}
+                    onChange={e => handleAddNote(selectedOrder.id, e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
+                Đóng
+              </Button>
+              <Button onClick={() => handleUpdateStatus(selectedOrder.id, "completed")}>
+                Lưu thay đổi
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
+    </>
   );
-
-  const getPageTitle = () => {
-    switch (activeTab) {
-      case "dashboard":
-        return "Dashboard";
-      case "bookings":
-        return "Quản lý Booking";
-      case "consultations":
-        return "Quản lý Tư vấn";
-      case "samples":
-        return "Quản lý Mẫu xét nghiệm";
-      case "test-results":
-        return "Quản lý Kết quả xét nghiệm";
-      default:
-        return "Staff Page";
-    }
-  };
 
   return (
     <div className="layout-container">
-      <aside className="sidebar">
-        <img src="/logo.png" alt="Logo" className="logo" />
-        {[
-          { key: "dashboard", label: "🏠 Dashboard" },
-          { key: "bookings", label: "📅 Quản lý Booking" },
-          { key: "consultant", label: "👥 Quản lý Tư vấn viên" },
-          { key: "samples", label: "🧪 Quản lý Mẫu xét nghiệm" },
-          { key: "test-results", label: "📊 Quản lý Kết quả xét nghiệm" }
-        ].map(item => (
-          <div
-            key={item.key}
-            className={`menu-item ${activeTab === item.key ? "active" : ""}`}
-            onClick={() => setActiveTab(item.key)}
-          >
-            {item.label}
-          </div>
-        ))}
-        <div className="footer">© 2025 Company</div>
-      </aside>
+      {renderSidebar()}
       <main className="main-content">
-        <div className="content-wrapper">
-          <div className="page-header">
-            <h1>{getPageTitle()}</h1>
-            <div className="header-user-profile-area">
-              <span className="header-user-info">{currentUser.name || currentUser.email}</span>
-              <div className="header-profile-icon-placeholder">
-                {currentUser.avatar ? (
-                  <img src={currentUser.avatar} alt={currentUser.name} />
-                ) : (
-                  currentUser.name ? currentUser.name.split(" ").map(n => n[0]).join("").toUpperCase() : ''
-                )}
-              </div>
+        <div className="page-header">
+          <h1>Quản lý Xét nghiệm DNA</h1>
+          {/* User info in header */}
+          <div className="header-user-profile-area">
+            <div className="header-profile-icon-placeholder">
+              CN
+            </div>
+            <div className="header-user-info">
+              <div>Chào, Staff!</div>
+              <div className="user-id">ID: ST001</div>
             </div>
           </div>
-          {activeTab === "dashboard" && renderDashboard()}
-          {activeTab !== "dashboard" && (
-            <>
-              {renderToolbar()}
-              {renderTable(bookings, 'bookings')}
-            </>
-          )}
+        </div>
+        <div className="content-wrapper">
+          {activeMenu === "tests" && renderTestsTable()}
+          {activeMenu === "samples" && <div>Nội dung quản lý mẫu...</div>}
+          {activeMenu === "statistics" && <div>Nội dung thống kê...</div>}
+          {activeMenu === "history" && <div>Nội dung lịch sử thao tác...</div>}
+          {activeMenu === "profile" && <div>Nội dung tài khoản...</div>}
         </div>
       </main>
-      {showCreateModal && (
-        <CreateModal
-          type={activeTab}
-          onClose={handleCloseModal}
-          onSuccess={() => { fetchData(); fetchDashboardStats(); handleCloseModal(); }}
-        />
-      )}
     </div>
   );
-};
-
-export default StaffPage; 
+}
