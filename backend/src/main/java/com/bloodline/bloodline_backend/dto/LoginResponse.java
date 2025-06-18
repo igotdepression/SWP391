@@ -1,5 +1,8 @@
 package com.bloodline.bloodline_backend.dto;
 
+import lombok.Data;
+
+@Data
 public class LoginResponse {
     private String token;
     private String email;
@@ -10,6 +13,10 @@ public class LoginResponse {
     public LoginResponse() {
     }
     
+    public LoginResponse(String token) {
+        this.token = token;
+    }
+
     public LoginResponse(String token, String email, String fullName, String role) {
         this.token = token;
         this.email = email;

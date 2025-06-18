@@ -40,12 +40,12 @@ public class AuthControllerTest {
     @BeforeEach
     void setup() {
         // Ensure the MANAGER role exists
-        Role managerRole = roleRepository.findByRoleName(MANAGER_ROLE_NAME);
-        if (managerRole == null) {
-            managerRole = new Role();
-            managerRole.setRoleName(MANAGER_ROLE_NAME);
-            roleRepository.save(managerRole);
-        }
+        Role managerRole = roleRepository.findByRoleName(MANAGER_ROLE_NAME)
+                .orElseGet(() -> {
+                    Role newRole = new Role();
+                    newRole.setRoleName(MANAGER_ROLE_NAME);
+                    return roleRepository.save(newRole);
+                });
 
         // Create an account for the manager user
         Account managerAccount = new Account();
@@ -57,7 +57,6 @@ public class AuthControllerTest {
         User managerUser = new User();
         managerUser.setFullName("Manager Test");
         managerUser.setEmail(MANAGER_EMAIL);
-        managerUser.setAccount(managerAccount);
         managerUser.setRole(managerRole);
         managerUser.setStatus("ACTIVE");
         userRepository.save(managerUser);

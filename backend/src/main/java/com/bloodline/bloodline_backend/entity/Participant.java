@@ -2,42 +2,49 @@ package com.bloodline.bloodline_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import java.time.LocalDate;
+import java.util.List;
 
+@Data
 @Entity
 @Table(name = "Participant")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "participantID")
     private Integer participantID;
 
-    @Column(name = "fullName", nullable = false, length = 100)
+    @ManyToOne
+    @JoinColumn(name = "bookingID", nullable = false)
+    private Booking booking;
+
+    @Column(name = "fullName", nullable = false)
     private String fullName;
 
     @Column(name = "dateOfBirth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name = "gender", nullable = false, length = 10)
+    @Column(name = "gender")
     private String gender;
 
-    @Column(name = "relationshipToCustomer", length = 100)
+    @Column(name = "relationshipToCustomer")
     private String relationshipToCustomer;
 
-    @Column(name = "identityNumber", length = 20)
+    @Column(name = "identityNumber")
     private String identityNumber;
 
-    @Column(name = "phoneNumber", length = 15)
-    private String phoneNumber;
-
-    @Column(name = "address", length = 200)
+    @Column(name = "address")
     private String address;
 
-    @Column(name = "note", columnDefinition = "TEXT")
+    @Column(name = "collectionMethod", nullable = false)
+    private String collectionMethod;
+
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
+
+    @Column(name = "note")
     private String note;
+
+    @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
+    private List<Sample> samples;
 } 

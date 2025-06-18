@@ -8,7 +8,7 @@ import PersonalInfoPage from './pages/PersonalInfoPage';
 import StaffPage from './pages/StaffPage';
 import ManagerPage from './pages/ManagerPage';
 import Admin from './pages/Admin';
-import BookingCreate from './pages/BookingCreate';
+// import BookingCreate from './pages/BookingCreate'; // Removed as booking functionality is removed
 import About from './pages/About';
 
 
@@ -56,7 +56,7 @@ function App() {
           <Route path="/staff" element={<ProtectedRoute allowedRoles={['STAFF', 'MANAGER', 'ADMIN']}><StaffPage /></ProtectedRoute>} />
           <Route path="/manager" element={<ProtectedRoute allowedRoles={['MANAGER', 'ADMIN']}><ManagerPage /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN']}><Admin /></ProtectedRoute>} />
-          <Route path="/booking/create" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><BookingCreate /></ProtectedRoute>} />
+          {/* <Route path="/booking/create" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><BookingCreate /></ProtectedRoute>} /> Removed as booking functionality is removed */}
           <Route path="/about" element={<About />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />

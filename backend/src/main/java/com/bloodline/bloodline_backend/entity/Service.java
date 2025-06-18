@@ -2,35 +2,28 @@ package com.bloodline.bloodline_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
 
+@Data
 @Entity
 @Table(name = "Service")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Service {
     @Id
     @Column(name = "serviceID")
     private Integer serviceID;
 
-    @ManyToOne
-    @JoinColumn(name = "surchargeID", referencedColumnName = "surchargeID")
-    private Surcharge surcharge;
-
-    @Column(name = "serviceName", nullable = false, length = 100)
+    @Column(name = "serviceName", nullable = false)
     private String serviceName;
 
-    @Column(name = "typeOfService", nullable = false, length = 100)
+    @Column(name = "typeOfService", nullable = false)
     private String typeOfService;
 
-    @Column(name = "typeOfCollection", length = 100)
-    private String typeOfCollection;
+    @Column(name = "typeSample", nullable = false)
+    private String typeSample;
 
-    @Column(name = "price")
-    private Double price;
+    @Column(name = "priceSur", nullable = false)
+    private BigDecimal priceSur;
 
-    @Column(name = "3rdSamplePrice")
-    private Double thirdSamplePrice;
+    @Column(name = "status", nullable = false)
+    private String status;
 } 
