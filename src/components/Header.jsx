@@ -1,9 +1,10 @@
+// Header.jsx
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '../hooks/useNavigation';
 import { getAvatarColor, getInitials } from '../utils/avatarUtils';
-import './Header.css';
+import './Header.css'; // Đảm bảo import CSS
 
 export default function Header() {
     const { user, logout } = useAuth();
@@ -12,10 +13,10 @@ export default function Header() {
     const [showDropdown, setShowDropdown] = useState(false);
 
     // Các hàm điều hướng
-    const goToAbout = () => navigate('/about');
-    const goToServices = () => navigate('/services');
-    const goToInfo = () => navigate('/info');
-    const goToBookingCreate = () => navigate('/booking-create');
+    // const goToAbout = () => navigate('/about'); // Không cần thiết nếu dùng NavLink
+    // const goToServices = () => navigate('/services'); // Không cần thiết nếu dùng NavLink
+    // const goToInfo = () => navigate('/info'); // Không cần thiết nếu dùng NavLink
+    // const goToBookingCreate = () => navigate('/booking-create'); // Không cần thiết nếu dùng NavLink
 
     const handleProfileClick = () => {
         setShowDropdown(!showDropdown);
@@ -27,12 +28,14 @@ export default function Header() {
     };
 
     return (
-        <header className="homepage-header">
-            <div className="header-left">
-                <div className="header-logo-container">
-                    <img src="/logo.png" alt="Bloodline Logo" className="header-logo" />
+        <header className="adn-header"> {/* Sử dụng class mới */}
+            <div className="adn-header-content"> {/* Thêm div bọc nội dung */}
+                <div className="adn-header-logo"> {/* Sử dụng class mới */}
+                    <Link to="/home"> {/* Thêm Link cho logo */}
+                        <img src="/logo.png" alt="Bloodline Logo" className="header-logo-img" /> {/* Thêm class img */}
+                    </Link>
                 </div>
-                <nav className="header-nav">
+                <nav className="adn-header-nav"> {/* Sử dụng class mới */}
                     <ul>
                         <li>
                             <NavLink
@@ -71,39 +74,42 @@ export default function Header() {
                                 to="/booking-create"
                                 className={({ isActive }) => isActive ? "active" : ""}
                             >
-                                <span className="nav-icon"></span> ĐĂNG KÍ DỊCH VỤ
+                                <span className="nav-icon"></span> ĐẶT LỊCH HẸN
                             </NavLink>
                         </li>
                     </ul>
                 </nav>
-            </div>
-            <div className="header-right">
-                <input type="text" placeholder="Search" className="header-search-input" />
-                {user ? (
-                    user.role === 'GUEST' ? (
-                        <div className="header-login-register-buttons">
-                            <button className="header-button" onClick={goToLogin}>Đăng nhập</button>
-                            <button className="header-button" onClick={goToSignUp}>Đăng kí</button>
-                        </div>
-                    ) : (
-                        <div className="header-user-profile-area" onClick={handleProfileClick}>
-                            <span className="header-user-info">Chào, {user.fullName || user.email}</span>
-                            <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName) }}>
-                                {getInitials(user.fullName)}
+                <div className="adn-header-right"> {/* Thêm div bọc phần bên phải */}
+                    <div className="adn-header-search"> {/* Sử dụng class mới */}
+                        <input type="text" placeholder="Tìm kiếm..." className="header-search-input" />
+                    </div>
+
+                    {user ? (
+                        user.role === 'GUEST' ? (
+                            <div className="header-login-register-buttons">
+                                <button className="header-button" onClick={goToLogin}>Đăng nhập</button>
+                                <button className="header-button" onClick={goToSignUp}>Đăng kí</button>
                             </div>
-                            {showDropdown && (
-                                <div className="profile-dropdown">
-                                    <div className="dropdown-item" onClick={goToProfile}>Thông tin cá nhân</div>
-                                    <div className="dropdown-item" onClick={goToHistory}>Lịch sử xét nghiệm</div>
-                                    <div className="dropdown-item" onClick={handleLogout}>Đăng xuất</div>
+                        ) : (
+                            <div className="header-user-profile-area" onClick={handleProfileClick}>
+                                <span className="adn-header-user-name">Chào, {user.fullName || user.email}</span> {/* Sử dụng class mới */}
+                                <div className="adn-header-user-avatar" style={{ backgroundColor: getAvatarColor(user.fullName) }}> {/* Sử dụng class mới */}
+                                    {getInitials(user.fullName)}
                                 </div>
-                            )}
-                        </div>
-                    )
-                ) : (
-                    <button className="header-login-button" onClick={goToLogin}>Login</button>
-                )}
+                                {showDropdown && (
+                                    <div className="profile-dropdown">
+                                        <div className="dropdown-item" onClick={goToProfile}>Thông tin cá nhân</div>
+                                        <div className="dropdown-item" onClick={goToHistory}>Lịch sử xét nghiệm</div>
+                                        <div className="dropdown-item" onClick={handleLogout}>Đăng xuất</div>
+                                    </div>
+                                )}
+                            </div>
+                        )
+                    ) : (
+                        <button className="adn-header-login-btn" onClick={goToLogin}>Đăng nhập</button>
+                    )}
+                </div>
             </div>
         </header>
     );
-} 
+}

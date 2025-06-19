@@ -1,6 +1,8 @@
+/* Header.css */
+
 .adn-header {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #1A4064; /* Màu nền xanh đậm từ hình ảnh */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Shadow nổi hơn */
     padding: 1rem 2rem;
     position: sticky;
     top: 0;
@@ -11,75 +13,87 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 1200px; /* Đảm bảo chiều rộng tối đa */
+    margin: 0 auto; /* Căn giữa header */
 }
 
 .adn-header-logo {
     display: flex;
     align-items: center;
+    /* Nếu bạn muốn một vùng nền trắng bao quanh logo */
+    /* background-color: white; */
+    /* padding: 5px 10px; */
+    /* border-radius: 5px; */
 }
 
-.adn-header-logo img {
-    height: 40px;
+.header-logo-img { /* Đã đổi từ .adn-header-logo img */
+    height: 40px; /* Kích thước logo */
+    /* Áp dụng filter để làm trắng logo nếu logo gốc không phải màu trắng */
+    filter: brightness(0) invert(1); /* Biến logo thành màu trắng */
 }
 
-.adn-header-nav {
+.adn-header-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
-    gap: 2rem;
-    align-items: center;
+    gap: 2.5rem; /* Tăng khoảng cách giữa các mục menu */
 }
 
 .adn-header-nav a {
-    color: #333;
+    color: #ffffff; /* Chữ trắng để nổi bật trên nền xanh đậm */
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    padding: 0.5rem 0;
 }
 
 .adn-header-nav a:hover {
-    color: #e74c3c;
+    color: #f0f0f0; /* Sáng hơn một chút khi hover */
+    border-bottom: 2px solid #f0f0f0; /* Gạch chân nhẹ khi hover */
 }
 
 .adn-header-nav a.active {
-    background-color: #fff;
-    color: #004080;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
+    background-color: transparent; /* Loại bỏ background nếu không muốn */
+    color: #FFD700; /* Màu vàng hoặc màu nổi bật khác cho active link */
     font-weight: bold;
-    text-decoration: none;
-    border-bottom: none;
-    padding-bottom: initial;
+    border-bottom: 2px solid #FFD700; /* Gạch chân đậm cho active link */
+    padding-bottom: calc(0.5rem - 2px);
+}
+
+.adn-header-right { /* Wrapper cho search và user/login */
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 .adn-header-search {
     display: flex;
     align-items: center;
-    background: #f5f5f5;
+    background: rgba(255, 255, 255, 0.15); /* Nền tìm kiếm hơi trong suốt */
     border-radius: 20px;
     padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Viền nhẹ */
 }
 
 .adn-header-search input {
-    border: 1px solid #ddd;
-    background: #f5f5f5;
+    border: none; /* Loại bỏ border */
+    background: transparent; /* Background trong suốt */
     outline: none;
-    width: 250px;
-    padding: 10px 15px;
-    border-radius: 20px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    width: 200px; /* Điều chỉnh chiều rộng input */
+    padding: 0; /* Đặt lại padding */
+    font-size: 0.95rem;
+    color: #ffffff; /* Chữ trắng trong ô tìm kiếm */
+    transition: width 0.3s ease;
+}
+
+.adn-header-search input::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Màu placeholder nhạt hơn */
 }
 
 .adn-header-search input:focus {
-    border-color: #2196f3;
-    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
-}
-
-.adn-header-user {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    width: 250px; /* Mở rộng khi focus */
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4); /* Shadow nhẹ khi focus */
 }
 
 .adn-header-user-avatar {
@@ -89,59 +103,76 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: white; /* Đảm bảo màu chữ avatar nổi bật */
     font-weight: bold;
     cursor: pointer;
+    font-size: 1.1rem;
+    border: 2px solid #FFD700; /* Viền vàng cho avatar */
 }
 
 .adn-header-user-name {
     font-weight: 500;
+    color: #ffffff; /* Chữ trắng cho tên người dùng */
 }
 
 .adn-header-login-btn {
-    background: #e74c3c;
+    background: #e74c3c; /* Giữ màu đỏ cam cho login */
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+    padding: 0.6rem 1.2rem; /* Tăng padding */
+    border-radius: 25px; /* Bo tròn hơn */
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 600; /* Đậm hơn */
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.2); /* Thêm shadow */
 }
 
 .adn-header-login-btn:hover {
     background: #c0392b;
+    transform: translateY(-2px); /* Nhấn nhá khi hover */
+    box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
 }
 
 .header-user-profile-area {
     position: relative;
     cursor: pointer;
+    display: flex; /* Đảm bảo căn chỉnh avatar và tên */
+    align-items: center;
+    gap: 10px;
 }
 
 .profile-dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 10px); /* Cách header một chút */
     right: 0;
     background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Shadow nổi hơn */
+    border-radius: 8px; /* Bo tròn hơn */
     min-width: 180px;
     z-index: 1001;
     overflow: hidden;
-    margin-top: 10px;
+    animation: fadeIn 0.2s ease-out; /* Thêm hiệu ứng fade in */
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
 .dropdown-item {
-    padding: 10px 15px;
+    padding: 12px 15px; /* Tăng padding */
     color: #333;
     text-decoration: none;
     display: block;
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 0.95rem;
 }
 
 .dropdown-item:hover {
-    background-color: #e0e0e0;
+    background-color: #007bff; /* Màu xanh khi hover */
     color: #ffffff;
 }
 
@@ -156,20 +187,63 @@
 }
 
 .header-button {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #FFD700; /* Màu vàng cho nút Đăng kí */
+    color: #1A4064; /* Chữ xanh đậm trên nền vàng */
     border: none;
     padding: 8px 15px;
-    border-radius: 5px;
+    border-radius: 20px; /* Bo tròn hơn */
     cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 600; /* Đậm hơn */
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-button:hover {
-    background-color: #0056b3;
+    background-color: #e0b800; /* Vàng đậm hơn khi hover */
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-} 
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .adn-header-nav {
+        gap: 1rem;
+    }
+    .adn-header-search input {
+        width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .adn-header-content {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    .adn-header-nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .adn-header-right {
+        width: 100%;
+        justify-content: center;
+    }
+    .adn-header-search input {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .adn-header {
+        padding: 0.8rem 1rem;
+    }
+    .adn-header-nav a {
+        font-size: 0.85rem;
+    }
+    .header-button, .adn-header-login-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}

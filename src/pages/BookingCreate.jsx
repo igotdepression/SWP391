@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import './BookingCreate.css';
 
 export default function BookingCreate() {
@@ -134,20 +135,6 @@ export default function BookingCreate() {
         return currentYear - parseInt(dobYear);
     };
 
-    // === Hàm tạo màu avatar ngẫu nhiên ===
-    const getRandomAvatarColors = useCallback(() => {
-        const rBg = Math.floor(Math.random() * 56) + 200;
-        const gBg = Math.floor(Math.random() * 56) + 200;
-        const bBg = Math.floor(Math.random() * 56) + 200;
-        const bgColor = `rgb(${rBg}, ${gBg}, ${bBg})`;
-
-        const rText = Math.max(0, rBg - 100);
-        const gText = Math.max(0, gBg - 100);
-        const bText = Math.max(0, bBg - 100);
-        const textColor = `rgb(${rText}, ${gText}, ${bText})`;
-        return { backgroundColor: bgColor, color: textColor };
-    }, []);
-
     // === Hàm xử lý thay đổi thông tin người tham gia ===
     const handleParticipantChange = (index, field, value) => {
         const updatedParticipants = [...participants];
@@ -252,37 +239,7 @@ export default function BookingCreate() {
     if (currentStep === 'confirmation') {
         return (
             <div className="homepage-root">
-                <header className="homepage-header">
-                    <div className="header-left">
-                        <nav className="header-nav">
-                            <ul>
-                                <li><button className="nav-link" onClick={() => navigate('/about')}>GIỚI THIỆU</button></li>
-                                <li><button className="nav-link" onClick={() => navigate('/services')}>DỊCH VỤ</button></li>
-                                <li><button className="nav-link" onClick={() => navigate('/info')}>THÔNG TIN</button></li>
-                                <li><button className="nav-link nav-link-highlight" onClick={() => navigate('/booking-create')}>ĐẶT LỊCH HẸN</button></li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div className="header-right">
-                        <div className="header-search-box">
-                            <input type="text" placeholder="Tìm kiếm..." className="header-search-input" />
-                            <button className="header-search-btn">🔍</button>
-                        </div>
-                        {user && (
-                            <div className="header-user-profile" onClick={() => navigate('/personal-info')}>
-                                <span className="header-user-info">{user.fullName || user.email}</span>
-                                <div className="header-profile-icon" style={getRandomAvatarColors()}>
-                                    {user.avatar ? (
-                                        <img src={user.avatar} alt={user.fullName} />
-                                    ) : (
-                                        user.fullName ? user.fullName.split(" ").map(n => n[0]).join("").toUpperCase() : user.email?.charAt(0).toUpperCase() || ''
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </header>
-
+                <Header /> {/* Sử dụng Header component */}
                 <main className="booking-create-content">
                     <section className="confirmation-section">
                         <h2>Xác nhận thông tin đặt lịch</h2>
@@ -358,39 +315,7 @@ export default function BookingCreate() {
     // === Render Booking Form (Default) ===
     return (
         <div className="homepage-root">
-            <header className="homepage-header">
-                <div className="header-left">
-                    <nav className="header-nav">
-                        <ul>
-                            <li><button className="nav-link" onClick={() => navigate('/about')}>GIỚI THIỆU</button></li>
-                            <li><button className="nav-link" onClick={() => navigate('/services')}>DỊCH VỤ</button></li>
-                            <li><button className="nav-link" onClick={() => navigate('/info')}>THÔNG TIN</button></li>
-                            <li><button className="nav-link nav-link-highlight" onClick={() => navigate('/booking-create')}>ĐẶT LỊCH HẸN</button></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div className="header-right">
-                    <div className="header-search-box">
-                        <input type="text" placeholder="Tìm kiếm..." className="header-search-input" />
-                        <button className="header-search-btn">🔍</button>
-                    </div>
-                    {user ? (
-                        <div className="header-user-profile" onClick={() => navigate('/personal-info')}>
-                            <span className="header-user-info">{user.fullName || user.email}</span>
-                            <div className="header-profile-icon" style={getRandomAvatarColors()}>
-                                {user.avatar ? (
-                                    <img src={user.avatar} alt={user.fullName} />
-                                ) : (
-                                    user.fullName ? user.fullName.split(" ").map(n => n[0]).join("").toUpperCase() : user.email?.charAt(0).toUpperCase() || ''
-                                )}
-                            </div>
-                        </div>
-                    ) : (
-                        <button className="header-login-button" onClick={() => navigate('/login')}>Đăng nhập</button>
-                    )}
-                </div>
-            </header>
-
+            <Header /> {/* Sử dụng Header component */}
             <main className="booking-create-content">
                 <form className="booking-form-section" onSubmit={handleSubmitBooking}>
                     <h2>Tạo Lịch Hẹn Mới</h2>
