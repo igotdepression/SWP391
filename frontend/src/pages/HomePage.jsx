@@ -88,7 +88,7 @@ function HomePage() {
         <div className="adn-main">
           <div className="adn-banner">
             <div className="adn-banner-img">
-              <img src="https://login.medlatec.vn//ImagePath/images/20200306/20200306_xet-nghiem-adn-het-bao-nhieu-tien-01.jpg" alt="ADN Test Banner" />
+              <img src="https://genplus.vn/wp-content/uploads/2022/10/xet-nghiem-adn-bac-giang-3.jpg" alt="ADN Test Banner" />
             </div>
             <div className="adn-banner-content adn-banner-center">
               <div className="adn-banner-intro">

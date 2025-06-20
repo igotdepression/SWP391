@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // Thêm useLocation để nhận dữ liệu khi chỉnh sửa
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './BookingCreate.css';
@@ -8,23 +8,23 @@ import './BookingCreate.css';
 export default function BookingCreate() {
     const { user, loading: authLoading } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // === State cho Form đặt lịch ===
-    const [serviceType, setServiceType] = useState(''); // Loại dịch vụ (vd: Cha con)
-    const [numSamples, setNumSamples] = useState(2); // Số mẫu cần xét nghiệm, mặc định 2
-    const [testType, setTestType] = useState(''); // Loại xét nghiệm (Dân sự / Hành chính)
-    const [appointmentDate, setAppointmentDate] = useState('');
-    const [appointmentTime, setAppointmentTime] = useState('');
-    const [notes, setNotes] = useState('');
+    const initialBookingData = location.state?.initialBookingData;
+
+    // Khởi tạo các state của form từ initialBookingData nếu có
+    const [serviceType, setServiceType] = useState(initialBookingData?.serviceType || '');
+    const [numSamples, setNumSamples] = useState(initialBookingData?.numSamples || 2);
+    const [testType, setTestType] = useState(initialBookingData?.testType || '');
+    const [appointmentDate, setAppointmentDate] = useState(initialBookingData?.appointmentDate || '');
+    const [notes, setNotes] = useState(initialBookingData?.notes || '');
     const today = new Date().toISOString().split('T')[0];
 
-    // State cho thông tin người tham gia
-    const [participants, setParticipants] = useState([]);
+    const [participants, setParticipants] = useState(initialBookingData?.participants || []);
 
-    // State để quản lý bước của form (form điền / trang xác nhận)
-    const [currentStep, setCurrentStep] = useState('form'); // 'form' hoặc 'confirmation'
+    // Loại bỏ currentStep nếu bạn đã chuyển sang BookingDetails riêng
+    // const [currentStep, setCurrentStep] = useState('form');
 
-    // Danh sách các loại dịch vụ (tạm thời hardcode, bạn có thể lấy từ API nếu cần)
     const serviceOptions = [
         'Xét nghiệm ADN Cha con',
         'Xét nghiệm ADN Mẹ con',
@@ -34,14 +34,12 @@ export default function BookingCreate() {
         'Xét nghiệm ADN Thai nhi',
     ];
 
-    // Danh sách phương thức thu mẫu (có thể lấy từ API nếu cần)
     const collectionMethodOptions = [
         'Tự thu mẫu',
         'Thu mẫu tại nhà/văn phòng',
         'Thu mẫu tại trung tâm',
     ];
 
-    // Hàm để lấy các tùy chọn quan hệ dựa trên loại dịch vụ
     const getRelationshipOptions = useCallback(() => {
         switch (serviceType) {
             case 'Xét nghiệm ADN Cha con':
@@ -55,21 +53,23 @@ export default function BookingCreate() {
             case 'Xét nghiệm ADN Anh em ruột':
                 return ['Anh/Em ruột 1', 'Anh/Em ruột 2', 'Mẹ (tùy chọn)'];
             case 'Xét nghiệm ADN Thai nhi':
-                return ['Thai nhi (Mẫu từ mẹ)', 'Cha nghi vấn']; // Thai nhi cần mẫu từ mẹ để phân tích
+                return ['Thai nhi (Mẫu từ mẹ)', 'Cha nghi vấn'];
             default:
                 return ['Quan hệ nghi vấn'];
         }
     }, [serviceType]);
 
-    // === Redirect nếu chưa đăng nhập ===
     useEffect(() => {
         if (!authLoading && !user) {
             navigate('/login');
         }
     }, [user, authLoading, navigate]);
 
-    // === useEffect để tự động tạo/cập nhật số lượng participants và collectionMethod mặc định ===
     useEffect(() => {
+        if (initialBookingData && participants.length > 0) {
+            return;
+        }
+
         setParticipants(prevParticipants => {
             const newParticipants = Array.from({ length: numSamples }, (_, i) => {
                 const existingParticipant = prevParticipants[i];
@@ -80,35 +80,50 @@ export default function BookingCreate() {
                 }
 
                 const relationshipOptions = getRelationshipOptions();
-                const defaultRelationship = relationshipOptions[i] || 'Quan hệ nghi vấn';
+                let defaultRelationship = 'Quan hệ nghi vấn';
 
-                // Logic để đặt giới tính mặc định dựa trên quan hệ
+                // Logic cho loại dịch vụ Thai nhi
+                if (serviceType === 'Xét nghiệm ADN Thai nhi') {
+                    if (i === 0) {
+                        defaultRelationship = 'Thai nhi (Mẫu từ mẹ)';
+                    } else if (i === 1) {
+                        defaultRelationship = 'Cha nghi vấn';
+                    }
+                } else {
+                    defaultRelationship = relationshipOptions[i] || 'Quan hệ nghi vấn';
+                }
+
+                // === SỬA ĐỔI ĐẦU TIÊN: Logic đặt giới tính mặc định ===
                 let defaultGender = '';
                 if (defaultRelationship === 'Cha' || defaultRelationship === 'Ông' || defaultRelationship === 'Cha nghi vấn') {
                     defaultGender = 'Nam';
-                } else if (defaultRelationship === 'Mẹ' || defaultRelationship === 'Bà') {
+                } else if (defaultRelationship === 'Mẹ' || defaultRelationship === 'Bà' || defaultRelationship === 'Thai nhi (Mẫu từ mẹ)') {
                     defaultGender = 'Nữ';
                 }
+                // Nếu không thuộc các trường hợp trên (ví dụ: Con, Cháu, Anh/Em ruột), giới tính sẽ là rỗng
+                // và người dùng cần chọn.
 
                 if (existingParticipant) {
                     return {
                         ...existingParticipant,
-                        gender: existingParticipant.gender || defaultGender, // Giữ giá trị cũ nếu có, nếu không thì đặt mặc định
+                        gender: existingParticipant.gender || defaultGender,
                         collectionMethod: (testType === 'Hành chính' || serviceType === 'Xét nghiệm ADN Thai nhi')
                             ? defaultCollectionMethod
                             : (existingParticipant.collectionMethod || ''),
-                        personalId: existingParticipant.personalId || '', // Đảm bảo personalId được giữ lại nếu có
-                        address: existingParticipant.address || '', // Đảm bảo address được giữ lại nếu có
-                        relationToRegistrant: existingParticipant.relationToRegistrant || '', // Đảm bảo relationToRegistrant được giữ lại nếu có
                         relationship: relationshipOptions.includes(existingParticipant.relationship)
                             ? existingParticipant.relationship
-                            : defaultRelationship
+                            : defaultRelationship,
+                        personalId: existingParticipant.personalId || '',
+                        address: existingParticipant.address || '',
+                        relationToRegistrant: existingParticipant.relationToRegistrant || '',
+                        fullName: existingParticipant.fullName || '',
+                        dob: existingParticipant.dob || '',
                     };
                 } else {
                     const baseParticipant = {
                         fullName: '',
-                        gender: defaultGender, // Đặt giới tính mặc định khi tạo mới
-                        dob: '', // Năm sinh
+                        gender: defaultGender,
+                        dob: '',
                         relationship: defaultRelationship,
                         collectionMethod: defaultCollectionMethod,
                     };
@@ -127,39 +142,33 @@ export default function BookingCreate() {
             });
             return newParticipants;
         });
-    }, [numSamples, testType, serviceType, getRelationshipOptions]);
+    }, [numSamples, testType, serviceType, getRelationshipOptions, initialBookingData]);
 
-    // === Hàm tính tuổi từ năm sinh ===
     const calculateAge = (dobYear) => {
         if (!dobYear) return null;
         const currentYear = new Date().getFullYear();
         return currentYear - parseInt(dobYear);
     };
 
-    // === Hàm xử lý thay đổi thông tin người tham gia ===
     const handleParticipantChange = (index, field, value) => {
         const updatedParticipants = [...participants];
         updatedParticipants[index] = { ...updatedParticipants[index], [field]: value };
         setParticipants(updatedParticipants);
     };
 
-    // === Hàm xử lý submit form ===
     const handleSubmitBooking = (e) => {
         e.preventDefault();
 
-        // Kiểm tra các trường bắt buộc chung
-        if (!serviceType || !testType || !appointmentDate || !appointmentTime) {
+        if (!serviceType || !testType || !appointmentDate) {
             alert('Vui lòng điền đầy đủ các thông tin bắt buộc.');
             return;
         }
 
-        // Kiểm tra số mẫu dựa trên loại dịch vụ
         if (serviceType === 'Xét nghiệm ADN Thai nhi') {
             if (numSamples !== 2) {
                 alert('Dịch vụ "Xét nghiệm ADN Thai nhi" yêu cầu chính xác 2 mẫu (Thai nhi và Cha nghi vấn).');
                 return;
             }
-            // Đảm bảo quan hệ đúng
             const firstParticipantRel = participants[0]?.relationship;
             const secondParticipantRel = participants[1]?.relationship;
             if (!((firstParticipantRel === 'Thai nhi (Mẫu từ mẹ)' && secondParticipantRel === 'Cha nghi vấn') ||
@@ -177,45 +186,37 @@ export default function BookingCreate() {
                 alert('Xét nghiệm "Anh em ruột" tối thiểu phải có 2 mẫu (anh và em).');
                 return;
             }
-        } else { // Các loại dịch vụ khác
+        } else {
             if (numSamples < 2) {
                 alert('Số mẫu xét nghiệm phải tối thiểu là 2 cho dịch vụ này.');
                 return;
             }
         }
 
-        // Kiểm tra xem tất cả thông tin người tham gia đã được điền đầy đủ chưa
         const allParticipantsFilled = participants.every(p => {
-            // Đối với Thai nhi (Mẫu từ mẹ), không yêu cầu thông tin cá nhân chi tiết
-            if (serviceType === 'Xét nghiệm ADN Thai nhi' && p.relationship === 'Thai nhi (Mẫu từ mẹ)') {
-                // Chỉ cần đảm bảo collectionMethod đã được đặt (luôn là "Thu mẫu tại trung tâm")
-                return p.collectionMethod !== '';
+            const shouldRequirePersonalInfo = !(serviceType === 'Xét nghiệm ADN Anh em ruột' && p.relationship === 'Mẹ (tùy chọn)');
+
+            let commonRequiredFieldsFilled = true;
+
+            if (shouldRequirePersonalInfo) {
+                commonRequiredFieldsFilled = p.relationship && p.fullName && p.gender && p.dob && p.collectionMethod;
+            } else {
+                commonRequiredFieldsFilled = p.relationship && p.collectionMethod;
             }
 
-            const age = calculateAge(p.dob); // Tính tuổi để kiểm tra điều kiện Mã định danh
-
-            // Common required fields for all types
-            let commonRequired = p.relationship && p.fullName && p.gender && p.dob && p.collectionMethod;
-
-            // Đặc biệt xử lý cho Mẹ (tùy chọn) trong Anh em ruột - nếu là tùy chọn thì không bắt buộc tất cả các trường
-            if (serviceType === 'Xét nghiệm ADN Anh em ruột' && p.relationship === 'Mẹ (tùy chọn)') {
-                // Nếu có mẹ tùy chọn, chỉ yêu cầu collectionMethod và relationship
-                return p.relationship && p.collectionMethod;
+            if (!commonRequiredFieldsFilled) {
+                return false;
             }
 
+            if (testType === 'Hành chính' && shouldRequirePersonalInfo) {
+                const age = calculateAge(p.dob);
+                const personalIdConditionMet = (age !== null && age < 14) || (p.personalId && age >= 14);
 
-            if (testType === 'Hành chính') {
-                const personalIdRequired = age === null || age >= 14 ? p.personalId : true;
-
-                return (
-                    commonRequired &&
-                    personalIdRequired &&
-                    p.address &&
-                    p.relationToRegistrant
-                );
-            } else { // Dân sự
-                return commonRequired;
+                if (!personalIdConditionMet || !p.address || !p.relationToRegistrant) {
+                    return false;
+                }
             }
+            return true;
         });
 
         if (!allParticipantsFilled) {
@@ -223,11 +224,20 @@ export default function BookingCreate() {
             return;
         }
 
-        // Chuyển sang trang xác nhận
-        setCurrentStep('confirmation');
+        const bookingData = {
+            serviceType,
+            numSamples,
+            testType,
+            appointmentDate,
+            notes,
+            participants,
+            registrantId: user.id
+        };
+
+        // Chuyển hướng sang trang BookingDetails với dữ liệu đặt lịch
+        navigate('/booking-details', { state: { bookingData } });
     };
 
-    // === Render Loading State ===
     if (authLoading || !user) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', fontSize: '24px' }}>
@@ -236,71 +246,12 @@ export default function BookingCreate() {
         );
     }
 
-    // === Render Confirmation Page ===
-    if (currentStep === 'confirmation') {
-        return (
-            <div className="homepage-root">
-                <Header /> {/* Sử dụng Header component */}
-                <main className="booking-create-content">
-                    <section className="confirmation-section">
-                        <h2>Xác nhận thông tin đặt lịch</h2>
-                        <div className="confirmation-details">
-                            <p><strong>Loại dịch vụ:</strong> {serviceType}</p>
-                            <p><strong>Số mẫu:</strong> {numSamples}</p>
-                            <p><strong>Loại xét nghiệm:</strong> {testType}</p>
-                            <p><strong>Ngày hẹn:</strong> {appointmentDate}</p>
-                            <p><strong>Giờ hẹn:</strong> {appointmentTime}</p>
-                            <p><strong>Ghi chú:</strong> {notes || 'Không có'}</p>
+    // --- LOẠI BỎ PHẦN currentStep === 'confirmation' Ở ĐÂY ---
+    // Vì bạn đã có trang BookingDetails riêng biệt.
 
-                            <h3>Thông tin người tham gia:</h3>
-                            {participants.length > 0 ? (
-                                participants.map((p, index) => (
-                                    <div key={index} className="participant-summary">
-                                        <h4>Người tham gia {index + 1} ({p.relationship || 'Quan hệ nghi vấn'})</h4>
-                                        {/* Hiển thị thông tin theo thứ tự yêu cầu */}
-                                        {serviceType !== 'Xét nghiệm ADN Thai nhi' || p.relationship !== 'Thai nhi (Mẫu từ mẹ)' ? (
-                                            <>
-                                                <p>Họ và tên: {p.fullName || 'Chưa điền'}</p>
-                                                <p>Giới tính: {p.gender || 'Chưa điền'}</p>
-                                                <p>Năm sinh: {p.dob || 'Chưa điền'}</p>
-                                            </>
-                                        ) : (
-                                            <p>Loại mẫu: Mẫu từ mẹ</p>
-                                        )}
-
-
-                                        {testType === 'Hành chính' && calculateAge(p.dob) >= 14 && (
-                                            <p>Mã định danh cá nhân: {p.personalId || 'Chưa điền'}</p>
-                                        )}
-                                        {testType === 'Hành chính' && (
-                                            <>
-                                                <p>Địa chỉ: {p.address || 'Chưa điền'}</p>
-                                                <p>Quan hệ với người đăng ký: {p.relationToRegistrant || 'Chưa điền'}</p>
-                                            </>
-                                        )}
-                                        <p>Phương pháp thu mẫu: {p.collectionMethod || 'Chưa điền'}</p>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>Không có thông tin người tham gia được yêu cầu.</p>
-                            )}
-                        </div>
-                        <div className="confirmation-actions">
-                            <button className="btn-back" onClick={() => setCurrentStep('form')}>Chỉnh sửa</button>
-                            <button className="btn-confirm" onClick={() => alert('Xác nhận đặt lịch...')}>Xác nhận đặt lịch</button>
-                        </div>
-                    </section>
-                </main>
-
-                <footer />
-            </div>
-        );
-    }
-
-    // === Render Booking Form (Default) ===
     return (
         <div className="homepage-root">
-            <Header /> {/* Sử dụng Header component */}
+            <Header />
             <main className="booking-create-content">
                 <form className="booking-form-section" onSubmit={handleSubmitBooking}>
                     <h2>Tạo Lịch Hẹn Mới</h2>
@@ -317,7 +268,7 @@ export default function BookingCreate() {
                                 if (selectedService === 'Xét nghiệm ADN Thai nhi') {
                                     setNumSamples(2);
                                 } else if (selectedService === 'Xét nghiệm ADN Anh em ruột') {
-                                    setNumSamples(2); // Mặc định 2, người dùng có thể thêm
+                                    setNumSamples(2);
                                 }
                                 else {
                                     setNumSamples(2);
@@ -333,7 +284,6 @@ export default function BookingCreate() {
                         </select>
                     </div>
 
-                    {/* Hiển thị input số mẫu hoặc số mẫu cố định */}
                     {serviceType === 'Xét nghiệm ADN Thai nhi' ? (
                         <div className="form-group">
                             <label>Số mẫu cần xét nghiệm:</label>
@@ -383,17 +333,6 @@ export default function BookingCreate() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="appointmentTime">Giờ hẹn:</label>
-                        <input
-                            type="time"
-                            id="appointmentTime"
-                            value={appointmentTime}
-                            onChange={(e) => setAppointmentTime(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
                         <label htmlFor="notes">Ghi chú:</label>
                         <textarea
                             id="notes"
@@ -404,16 +343,13 @@ export default function BookingCreate() {
                         ></textarea>
                     </div>
 
-                    {/* === Phần thông tin người tham gia === */}
                     <div className="participants-section">
                         <h3>Thông tin người tham gia:</h3>
                         {Array.from({ length: numSamples }).map((_, index) => {
                             const currentParticipant = participants[index] || {};
                             const participantAge = calculateAge(currentParticipant.dob);
 
-                            // Xác định liệu có nên yêu cầu các trường thông tin cá nhân hay không
-                            const isPersonalInfoRequired = !(serviceType === 'Xét nghiệm ADN Thai nhi' && currentParticipant.relationship === 'Thai nhi (Mẫu từ mẹ)') &&
-                                !(serviceType === 'Xét nghiệm ADN Anh em ruột' && currentParticipant.relationship === 'Mẹ (tùy chọn)');
+                            const isPersonalInfoRequired = !(serviceType === 'Xét nghiệm ADN Anh em ruột' && currentParticipant.relationship === 'Mẹ (tùy chọn)');
 
                             return (
                                 <div key={index} className="participant-form">
@@ -426,6 +362,7 @@ export default function BookingCreate() {
                                                 value={currentParticipant.relationship || ''}
                                                 onChange={(e) => handleParticipantChange(index, 'relationship', e.target.value)}
                                                 required
+                                                disabled={serviceType === 'Xét nghiệm ADN Thai nhi' && (currentParticipant.relationship === 'Thai nhi (Mẫu từ mẹ)' || currentParticipant.relationship === 'Cha nghi vấn')}
                                             >
                                                 <option value="">Chọn quan hệ</option>
                                                 {getRelationshipOptions().map((rel, relIndex) => (
@@ -435,8 +372,11 @@ export default function BookingCreate() {
                                         </div>
                                     </div>
 
-                                    {/* Các trường thông tin cá nhân chỉ hiển thị nếu không phải là "Thai nhi (Mẫu từ mẹ)" */}
-                                    {serviceType !== 'Xét nghiệm ADN Thai nhi' || currentParticipant.relationship !== 'Thai nhi (Mẫu từ mẹ)' ? (
+                                    {currentParticipant.relationship === 'Thai nhi (Mẫu từ mẹ)' && (
+                                        <p className="participant-sub-label">**(Thông tin cá nhân của người mẹ)**</p>
+                                    )}
+
+                                    {isPersonalInfoRequired ? (
                                         <>
                                             <div className="form-group">
                                                 <label>Họ và tên:</label>
@@ -444,7 +384,7 @@ export default function BookingCreate() {
                                                     type="text"
                                                     value={currentParticipant.fullName || ''}
                                                     onChange={(e) => handleParticipantChange(index, 'fullName', e.target.value)}
-                                                    required={isPersonalInfoRequired}
+                                                    required={true}
                                                 />
                                             </div>
                                             <div className="form-group">
@@ -452,12 +392,13 @@ export default function BookingCreate() {
                                                 <select
                                                     value={currentParticipant.gender || ''}
                                                     onChange={(e) => handleParticipantChange(index, 'gender', e.target.value)}
-                                                    required={isPersonalInfoRequired}
+                                                    required={true}
                                                 >
                                                     <option value="">Chọn giới tính</option>
+                                                    {/* === SỬA ĐỔI THỨ HAI: Loại bỏ tùy chọn 'Khác' === */}
                                                     <option value="Nam">Nam</option>
                                                     <option value="Nữ">Nữ</option>
-                                                    <option value="Khác">Khác</option>
+                                                    {/* <option value="Khác">Khác</option> */} {/* Dòng này bị loại bỏ */}
                                                 </select>
                                             </div>
                                             <div className="form-group">
@@ -468,19 +409,16 @@ export default function BookingCreate() {
                                                     onChange={(e) => handleParticipantChange(index, 'dob', parseInt(e.target.value) || '')}
                                                     min="1900"
                                                     max={new Date().getFullYear()}
-                                                    required={isPersonalInfoRequired}
+                                                    required={true}
                                                 />
                                             </div>
                                         </>
                                     ) : (
-                                        <p>**(Thông tin cá nhân không áp dụng cho mẫu thai nhi)**</p>
+                                        <p>**(Thông tin cá nhân không bắt buộc cho mẫu này)**</p>
                                     )}
 
-
-                                    {/* Các trường dành riêng cho Hành chính */}
                                     {testType === 'Hành chính' && isPersonalInfoRequired && (
                                         <>
-                                            {/* Mã định danh cá nhân chỉ hiển thị và bắt buộc nếu >= 14 tuổi */}
                                             {participantAge === null || participantAge >= 14 ? (
                                                 <div className="form-group">
                                                     <label>Mã định danh cá nhân:</label>
@@ -488,7 +426,7 @@ export default function BookingCreate() {
                                                         type="text"
                                                         value={currentParticipant.personalId || ''}
                                                         onChange={(e) => handleParticipantChange(index, 'personalId', e.target.value)}
-                                                        required={true} // Bắt buộc nếu hiển thị
+                                                        required={true}
                                                     />
                                                 </div>
                                             ) : (
@@ -499,7 +437,7 @@ export default function BookingCreate() {
                                                         value={currentParticipant.personalId || ''}
                                                         onChange={(e) => handleParticipantChange(index, 'personalId', e.target.value)}
                                                         placeholder="Không bắt buộc với trẻ dưới 14 tuổi"
-                                                        required={false} // Không bắt buộc
+                                                        required={false}
                                                     />
                                                 </div>
                                             )}
@@ -525,7 +463,6 @@ export default function BookingCreate() {
                                         </>
                                     )}
 
-                                    {/* Phương thức thu mẫu (hiển thị cuối cùng) */}
                                     {(testType === 'Hành chính' || serviceType === 'Xét nghiệm ADN Thai nhi') ? (
                                         <div className="form-group">
                                             <label>Phương pháp thu mẫu:</label>

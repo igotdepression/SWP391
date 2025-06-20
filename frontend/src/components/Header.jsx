@@ -30,10 +30,10 @@ export default function Header() {
     return (
         <header className="adn-header"> {/* Sử dụng class mới */}
             <div className="adn-header-content"> {/* Thêm div bọc nội dung */}
-                <div className="adn-header-logo"> {/* Sử dụng class mới */}
-                    <Link to="/home"> {/* Thêm Link cho logo */}
-                        <img src="/logo.png" alt="Bloodline Logo" className="header-logo-img" /> {/* Thêm class img */}
-                    </Link>
+
+                <div className="adn-footer-logo">
+                    <Link to="/home"></Link>
+                    <img src="/logo.png" alt="ADN Logo" />
                 </div>
                 <nav className="adn-header-nav"> {/* Sử dụng class mới */}
                     <ul>
