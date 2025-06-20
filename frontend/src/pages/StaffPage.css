@@ -1,56 +1,58 @@
-.staff-page-container {
+/* Layout: sidebar + main */
+.layout-container {
   display: flex;
   min-height: 100vh;
-  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif; /* Add font family for consistency */
 }
 
+/* Sidebar */
 .sidebar {
   width: 260px;
-  background: linear-gradient(135deg, #0a3d62 80%, #2563eb 100%);
+  background: linear-gradient(135deg, #0a3d62 80%, #2563eb 100%); /* Gradient from LoginPage */
   display: flex;
   flex-direction: column;
   padding: 24px;
-  border-radius: 0 20px 20px 0;
 }
-
-.sidebar h1 {
-  margin-bottom: 30px;
-  color: #FFFFFF;
-  font-size: 2.25rem;
-  font-weight: 700;
+.sidebar .logo {
+  width: 120px; /* Consistent with LoginPage */
+  height: 120px; /* Consistent with LoginPage */
+  margin: 0 auto 24px;
+  border-radius: 50%; /* Make it round */
+  background: #fff; /* White background */
+  object-fit: contain; /* Ensure logo fits */
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08); /* Shadow from LoginPage */
+  transition: transform 0.3s, box-shadow 0.3s; /* Add transition for hover effects */
 }
-
-.sidebar-menu {
-  list-style: none;
-  padding: 0;
+.sidebar .logo:hover {
+  transform: scale(1.05) rotate(5deg); /* Hover effect from LoginPage */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12); /* Stronger shadow on hover */
 }
-
-.menu-heading {
-  margin-bottom: 5px;
-  font-size: 0.8em;
-  opacity: 0.7;
-  color: rgba(255,255,255,0.85);
-  padding: 12px 16px;
-}
-
-.sidebar-menu li a {
-  color: rgba(255,255,255,0.85);
-  text-decoration: none;
+.menu-item {
   padding: 12px 16px;
   border-radius: 6px;
+  color: rgba(255,255,255,0.85); /* Slightly less opaque white */
   font-weight: 500;
-  display: block;
   margin-bottom: 12px;
-  transition: background 0.3s ease;
+  cursor: pointer;
+}
+.menu-item:hover {
+  background: rgba(255,255,255,0.1); /* Lighter hover from LoginPage */
+}
+.menu-item.active {
+  background: #2563eb; /* Primary Blue from LoginPage */
+  color: #FFFFFF;
+}
+.sidebar .footer {
+  margin-top: auto;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
 }
 
-.sidebar-menu li a:hover {
-  background: rgba(255,255,255,0.1);
-}
-
+/* Main content */
 .main-content {
   flex: 1;
-  background: linear-gradient(90deg, #eaf0fa 0%, #f7faff 100%);
+  background: linear-gradient(90deg, #eaf0fa 0%, #f7faff 100%); /* Background from LoginPage */
   display: flex;
   flex-direction: column;
   padding: 24px;
@@ -58,26 +60,164 @@
   position: relative;
 }
 
-.header-section {
-  background: #fff;
+.content-wrapper {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page Header */
+.page-header {
+  background: #fff; /* White background from LoginPage form */
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 32px rgba(10,61,98,0.05);
+  box-shadow: 0 4px 32px rgba(10,61,98,0.05); /* Softer shadow */
 }
-
-.header-section h2 {
+.page-header h1 {
   margin: 0;
   font-size: 1.75rem;
   font-weight: 600;
-  color: #0a3d62;
+  color: #0a3d62; /* Dark blue heading from LoginPage */
 }
 
-.user-info {
-  text-align: right;
+/* Toolbar */
+.toolbar {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(10,61,98,0.05); /* Consistent shadow with LoginPage */
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+/* Primary Action Button */
+.primary-action-button {
+  background: linear-gradient(90deg, #2563eb 60%, #34A853 100%); /* Blue to Green */
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 20px; /* Adjust padding as needed */
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(10,61,98,0.07);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.primary-action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(10,61,98,0.10);
+  background: linear-gradient(90deg, #34A853 60%, #2563eb 100%); /* Green to Blue on hover */
+}
+
+/* Outline Action Button */
+.outline-action-button {
+  background: #fff;
+  color: #0a3d62; /* Dark blue from LoginPage */
+  border: 1.2px solid #b0c4de; /* Light blue border from LoginPage */
+  border-radius: 24px;
+  padding: 8px 12px; /* Adjust padding as needed */
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: 0 1px 4px rgba(10,61,98,0.04);
+}
+.outline-action-button:hover {
+  transform: translateY(-1px);
+  background: #eaf0fa; /* Light blue background on hover */
+  color: #2563eb; /* Primary blue on hover */
+  border: 1.2px solid #2563eb; /* Primary blue border on hover */
+}
+
+/* Table wrapper */
+.overflow-x-auto {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(10,61,98,0.05); /* Consistent shadow */
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead th {
+  background: #f7faff; /* Lighter blue for table header */
+  padding: 12px 16px;
+  font-weight: 600;
+  text-align: left;
+  color: #0a3d62; /* Dark blue for table header text */
+}
+tbody tr {
+  border-top: 1px solid #eaf0fa; /* Lighter border */
+}
+tbody td {
+  padding: 12px 16px;
+}
+tbody tr:hover {
+  background: #eaf0fa; /* Consistent hover color */
+}
+
+/* Avatar */
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 9999px;
+  background: #0A3D62; /* Changed to dark blue */
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.875rem; font-weight: 600;
+  margin-right: 8px;
+  /* Removed explicit color setting here to allow inline style from JS */
+}
+
+.employee-name-cell {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center !important;
+  gap: 8px; /* Add some space between avatar and name */
+  white-space: nowrap; /* Prevent content from wrapping */
+}
+
+/* Badges */
+.status-badge, .role-badge {
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem; font-weight: 600;
+}
+.role-badge-admin {
+  background: #B0C4DE; /* Light blue from LoginPage input border */
+  color: #0A3D62; /* Dark blue from LoginPage */
+}
+.role-badge-manager {
+  background: #C4D3EF; /* Custom mid-light blue */
+  color: #2563EB; /* Primary blue from LoginPage */
+}
+.role-badge-staff {
+  background: #F0F0F0; /* Light gray for staff */
+  color: #495057; /* Dark gray for staff text */
+}
+.manager-actions-cell {
+  display: flex; gap: 8px;
+}
+
+/* Header User Info */
+.header-user-info {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #0a3d62; /* Dark blue from LoginPage headings */
+}
+
+/* Styles for user profile area copied from HomePage.css */
+.header-user-profile-area {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -85,42 +225,163 @@
   border-radius: 20px;
   transition: background-color 0.3s ease;
 }
-
-.user-info:hover {
-  background-color: #eaf0fa;
+.header-user-profile-area:hover {
+  background-color: #eaf0fa; /* Consistent hover background */
 }
-
-.user-avatar-placeholder {
+.header-profile-icon-placeholder {
   width: 30px;
   height: 30px;
-  background-color: #0A3D62;
+  background-color: #0A3D62; /* Changed to dark blue */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Removed explicit color setting here to allow inline style from JS */
   font-weight: bold;
-  font-size: 0.8rem;
-  margin-right: 10px;
+  font-size: 0.8rem; /* Adjust font size to fit */
 }
 
-.user-name {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #0a3d62;
-  vertical-align: middle;
+/* Modal overlay & content (nếu cần) */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
 }
-
-.user-id {
-  font-size: 0.8em;
-  color: #666;
-}
-
-.content-box {
-  background-color: white;
-  padding: 20px;
+.modal-content {
+  background: #fff;
   border-radius: 8px;
-  min-height: 100px;
-  box-shadow: 0 4px 16px rgba(10,61,98,0.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 960px; /* max-w-4xl */
+  padding: 32px;
+  position: relative;
+}
+.modal-close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 2rem;
+  color: #a0aec0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.modal-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #2d3748;
+}
+.modal-section {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #edf2f7;
+}
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #2d3748;
+}
+.grid-cols-2-layout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.field-label {
+  font-weight: 500;
+  color: #2d3748;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* Filter Section */
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filter-input,
+.filter-select,
+.filter-date-input {
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 16px;
+  outline: none;
+}
+
+.filter-input {
+  width: 192px;
+}
+
+.filter-select {
+  width: 176px;
+}
+
+.filter-date-input {
+  width: 160px; /* Điều chỉnh nếu cần */
+}
+
+.date-range-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* Data Table */
+.data-table-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow-x: auto; /* Cho phép cuộn ngang trên màn hình nhỏ */
+  /* Margin trái phải được thay bằng padding của main-content */
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.table-header-row {
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f4faff;
+}
+
+.table-header {
+  padding: 12px 16px;
+  font-weight: 600;
+}
+
+.table-row {
+  border-bottom: 1px solid #edf2f7;
+}
+
+.table-row:hover {
+  background-color: #eaf6ff; /* light blue on hover */
+}
+
+.table-cell {
+  padding: 12px 8px;
+}
+
+.customer-name {
+  font-weight: 500;
+}
+
+.customer-contact {
+  color: #a0aec0;
+  font-size: 14px;
 }
 
 /* Status Badges */
@@ -132,6 +393,60 @@
   display: inline-block;
   text-align: center;
   min-width: 120px;
+  transition: all 0.2s ease;
+}
+
+.status-badge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.status-badge-new { background: #E3F2FD; color: #1976D2; }
+.status-badge-new::before { background-color: #1976D2; }
+
+.status-badge-processing { background: #FFF3E0; color: #F57C00; }
+.status-badge-processing::before { background-color: #F57C00; }
+
+.status-badge-waiting_sample { background: #E0F7FA; color: #00BCD4; }
+.status-badge-waiting_sample::before { background-color: #00BCD4; }
+
+.status-badge-testing { background: #F3E5F5; color: #9C27B0; }
+.status-badge-testing::before { background-color: #9C27B0; }
+
+.status-badge-completed { background: #E8F5E9; color: #388E3C; }
+.status-badge-completed::before { background-color: #388E3C; }
+
+.status-badge-delivered { background: #E1F5FE; color: #2196F3; }
+.status-badge-delivered::before { background-color: #2196F3; }
+
+.status-badge-cancelled { background: #FFEBEE; color: #D32F2F; }
+.status-badge-cancelled::before { background-color: #D32F2F; }
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-detail,
+.btn-update {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #a0aec0; /* Border xám như ảnh */
+  background-color: #ffffff; /* Nền trắng */
+  color: #4a5568; /* Màu chữ */
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-detail:hover,
+.btn-update:hover {
+  background-color: #edf2f7; /* Hover xám nhạt */
 }
 
 /* General Active/Inactive Status */
@@ -308,4 +623,61 @@ select {
 select:focus {
     outline: none;
     border-color: #007bff;
+}
+
+/* Filter section */
+.filter-section {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filter-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.status-badge-new { background: #E3F2FD; color: #1976D2; }
+.status-badge-processing { background: #FFF3E0; color: #F57C00; }
+.status-badge-completed { background: #E8F5E9; color: #388E3C; }
+.status-badge-cancelled { background: #FFEBEE; color: #D32F2F; }
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-detail, .btn-update {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-detail { background: #E3F2FD; color: #1976D2; }
+.btn-update { background: #E8F5E9; color: #388E3C; }
+
+/* Modal styles */
+.test-detail-modal {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.modal-content > div {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
 } 

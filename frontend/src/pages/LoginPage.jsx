@@ -16,7 +16,7 @@ const GoogleIcon = () => (
 );
 
 const LoginPage = () => {
-  const { login } = useAuth();
+  const { login, loginAsGuest } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -55,20 +55,7 @@ const LoginPage = () => {
   };
 
   const handleGuestLogin = () => {
-    // Clear all previous user data and tokens
-    localStorage.clear();
-    
-    // Create new guest user data
-    const guestUser = {
-      email: 'guest@bloodline.com',
-      fullName: 'Guest User',
-      role: 'GUEST'
-    };
-    
-    // Set only the guest user data
-    localStorage.setItem('user', JSON.stringify(guestUser));
-    
-    // Navigate to home page
+    loginAsGuest();
     navigate('/home');
   };
 

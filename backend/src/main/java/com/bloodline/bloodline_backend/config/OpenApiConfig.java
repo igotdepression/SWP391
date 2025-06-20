@@ -28,7 +28,7 @@ public class OpenApiConfig {
                                 .url("http://www.apache.org/licenses/LICENSE-2.0.html")))
                 .servers(List.of(
                         new Server()
-                                .url("http://localhost:8080")
+                                .url("http://dna-chain.bloodline:8080")
                                 .description("Local Development Server")
                 ));
     }

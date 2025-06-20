@@ -1,42 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./About.css";
+import { useAuth } from '../context/AuthContext';
+import { useNavigation } from '../hooks/useNavigation';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function About() {
+  const { user } = useAuth(); // Get user info
+  const { goToProfile } = useNavigation(); // Use navigation hook
+
   return (
-    <div className="adn-about-page">
-      <header className="adn-header">
-        <div className="adn-header-bar">
-          <div className="adn-header-logo">
-            <img src="/img/logo.png" alt="Logo ADN Chain" />
-          </div>
-          <div className="adn-header-search-login">
-            <div className="adn-header-search">
-              <input type="text" placeholder="Search" />
-            </div>
-            <div className="adn-header-login">
-              <a href="#login">
-                <img
-                  src="/img/user-icon.png"
-                  alt="User Icon"
-                  className="adn-header-usericon"
-                />
-                <span>Login</span>
-              </a>
-            </div>
-          </div>
-        </div>
-        <nav className="adn-nav">
-          <ul>
-            <li><Link to="/">TRANG CHỦ</Link></li>
-            <li><Link to="/about" className="active">GIỚI THIỆU</Link></li>
-            <li><a href="#services">DỊCH VỤ</a></li>
-            <li><a href="#info">THÔNG TIN</a></li>
-            <li><a href="#register">ĐĂNG KÝ DỊCH VỤ</a></li>
-          </ul>
-        </nav>
-      </header>
-      <main className="adn-about-main">
+    <div className="about-container">
+      <Header />
+      <main className="about-content">
         <section className="adn-about-banner">
           <img src="/img/about-full-banner.jpg" alt="Banner Giới thiệu ADN Chain" className="adn-about-banner-img" />
         </section>
@@ -49,7 +26,7 @@ function About() {
                   <strong>ADN Chain</strong> là đơn vị tiên phong trong lĩnh vực xét nghiệm di truyền tại Việt Nam, cung cấp các dịch vụ xét nghiệm ADN, giải trình tự gen, tầm soát bệnh lý di truyền, sàng lọc trước sinh NIPT, kiểm tra huyết thống và tư vấn di truyền cho cộng đồng. Với đội ngũ chuyên gia đầu ngành, trang thiết bị hiện đại nhập khẩu từ châu Âu, ADN Chain cam kết mang lại kết quả xét nghiệm chính xác, nhanh chóng, bảo mật tuyệt đối và dịch vụ chăm sóc khách hàng tận tâm.
                 </p>
                 <p>
-                  Với sứ mệnh “Nâng tầm sức khỏe Việt bằng công nghệ di truyền”, ADN Chain không ngừng đổi mới, ứng dụng các công nghệ sinh học tiên tiến nhất, hợp tác cùng các viện nghiên cứu, bệnh viện hàng đầu trong và ngoài nước, góp phần nâng cao chất lượng sống và sức khỏe cộng đồng.
+                  Với sứ mệnh "Nâng tầm sức khỏe Việt bằng công nghệ di truyền", ADN Chain không ngừng đổi mới, ứng dụng các công nghệ sinh học tiên tiến nhất, hợp tác cùng các viện nghiên cứu, bệnh viện hàng đầu trong và ngoài nước, góp phần nâng cao chất lượng sống và sức khỏe cộng đồng.
                 </p>
               </div>
               <div className="adn-about-section">
@@ -91,15 +68,6 @@ function About() {
                 </ul>
               </div>
               <div className="adn-about-section">
-                <h2>Cam kết của ADN Chain</h2>
-                <ul>
-                  <li>Kết quả xét nghiệm chính xác, bảo mật, trả kết quả nhanh chóng</li>
-                  <li>Hỗ trợ khách hàng từ lấy mẫu, phân tích đến tư vấn kết quả</li>
-                  <li>Trang thiết bị hiện đại, đội ngũ chuyên gia hàng đầu</li>
-                  <li>Chi phí hợp lý, minh bạch</li>
-                </ul>
-              </div>
-              <div className="adn-about-section">
                 <h2>Liên hệ</h2>
                 <p>
                   Địa chỉ: 7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh<br />
@@ -115,35 +83,11 @@ function About() {
             </div>
           </div>
           <div className="adn-about-back">
-            <Link to="/" className="adn-btn adn-btn-main">Quay về trang chủ</Link>
+            <Link to="/home" className="adn-btn adn-btn-main">Quay về trang chủ</Link>
           </div>
         </section>
       </main>
-      <footer className="adn-footer adn-footer-full">
-        <div className="adn-footer-content">
-          <div className="adn-footer-logo">
-            <img src="/img/logo-footer.png" alt="ADN Logo" />
-          </div>
-          <div className="adn-footer-info">
-            <div className="adn-footer-section">
-              <span className="adn-footer-label">LOCATION</span>
-              <div>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</div>
-            </div>
-            <div className="adn-footer-section">
-              <span className="adn-footer-label">CONTACT US</span>
-              <div>02020202304</div>
-              <div>abc123@gmail.com</div>
-            </div>
-            <div className="adn-footer-section">
-              <span className="adn-footer-label">PAYMENT</span>
-              <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-                <img src="/img/zalo-pay.png" alt="ZaloPay" style={{height: 32}} />
-                <img src="/img/momo.png" alt="Momo" style={{height: 32}} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
