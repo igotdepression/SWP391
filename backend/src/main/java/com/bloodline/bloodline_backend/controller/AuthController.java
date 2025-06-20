@@ -3,93 +3,103 @@ package com.bloodline.bloodline_backend.controller;
 import com.bloodline.bloodline_backend.dto.LoginRequest;
 import com.bloodline.bloodline_backend.dto.LoginResponse;
 import com.bloodline.bloodline_backend.dto.RegisterRequest;
-import com.bloodline.bloodline_backend.entity.User;
 import com.bloodline.bloodline_backend.entity.Role;
-import com.bloodline.bloodline_backend.entity.Account;
-import com.bloodline.bloodline_backend.repository.UserRepository;
+import com.bloodline.bloodline_backend.entity.User;
 import com.bloodline.bloodline_backend.repository.RoleRepository;
-import com.bloodline.bloodline_backend.repository.AccountRepository;
-import com.bloodline.bloodline_backend.service.AuthService;
+import com.bloodline.bloodline_backend.repository.UserRepository;
+import com.bloodline.bloodline_backend.security.JwtTokenProvider;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.http.HttpStatus;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
-@CrossOrigin(origins = "http://dna-chain.bloodline:3000")
-@Slf4j
+@CrossOrigin(origins = "*")
 public class AuthController {
 
-    private final AuthService authService;
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            log.info("Received login request for email: {}", loginRequest.getEmail());
-            
-            if (loginRequest.getEmail() == null || loginRequest.getEmail().trim().isEmpty()) {
-                log.error("Login failed - Email is empty");
-                return ResponseEntity.badRequest()
-                    .body(Map.of("message", "Email is required"));
-            }
-            
-            if (loginRequest.getPassword() == null || loginRequest.getPassword().trim().isEmpty()) {
-                log.error("Login failed - Password is empty");
-                return ResponseEntity.badRequest()
-                    .body(Map.of("message", "Password is required"));
-            }
-            
-            LoginResponse response = authService.login(loginRequest);
-            log.info("Login successful for user: {}", loginRequest.getEmail());
-            return ResponseEntity.ok(response);
-        } catch (BadCredentialsException e) {
-            log.error("Login failed - Invalid credentials for user: {}", loginRequest.getEmail());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("message", "Invalid email or password"));
-        } catch (Exception e) {
-            log.error("Login failed - Unexpected error for user: {} - Error: {}", 
-                loginRequest.getEmail(), e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "An unexpected error occurred"));
-        }
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = tokenProvider.generateToken(authentication);
+
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return ResponseEntity.ok(new LoginResponse(jwt, user.getEmail(), user.getFullName(), user.getRole().getRoleName()));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Email already exists"));
-        }
-        Role customerRole = roleRepository.findByRoleName("CUSTOMER");
-        if (customerRole == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Role CUSTOMER not found"));
-        }
-        Account account = new Account();
-        account.setEmail(request.getEmail());
-        account.setPassword(passwordEncoder.encode(request.getPassword())); // Mã hóa mật khẩu trước khi lưu
-        account = accountRepository.save(account);
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+        try {
+            log.info("Attempting to register user with email: {}", registerRequest.getEmail());
+            
+            if (userRepository.existsByEmail(registerRequest.getEmail())) {
+                log.warn("Registration failed: Email {} is already taken", registerRequest.getEmail());
+                return ResponseEntity.badRequest().body("Email đã được sử dụng!");
+            }
 
-        User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setAccount(account);
-        user.setRole(customerRole);
-        user.setStatus("ACTIVE");
-        user.setAddress(request.getAddress());
-        user.setPhoneNumber(request.getPhoneNumber());
-        userRepository.save(user);
+            // Create user
+            User user = new User();
+            user.setEmail(registerRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            user.setFullName(registerRequest.getFullName());
+            user.setPhoneNumber(registerRequest.getPhoneNumber());
+            user.setAddress(registerRequest.getAddress());
+            user.setStatus("Active");
 
-        return ResponseEntity.ok(Map.of("message", "Register success"));
+            // Set default role (CUSTOMER)
+            Role userRole = roleRepository.findByRoleName("CUSTOMER")
+                    .orElseThrow(() -> {
+                        log.error("Registration failed: CUSTOMER role not found");
+                        return new RuntimeException("Không tìm thấy vai trò CUSTOMER");
+                    });
+            user.setRole(userRole);
+
+            userRepository.save(user);
+            log.info("User registered successfully: {}", user.getEmail());
+
+            return ResponseEntity.ok("Đăng ký thành công!");
+        } catch (Exception e) {
+            log.error("Registration failed: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body("Đăng ký thất bại: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> testConnection() {
+        log.info("Test endpoint called");
+        return ResponseEntity.ok("Backend connection successful!");
     }
 }

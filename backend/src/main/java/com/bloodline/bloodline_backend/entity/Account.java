@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class Account {
     @Column(name = "Password", nullable = false)
     private String password;
     
-    @OneToOne(mappedBy = "account")
+    @OneToOne
+    @JoinColumn(name = "userID")
     private User user;
 }

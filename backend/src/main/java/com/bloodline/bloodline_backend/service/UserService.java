@@ -55,6 +55,8 @@ public class UserService {
         dto.setRole(user.getRole().getRoleName());
         dto.setStatus(user.getStatus());
         dto.setAddress(user.getAddress());
+        dto.setDateOfBirth(user.getDateOfBirth());
+        dto.setGender(user.getGender());
         return dto;
     }
 }
