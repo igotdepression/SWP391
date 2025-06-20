@@ -9,9 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.bloodline.bloodline_backend.entity.Account;
 import com.bloodline.bloodline_backend.entity.User;
-import com.bloodline.bloodline_backend.repository.AccountRepository;
 import com.bloodline.bloodline_backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final AccountRepository accountRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -34,19 +31,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                 throw new IllegalArgumentException("Email cannot be empty");
             }
             
-            Account account = accountRepository.findByEmail(email)
+            User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> {
-                        log.error("Account not found for email: {}", email);
+                        log.error("User not found for email: {}", email);
                         return new UsernameNotFoundException("User not found with email: " + email);
                     });
             
-            log.info("Found account: {}", account.getEmail());
-            
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> {
-                        log.error("User details not found for email: {}", email);
-                        return new UsernameNotFoundException("User details not found for email: " + email);
-                    });
+            log.info("Found user: {}", user.getEmail());
             
             if (user.getRole() == null) {
                 log.error("User role is null for email: {}", email);
@@ -60,19 +51,13 @@ public class CustomUserDetailsService implements UserDetailsService {
             log.info("Granted authority: {}", authority);
             
             return new org.springframework.security.core.userdetails.User(
-                    account.getEmail(),
-                    account.getPassword(),
+                    user.getEmail(),
+                    user.getPassword(),
                     Collections.singletonList(new SimpleGrantedAuthority(authority))
             );
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid input in loadUserByUsername: {}", e.getMessage());
-            throw e;
-        } catch (UsernameNotFoundException e) {
-            log.error("User not found in loadUserByUsername: {}", e.getMessage());
-            throw e;
         } catch (Exception e) {
-            log.error("Unexpected error in loadUserByUsername: {}", e.getMessage(), e);
-            throw new RuntimeException("Error loading user: " + e.getMessage());
+            log.error("Error loading user by username: {}", e.getMessage(), e);
+            throw e;
         }
     }
 }

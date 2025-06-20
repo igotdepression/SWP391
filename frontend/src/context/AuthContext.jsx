@@ -51,11 +51,30 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    const updateUser = (newUserData) => {
+        setUser(prevUser => ({ ...prevUser, ...newUserData }));
+        localStorage.setItem('user', JSON.stringify(newUserData));
+    };
+
+    const loginAsGuest = () => {
+        localStorage.clear(); // Clear any previous user data
+        const guestUser = {
+            email: 'guest@bloodline.com',
+            fullName: 'Guest User',
+            role: 'GUEST'
+        };
+        localStorage.setItem('user', JSON.stringify(guestUser));
+        localStorage.setItem('token', 'guest_token_12345'); // Dummy token for guest
+        setUser(guestUser);
+    };
+
     const value = {
         user,
         loading,
         login,
         logout,
+        updateUser,
+        loginAsGuest,
         isAuthenticated: !!user,
     };
 

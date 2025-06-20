@@ -12,6 +12,7 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
@@ -48,14 +49,38 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!name || !email || !password || !confirmPassword || !selectedProvince || !selectedDistrict || !selectedCommune) {
+    
+    // Validate all required fields
+    if (!name || !email || !password || !confirmPassword || !selectedProvince || !selectedDistrict || !selectedCommune || !phoneNumber) {
       setError('Vui lòng nhập đầy đủ thông tin!');
       return;
     }
-    if (password !== confirmPassword) {
-      setError('Mật khẩu xác nhận không khớp!');
-      return;
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        setError('Email không hợp lệ!');
+        return;
     }
+
+    // Validate password length
+    if (password.length < 6) {
+        setError('Mật khẩu phải có ít nhất 6 ký tự!');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        setError('Mật khẩu xác nhận không khớp!');
+        return;
+    }
+
+    // Validate phone number format (Vietnamese phone number)
+    const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
+    if (!phoneRegex.test(phoneNumber)) {
+        setError('Số điện thoại không hợp lệ!');
+        return;
+    }
+
     setLoading(true);
     try {
       const province = vietnamLocations.provinces.find(p => p.code === selectedProvince)?.name;
@@ -63,18 +88,28 @@ const SignUpPage = () => {
       const commune = communes.find(c => c.code === selectedCommune)?.name;
       const address = `${commune}, ${district}, ${province}`;
       
-      await authAPI.register(name, email, password, address);
-      // Đăng ký thành công, tự động đăng nhập
-      const result = await login(email, password);
-      setLoading(false);
-      if (result.success) {
-        navigate('/home');
-      } else {
-        setError(result.error);
+      const response = await authAPI.register(
+          name,
+          email,
+          password,
+          phoneNumber,
+          address // Pass the address here
+      );
+      
+      if (response.data) {
+          // Đăng ký thành công, tự động đăng nhập
+          const result = await login(email, password);
+          setLoading(false);
+          if (result.success) {
+              navigate('/home');
+          } else {
+              setError(result.error || 'Đăng nhập thất bại sau khi đăng ký!');
+          }
       }
     } catch (err) {
-      setLoading(false);
-      setError(err.response?.data?.message || 'Đăng ký thất bại!');
+        setLoading(false);
+        setError(err.message || 'Đăng ký thất bại! Vui lòng thử lại sau.');
+        console.error('Registration error:', err);
     }
   };
 
@@ -101,6 +136,18 @@ const SignUpPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+            />
+          </div>
+          <div className="input-group">
+            <input
+              type="tel"
+              name="phoneNumber"
+              placeholder="Số điện thoại"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              required
+              pattern="^(0[35789])+([0-9]{8})$"
+              title="Vui lòng nhập số điện thoại hợp lệ (VD: 0987654321)"
             />
           </div>
           <div className="input-group">

@@ -8,6 +8,7 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true // Enable sending cookies
 });
 
 // Add request interceptor to add auth token
@@ -42,20 +43,52 @@ api.interceptors.response.use(
         return response;
     },
     (error) => {
+        // Log detailed error information
         console.error('API Response Error:', {
             url: error.config?.url,
             status: error.response?.status,
+            statusText: error.response?.statusText,
             data: error.response?.data,
-            message: error.message
+            message: error.message,
+            code: error.code,
+            stack: error.stack
         });
-        return Promise.reject(error);
+
+        // Handle specific error cases
+        if (error.code === 'ERR_NETWORK') {
+            console.error('Network Error: Cannot connect to backend server. Please check if the server is running.');
+            throw new Error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng và thử lại.');
+        }
+
+        if (error.response) {
+            // Handle specific HTTP status codes
+            switch (error.response.status) {
+                case 400:
+                    throw new Error(error.response.data?.message || 'Dữ liệu không hợp lệ');
+                case 401:
+                    throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                case 403:
+                    throw new Error('Bạn không có quyền thực hiện thao tác này');
+                case 404:
+                    throw new Error('Không tìm thấy tài nguyên');
+                case 409:
+                    throw new Error('Email đã được sử dụng');
+                case 500:
+                    throw new Error('Lỗi máy chủ. Vui lòng thử lại sau');
+                default:
+                    throw new Error(error.response.data?.message || 'Đã xảy ra lỗi. Vui lòng thử lại sau');
+            }
+        }
+
+        throw error;
     }
 );
 
 // Auth API
 export const authAPI = {
     login: (email, password) => api.post('/auth/login', { email, password }),
-    register: (fullName, email, password) => api.post('/auth/register', { fullName, email, password }),
+    register: (fullName, email, password, phoneNumber, address) => 
+        api.post('/auth/register', { fullName, email, password, phoneNumber, address }),
 };
 
 // User API
@@ -69,6 +102,14 @@ export const userAPI = {
     getUserProfile: () => {
         return api.get('/users/profile');
     },
+    updateUserProfile: (profileData) => {
+        return api.put('/users/profile', profileData);
+    },
+};
+
+// Test API
+export const testAPI = {
+    testConnection: () => api.get('/auth/test'),
 };
 
 export default api; 

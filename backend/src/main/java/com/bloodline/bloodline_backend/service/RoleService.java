@@ -1,31 +1,41 @@
 package com.bloodline.bloodline_backend.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.bloodline.bloodline_backend.entity.Role;
 import com.bloodline.bloodline_backend.repository.RoleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-
-@Service
-@RequiredArgsConstructor // Lombok sẽ tự tạo constructor với các final fields
+@org.springframework.stereotype.Service
 public class RoleService {
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    // Xóa bỏ annotation @Autowired ở đây
-    // Constructor được tạo tự động bởi @RequiredArgsConstructor
-    
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
-    
-    public Role getRoleByName(String roleName) {
-        return roleRepository.findByRoleName(roleName);
-    }
-    
+
     public Role getRoleById(Integer id) {
-        return roleRepository.findById(id).orElse(null);
+        return roleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+    }
+
+    public Role createRole(Role role) {
+        return roleRepository.save(role);
+    }
+
+    public Role updateRole(Integer id, Role roleDetails) {
+        Role role = getRoleById(id);
+        role.setRoleName(roleDetails.getRoleName());
+        return roleRepository.save(role);
+    }
+
+    public void deleteRole(Integer id) {
+        Role role = getRoleById(id);
+        roleRepository.delete(role);
+    }
+
+    public Role getRoleByName(String roleName) {
+        return roleRepository.findByRoleName(roleName)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
     }
 }
