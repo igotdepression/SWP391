@@ -1,18 +1,35 @@
 /* Styling cho BookingDetails.jsx */
 
+:root {
+    --primary-dark-blue: #0a3d62; /* Xanh đậm */
+    --primary-blue: #2563eb;      /* Xanh dương chính */
+    --primary-green: #34A853;     /* Xanh lá cây */
+    --light-gray-bg: #f7faff;      /* Nền xám nhạt */
+    --medium-gray-border: #b0c4de; /* Màu border xám */
+    --dark-text: #222;           /* Màu chữ đậm */
+    --light-text: #fff;          /* Màu chữ sáng */
+    --shadow-light: rgba(10,61,98,0.07); /* Bóng đổ nhẹ */
+    --shadow-medium: rgba(10,61,98,0.10); /* Bóng đổ trung bình */
+    --section-bg-light: #eaf0fa;   /* Nền section sáng hơn */
+    --button-hover-blue: #1e4bbf;  /* Xanh dương hover */
+    --button-hover-green: #2d8b4b; /* Xanh lá hover */
+}
+
 .booking-details-content {
-    padding: 20px;
-    max-width: 900px;
-    margin: 20px auto;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px; /* Increased padding */
+    max-width: 900px; /* Consistent with BookingCreate form width */
+    margin: 30px auto; /* Consistent margin */
+    background-color: var(--light-text); /* White background */
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: var(--shadow-medium); /* Stronger shadow */
+    box-sizing: border-box; /* Ensure padding doesn't add to total width */
 }
 
 .booking-details-section h2 {
     text-align: center;
-    color: #333;
-    margin-bottom: 10px;
+    color: var(--primary-dark-blue); /* Dark blue for headings */
+    margin-bottom: 25px; /* More space below heading */
+    font-size: 2rem; /* Larger font size */
 }
 
 .booking-details-section .description {
@@ -20,23 +37,25 @@
     color: #666;
     margin-bottom: 30px;
     font-style: italic;
+    font-size: 1.1rem; /* Slightly larger description */
 }
 
 .summary-card {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
+    background-color: var(--section-bg-light); /* Light background for cards */
+    border: 1px solid var(--medium-gray-border); /* Consistent border */
+    border-radius: 10px; /* Slightly more rounded */
     padding: 25px;
     margin-bottom: 25px;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-light); /* Lighter shadow for cards */
 }
 
 .summary-card h3 {
-    color: #007bff;
+    color: var(--primary-blue); /* Blue for card subheadings */
     margin-top: 0;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--medium-gray-border); /* Consistent border color */
+    font-size: 1.6rem; /* Larger subheading */
 }
 
 .detail-row {
@@ -55,7 +74,7 @@
 }
 
 .detail-row strong {
-    color: #333;
+    color: var(--dark-text); /* Dark text for labels */
     flex-shrink: 0; /* Prevent strong from shrinking */
     margin-right: 15px; /* Space between label and value */
 }
@@ -67,19 +86,21 @@
 }
 
 .participants-summary .participant-detail-block {
-    background-color: #f0f8ff; /* Light blue */
-    border: 1px solid #cce5ff;
-    border-radius: 6px;
-    padding: 15px;
-    margin-bottom: 15px;
+    background-color: var(--light-gray-bg); /* Use light-gray-bg for participant blocks */
+    border: 1px solid var(--medium-gray-border);
+    border-radius: 8px; /* Consistent border radius */
+    padding: 20px; /* Adjusted padding */
+    margin-bottom: 20px; /* Increased margin */
+    box-shadow: var(--shadow-light); /* Consistent shadow */
 }
 
 .participants-summary .participant-detail-block h4 {
-    color: #0056b3;
+    color: var(--primary-blue); /* Primary blue for participant name headings */
     margin-top: 0;
-    margin-bottom: 10px;
-    border-bottom: 1px dashed #aed9ff;
-    padding-bottom: 8px;
+    margin-bottom: 15px; /* More space below heading */
+    border-bottom: 1px dashed var(--medium-gray-border); /* Consistent border */
+    padding-bottom: 10px; /* Adjusted padding */
+    font-size: 1.4rem; /* Larger font size */
 }
 
 .participants-summary .participant-detail-block .detail-row {
@@ -96,46 +117,78 @@
 
 .booking-actions {
     display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin-top: 30px;
+    justify-content: center; /* Center buttons */
+    gap: 20px; /* Space between buttons */
+    margin-top: 40px; /* More margin at the top */
 }
 
 .btn-edit, .btn-confirm-final {
-    flex: 1;
-    padding: 15px 25px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #fff;
+    /* Removed flex: 1; to allow buttons to size based on content/padding */
+    padding: 15px 30px; /* Increased padding for buttons */
+    font-size: 1.15rem; /* Larger font size for buttons */
+    font-weight: 700; /* Bolder text */
+    color: var(--light-text);
     border: none;
-    border-radius: 5px;
+    border-radius: 8px; /* Consistent border radius */
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform for hover effect */
 }
 
 .btn-edit {
-    background-color: #6c757d; /* Gray */
+    background-color: var(--medium-gray-border); /* Use medium gray for edit */
+    color: var(--dark-text); /* Dark text for edit button */
 }
 
 .btn-edit:hover {
-    background-color: #5a6268;
+    background-color: #a7b7cd; /* Slightly darker grey on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
 }
 
 .btn-confirm-final {
-    background-color: #28a745; /* Green */
+    background-color: var(--primary-green); /* Use primary green for confirm */
 }
 
 .btn-confirm-final:hover {
-    background-color: #218838;
+    background-color: var(--button-hover-green); /* Darker green on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .booking-details-content {
-        margin: 10px;
-        padding: 15px;
+        margin: 15px;
+        padding: 20px;
     }
     .booking-actions {
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
+    }
+    .btn-edit, .btn-confirm-final {
+        padding: 12px 25px;
+        font-size: 1.05rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .booking-details-content {
+        padding: 15px;
+        margin: 10px;
+    }
+    .booking-details-section h2 {
+        font-size: 1.7rem;
+        margin-bottom: 20px;
+    }
+    .summary-card h3 {
+        font-size: 1.4rem;
+    }
+    .participants-summary .participant-detail-block h4 {
+        font-size: 1.2rem;
+    }
+    .detail-row {
+        font-size: 0.95em;
+    }
+    .btn-edit, .btn-confirm-final {
+        padding: 10px 20px;
+        font-size: 1rem;
     }
 }

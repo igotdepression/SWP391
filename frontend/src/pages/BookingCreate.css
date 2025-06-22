@@ -136,6 +136,15 @@
     flex-grow: 1; /* Allow input to grow */
   }
   
+  .header-nav .active {
+      background: #fff;
+      color: #0066b3 !important;
+      font-weight: bold;
+      border-bottom: 4px solid #fff;
+      border-radius: 6px 6px 0 0;
+      padding: 0 10px;
+    }
+  
   .header-search-btn {
     background: none;
     border: none;
@@ -146,15 +155,6 @@
     border-radius: 50%;
     transition: background-color 0.3s ease;
   }
-  
-  .header-nav .active {
-      background: #fff;
-      color: #0066b3 !important;
-      font-weight: bold;
-      border-bottom: 4px solid #fff;
-      border-radius: 6px 6px 0 0;
-      padding: 0 10px;
-    }
   
   .header-search-btn:hover {
     background-color: rgba(0, 0, 0, 0.1);
@@ -307,6 +307,24 @@
       font-size: 1.4rem;
       border-bottom: 1px solid var(--medium-gray-border);
       padding-bottom: 10px;
+  }
+
+  .participant-form .form-group-inline {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .participant-form .form-group-inline label {
+    margin-bottom: 8px;
+  }
+
+  .participant-form .participant-sub-label {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    font-style: italic;
   }
   
   /* --- SUBMIT BUTTON --- */
@@ -501,7 +519,9 @@
           gap: 15px;
       }
   
-      
+      .participant-form .form-group-inline {
+        flex-direction: column; /* Stack label and select vertically on small screens */
+      }
   }
   
   /* Responsive adjustments for header */

@@ -1,4 +1,3 @@
-// Header.jsx
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -11,12 +10,6 @@ export default function Header() {
     const { goToLogin, goToProfile, goToHistory, goToSignUp } = useNavigation();
     const navigate = useNavigate();
     const [showDropdown, setShowDropdown] = useState(false);
-
-    // Các hàm điều hướng
-    // const goToAbout = () => navigate('/about'); // Không cần thiết nếu dùng NavLink
-    // const goToServices = () => navigate('/services'); // Không cần thiết nếu dùng NavLink
-    // const goToInfo = () => navigate('/info'); // Không cần thiết nếu dùng NavLink
-    // const goToBookingCreate = () => navigate('/booking-create'); // Không cần thiết nếu dùng NavLink
 
     const handleProfileClick = () => {
         setShowDropdown(!showDropdown);
@@ -32,8 +25,10 @@ export default function Header() {
             <div className="adn-header-content"> {/* Thêm div bọc nội dung */}
 
                 <div className="adn-footer-logo">
-                    <Link to="/home"></Link>
-                    <img src="/logo.png" alt="ADN Logo" />
+                    {/* Đảm bảo logo là một phần của Link để click được */}
+                    <Link to="/home">
+                        <img src="/logo.png" alt="ADN Logo" />
+                    </Link>
                 </div>
                 <nav className="adn-header-nav"> {/* Sử dụng class mới */}
                     <ul>
@@ -75,6 +70,14 @@ export default function Header() {
                                 className={({ isActive }) => isActive ? "active" : ""}
                             >
                                 <span className="nav-icon"></span> ĐẶT LỊCH HẸN
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                to="/manager"
+                                className={({ isActive }) => isActive ? "active" : ""}
+                            >
+                                <span className="nav-icon"></span> BẢNG ĐIỀU KHIỂN
                             </NavLink>
                         </li>
                     </ul>

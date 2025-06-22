@@ -215,7 +215,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     text-align: center;
     padding: 20px; /* Thêm padding cho nội dung */
 }

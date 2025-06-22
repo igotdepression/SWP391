@@ -47,7 +47,7 @@ export default function Footer() {
                         <i className="fas fa-map-marker-alt"></i>
                         <span>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</span>
                     </div>
-                    <span className="adn-footer-label" style={{ marginTop: '1rem' }}>CONTACT US</span>
+                    <span className="adn-footer-label" style={{ marginTop: '1rem' }}> CONTACT US</span>
                     <div className="contact-item">
                         <i className="fas fa-phone-alt"></i>
                         <span>02020202304</span>
@@ -63,7 +63,7 @@ export default function Footer() {
                     <span className="adn-footer-label">PAYMENT</span>
                     <div className="payment-icons">
                         <img src="https://cdn.tgdd.vn/2020/04/GameApp/image-180x180.png" alt="ZaloPay" />
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/MoMo_Logo.svg/1200px-MoMo_Logo.svg.png" alt="Momo" />
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo" />
                     </div>
                 </div>
             </div>

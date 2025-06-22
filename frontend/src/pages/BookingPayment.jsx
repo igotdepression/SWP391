@@ -116,9 +116,6 @@ export default function BookingPayment() {
                             <strong>Ngày hẹn:</strong> <span>{bookingData.appointmentDate}</span>
                         </div>
                         <div className="detail-row">
-                            <strong>Giờ hẹn:</strong> <span>{bookingData.appointmentTime}</span>
-                        </div>
-                        <div className="detail-row">
                             <strong>Ghi chú:</strong> <span>{bookingData.notes || 'Không có'}</span>
                         </div>
                         <div className="total-price-display">
@@ -160,8 +157,8 @@ export default function BookingPayment() {
                                             <h4>Hướng dẫn thanh toán:</h4>
                                             <ol>
                                                 <li>Chuyển khoản chính xác số tiền: <span className="highlight-price">{totalPrice.toLocaleString('vi-VN')} VNĐ</span></li>
-                                                <li>Nội dung chuyển khoản (rất quan trọng):<br/>
-                                                    <strong className="transfer-content">{user.username} - {user.phoneNumber || 'SĐT của bạn'} - {bookingData.serviceType.substring(0, 10) + '...'}</strong><br/>
+                                                <li>Nội dung chuyển khoản (rất quan trọng):<br />
+                                                    <strong className="transfer-content">{user.username} - {user.phoneNumber || 'SĐT của bạn'} - {bookingData.serviceType.substring(0, 10) + '...'}</strong><br />
                                                     (Ví dụ: **NguyenVanA - 0987654321 - XNA Cha con...**)
                                                 </li>
                                                 <li>Hệ thống sẽ tự động xác nhận thanh toán trong vòng 5-15 phút.</li>
