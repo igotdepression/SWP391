@@ -1,0 +1,124 @@
+/* Staff/Sample.css */
+.sample-management-container {
+    padding: 20px;
+    background-color: #f4f5fa;
+    min-height: calc(100vh - var(--navbar-height, 60px));
+}
+
+.sample-add-card {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.sample-add-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #343a40;
+    font-size: 1.4em;
+}
+
+.add-sample-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.add-sample-form input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.add-sample-form button {
+    width: 100%;
+}
+
+.sample-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sample-controls .search-input {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.sample-controls .filter-select {
+    width: 220px; /* Increased width for longer options */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    background-color: #fff;
+}
+
+.sample-list-card {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sample-list-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #343a40;
+    font-size: 1.4em;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.data-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Specific status colors for Sample Management */
+.status-badge.status-pending { background-color: #ffeccf; color: #b76e00; } /* Light orange */
+.status-badge.status-received { background-color: #d1ecf1; color: #0a5666; } /* Light blue-green */
+.status-badge.status-testing { background-color: #e6e6fa; color: #551a8b; } /* Light purple */
+.status-badge.status-completed { background-color: #d4edda; color: #155724; } /* Green */
+
+.sample-actions button {
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .sample-controls, .add-sample-form {
+        flex-direction: column;
+    }
+    .sample-controls .filter-select {
+        width: 100%;
+    }
+}

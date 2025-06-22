@@ -1,0 +1,84 @@
+/* Staff/PersonalInfo.css */
+.personal-info-container {
+    padding: 20px;
+    background-color: #f4f5fa;
+    min-height: calc(100vh - var(--navbar-height, 60px));
+}
+
+.personal-info-card {
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+    margin: 0 auto; /* Center the card */
+}
+
+.personal-info-card h3 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #343a40;
+    font-size: 1.6em;
+    text-align: center;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
+    font-size: 0.95em;
+}
+
+.info-item p {
+    margin: 0;
+    padding: 8px 0;
+    font-size: 1em;
+    color: #333;
+    border-bottom: 1px solid #eee; /* Subtle underline for display mode */
+}
+
+.info-item input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 1em;
+    width: calc(100% - 24px); /* Account for padding */
+}
+
+.info-item.full-width {
+    grid-column: 1 / -1; /* Spans across all columns */
+}
+
+.personal-info-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.personal-info-actions button {
+    min-width: 120px;
+}
+
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr; /* Stack items on smaller screens */
+    }
+    .personal-info-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

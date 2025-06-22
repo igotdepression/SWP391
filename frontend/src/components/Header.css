@@ -19,13 +19,14 @@
 
 .adn-header-logo {
     display: flex;
+    width: fit-content; /* Đảm bảo logo không chiếm quá nhiều không gian */
     align-items: center;
     padding: 5px 10px; /* Thêm padding để tạo khoảng trống quanh logo */
     border-radius: 5px; /* Bo góc nhẹ cho nền trắng */
 }
 
 .adn-header-logo img { /* Đã đổi từ .adn-header-logo img */
-    height: 25px; /* Kích thước logo */
+    height: 20px; /* Kích thước logo */
 }
 
 .adn-header-nav {
@@ -35,7 +36,6 @@
     padding-bottom: 0; /* Không cần padding cho thanh cuộn */
     min-width: 0; /* Cho phép nó co lại nhỏ hơn fit-content nếu cần */
 }
-
 
 .adn-header-nav ul {
     list-style: none;
@@ -262,7 +262,7 @@
         padding: 0.5rem 0.2rem; /* Giảm padding ngang */
     }
 
-    .adn-footer-logo img {
+    .adn-header-logo img {
         height: 30px; /* Giảm kích thước logo */
     }
 
@@ -312,7 +312,7 @@
         font-size: 0.55rem; /* Kích thước font nhỏ nhất có thể đọc được */
         padding: 0.15rem 0.08rem;
     }
-    .adn-footer-logo img {
+    .adn-header-logo img {
         height: 25px; /* Giảm kích thước logo */
     }
     .adn-header-user-avatar {
