@@ -1,0 +1,136 @@
+/* Staff/Consultation.css */
+.consultation-container {
+    padding: 20px;
+    background-color: #f4f5fa;
+    min-height: calc(100vh - var(--navbar-height, 60px));
+}
+
+.consultation-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.consultation-controls .search-input {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.consultation-controls .filter-select {
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    background-color: #fff;
+}
+
+.consultation-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* List takes 2/3, detail takes 1/3 */
+    gap: 20px;
+}
+
+.consultation-list-card,
+.consultation-detail-card {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.consultation-list-card h3,
+.consultation-detail-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #343a40;
+    font-size: 1.4em;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.data-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Specific status colors for Consultation */
+.status-badge.status-new { background-color: #e0f2f7; color: #00838f; } /* Teal-ish */
+.status-badge.status-in-progress { background-color: #ffe0b2; color: #ff6f00; } /* Orange-ish */
+.status-badge.status-completed { background-color: #c8e6c9; color: #2e7d32; } /* Green-ish */
+
+.consultation-detail-card p {
+    margin-bottom: 10px;
+    font-size: 0.95em;
+}
+
+.consultation-detail-card strong {
+    color: #555;
+}
+
+.notes-section, .status-update-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #eee;
+}
+
+.notes-section h4, .status-update-section h4 {
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.notes-section textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 0.9em;
+    min-height: 100px;
+    resize: vertical;
+}
+
+.notes-section button, .status-update-section button {
+    margin-right: 10px;
+}
+
+@media (max-width: 992px) {
+    .consultation-content {
+        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .consultation-controls {
+        flex-direction: column;
+    }
+    .consultation-controls .filter-select {
+        width: 100%;
+    }
+}

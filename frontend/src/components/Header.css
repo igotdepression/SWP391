@@ -1,0 +1,327 @@
+/* Header.css */
+
+.adn-header {
+    background-color: #1A4064; /* Màu nền xanh đậm từ hình ảnh */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Shadow nổi hơn */
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.adn-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px; /* Đảm bảo chiều rộng tối đa */
+    margin: 0 auto; /* Căn giữa header */
+}
+
+.adn-header-logo {
+    display: flex;
+    width: fit-content; /* Đảm bảo logo không chiếm quá nhiều không gian */
+    align-items: center;
+    padding: 5px 10px; /* Thêm padding để tạo khoảng trống quanh logo */
+    border-radius: 5px; /* Bo góc nhẹ cho nền trắng */
+}
+
+.adn-header-logo img { /* Đã đổi từ .adn-header-logo img */
+    height: 20px; /* Kích thước logo */
+}
+
+.adn-header-nav {
+    overflow-x: hidden; /* Ẩn thanh cuộn */
+    flex-grow: 1; /* Cho phép nav chiếm không gian còn lại */
+    margin: 0 1.5rem; /* Tăng margin ngang để có lề lớn hơn */
+    padding-bottom: 0; /* Không cần padding cho thanh cuộn */
+    min-width: 0; /* Cho phép nó co lại nhỏ hơn fit-content nếu cần */
+}
+
+.adn-header-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.2rem; /* Tăng khoảng cách giữa các mục menu */
+    flex-wrap: nowrap; /* Cực kỳ quan trọng: Ngăn các mục xuống dòng */
+    justify-content: center; /* Căn giữa các mục */
+}
+
+.adn-header-nav a {
+    color: #ffffff; /* Chữ trắng để nổi bật trên nền xanh đậm */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    padding: 0.4rem 0.4rem; /* Tăng padding ngang */
+    font-size: 0.78rem; /* Điều chỉnh kích thước font chữ */
+    flex-shrink: 0; /* Ngăn các mục co lại quá mức */
+    white-space: nowrap; /* Đảm bảo chữ không xuống dòng */
+}
+
+.adn-header-nav a:hover {
+    color: #f0f0f0; /* Sáng hơn một chút khi hover */
+    border-bottom: 2px solid #f0f0f0; /* Gạch chân nhẹ khi hover */
+}
+
+.adn-header-nav a.active {
+    background-color: transparent; /* Loại bỏ background nếu không muốn */
+    color: #FFD700; /* Màu vàng hoặc màu nổi bật khác cho active link */
+    font-weight: bold;
+    border-bottom: 2px solid #FFD700; /* Gạch chân đậm cho active link */
+    padding-bottom: calc(0.4rem - 2px); /* Điều chỉnh padding cho active link */
+}
+
+.adn-header-right { /* Wrapper cho search và user/login */
+    display: flex;
+    align-items: center;
+    gap: 0.8rem; /* Giảm khoảng cách */
+}
+
+.adn-header-search {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15); /* Nền tìm kiếm hơi trong suốt */
+    border-radius: 20px;
+    padding: 0.4rem 0.8rem; /* Giảm padding */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Viền nhẹ */
+}
+
+.adn-header-search input {
+    border: none; /* Loại bỏ border */
+    background: transparent; /* Background trong suốt */
+    outline: none;
+    width: 100px; /* Điều chỉnh chiều rộng input */
+    padding: 0; /* Đặt lại padding */
+    font-size: 0.85rem; /* Giảm font size */
+    color: #ffffff; /* Chữ trắng trong ô tìm kiếm */
+    transition: width 0.3s ease;
+}
+
+.adn-header-search input::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Màu placeholder nhạt hơn */
+}
+
+.adn-header-search input:focus {
+    width: 140px; /* Mở rộng khi focus */
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4); /* Shadow nhẹ khi focus */
+}
+
+.adn-header-user-avatar {
+    width: 35px; /* Giảm kích thước avatar */
+    height: 35px; /* Giảm kích thước avatar */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white; /* Đảm bảo màu chữ avatar nổi bật */
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem; /* Giảm font size */
+    border: 2px solid #FFD700; /* Viền vàng cho avatar */
+}
+
+.adn-header-user-name {
+    font-weight: 500;
+    color: #ffffff; /* Chữ trắng cho tên người dùng */
+    font-size: 0.9rem; /* Giảm font size */
+}
+
+.adn-header-login-btn {
+    background: #e74c3c; /* Giữ màu đỏ cam cho login */
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem; /* Giảm padding */
+    border-radius: 25px; /* Bo tròn hơn */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 600; /* Đậm hơn */
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.2); /* Thêm shadow */
+}
+
+.adn-header-login-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px); /* Nhấn nhá khi hover */
+    box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
+}
+
+.header-user-profile-area {
+    position: relative;
+    cursor: pointer;
+    display: flex; /* Đảm bảo căn chỉnh avatar và tên */
+    align-items: center;
+    gap: 8px; /* Giảm khoảng cách */
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px); /* Cách header một chút */
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Shadow nổi hơn */
+    border-radius: 8px; /* Bo tròn hơn */
+    min-width: 160px; /* Giảm min-width */
+    z-index: 1001;
+    overflow: hidden;
+    animation: fadeIn 0.2s ease-out; /* Thêm hiệu ứng fade in */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+.dropdown-item {
+    padding: 10px 12px; /* Giảm padding */
+    color: #333;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 0.9rem; /* Giảm font size */
+}
+
+.dropdown-item:hover {
+    background-color: #007bff; /* Màu xanh khi hover */
+    color: #ffffff;
+}
+
+.dropdown-item:last-child {
+    border-top: 1px solid #eee;
+}
+
+.header-login-register-buttons {
+    display: flex;
+    gap: 8px; /* Giảm khoảng cách */
+    align-items: center;
+}
+
+.header-button {
+    background-color: #FFD700; /* Màu vàng cho nút Đăng kí */
+    color: #1A4064; /* Chữ xanh đậm trên nền vàng */
+    border: none;
+    padding: 6px 12px; /* Giảm padding */
+    border-radius: 20px; /* Bo tròn hơn */
+    cursor: pointer;
+    font-size: 0.85rem; /* Giảm font size */
+    font-weight: 600; /* Đậm hơn */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-button:hover {
+    background-color: #e0b800; /* Vàng đậm hơn khi hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .adn-header {
+        padding: 0.8rem 1rem; /* Giảm padding tổng thể */
+    }
+    .adn-header-nav ul {
+        gap: 0.8rem; /* Tăng khoảng cách cho màn hình này */
+    }
+    .adn-header-nav a {
+        font-size: 0.7rem; /* Giảm font-size */
+        padding: 0.3rem 0.2rem; /* Điều chỉnh padding */
+    }
+    .adn-header-search input {
+        width: 80px; /* Thu hẹp input tìm kiếm */
+        font-size: 0.8rem;
+    }
+    .adn-header-search input::placeholder {
+        font-size: 0.8rem;
+    }
+    .adn-header-search input:focus {
+        width: 120px; /* Mở rộng khi focus */
+    }
+    .adn-header-right {
+        gap: 0.5rem; /* Giảm khoảng cách */
+    }
+    .adn-header-user-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    .adn-header-user-name {
+        font-size: 0.8rem;
+    }
+    .adn-header-login-btn, .header-button {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .adn-header-content {
+        justify-content: space-between; /* Giữ khoảng cách giữa các phần tử chính */
+        gap: 0.2rem; /* Giảm gap giữa các phần tối đa */
+        padding: 0.5rem 0.2rem; /* Giảm padding ngang */
+    }
+
+    .adn-header-logo img {
+        height: 30px; /* Giảm kích thước logo */
+    }
+
+    .adn-header-nav {
+        margin: 0 0.1rem; /* Giảm margin ngang tối đa */
+    }
+
+    .adn-header-nav ul {
+        gap: 0.5rem; /* Tăng khoảng cách tối thiểu giữa các mục menu */
+    }
+    .adn-header-nav a {
+        font-size: 0.6rem; /* Giữ font-size */
+        padding: 0.2rem 0.15rem; /* Tăng padding tối thiểu */
+    }
+    
+    .adn-header-right {
+        gap: 5px; /* Giảm khoảng cách tối đa */
+    }
+    .adn-header-search {
+        display: none; /* Ẩn thanh tìm kiếm */
+    }
+    .adn-header-user-avatar {
+        width: 25px;
+        height: 25px;
+        font-size: 0.8rem;
+    }
+    .adn-header-user-name {
+        display: none; /* Ẩn tên người dùng */
+    }
+    .header-login-register-buttons {
+        gap: 5px;
+    }
+    .header-button, .adn-header-login-btn {
+        padding: 3px 6px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .adn-header {
+        padding: 0.4rem 0.1rem; /* Giảm padding tổng thể tối đa */
+    }
+    .adn-header-nav ul {
+        gap: 0.2rem; /* Tăng khoảng cách tối thiểu */
+    }
+    .adn-header-nav a {
+        font-size: 0.55rem; /* Kích thước font nhỏ nhất có thể đọc được */
+        padding: 0.15rem 0.08rem;
+    }
+    .adn-header-logo img {
+        height: 25px; /* Giảm kích thước logo */
+    }
+    .adn-header-user-avatar {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+    }
+    .header-button, .adn-header-login-btn {
+        padding: 2px 4px;
+        font-size: 0.65rem;
+    }
+}
