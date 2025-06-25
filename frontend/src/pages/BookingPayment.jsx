@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import './BookingPayment.css';
+import api from '../services/api';
 
 // Import hình ảnh QR code (bạn cần đặt file QR này vào thư mục public hoặc assets)
 // Ví dụ: import qrCodeImage from '../assets/vietcombank_qr.png';
@@ -49,39 +50,38 @@ export default function BookingPayment() {
             alert('Vui lòng chọn một phương thức thanh toán.');
             return;
         }
-
-        setIsConfirmed(true); // Đặt trạng thái đã xác nhận để hiển thị thông báo chờ xử lý
-
-        // Đây là nơi bạn sẽ gọi API backend để tạo/cập nhật đơn hàng
-        // và gửi thông tin thanh toán.
+        if (!bookingData || !bookingData.bookingID) {
+            alert('Không tìm thấy mã booking. Vui lòng đặt lịch lại!');
+            return;
+        }
+        setIsConfirmed(true);
         try {
-            // Ví dụ: Gửi dữ liệu đặt lịch và phương thức thanh toán lên backend
-            // const response = await fetch('/api/create-booking-and-payment', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Authorization': `Bearer ${user.token}` // Nếu có token xác thực
-            //     },
-            //     body: JSON.stringify({ bookingData, paymentMethod, totalPrice })
-            // });
-
-            // if (!response.ok) {
-            //     const errorData = await response.json();
-            //     throw new Error(errorData.message || 'Lỗi khi ghi nhận đơn hàng.');
-            // }
-
-            // const result = await response.json();
-            // console.log('Đơn hàng đã được ghi nhận:', result);
-
-            // Giả lập API call thành công sau 2 giây
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            alert(`Đơn hàng của bạn đã được ghi nhận và đang chờ thanh toán bằng phương thức "${paymentMethod}". Cảm ơn bạn!`);
-            navigate('/booking-history'); // Chuyển hướng đến lịch sử đặt lịch hoặc trang xác nhận thành công
+            // Gửi thông tin payment lên backend
+            const response = await api.post('/payments/create', {
+                bookingID: bookingData.bookingID,
+                paymentMethod,
+                amount: totalPrice
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${user.token}` // Nếu cần xác thực
+                }
+            });
+            if (response.status !== 200) {
+                let errorMsg = 'Lỗi khi ghi nhận thanh toán.';
+                try {
+                    const errorData = await response.json();
+                    errorMsg = errorData.message || errorMsg;
+                } catch (e) {
+                    const errorText = await response.text();
+                    errorMsg = errorText || errorMsg;
+                }
+                throw new Error(errorMsg);
+            }
+            alert('Thanh toán đã được ghi nhận!');
+            navigate('/booking-history');
         } catch (error) {
-            console.error('Lỗi khi xử lý thanh toán:', error);
             alert('Xử lý thanh toán thất bại. Vui lòng thử lại. Lỗi: ' + error.message);
-            setIsConfirmed(false); // Đặt lại trạng thái nếu có lỗi
+            setIsConfirmed(false);
         }
     };
 
