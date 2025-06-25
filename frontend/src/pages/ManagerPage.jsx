@@ -5,11 +5,12 @@ import "./ManagerPage.css"; // Đảm bảo file CSS này có các style cần t
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { getAvatarColor, getInitials } from '../utils/avatarUtils'; // Đảm bảo utils này tồn tại
-import { FaTachometerAlt, FaUsers, FaNewspaper, FaDollarSign, FaCreditCard, FaStar, FaVial, FaUserAlt } from 'react-icons/fa';
+import { FaTachometerAlt, FaNewspaper, FaDollarSign, FaCreditCard, FaStar, FaVial, FaUserAlt } from 'react-icons/fa';
+// Đã xóa FaUsers vì không còn sử dụng cho quản lý nhân viên
 
 // Import các component con
 import DashboardManager from './Manager/Dashboard';
-import StaffManagement from './Manager/StaffManagement';
+// Đã xóa import StaffManagement từ đây
 import BlogPost from './Manager/BlogPost';
 import ServicePrice from './Manager/ServicePrice';
 import Payment from './Manager/Payment';
@@ -23,34 +24,22 @@ export default function ManagerPage() {
     const navigate = useNavigate();
 
     const [activeMenuItem, setActiveMenuItem] = useState("dashboard");
-    const [employees, setEmployees] = useState([
-        { id: 1, name: "Nguyễn Văn A", email: "a@example.com", role: "Nhân viên", status: "Active" },
-        { id: 2, name: "Trần Thị B", email: "b@example.com", role: "Quản lý", status: "Inactive" },
-        // ... (các dòng dữ liệu mẫu khác)
-        { id: 3, name: "Lê Văn C", email: "c@example.com", role: "Nhân viên", status: "Active" },
-        { id: 4, name: "Phạm Thị D", email: "d@example.com", role: "Nhân viên", status: "Active" },
-        { id: 5, name: "Hoàng Đình E", email: "e@example.com", role: "Nhân viên", status: "Inactive" },
-        { id: 6, name: "Đỗ Thị F", email: "f@example.com", role: "Quản lý", status: "Active" },
-        { id: 7, name: "Ngô Văn G", email: "g@example.com", role: "Nhân viên", status: "Active" },
-        { id: 8, name: "Bùi Thị H", email: "h@example.com", role: "Nhân viên", status: "Inactive" },
-        { id: 9, name: "Trương Văn I", email: "i@example.com", role: "Nhân viên", status: "Active" },
-        { id: 10, name: "Đặng Thị K", email: "k@example.com", role: "Quản lý", status: "Active" },
-        { id: 11, name: "Võ Văn L", email: "l@example.com", role: "Nhân viên", status: "Active" },
-        { id: 12, name: "Cao Thị M", email: "m@example.com", role: "Nhân viên", status: "Inactive" },
-    ]);
+    // Đã xóa các state liên quan đến nhân viên: employees, setEmployees, detailEmployee, setDetailEmployee, employeeSearchTerm, setEmployeeSearchTerm
+    // const [employees, setEmployees] = useState([...]); // Xóa dòng này và dữ liệu mẫu
+    // const [detailEmployee, setDetailEmployee] = useState(null); // Xóa dòng này
+    // const [employeeSearchTerm, setEmployeeSearchTerm] = useState(""); // Xóa dòng này
+
     const [orders, setOrders] = useState([
         { id: "ORD001", customer: "Khách hàng X", date: "2023-01-15", status: "New" },
         { id: "ORD002", customer: "Khách hàng Y", date: "2023-01-10", status: "Processing" },
     ]);
-    const [detailEmployee, setDetailEmployee] = useState(null);
     const [detailOrder, setDetailOrder] = useState(null);
 
-    const [employeeSearchTerm, setEmployeeSearchTerm] = useState("");
     const [orderSearchTerm, setOrderSearchTerm] = useState("");
 
     const sidebarMenuItems = [
         { key: "dashboard", label: "Tổng quan", icon: <FaTachometerAlt /> }, // Icon cho Dashboard
-        { key: "nhanvien", label: "Quản lý phân quyền nhân viên", icon: <FaUsers /> }, // Icon cho Nhân viên
+        // Đã xóa { key: "nhanvien", label: "Quản lý phân quyền nhân viên", icon: <FaUsers /> },
         { key: "blogpost", label: "Quản lý bài đăng", icon: <FaNewspaper /> }, // Icon cho Bài đăng
         { key: "banggia", label: "Quản lý giá dịch vụ", icon: <FaDollarSign /> }, // Icon cho Giá dịch vụ
         { key: "payments", label: "Quản lý thanh toán", icon: <FaCreditCard /> }, // Icon cho Thanh toán
@@ -75,11 +64,12 @@ export default function ManagerPage() {
         navigate('/login');
     };
 
-    const employeeFilterOptions = [
-        { value: "", label: "Tất cả vai trò" },
-        { value: "nhanvien", label: "Nhân viên" },
-        { value: "quanly", label: "Quản lý" },
-    ];
+    // Đã xóa employeeFilterOptions vì không còn sử dụng
+    // const employeeFilterOptions = [
+    //     { value: "", label: "Tất cả vai trò" },
+    //     { value: "nhanvien", label: "Nhân viên" },
+    //     { value: "quanly", label: "Quản lý" },
+    // ];
 
     const getHeaderContent = () => {
         switch (activeMenuItem) {
@@ -90,18 +80,19 @@ export default function ManagerPage() {
                     showFilter: false,
                     showAddNew: false,
                 };
-            case "nhanvien":
-                return {
-                    title: "Quản lý nhân viên",
-                    showSearch: true,
-                    onSearchChange: (value) => setEmployeeSearchTerm(value),
-                    showFilter: true,
-                    filterOptions: employeeFilterOptions,
-                    onFilterChange: (value) => console.log("Lọc nhân viên theo:", value),
-                    showAddNew: true,
-                    addNewText: "Thêm nhân viên mới",
-                    onAddNewClick: () => alert("Thêm nhân viên mới!"),
-                };
+            // Đã xóa case "nhanvien"
+            // case "nhanvien":
+            //     return {
+            //         title: "Quản lý nhân viên",
+            //         showSearch: true,
+            //         onSearchChange: (value) => setEmployeeSearchTerm(value),
+            //         showFilter: true,
+            //         filterOptions: employeeFilterOptions,
+            //         onFilterChange: (value) => console.log("Lọc nhân viên theo:", value),
+            //         showAddNew: true,
+            //         addNewText: "Thêm nhân viên mới",
+            //         onAddNewClick: () => alert("Thêm nhân viên mới!"),
+            //     };
             case "blogpost":
                 return {
                     title: "Quản lý bài đăng",
@@ -171,8 +162,9 @@ export default function ManagerPage() {
         switch (activeMenuItem) {
             case "dashboard":
                 return <DashboardManager />;
-            case "nhanvien":
-                return <StaffManagement employees={employees} setDetailEmployee={setDetailEmployee} />;
+            // Đã xóa case "nhanvien"
+            // case "nhanvien":
+            //     return <StaffManagement employees={employees} setDetailEmployee={setDetailEmployee} />;
             case "blogpost":
                 return <BlogPost orders={orders} setDetailOrder={setDetailOrder} />;
             case "banggia":

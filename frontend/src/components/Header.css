@@ -13,7 +13,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px; /* Đảm bảo chiều rộng tối đa */
+    max-width: 1400px; /* Đảm bảo chiều rộng tối đa */
     margin: 0 auto; /* Căn giữa header */
 }
 
@@ -31,11 +31,13 @@
 
 .adn-header-nav {
     overflow-x: hidden; /* Ẩn thanh cuộn */
+    
     flex-grow: 1; /* Cho phép nav chiếm không gian còn lại */
     margin: 0 1.5rem; /* Tăng margin ngang để có lề lớn hơn */
     padding-bottom: 0; /* Không cần padding cho thanh cuộn */
     min-width: 0; /* Cho phép nó co lại nhỏ hơn fit-content nếu cần */
 }
+
 
 .adn-header-nav ul {
     list-style: none;
@@ -45,6 +47,9 @@
     gap: 1.2rem; /* Tăng khoảng cách giữa các mục menu */
     flex-wrap: nowrap; /* Cực kỳ quan trọng: Ngăn các mục xuống dòng */
     justify-content: center; /* Căn giữa các mục */
+    overflow-y: hidden;
+    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .adn-header-nav a {
@@ -56,6 +61,7 @@
     font-size: 0.78rem; /* Điều chỉnh kích thước font chữ */
     flex-shrink: 0; /* Ngăn các mục co lại quá mức */
     white-space: nowrap; /* Đảm bảo chữ không xuống dòng */
+    font-size: 20px;
 }
 
 .adn-header-nav a:hover {
@@ -195,6 +201,8 @@
     display: flex;
     gap: 8px; /* Giảm khoảng cách */
     align-items: center;
+    justify-content: center; /* Căn giữa các nút */
+    flex-shrink: 0; /* Ngăn các nút co lại quá mức */   
 }
 
 .header-button {

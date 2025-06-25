@@ -1,15 +1,20 @@
 // pages/Manager/Feedback.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Button } from '../../components/ui/ui'; // Điều chỉnh đường dẫn ui nếu cần
+import './Feedback.css'; // Giả sử bạn có file CSS để định dạng bảng
+
+const fakeFeedbacks = [
+    { id: 1, customer: 'Nguyễn Văn A', rating: 5, comment: 'Dịch vụ rất tốt!', createdAt: '2024-06-01', status: 'published' },
+    { id: 2, customer: 'Trần Thị B', rating: 4, comment: 'Nhanh chóng, chuyên nghiệp.', createdAt: '2024-06-02', status: 'pending' }
+];
 
 // Đổi tên component từ ReviewsManagement thành Feedback
 export default function Feedback() {
-    const feedbacks = [ // Đổi tên biến từ reviews thành feedbacks cho phù hợp
-        { id: 'FB001', customer: 'Khách hàng 1', rating: 5, comment: 'Dịch vụ rất tốt, nhanh chóng và chuyên nghiệp.', date: '2023-06-10', type: 'Đánh giá' },
-        { id: 'FB002', customer: 'Khách hàng 2', rating: 4, comment: 'Hơi chậm một chút nhưng kết quả đáng tin cậy.', date: '2023-06-08', type: 'Đánh giá' },
-        { id: 'FB003', customer: 'Khách hàng 3', rating: 5, comment: 'Nhân viên nhiệt tình, hỗ trợ chu đáo.', date: '2023-06-05', type: 'Đánh giá' },
-        { id: 'FB004', customer: 'Khách hàng 4', rating: null, comment: 'Tôi có một câu hỏi về kết quả xét nghiệm.', date: '2023-06-01', type: 'Phản hồi' },
-    ];
+    const [feedbacks, setFeedbacks] = useState([]);
+
+    useEffect(() => {
+        setTimeout(() => setFeedbacks(fakeFeedbacks), 300);
+    }, []);
 
     return (
         <Card className="info-card">
@@ -22,9 +27,9 @@ export default function Feedback() {
                             <th>ID</th>
                             <th>Khách hàng</th>
                             <th>Đánh giá</th>
-                            <th>Bình luận/Phản hồi</th>
-                            <th>Loại</th> {/* Thêm cột loại */}
-                            <th>Ngày</th>
+                            <th>Bình luận</th>
+                            <th>Ngày gửi</th>
+                            <th>Trạng thái</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -35,8 +40,8 @@ export default function Feedback() {
                                 <td>{feedback.customer}</td>
                                 <td>{feedback.rating ? '⭐'.repeat(feedback.rating) + ` (${feedback.rating} sao)` : 'N/A'}</td> {/* Hiển thị sao nếu có */}
                                 <td>{feedback.comment}</td>
-                                <td>{feedback.type}</td> {/* Hiển thị loại */}
-                                <td>{feedback.date}</td>
+                                <td>{feedback.createdAt}</td>
+                                <td>{feedback.status}</td>
                                 <td>
                                     <Button size="sm">Chi tiết</Button>
                                     <Button size="sm" variant="danger" className="ml-2">Xóa</Button>

@@ -1,0 +1,105 @@
+.blogpost-card {
+    max-width: 1000px; /* Tăng chiều rộng */
+    margin: 32px auto;
+    padding: 35px 30px; /* Tăng padding */
+    background: linear-gradient(135deg, #e6f0ff 0%, #f0f8ff 100%); /* Nền gradient nhẹ nhàng */
+    border-radius: 18px; /* Bo góc lớn hơn */
+    box-shadow: 0 8px 30px rgba(80, 112, 255, 0.15); /* Bóng đổ mạnh hơn */
+    border: 1.5px solid #c0d8ff; /* Viền màu xanh nhạt */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.blogpost-card h3 {
+    margin-bottom: 25px; /* Khoảng cách dưới tiêu đề */
+    color: #0056b3; /* Màu tiêu đề xanh đậm */
+    font-size: 2rem; /* Kích thước lớn hơn */
+    font-weight: 800; /* Rất đậm */
+    letter-spacing: 0.5px; /* Giảm letter-spacing để dễ đọc */
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Bóng chữ nhẹ */
+}
+
+.blogpost-card table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff; /* Nền bảng trắng */
+    border-radius: 15px; /* Bo góc bảng */
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(80, 112, 255, 0.1); /* Bóng đổ nhẹ hơn cho bảng */
+}
+
+.blogpost-card th,
+.blogpost-card td {
+    padding: 16px 20px; /* Tăng padding cho ô */
+    text-align: left;
+}
+
+.blogpost-card th {
+    background: linear-gradient(90deg, #3f51b5 0%, #4caf50 100%); /* Nền header xanh-xanh lá cây */
+    color: #fff;
+    font-weight: 700;
+    border-bottom: 2px solid #a7d9f7; /* Viền dưới header */
+    font-size: 1.05rem;
+}
+
+.blogpost-card tr:nth-child(even) td {
+    background: #f5f8ff; /* Nền xen kẽ màu xanh rất nhạt */
+}
+
+.blogpost-card tr:hover td {
+    background: #dbeaff; /* Nền khi hover màu xanh sáng hơn */
+    transition: background 0.3s ease;
+}
+
+.blogpost-card td {
+    color: #444; /* Màu chữ đậm hơn */
+    border-bottom: 1px solid #e0e7ff; /* Viền dưới nhẹ nhàng */
+    font-size: 1rem;
+    line-height: 1.4; /* Tăng chiều cao dòng để dễ đọc */
+}
+
+.blogpost-status-published {
+    color: #0c7a2b; /* Màu xanh lá đậm hơn */
+    font-weight: 700; /* Đậm hơn */
+    background: #d1fae5; /* Nền xanh lá nhạt */
+    border-radius: 15px; /* Bo tròn hơn */
+    padding: 5px 12px; /* Tăng padding */
+    display: inline-block;
+    min-width: 90px; /* Đảm bảo chiều rộng tối thiểu */
+    text-align: center;
+}
+
+.blogpost-status-draft {
+    color: #b45309; /* Màu cam đậm hơn */
+    font-weight: 700; /* Đậm hơn */
+    background: #ffecc6; /* Nền cam nhạt */
+    border-radius: 15px; /* Bo tròn hơn */
+    padding: 5px 12px; /* Tăng padding */
+    display: inline-block;
+    min-width: 90px;
+    text-align: center;
+}
+
+/* Styles cho nút Tạo bài đăng mới */
+.blogpost-card .action-button {
+    background-color: #28a745; /* Màu xanh lá cho nút thêm mới */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-left: auto; /* Đẩy nút sang phải */
+    display: block; /* Để margin-left: auto hoạt động */
+    width: fit-content; /* Điều chỉnh chiều rộng theo nội dung */
+    margin-top: 25px; /* Khoảng cách trên nút */
+}
+
+.blogpost-card .action-button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}

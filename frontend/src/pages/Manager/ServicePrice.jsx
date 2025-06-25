@@ -1,13 +1,33 @@
 // pages/Manager/ServicePrice.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Button } from '../../components/ui/ui'; // Điều chỉnh đường dẫn ui nếu cần
+import './ServicePrice.css'; // Giả sử bạn có file CSS để định dạng bảng
+
+const fakeServices = [
+    {
+        id: 1,
+        name: 'Xét nghiệm ADN cha con',
+        price: 2500000,
+        status: 'active',
+        createdAt: '2024-05-01',
+        updatedAt: '2024-06-01'
+    },
+    {
+        id: 2,
+        name: 'Xét nghiệm ADN mẹ con',
+        price: 2300000,
+        status: 'inactive',
+        createdAt: '2024-05-10',
+        updatedAt: '2024-06-05'
+    }
+];
 
 export default function ServicePrice() {
-    const services = [
-        { id: 'S001', name: 'Xét nghiệm ADN huyết thống', price: '5,000,000 VND', description: 'Kiểm tra mối quan hệ huyết thống.' },
-        { id: 'S002', name: 'Xét nghiệm ADN pháp lý', price: '7,500,000 VND', description: 'Dành cho các mục đích pháp lý.' },
-        { id: 'S003', name: 'Xét nghiệm ADN di truyền', price: '10,000,000 VND', description: 'Phân tích gen di truyền.' },
-    ];
+    const [services, setServices] = useState([]);
+
+    useEffect(() => {
+        setTimeout(() => setServices(fakeServices), 300);
+    }, []);
 
     return (
         <Card className="info-card">
@@ -20,7 +40,9 @@ export default function ServicePrice() {
                             <th>ID</th>
                             <th>Tên Dịch vụ</th>
                             <th>Giá</th>
-                            <th>Mô tả</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Ngày cập nhật</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -29,8 +51,10 @@ export default function ServicePrice() {
                             <tr key={service.id}>
                                 <td>{service.id}</td>
                                 <td>{service.name}</td>
-                                <td>{service.price}</td>
-                                <td>{service.description}</td>
+                                <td>{service.price.toLocaleString()} VNĐ</td>
+                                <td>{service.status}</td>
+                                <td>{service.createdAt}</td>
+                                <td>{service.updatedAt}</td>
                                 <td>
                                     <Button size="sm">Sửa</Button>
                                     <Button size="sm" variant="danger" className="ml-2">Xóa</Button>
