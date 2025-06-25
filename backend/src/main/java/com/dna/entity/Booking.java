@@ -63,4 +63,7 @@ public class Booking {
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private TestResult testResult;
+    
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Feedback feedback;
 }
