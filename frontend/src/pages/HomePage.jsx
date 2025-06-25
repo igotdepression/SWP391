@@ -9,6 +9,7 @@ import { getAvatarColor, getInitials } from '../utils/avatarUtils';
 import { useNavigation } from '../hooks/useNavigation';
 
 const labSlides = [
+<<<<<<< HEAD
   { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRemWZjv5ir6K4K2RMsjfA5-KCMN5rUDgBVkA&s', icon: '/img/icon-lab-blue.png'},
   { img: 'https://img.docnhanh.vn/images/uploads/2024/04/08/xet-nghiem-adn-585.png', icon: '/img/icon-lab-blue.png'},
   { img: 'https://zalo-article-photo.zadn.vn/c2707386aad0438e1ac1#333778904', icon: '/img/icon-lab-blue.png'},
@@ -19,6 +20,18 @@ const labSlides = [
   { img: 'https://genplus.vn/wp-content/uploads/2022/07/xet-nghiem-ADN-tai-TP-HCM-24-1.jpg', icon: '/img/icon-lab-blue.png'},
   { img: 'https://genplus.vn/wp-content/uploads/2022/10/xet-nghiem-adn-thai-nguyen-4.jpg', icon: '/img/icon-lab-blue.png'},
   { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDgmiwU7-l35jziKuayzp9_KVgfYl65-UnVQ&s', icon: '/img/icon-lab-blue.png'}
+=======
+  { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRemWZjv5ir6K4K2RMsjfA5-KCMN5rUDgBVkA&s', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://img.docnhanh.vn/images/uploads/2024/04/08/xet-nghiem-adn-585.png', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://zalo-article-photo.zadn.vn/c2707386aad0438e1ac1#333778904', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://phuongnamhospital.com/wp-content/uploads/2024/08/cac-dich-vu-xet-nghiem-adn-tai-da-khoa-phuong-nam-da-lat.jpg', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://static-images.vnncdn.net/vps_images_publish/000001/000003/2024/6/17/giam-dinh-adn-680.jpg?width=260&s=kEz5ph5JV8GCloNtIBNw1g', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://ccrd.org.vn/wp-content/uploads/2023/10/p31.jpg', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://ccrd.org.vn/wp-content/uploads/2023/10/BV-DK-Tam-Tri-Dong-Thap-4.jpg', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://genplus.vn/wp-content/uploads/2022/07/xet-nghiem-ADN-tai-TP-HCM-24-1.jpg', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://genplus.vn/wp-content/uploads/2022/10/xet-nghiem-adn-thai-nguyen-4.jpg', icon: '/img/icon-lab-blue.png' },
+  { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDgmiwU7-l35jziKuayzp9_KVgfYl65-UnVQ&s', icon: '/img/icon-lab-blue.png' }
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 ];
 
 const services = [
@@ -88,7 +101,11 @@ function HomePage() {
         <div className="adn-main">
           <div className="adn-banner">
             <div className="adn-banner-img">
+<<<<<<< HEAD
               <img src="https://login.medlatec.vn//ImagePath/images/20200306/20200306_xet-nghiem-adn-het-bao-nhieu-tien-01.jpg" alt="ADN Test Banner" />
+=======
+              <img src="https://genplus.vn/wp-content/uploads/2022/10/xet-nghiem-adn-bac-giang-3.jpg" alt="ADN Test Banner" />
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
             </div>
             <div className="adn-banner-content adn-banner-center">
               <div className="adn-banner-intro">

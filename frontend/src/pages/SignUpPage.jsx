@@ -15,7 +15,11 @@ const SignUpPage = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   // Location states
   const [selectedProvince, setSelectedProvince] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
@@ -49,7 +53,11 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
     // Validate all required fields
     if (!name || !email || !password || !confirmPassword || !selectedProvince || !selectedDistrict || !selectedCommune || !phoneNumber) {
       setError('Vui lòng nhập đầy đủ thông tin!');
@@ -59,12 +67,18 @@ const SignUpPage = () => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+<<<<<<< HEAD
         setError('Email không hợp lệ!');
         return;
+=======
+      setError('Email không hợp lệ!');
+      return;
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
     }
 
     // Validate password length
     if (password.length < 6) {
+<<<<<<< HEAD
         setError('Mật khẩu phải có ít nhất 6 ký tự!');
         return;
     }
@@ -72,13 +86,27 @@ const SignUpPage = () => {
     if (password !== confirmPassword) {
         setError('Mật khẩu xác nhận không khớp!');
         return;
+=======
+      setError('Mật khẩu phải có ít nhất 6 ký tự!');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Mật khẩu xác nhận không khớp!');
+      return;
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
     }
 
     // Validate phone number format (Vietnamese phone number)
     const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
     if (!phoneRegex.test(phoneNumber)) {
+<<<<<<< HEAD
         setError('Số điện thoại không hợp lệ!');
         return;
+=======
+      setError('Số điện thoại không hợp lệ!');
+      return;
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
     }
 
     setLoading(true);
@@ -87,6 +115,7 @@ const SignUpPage = () => {
       const district = districts.find(d => d.code === selectedDistrict)?.name;
       const commune = communes.find(c => c.code === selectedCommune)?.name;
       const address = `${commune}, ${district}, ${province}`;
+<<<<<<< HEAD
       
       const response = await authAPI.register(
           name,
@@ -110,6 +139,31 @@ const SignUpPage = () => {
         setLoading(false);
         setError(err.message || 'Đăng ký thất bại! Vui lòng thử lại sau.');
         console.error('Registration error:', err);
+=======
+
+      const response = await authAPI.register(
+        name,
+        email,
+        password,
+        phoneNumber,
+        address // Pass the address here
+      );
+
+      if (response.data) {
+        // Đăng ký thành công, tự động đăng nhập
+        const result = await login(email, password);
+        setLoading(false);
+        if (result.success) {
+          navigate('/home');
+        } else {
+          setError(result.error || 'Đăng nhập thất bại sau khi đăng ký!');
+        }
+      }
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || 'Đăng ký thất bại! Vui lòng thử lại sau.');
+      console.error('Registration error:', err);
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
     }
   };
 
@@ -165,14 +219,22 @@ const SignUpPage = () => {
             <input
               type="password"
               name="confirmPassword"
+<<<<<<< HEAD
               placeholder="xác nhận mật khẩu"
+=======
+              placeholder="Xác nhận mật khẩu"
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               autoComplete="new-password"
             />
           </div>
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
           {/* Location Selection */}
           <div className="input-group">
             <select
@@ -188,7 +250,11 @@ const SignUpPage = () => {
               ))}
             </select>
           </div>
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
           <div className="input-group">
             <select
               value={selectedDistrict}
@@ -204,7 +270,11 @@ const SignUpPage = () => {
               ))}
             </select>
           </div>
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
           <div className="input-group">
             <select
               value={selectedCommune}
