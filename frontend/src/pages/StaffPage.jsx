@@ -5,7 +5,7 @@ import "./ManagerPage.css"; // Vẫn sử dụng ManagerPage.css như bạn yêu
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { getAvatarColor, getInitials } from '../utils/avatarUtils'; // Đảm bảo utils này tồn tại
-import { FaTachometerAlt, FaCalendarAlt, FaVial, FaUserAlt, FaQuestionCircle } from 'react-icons/fa'; // Import FaQuestionCircle
+import { FaTachometerAlt, FaCalendarAlt, FaVial, FaFileAlt, FaUserAlt, FaQuestionCircle } from 'react-icons/fa'; // Import FaQuestionCircle
 
 // Import các component con từ thư mục Staff
 // (Giả định các file này đã tồn tại hoặc sẽ được tạo trong cấu trúc Staff/)
@@ -18,10 +18,18 @@ import PersonalInfo from './Staff/PersonalInfo'; // Thông tin cá nhân
 
 
 export default function StaffPage() {
-    const { user } = useAuth(); // Lấy thông tin người dùng từ AuthContext
+    const { user } = useAuth();
     const navigate = useNavigate();
 
-    const [activeMenuItem, setActiveMenuItem] = useState("dashboard");
+    // Lấy menu đang chọn từ localStorage, nếu chưa có thì mặc định là "dashboard"
+    const [activeMenuItem, setActiveMenuItem] = useState(() => {
+        return localStorage.getItem("staff_active_menu") || "dashboard";
+    });
+
+    // Khi activeMenuItem thay đổi thì lưu vào localStorage
+    useEffect(() => {
+        localStorage.setItem("staff_active_menu", activeMenuItem);
+    }, [activeMenuItem]);
 
     // Các state dữ liệu mẫu cho Staff (không còn employee hay order chung)
     const [bookings, setBookings] = useState([
@@ -51,10 +59,10 @@ export default function StaffPage() {
     // Sidebar menu items với FaQuestionCircle cho Consultation
     const sidebarMenuItems = [
         { key: "dashboard", label: "Tổng quan", icon: <FaTachometerAlt /> },
-        { key: "booking", label: "Quản lý Đơn đặt dịch vụ", icon: <FaCalendarAlt /> },
         { key: "consultation", label: "Quản lý Đơn tư vấn", icon: <FaQuestionCircle /> },
+        { key: "booking", label: "Quản lý Đơn đặt dịch vụ", icon: <FaCalendarAlt /> },
         { key: "sample", label: "Quản lý Mẫu xét nghiệm", icon: <FaVial /> },
-        { key: "testResults", label: "Quản lý Kết quả xét nghiệm", icon: <FaVial /> }, // Sử dụng FaVial hoặc FaFileAlt tùy thích
+        { key: "testResults", label: "Quản lý Kết quả xét nghiệm", icon: <FaFileAlt /> }, // Sử dụng FaVial hoặc FaFileAlt tùy thích
         { key: "personalInfo", label: "Thông tin cá nhân", icon: <FaUserAlt /> },
     ];
 
@@ -126,53 +134,23 @@ export default function StaffPage() {
                 };
             case "consultation":
                 return {
-                    title: "Quản lý Đơn tư vấn",
-                    showSearch: true,
-                    onSearchChange: (value) => setConsultationSearchTerm(value),
-                    showFilter: true,
-                    filterOptions: consultationFilterOptions,
-                    onFilterChange: (value) => console.log("Lọc đơn tư vấn theo:", value),
-                    showAddNew: true,
-                    addNewText: "Thêm đơn tư vấn",
-                    onAddNewClick: () => alert("Chức năng thêm đơn tư vấn mới!"),
+                    title: "Quản lý Đơn tư vấn"
                 };
             case "sample":
                 return {
-                    title: "Quản lý Mẫu xét nghiệm",
-                    showSearch: true,
-                    onSearchChange: (value) => setSampleSearchTerm(value),
-                    showFilter: true,
-                    filterOptions: sampleFilterOptions,
-                    onFilterChange: (value) => console.log("Lọc mẫu xét nghiệm theo:", value),
-                    showAddNew: true,
-                    addNewText: "Thêm mẫu xét nghiệm",
-                    onAddNewClick: () => alert("Chức năng thêm mẫu xét nghiệm mới!"),
+                    title: "Quản lý Mẫu xét nghiệm"
                 };
             case "testResults":
                 return {
-                    title: "Quản lý Kết quả xét nghiệm",
-                    showSearch: true,
-                    onSearchChange: (value) => setTestResultSearchTerm(value),
-                    showFilter: true,
-                    filterOptions: testResultFilterOptions,
-                    onFilterChange: (value) => console.log("Lọc kết quả xét nghiệm theo:", value),
-                    showAddNew: true,
-                    addNewText: "Thêm kết quả",
-                    onAddNewClick: () => alert("Chức năng thêm kết quả xét nghiệm mới!"),
+                    title: "Quản lý Kết quả xét nghiệm"
                 };
             case "personalInfo":
                 return {
-                    title: "Thông tin cá nhân",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: false,
+                    title: "Thông tin cá nhân"
                 };
             default:
                 return {
-                    title: "Trang nhân viên",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: false,
+                    title: "Trang nhân viên"
                 };
         }
     };
@@ -285,10 +263,6 @@ export default function StaffPage() {
                         {renderMainContent()}
                     </div>
                 </div>
-                <div className="content-wrapper">
-                    {renderMainContent()} {/* Gọi hàm renderMainContent */}
-                </div>
             </main>
-        </div>
-    );
+        </div>);
 }

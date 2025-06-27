@@ -1,136 +1,892 @@
-/* Staff/Consultation.css */
+/* consultation.css */
+
+/* General container styling */
 .consultation-container {
-    padding: 20px;
-    background-color: #f4f5fa;
-    min-height: calc(100vh - var(--navbar-height, 60px));
-}
-
-.consultation-controls {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
     display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.consultation-controls .search-input {
-    flex-grow: 1;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px 12px;
-}
-
-.consultation-controls .filter-select {
-    width: 200px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px 12px;
-    background-color: #fff;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .consultation-content {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* List takes 2/3, detail takes 1/3 */
-    gap: 20px;
+    background-color: #ffffff;
+    border-radius: 30%;
+    width: 100%;
 }
 
-.consultation-list-card,
-.consultation-detail-card {
-    padding: 20px;
+/* Card styling */
+.consultation-list-card {
+    background-color: #ffffff; /* Light grey background */
+    border-radius: 12px; /* Slightly more rounded corners for the card */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* More prominent shadow */
+    padding: 10px;
+    width: 100%;
+    max-width: 100%; /* Wider card */
+    margin-top: 20px;
+}
+
+/* Header styling */
+.consultation-list-card h2 {
+    color: #2c3e50; /* Darker heading color */
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 2.2em; /* Larger font size */
+    font-weight: 600;
+}
+
+/* Controls section (search and filter) */
+.consultation-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-bottom: 25px;
+}
+
+/* Input and Select shared styles */
+.search-input,
+.filter-select,
+.status-dropdown,
+.status-update-select,
+.textarea {
+    border: 1px solid #c8d0d8; /* Light grey border */
+    border-radius: 50px; /* Full border-radius for all inputs/selects/textarea */
+    padding: 12px 20px; /* Generous padding */
+    font-size: 1.05em;
+    color: #333;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.search-input {
+    flex-grow: 2; /* Allow search input to take more space */
+    min-width: 280px;
+}
+
+.filter-select {
+    flex-grow: 1;
+    min-width: 180px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    border: 1px solid #c8d0d8;
+    border-radius: 20px;
+    padding: 12px 20px;
+    font-size: 1.05em;
+    color: #333;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.3%203.2-16.1%208.1-3.9%204.9-4.8%2011.8-2.6%2017.7l139.3%20224.2c3.2%205.1%208.4%208.1%2014%208.1s10.8-3%2014-8.1L289.8%2095.1c2.2-5.9%201.3-12.8-2.6-17.7z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 10px;
 }
 
-.consultation-list-card h3,
-.consultation-detail-card h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #343a40;
-    font-size: 1.4em;
+/* Màu cho từng option (chỉ Chrome/Edge) */
+.filter-select option.filter-option-all {
+    background: #f3f4f6;
+    color: #333;
+}
+.filter-select option.filter-option-new {
+    background: #e0edfd !important;   /* xanh dương nhạt */
+    color: #2563eb !important;        /* xanh dương đậm */
+    border: 1.5px solid #2563eb !important;
+}
+.filter-select option.filter-option-in-progress {
+    background: #fff4e0 !important;   /* cam nhạt */
+    color: #ff9800 !important;        /* cam tươi */
+    border: 1.5px solid #ff9800 !important;
+}
+.filter-select option.filter-option-completed {
+    background: #e6f9f0 !important;   /* xanh lá nhạt */
+    color: #22c55e !important;        /* xanh lá tươi */
+    border: 1.5px solid #22c55e !important;
+}
+.filter-select option.filter-option-cancelled {
+    background: #ffeaea !important;   /* hồng nhạt */
+    color: #ef4444 !important;        /* đỏ tươi */
+    border: 1.5px solid #ef4444 !important;
+}
+
+.filter-select option {
+    padding: 12px 20px; /* Đảm bảo option đều nhau */
+    border-radius: 30px;
+    font-size: 1.05em;
+}
+
+.search-input:focus,
+.filter-select:focus,
+.status-dropdown:focus,
+.status-update-select:focus,
+.textarea:focus {
+    outline: none;
+    border-color: #007bff; /* Blue focus border */
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2); /* Soft blue glow on focus */
+}
+
+/* Table styling */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 10px; /* Match card border-radius somewhat */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Light shadow for table */
 }
 
 .data-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate; /* For border-radius on cells */
+    border-spacing: 0;
+    margin-top: 15px;
+    min-width: 800px; /* Ensure table doesn't get too squished */
 }
 
-.data-table th, .data-table td {
-    padding: 12px 15px;
+.data-table th,
+.data-table td {
+    padding: 15px 20px;
     text-align: left;
-    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef; /* Lighter border */
 }
 
 .data-table th {
-    background-color: #f8f9fa;
-    color: #495057;
+    background-color: #f8f9fa; /* Very light grey header */
+    color: #495057; /* Darker grey text */
     font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    position: sticky; /* Keep header visible on scroll */
+    top: 0;
+    z-index: 1;
+}
+
+.data-table tbody tr:hover {
+    background-color: #eef2f6; /* Subtle hover effect */
 }
 
 .data-table tbody tr:last-child td {
-    border-bottom: none;
+    border-bottom: none; /* No border on last row */
+}
+
+/* Status dropdown in table */
+.status-dropdown {
+    width: 100%; /* Take full width of cell */
+    text-align: center;
+    padding-right: 30px; /* Space for custom arrow */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.3%203.2-16.1%208.1-3.9%204.9-4.8%2011.8-2.6%2017.7l139.3%20224.2c3.2%205.1%208.4%208.1%2014%208.1s10.8-3%2014-8.1L289.8%2095.1c2.2-5.9%201.3-12.8-2.6-17.7z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 8px;
+    border-radius: 30px;
+    font-weight: 500;
+}
+
+/* Status Colors - Applied to select backgrounds and badge text */
+.status-dropdown.status-new,
+.status-badge.status-new {
+    background-color: #b3d8fd !important;   /* pastel blue */
+    color: #2563eb !important;
+}
+.status-dropdown.status-in-progress,
+.status-badge.status-in-progress {
+    background-color: #ffe0b2 !important;   /* pastel orange */
+    color: #b26a00 !important;
+}
+.status-dropdown.status-completed,
+.status-badge.status-completed {
+    background-color: #b9fbc0 !important;   /* pastel green */
+    color: #15803d !important;
+}
+.status-dropdown.status-cancelled,
+.status-badge.status-cancelled {
+    background-color: #ffd6d6 !important;   /* pastel red */
+    color: #c62828 !important;
 }
 
 .status-badge {
-    padding: 5px 10px;
-    border-radius: 4px;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px; /* Rounded badge */
     font-size: 0.85em;
-    font-weight: 600;
+    font-weight: bold;
     text-transform: capitalize;
+    white-space: nowrap;
 }
 
-/* Specific status colors for Consultation */
-.status-badge.status-new { background-color: #e0f2f7; color: #00838f; } /* Teal-ish */
-.status-badge.status-in-progress { background-color: #ffe0b2; color: #ff6f00; } /* Orange-ish */
-.status-badge.status-completed { background-color: #c8e6c9; color: #2e7d32; } /* Green-ish */
-
-.consultation-detail-card p {
-    margin-bottom: 10px;
-    font-size: 0.95em;
+/* Action buttons in table - No background, no border, on same line */
+.action-buttons {
+    display: flex;
+    gap: 8px; /* Space between icons */
+    justify-content: center; /* Center icons in the cell */
+    align-items: center;
 }
 
-.consultation-detail-card strong {
-    color: #555;
+.action-buttons button {
+    background: none;
+    border: none;
+    padding: 8px; /* Clickable area */
+    cursor: pointer;
+    display: flex; /* To center SVG */
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Make them perfectly round */
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.notes-section, .status-update-section {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px dashed #eee;
+.action-buttons button:hover {
+    background-color: #e0e0e0; /* Light grey hover background */
+    transform: translateY(-1px); /* Slight lift effect */
 }
 
-.notes-section h4, .status-update-section h4 {
-    margin-bottom: 10px;
+.action-buttons button svg {
+    display: block; /* Ensure SVG fills its container */
+}
+
+/* No consultations message */
+.consultation-list-card > p {
+    text-align: center;
+    color: #6c757d;
+    margin-top: 30px;
+    font-size: 1.1em;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px); /* Subtle blur effect */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #ffffff;
+    padding: 35px;
+    border-radius: 15px; /* More rounded modal corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    position: relative;
+    max-width: 650px; /* Slightly wider modal */
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: fadeInScale 0.3s ease-out; /* Simple entry animation */
+}
+
+.modal-content h3 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: 600;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-content p {
+    margin-bottom: 12px;
+    line-height: 1.7;
     color: #495057;
+    font-size: 1.05em;
 }
 
-.notes-section textarea {
+.modal-content p strong {
+    color: #34495e;
+    min-width: 140px; /* Align labels better */
+    display: inline-block;
+    font-weight: 600;
+}
+
+/* Notes Section in Modal */
+.notes-section {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid #e9ecef;
+}
+
+.notes-section h4 {
+    color: #34495e;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.notes-section .current-notes {
+    background-color: #f8f9fa;
+    border: 1px dashed #ced4da; /* Dashed border for notes */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+    font-style: italic;
+    color: #555;
+    min-height: 80px; /* Ensure some height for notes area */
+    display: flex;
+    align-items: center; /* Vertically center content if short */
+}
+
+/* Textarea for notes */
+.textarea {
     width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 0.9em;
-    min-height: 100px;
+    min-height: 120px; /* Taller textarea */
     resize: vertical;
+    margin-bottom: 15px;
 }
 
-.notes-section button, .status-update-section button {
-    margin-right: 10px;
+/* Status Update Section in Modal */
+.status-update-section {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid #e9ecef;
 }
 
+.status-update-section h4 {
+    color: #34495e;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.status-update-select {
+    flex-grow: 1;
+    min-width: 180px;
+    background-color: #fff;
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.3%203.2-16.1%208.1-3.9%204.9-4.8%2011.8-2.6%2017.7l139.3%20224.2c3.2%205.1%208.4%208.1%2014%208.1s10.8-3%2014-8.1L289.8%2095.1c2.2-5.9%201.3-12.8-2.6-17.7z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 10px;
+}
+
+/* Buttons */
+.Button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 50px; /* Full border-radius for all buttons */
+    cursor: pointer;
+    font-size: 1.05em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Primary Button (e.g., Save, Confirm) */
+.Button:not([variant="outline"]):not([variant="destructive"]) {
+    background-color: #007bff; /* Primary blue */
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+.Button:not([variant="outline"]):not([variant="destructive"]):hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Outline Button (e.g., Cancel) */
+.Button[variant="outline"] {
+    background-color: transparent;
+    color: #007bff;
+    border: 2px solid #007bff; /* Thicker border for outline */
+    box-shadow: none;
+}
+
+.Button[variant="outline"]:hover {
+    background-color: #007bff; /* Light blue background on hover */
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Destructive Button (e.g., Close Modal) */
+.Button[variant="destructive"] {
+    background-color: #dc3545; /* Red */
+    color: white;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    font-size: 0.95em;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+}
+
+.Button[variant="destructive"]:hover {
+    background-color: #c82333; /* Darker red on hover */
+    box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Custom react-select styles */
+.custom-select__control,
+.status-filter-select .custom-select__control,
+.status-update-select .custom-select__control,
+.status-dropdown .custom-select__control {
+    border-radius: 30px !important;
+    min-height: 44px;
+    font-weight: 600;
+    font-size: 1.05em;
+    border: 1.5px solid #c8d0d8;
+    box-shadow: none;
+    transition: border-color 0.2s;
+}
+.custom-select__control--is-focused {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 4px rgba(0,123,255,0.2) !important;
+}
+.custom-select__menu {
+    border-radius: 20px !important;
+    overflow: hidden;
+    z-index: 10;
+}
+.custom-select__option {
+    border-radius: 30px !important;
+    margin: 2px 8px;
+    font-weight: 600;
+    font-size: 1.05em;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.custom-select__option--is-focused {
+    background-color: #f3f4f6 !important;
+}
+.custom-select__option--is-selected.status-new {
+    background-color: #3167db !important;
+    color: #fff !important;
+}
+.custom-select__option--is-selected.status-in-progress {
+    background-color: #ff9800 !important;
+    color: #fff !important;
+}
+.custom-select__option--is-selected.status-completed {
+    background-color: #22c55e !important;
+    color: #fff !important;
+}
+.custom-select__option--is-selected.status-cancelled {
+    background-color: #ef4444 !important;
+    color: #fff !important;
+}
+/* Màu chữ cho option chưa chọn */
+.custom-select__option.status-new { color: #3167db; }
+.custom-select__option.status-in-progress { color: #ff9800; }
+.custom-select__option.status-completed { color: #22c55e; }
+.custom-select__option.status-cancelled { color: #ef4444; }
+/* Giá trị đã chọn */
+.custom-select__single-value.status-new { color: #3167db; font-weight: 600; }
+.custom-select__single-value.status-in-progress { color: #ff9800; font-weight: 600; }
+.custom-select__single-value.status-completed { color: #22c55e; font-weight: 600; }
+.custom-select__single-value.status-cancelled { color: #ef4444; font-weight: 600; }
+
+/* Bo tròn cho select */
+.status-dropdown,
+.status-update-select {
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    border: 1.5px solid #c8d0d8;
+    background: #fff;
+    color: #333;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: border-color 0.2s;
+}
+
+/* Bo tròn cho option (chỉ hiệu quả trên Chrome/Edge) */
+.status-dropdown option,
+.status-update-select option {
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    margin: 4px 0;
+    text-align: center;
+}
+
+/* Màu nền nổi bật cho từng option */
+.status-option-new {
+    background: #2563eb !important;   /* Xanh dương */
+    color: #fff !important;
+}
+.status-option-in-progress {
+    background: #ff9800 !important;   /* Cam */
+    color: #fff !important;
+}
+.status-option-completed {
+    background: #22c55e !important;   /* Xanh lá */
+    color: #fff !important;
+}
+.status-option-cancelled {
+    background: #ef4444 !important;   /* Đỏ */
+    color: #fff !important;
+}
+
+/* Khi select đang hiển thị giá trị, bo tròn và màu theo trạng thái */
+.status-dropdown.status-new,
+.status-update-select.status-new {
+    background: #2563eb !important;
+    color: #fff !important;
+}
+.status-dropdown.status-in-progress,
+.status-update-select.status-in-progress {
+    background: #ff9800 !important;
+    color: #fff !important;
+}
+.status-dropdown.status-completed,
+.status-update-select.status-completed {
+    background: #22c55e !important;
+    color: #fff !important;
+}
+.status-dropdown.status-cancelled,
+.status-update-select.status-cancelled {
+    background: #ef4444 !important;
+    color: #fff !important;
+}
+
+/* Gradient cho "Tất cả trạng thái" */
+.filter-select.filter-select-all {
+    background: linear-gradient(90deg, #3b82f6 0%, #059669 100%) !important;
+    color: #fff !important;
+}
+
+/* Khi chọn trạng thái "Mới" */
+.filter-select.filter-select-new {
+    background:  #3b82f6  !important;
+    color: #fff !important;
+}
+
+/* Khi chọn trạng thái "Đang xử lý" */
+.filter-select.filter-select-in-progress {
+    background: #f59e42 !important;
+    color: #fff !important;
+}
+
+/* Khi chọn trạng thái "Hoàn thành" */
+.filter-select.filter-select-completed {
+    background: #059669 !important;
+    color: #fff !important;
+}
+
+/* Khi chọn trạng thái "Đã hủy" */
+.filter-select.filter-select-cancelled {
+    background: #f87171 !important;
+    color: #fff !important;
+}
+
+/* Utility classes */
+.flex-gap-10 {
+    display: flex;
+    gap: 15px; /* Increased gap */
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping for responsiveness */
+}
+
+.mt-3 {
+    margin-top: 20px; /* Increased margin-top */
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive adjustments */
 @media (max-width: 992px) {
-    .consultation-content {
-        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    .consultation-list-card {
+        padding: 25px;
+    }
+    .data-table th,
+    .data-table td {
+        padding: 12px 15px;
     }
 }
 
 @media (max-width: 768px) {
     .consultation-controls {
         flex-direction: column;
+        gap: 10px;
     }
-    .consultation-controls .filter-select {
+    .search-input,
+    .filter-select {
         width: 100%;
+        min-width: unset; /* Remove min-width on smaller screens */
+    }
+    .data-table {
+        min-width: unset; /* Allow table to shrink */
+    }
+    .action-buttons {
+        flex-direction: row; /* Keep buttons inline on small screens */
+        justify-content: flex-start;
+    }
+    .modal-content {
+        padding: 25px;
+        width: 95%;
+    }
+    .modal-content h3 {
+        font-size: 1.5em;
+    }
+    .flex-gap-10 {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch; /* Stretch items in column layout */
+    }
+    .flex-gap-10 .Button {
+        width: 100%; /* Full width buttons in column layout */
+    }
+    .Button[variant="destructive"] {
+        top: 15px;
+        right: 15px;
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .consultation-list-card {
+        padding: 15px;
+    }
+    .consultation-list-card h2 {
+        font-size: 1.8em;
+    }
+    .data-table th,
+    .data-table td {
+        padding: 10px 8px;
+        font-size: 0.85em;
+    }
+    .status-dropdown,
+    .status-update-select,
+    .search-input,
+    .filter-select,
+    .textarea {
+        padding: 10px 15px;
+        font-size: 0.95em;
+    }
+    .notes-section .current-notes {
+        padding: 10px;
+        min-height: 60px;
+    }
+}
+
+.filter-select,
+.status-dropdown {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none !important;
+}
+
+/* Màu cho option và trạng thái "Mới" (xanh dương) */
+.filter-select option.filter-option-new {
+    background: #e0edfd !important;   /* xanh dương nhạt */
+    color: #2563eb !important;        /* xanh dương đậm */
+    border: 1.5px solid #2563eb !important;
+}
+.status-option-new,
+.status-dropdown.status-new,
+.status-badge.status-new,
+.custom-select__option.status-new,
+.custom-select__single-value.status-new {
+    color: #013199 !important;
+    border: 1.5px solid #013199 !important;
+    background: #e0edfd !important;
+}
+
+/* Màu cho option và trạng thái "Đang xử lý" (cam) */
+.filter-select option.filter-option-in-progress {
+    background: #faf3e7 !important;   /* cam nhạt */
+    color: #df8600 !important;        /* cam tươi */
+    border: 1.5px solid #df8600 !important;
+}
+.status-option-in-progress,
+.status-dropdown.status-in-progress,
+.status-badge.status-in-progress,
+.custom-select__option.status-in-progress,
+.custom-select__single-value.status-in-progress {
+    color: #df8600 !important;
+    border: 1.5px solid #df8600 !important;
+    background: #faf3e7 !important;
+}
+
+/* Màu cho option và trạng thái "Hoàn thành" (xanh lá) */
+.filter-select option.filter-option-completed {
+    background: #e6f9f0 !important;   /* xanh lá nhạt */
+    color: #086e2d !important;        /* xanh lá tươi */
+    border: 1.5px solid #086e2d !important;
+}
+.status-option-completed,
+.status-dropdown.status-completed,
+.status-badge.status-completed,
+.custom-select__option.status-completed,
+.custom-select__single-value.status-completed {
+    color: #086e2d !important;
+    border: 1.5px solid #086e2d !important;
+    background: #e6f9f0 !important;
+}
+
+/* Màu cho option và trạng thái "Đã hủy" (đỏ) */
+.filter-select option.filter-option-cancelled {
+    background: #ffeaea !important;   /* hồng nhạt */
+    color: #d20000 !important;        /* đỏ tươi */
+    border: 1.5px solid #d20000 !important;
+}
+.status-option-cancelled,
+.status-dropdown.status-cancelled,
+.status-badge.status-cancelled,
+.custom-select__option.status-cancelled,
+.custom-select__single-value.status-cancelled {
+    color: #d20000 !important;
+    border: 1.5px solid #d20000 !important;
+    background: #ffeaea !important;
+}
+
+.consultation-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.consultation-title {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #2563eb;
+    white-space: nowrap;
+}
+
+/* Thống kê dạng card trắng, border gradient, bóng, số lớn bên trái, nội dung bên phải */
+.consultation-stats-row {
+    display: flex;
+    gap: 18px;
+    margin: 0 0 18px 0;
+    flex-wrap: nowrap; /* Không xuống dòng khi đủ 5 thẻ */
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: #fff;
+    border-radius: 50px; /* Bo tròn góc lớn, không bị tròn như hình tròn */
+    padding: 18px 24px 16px 18px;
+    min-width: 0;
+    flex: 1 1 0;
+    box-shadow: 0 4px 18px 0 rgba(80,112,255,0.13);
+    font-weight: 600;
+    font-size: 1em;
+    position: relative;
+    border: 3px solid transparent;
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(120deg, #3b82f6, #22c55e) border-box;
+    transition: box-shadow 0.2s;
+    max-width: 20%;
+    margin: 0;
+    gap: 16px; /* Thêm khoảng cách giữa các phần tử */
+}
+
+.stat-card .stat-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 12px 0 0;
+    font-size: 1.7em;
+    background: #e0edfd; /* Màu nền mặc định xanh dương nhạt */
+    color: #2563eb;      /* Màu icon mặc định xanh dương đậm */
+    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.10);
+    flex-shrink: 0;
+}
+
+/* Màu icon riêng cho từng loại */
+.stat-card.total .stat-icon {
+    background: #e5e7eb;
+    color: #64748b;
+}
+.stat-card.new .stat-icon {
+    background: #e0edfd;
+    color: #2563eb;
+}
+.stat-card.in-progress .stat-icon {
+    background: #fff4e0;
+    color: #ff9800;
+}
+.stat-card.completed .stat-icon {
+    background: #e6f9f0;
+    color: #22c55e;
+}
+.stat-card.cancelled .stat-icon {
+    background: #ffeaea;
+    color: #ef4444;
+}
+
+.stat-card .stat-label {
+    font-size: 1.08em;
+    color: #475569;
+    font-weight: 500;
+    margin: 0 10px 0 0;
+    white-space: nowrap;
+}
+
+.stat-card .stat-value {
+    font-size: 2.1em;
+    font-weight: 800;
+    color: #2563eb;
+    margin: 0 0 0 auto;
+    min-width: 40px;
+    text-align: right;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Đặt lại .stat-info để nằm ngang */
+.stat-card .stat-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    gap: 0;
+}
+
+/* Responsive: xuống dòng khi màn hình nhỏ */
+@media (max-width: 1100px) {
+    .consultation-stats-row {
+        flex-wrap: wrap;
+    }
+    .stat-card {
+        max-width: 48%;
+        margin-bottom: 14px;
+    }
+}
+@media (max-width: 700px) {
+    .stat-card {
+        max-width: 100%;
     }
 }
