@@ -1,0 +1,140 @@
+/* src/components/staff/StaffHeader.css */
+.staff-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #0A3D62; /* A dark blue color, similar to the sidebar and image_88ae22.png */
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 60px; /* Fixed height for consistency */
+}
+
+.staff-header-left {
+    display: flex;
+    align-items: center;
+}
+
+.staff-header-logo-container {
+    margin-right: 20px;
+}
+
+.staff-header-logo {
+    height: 40px; /* Adjust as needed to fit your logo */
+}
+
+.staff-header-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.staff-header-nav li {
+    margin-right: 20px;
+}
+
+.staff-header-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.staff-header-nav a:hover {
+    color: #f0f0f0;
+}
+
+.staff-header-nav a.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 2px;
+    background-color: #fff; /* White underline for active link */
+}
+
+.staff-header-right {
+    display: flex;
+    align-items: center;
+}
+
+.staff-header-search-input {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 20px;
+    width: 200px;
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+    color: white;
+}
+
+.staff-header-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.staff-header-user-profile-area {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.staff-header-user-info {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.staff-header-profile-icon-placeholder {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff; /* Text color for avatar initials */
+}
+
+.staff-profile-dropdown {
+    position: absolute;
+    top: 50px; /* Position below the header */
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 1000;
+    min-width: 180px;
+    color: #333;
+}
+
+.staff-profile-dropdown .dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.staff-profile-dropdown .dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.staff-header-login-button {
+    background-color: #fff;
+    color: #0A3D62;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.staff-header-login-button:hover {
+    background-color: #e0e0e0;
+}

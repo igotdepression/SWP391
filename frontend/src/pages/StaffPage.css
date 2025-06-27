@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Layout: sidebar + main */
 .layout-container {
   display: flex;
@@ -681,3 +682,470 @@ select:focus {
   padding-bottom: 16px;
   border-bottom: 1px solid #eee;
 } 
+=======
+/* ManagerPage.css */
+
+/* Use colors similar to LoginPage/SignUpPage and ManagerPage for consistency */
+:root {
+    --primary-dark-blue: #0a3d62; /* Xanh đậm */
+    --primary-blue: #2563eb;       /* Xanh dương chính */
+    --primary-green: #34A853;      /* Xanh lá cây */
+    --light-gray-bg: #f7faff;      /* Nền xám nhạt */
+    --medium-gray-border: #b0c4de; /* Màu border xám */
+    --dark-text: #222;             /* Màu chữ đậm */
+    --light-text: #fff;            /* Màu chữ sáng */
+    --shadow-light: rgba(10,61,98,0.07); /* Bóng đổ nhẹ */
+    --shadow-medium: rgba(10,61,98,0.10); /* Bóng đổ trung bình */
+    --section-bg-light: #eaf0fa;   /* Nền section sáng hơn */
+    --button-hover-blue: #1e4bbf;  /* Xanh dương hover */
+    --button-hover-green: #2d8b4b; /* Xanh lá hover */
+    /* Custom colors for status badges */
+    --status-new-bg: #E3F2FD; --status-new-text: #1976D2;
+    --status-processing-bg: #FFF3E0; --status-processing-text: #F57C00;
+    --status-waiting-sample-bg: #E0F7FA; --status-waiting-sample-text: #00BCD4;
+    --status-testing-bg: #F3E5F5; --status-testing-text: #9C27B0;
+    --status-completed-bg: #E8F5E9; --status-completed-text: #388E3C;
+    --status-delivered-bg: #E1F5FE; --status-delivered-text: #2196F3;
+    --status-cancelled-bg: #FFEBEE; --status-cancelled-text: #D32F2F;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-gray-bg); /* Consistent with ManagerPage/LoginPage overall background */
+    line-height: 1.6;
+    color: var(--dark-text);
+}
+
+.manager-page-container { /* Changed from .layout-container to match ManagerPage.jsx */
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar { /* Target sidebar specifically within manager-page */
+    width: 320px; /* Đã tăng chiều rộng sidebar để đảm bảo chữ không tràn */
+    background: linear-gradient(135deg, var(--primary-dark-blue) 80%, var(--primary-blue) 100%); /* Gradient from LoginPage */
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.15); /* Add subtle shadow for depth */
+    position: fixed; /* Giữ sidebar cố định */
+    height: 100vh; /* Chiếm toàn bộ chiều cao */
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung sidebar dài */
+    z-index: 1000; /* Đảm bảo sidebar ở trên các phần tử khác */
+}
+
+/* Sidebar Header - Avatar and User Info */
+.sidebar-header { /* This is the container for the user avatar and text */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar-header .logo {
+        width: 150px; /* Consistent with LoginPage */
+        height: 150px; /* Consistent with LoginPage */
+        margin: 0 auto 15px;
+        border-radius: 50%; /* Make it round */
+        background: var(--light-text); /* White background */
+        object-fit: contain; /* Ensure logo fits */
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08); /* Shadow from LoginPage */
+        transition: transform 0.3s, box-shadow 0.3s; /* Add transition for hover effects */
+    }
+    .sidebar-header .logo:hover {
+        transform: scale(1.05) rotate(5deg); /* Hover effect from LoginPage */
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12); /* Stronger shadow on hover */
+    }
+
+.sidebar-header h3 {
+    color: var(--light-text);
+    margin: 8px 0 4px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.sidebar-header p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Sidebar Menu Items */
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Allow nav to take available space */
+}
+
+.sidebar-nav ul li { /* Target the list item itself */
+    margin-bottom: 12px;
+}
+
+.sidebar-nav ul li button { /* Target the button inside the list item */
+    padding: 12px 20px; /* Tăng padding ngang để chữ có không gian và nút trông lớn hơn */
+    border-radius: 6px;
+    color: var(--light-text); /* Đảm bảo màu chữ là trắng khi không được chọn */
+    font-weight: 500;
+    font-size: 0.9rem; /* Giảm nhẹ font-size để chữ chắc chắn nằm gọn */
+    cursor: pointer;
+    display: flex; /* For icon alignment */
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    white-space: nowrap; /* RẤT QUAN TRỌNG: Ngăn chữ xuống dòng */
+    width: 100%; /* Make button take full width of li */
+    text-align: left; /* Align text to left */
+    background: none; /* Remove default button background */
+    border: none; /* Remove default button border */
+}
+
+.sidebar-nav ul li button:hover {
+    background: rgba(255,255,255,0.1); /* Lighter hover from LoginPage */
+    transform: translateX(5px); /* Subtle slide effect */
+}
+
+.sidebar-nav ul li.active button { /* Active state for the button inside active list item */
+    background: var(--primary-blue); /* Primary Blue from LoginPage */
+    color: var(--light-text);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.2); /* Inner shadow for active state */
+}
+
+.sidebar-nav ul li button .icon { /* Target the icon span within the button */
+    margin-right: 12px; /* Tăng nhẹ khoảng cách giữa icon và chữ */
+    font-size: 1.2em; /* Keep original icon size */
+    color: rgba(255,255,255,0.8); /* Slightly less opaque for icons */
+    flex-shrink: 0; /* Đảm bảo icon không bị co lại, giữ nguyên kích thước */
+}
+
+.sidebar-footer { /* Changed from .sidebar .footer */
+    margin-top: auto;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7); /* Consistent with ManagerPage */
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar-footer .note { /* Style for the note text */
+    margin-top: 10px;
+    font-size: 0.85rem; /* Smaller font size for note */
+    color: white; /* Lighter text for note */
+}
+
+.sidebar-footer .logout-button { /* Style for the logout button */
+    background-color: #dc3545; /* Red color for logout */
+    color: var(--light-text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.sidebar-footer .logout-button:hover {
+    background-color: #c82333;
+}
+
+
+/* Main content area */
+.main-content {
+    flex: 1;
+    /* Dùng margin-left để main-content không bị sidebar che khuất */
+    margin-left: 380px; /* CẬP NHẬT để khớp với chiều rộng sidebar mới */
+    background: linear-gradient(90deg, var(--section-bg-light) 0%, var(--light-gray-bg) 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    position: relative; /* Quan trọng để sticky hoạt động bên trong main-content */
+}
+
+/* Container cho nội dung cuộn của main-content */
+.main-content-scrollable {
+    flex-grow: 1; /* Cho phép nó chiếm hết không gian còn lại */
+    overflow-y: auto; /* Cho phép phần này cuộn */
+    min-height: 0; /* Quan trọng để overflow-y hoạt động trong flex container */
+    /* background-color: transparent; */ /* Đảm bảo nó trong suốt để thấy nền của main-content */
+}
+.dashboard-content {
+    padding: 30px; /* Increased padding for main content */
+    max-width: 900px; /* Consistent with BookingCreate form width */
+    margin: 30px auto; /* Centered with consistent margin */
+    background-color: var(--light-text); /* White background for main content */
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: var(--shadow-medium); /* Stronger shadow for main content */
+    box-sizing: border-box; /* Ensure padding doesn't add to total width */
+}
+.content-area {
+    max-width: 100%; /* Đảm bảo content area chiếm hết chiều rộng */
+    background-color: var(--light-text); /* White background for content area */
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Softer shadow for content area */
+    margin-bottom: 15px; /* Space below content area */
+}
+
+/* Page Header (Mapped from .page-header in original CSS to .main-header in JSX) */
+
+.main-header { /* Replaced .page-header */
+    background: var(--light-text); /* White background from ManagerPage/LoginPage form */
+    padding: 16px;
+    border-radius: 12px; /* More rounded */
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 32px var(--shadow-light); /* Softer shadow from ManagerPage */
+    flex-wrap: wrap; /* Allow wrapping for responsiveness */
+    gap: 15px; /* Gap for wrapped items */
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 1.85rem; /* Slightly larger heading */
+    font-weight: 700; /* Bolder */
+    color: var(--primary-dark-blue); /* Dark blue heading from ManagerPage/LoginPage */
+}
+
+/* Header Actions (Mapped from .toolbar in original CSS to .header-actions in JSX) */
+.main-header .header-actions { /* Replaced .toolbar */
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-end; /* Align items to the end */
+    flex-grow: 1; /* Allow actions to take available space */
+}
+
+/* Search Input (Replaced .filter-input) */
+.search-input {
+    border: 1.5px solid var(--medium-gray-border); /* Slightly thicker border */
+    border-radius: 8px; /* More rounded */
+    padding: 10px 14px; /* Adjusted padding */
+    font-size: 1rem; /* Consistent font size */
+    outline: none;
+    color: var(--dark-text);
+    background-color: var(--light-gray-bg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-width: 180px; /* Ensure minimum width */
+    flex-grow: 1; /* Allow to grow */
+}
+.search-input:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+}
+
+/* Filter Select (Replaced .filter-select) */
+.filter-select {
+    border: 1.5px solid var(--medium-gray-border); /* Slightly thicker border */
+    border-radius: 8px; /* More rounded */
+    padding: 10px 14px; /* Adjusted padding */
+    font-size: 1rem; /* Consistent font size */
+    outline: none;
+    color: var(--dark-text);
+    background-color: var(--light-gray-bg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-width: 160px;
+    flex-grow: 1;
+}
+.filter-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+}
+
+/* Primary Action Button (Mapped from .primary-action-button to .action-button) */
+.action-button { /* Replaced .primary-action-button */
+    background: linear-gradient(90deg, var(--primary-blue) 60%, var(--primary-green) 100%); /* Blue to Green gradient */
+    color: var(--light-text);
+    border: none;
+    border-radius: 28px; /* More rounded pill-shape */
+    padding: 10px 22px; /* Adjusted padding */
+    font-size: 1.05rem; /* Slightly larger font */
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* Stronger button shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+    background: linear-gradient(90deg, var(--primary-green) 60%, var(--primary-blue) 100%); /* Gradient direction change on hover */
+}
+
+/* Data Table Container - Common table wrapper */
+/* ManagerPage.jsx uses .table-responsive for this */
+.table-responsive { /* Replaced .data-table-container */
+    background-color: var(--light-text);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Stronger shadow */
+    overflow-x: auto;
+    margin-bottom: 24px;
+    padding: 0; /* Remove padding if table itself has it */
+}
+
+/* Table styling (Mapped from .data-table to direct table selector) */
+.table-responsive table { /* Replaced .data-table */
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem; /* Base font size for table content */
+}
+.table-responsive thead th { /* Replaced .table-header */
+    background: var(--section-bg-light); /* Lighter blue for table header */
+    padding: 14px 20px; /* Increased padding */
+    font-weight: 600;
+    text-align: left;
+    color: var(--primary-dark-blue); /* Dark blue for table header text */
+    text-transform: uppercase; /* Uppercase for header text */
+    font-size: 0.9em; /* Slightly smaller for header text */
+    border-bottom: 2px solid var(--medium-gray-border); /* Stronger border */
+}
+.table-responsive tbody tr { /* Replaced .table-row */
+    border-top: 1px solid #eaf0fa; /* Lighter border */
+    transition: background-color 0.2s ease;
+}
+.table-responsive tbody td { /* Replaced .table-cell */
+    padding: 12px 20px; /* Consistent padding with header */
+    color: var(--dark-text); /* Darker text for readability */
+}
+.table-responsive tbody tr:hover {
+    background: var(--section-bg-light); /* Consistent hover color */
+}
+
+/* Avatar styling - The .user-avatar is for the sidebar, other avatars in table cells are typically smaller */
+/* If other avatars are used in tables, they might need a specific class like .table-avatar */
+/* For now, this .avatar class remains generic, but consider its usage context. */
+.avatar { /* This might be for general avatar usage, not specifically in sidebar */
+    width: 38px; /* Slightly larger avatar */
+    height: 38px;
+    border-radius: 50%; /* Changed to 50% for perfect circle */
+    background: var(--primary-blue); /* Changed to primary blue */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem; /* Adjusted font size */
+    font-weight: 600;
+    margin-right: 10px; /* Increased margin */
+    color: var(--light-text); /* Ensure text is white */
+}
+
+.employee-name-cell {
+    display: flex; /* Changed from !important to standard flex */
+    flex-direction: row;
+    align-items: center; /* Changed from !important to standard align */
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* Status Badges - Consolidated and enhanced */
+.status-badge, .role-badge {
+    padding: 6px 14px; /* Increased padding */
+    border-radius: 20px; /* More rounded, pill-like */
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex; /* Use inline-flex for better icon alignment */
+    align-items: center; /* Align text and ::before */
+    justify-content: center; /* Center content horizontally */
+    text-align: center;
+    min-width: 100px; /* Minimum width for consistency */
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.status-badge::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px; /* Increased margin for dot */
+    flex-shrink: 0; /* Prevent dot from shrinking */
+}
+
+/* Specific status badge colors using CSS variables */
+.status-badge.status-new { background: var(--status-new-bg); color: var(--status-new-text); } /* Adjusted to combine with base class */
+.status-badge.status-new::before { background-color: var(--status-new-text); }
+
+.status-badge.status-processing { background: var(--status-processing-bg); color: var(--status-processing-text); } /* Adjusted */
+.status-badge.status-processing::before { background-color: var(--status-processing-text); }
+
+.status-badge.status-waiting_sample { background: var(--status-waiting-sample-bg); color: var(--status-waiting-sample-text); } /* Adjusted */
+.status-badge.status-waiting_sample::before { background-color: var(--status-waiting-sample-text); }
+
+.status-badge.status-testing { background: var(--status-testing-bg); color: var(--status-testing-text); } /* Adjusted */
+.status-badge.status-testing::before { background-color: var(--status-testing-text); }
+
+.status-badge.status-completed { background: var(--status-completed-bg); color: var(--status-completed-text); } /* Adjusted */
+.status-badge.status-completed::before { background-color: var(--status-completed-text); }
+
+.status-badge.status-delivered { background: var(--status-delivered-bg); color: var(--status-delivered-text); } /* Adjusted */
+.status-badge.status-delivered::before { background-color: var(--status-delivered-text); }
+
+.status-badge.status-cancelled { background: var(--status-cancelled-bg); color: var(--status-cancelled-text); } /* Adjusted */
+.status-badge.status-cancelled::before { background-color: var(--status-cancelled-text); }
+
+
+/* Role Badges */
+.role-badge.role-admin { /* Adjusted */
+    background: var(--medium-gray-border);
+    color: var(--primary-dark-blue);
+    border: 1px solid rgba(0,0,0,0.1); /* Added border */
+}
+.role-badge.role-manager { /* Adjusted */
+    background: #C4D3EF; /* Custom mid-light blue */
+    color: var(--primary-blue);
+    border: 1px solid rgba(0,0,0,0.1); /* Added border */
+}
+.role-badge.role-staff { /* Adjusted */
+    background: #F0F0F0;
+    color: #495057;
+    border: 1px solid rgba(0,0,0,0.1); /* Added border */
+}
+
+/* Manager Actions Cell (assuming this is specific to Staff/Manager tables) */
+.manager-actions-cell {
+    display: flex;
+    gap: 10px; /* Increased gap */
+}
+
+/* Header User Info (from HomePage/ManagerPage style) */
+.header-user-info { /* This class would typically be in a Header component */
+    font-size: 1rem;
+}
+
+.manager-profile-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Các style khác cho manager-profile-info nếu có */
+}
+
+.header-user-profile-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 25px; /* Bo góc nhẹ */
+    background-color: var(--section-bg-light); /* Nền nhẹ nhàng hơn */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header-profile-icon-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-green); /* Màu nền mới cho icon placeholder */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--light-text);
+    flex-shrink: 0;
+}
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
