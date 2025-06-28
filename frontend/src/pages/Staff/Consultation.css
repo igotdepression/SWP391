@@ -61,7 +61,18 @@
 }
 
 .search-input {
-    flex-grow: 2; /* Allow search input to take more space */
+    border: 2.5px solid transparent;
+    border-radius: 50px;
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(120deg, #3b82f6, #22c55e) border-box;
+    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+    padding: 12px 20px;
+    font-size: 1.05em;
+    color: #333;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    flex-grow: 2;
     min-width: 280px;
 }
 
@@ -889,4 +900,79 @@
     .stat-card {
         max-width: 100%;
     }
+}
+
+/* Close button in modal */
+.modal-close-x {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: #888;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.2s;
+}
+.modal-close-x:hover {
+    color: #ef4444;
+}
+.consultation-detail-info > div {
+    margin-bottom: 8px;
+    font-size: 1.08em;
+}
+
+.consultation-content-text {
+    margin-top: 0;
+    font-style: italic;
+    background: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: inline-block;
+    text-align: left;
+    min-width: 180px;
+    max-width: 100%;
+    word-break: break-word;
+}
+
+/* Note modal actions */
+.note-modal-actions {
+    display: flex;
+    gap: 0;
+    margin-top: 8px;
+}
+
+.note-modal-actions .note-save-btn {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.note-modal-actions .note-save-btn:hover {
+    background: #dc2626;
+}
+
+.note-modal-actions .note-save-btn:hover {
+    background: #dc2626;
+}
+
+.note-modal-actions .note-close-btn {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.note-modal-actions .note-close-btn:hover {
+    background: #e5e7eb;
 }
