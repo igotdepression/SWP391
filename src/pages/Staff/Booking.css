@@ -1,0 +1,331 @@
+/* consultation.css */
+
+/* Container & Card */
+.booking-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: #f6f8fa;
+}
+.booking-content {
+    background-color: #ffffff;
+    border-radius: 30px;
+    width: 100%;
+}
+.booking-list-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    padding: 10px;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 20px;
+}
+.booking-list-card h2 {
+    color: #2563eb;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 2.2em;
+    font-weight: 600;
+}
+
+/* Controls */
+.booking-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-bottom: 25px;
+}
+.search-input,
+.filter-select,
+.filter-date {
+    border: 1.5px solid #c8d0d8;
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-size: 1.05em;
+    color: #333;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    background: #f8fafc;
+}
+.search-input {
+    border: 2.5px solid transparent;
+    border-radius: 50px;
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(120deg, #3b82f6, #22c55e) border-box;
+    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+    flex-grow: 2;
+    min-width: 220px;
+}
+.filter-select, .filter-date {
+    flex-grow: 1;
+    min-width: 140px;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 12px 20px;
+    font-size: 1.05em;
+    color: #333;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.reset-filters {
+    background: linear-gradient(90deg, #3b82f6 0%, #22c55e 100%);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.reset-filters:hover {
+    background: linear-gradient(90deg, #2563eb 0%, #16a34a 100%);
+}
+
+/* Table */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 15px;
+    min-width: 900px;
+    background: #fff;
+}
+.data-table th,
+.data-table td {
+    padding: 15px 20px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+.data-table th {
+    background-color: #f1f5f9;
+    color: #2563eb;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.95em;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.data-table tbody tr:hover {
+    background-color: #e0f2fe;
+}
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status badge */
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.95em;
+    font-weight: bold;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+.status-badge.status-Chờ\ xác\ nhận {
+    background-color: #dbeafe !important;
+    color: #2563eb !important;
+}
+.status-badge.status-Hoàn\ thành {
+    background-color: #bbf7d0 !important;
+    color: #15803d !important;
+}
+.status-badge.status-Đã\ hủy {
+    background-color: #fee2e2 !important;
+    color: #c62828 !important;
+}
+
+/* Action buttons */
+.btn-detail {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+    margin-right: 6px;
+}
+.btn-detail:hover {
+    background: #2563eb;
+}
+.btn-confirm {
+    background: #f59e42;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+.btn-confirm:hover {
+    background: #ea580c;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .data-table, .table-responsive {
+        min-width: 600px;
+    }
+    .booking-list-card {
+        padding: 2px;
+    }
+    .booking-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+}
+@media (max-width: 768px) {
+    .booking-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .search-input,
+    .filter-select {
+        width: 100%;
+        min-width: unset;
+    }
+    .data-table {
+        min-width: unset;
+    }
+}
+@media (max-width: 480px) {
+    .booking-list-card {
+        padding: 15px;
+    }
+    .booking-list-card h2 {
+        font-size: 1.8em;
+    }
+    .data-table th,
+    .data-table td {
+        padding: 10px 8px;
+        font-size: 0.85em;
+    }
+    .search-input,
+    .filter-select {
+        padding: 10px 15px;
+        font-size: 0.95em;
+    }
+}
+
+/* Utility classes */
+.flex-gap-10 {
+    display: flex;
+    gap: 15px; /* Increased gap */
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping for responsiveness */
+}
+
+.mt-3 {
+    margin-top: 20px; /* Increased margin-top */
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Close button in modal */
+.modal-close-x {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: #888;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.2s;
+}
+.modal-close-x:hover {
+    color: #ef4444;
+}
+.consultation-detail-info > div {
+    margin-bottom: 8px;
+    font-size: 1.08em;
+}
+
+.consultation-content-text {
+    margin-top: 0;
+    font-style: italic;
+    background: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: inline-block;
+    text-align: left;
+    min-width: 180px;
+    max-width: 100%;
+    word-break: break-word;
+}
+
+/* Note modal actions */
+.note-modal-actions {
+    display: flex;
+    gap: 0;
+    margin-top: 8px;
+}
+
+.note-modal-actions .note-save-btn {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.note-modal-actions .note-save-btn:hover {
+    background: #dc2626;
+}
+
+.note-modal-actions .note-save-btn:hover {
+    background: #dc2626;
+}
+
+.note-modal-actions .note-close-btn {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.note-modal-actions .note-close-btn:hover {
+    background: #e5e7eb;
+}
+
+/* Responsive và các tiện ích khác giữ nguyên như Consultation.css */

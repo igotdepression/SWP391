@@ -1,0 +1,154 @@
+.payment-manager-page {
+    max-width: 1200px; /* Tăng chiều rộng tổng thể */
+    margin: 0 auto;
+    padding: 30px 0; /* Tăng padding */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.dashboard-cards {
+    display: flex;
+    gap: 20px; /* Tăng khoảng cách giữa các card */
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center; /* Căn giữa các card */
+}
+
+.dashboard-card {
+    flex: 1;
+    min-width: 220px; /* Tăng chiều rộng tối thiểu */
+    max-width: 280px; /* Giới hạn chiều rộng tối đa */
+    background: linear-gradient(135deg, #eaf2ff 0%, #f5f8ff 100%); /* Nền gradient nhẹ */
+    border-radius: 18px; /* Bo góc lớn hơn */
+    box-shadow: 0 6px 20px rgba(80, 112, 255, 0.12); /* Bóng đổ rõ ràng */
+    padding: 25px 20px; /* Tăng padding */
+    text-align: center;
+    border: 2px solid #a7d9f7; /* Viền màu xanh nhạt */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng khi hover */
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px); /* Nâng card lên một chút khi hover */
+    box-shadow: 0 10px 30px rgba(80, 112, 255, 0.2); /* Bóng đổ rõ hơn khi hover */
+}
+
+.dashboard-label {
+    color: #6c757d; /* Màu label mềm mại */
+    font-size: 1.05rem; /* Kích thước lớn hơn */
+    margin-bottom: 8px; /* Khoảng cách dưới label */
+    font-weight: 500;
+}
+
+.dashboard-value {
+    font-size: 1.8rem; /* Kích thước giá trị lớn hơn */
+    font-weight: 800; /* Rất đậm */
+    color: #2c3e50; /* Màu giá trị đậm */
+}
+
+.payment-list-card {
+    margin-bottom: 40px; /* Khoảng cách lớn hơn dưới card */
+    background: #ffffff; /* Nền trắng */
+    border-radius: 16px; /* Bo góc lớn hơn */
+    padding: 30px 25px; /* Tăng padding */
+    box-shadow: 0 6px 20px rgba(80, 112, 255, 0.08); /* Bóng đổ rõ hơn */
+    border: 1.5px solid #e0e7ff;
+}
+
+.payment-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; /* Khoảng cách dưới header */
+    flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+    gap: 15px; /* Khoảng cách giữa các phần tử trong header */
+}
+
+.payment-filters {
+    display: flex;
+    gap: 15px; /* Tăng khoảng cách giữa các filter */
+    align-items: center;
+}
+
+.payment-list-card table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    background: #fefefe; /* Nền bảng sáng */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(80, 112, 255, 0.05); /* Bóng đổ nhẹ hơn cho bảng */
+}
+
+.payment-list-card th,
+.payment-list-card td {
+    padding: 15px 20px; /* Tăng padding */
+    text-align: left;
+    border-bottom: 1px solid #e9efff; /* Viền dưới nhẹ nhàng */
+}
+
+.payment-list-card th {
+    background: linear-gradient(90deg, #6200ea 0%, #885cff 100%); /* Nền header màu tím */
+    color: #fff;
+    font-weight: 700;
+    border-bottom: 2px solid #e0e7ff;
+    font-size: 1.05rem;
+}
+
+.payment-list-card tr:nth-child(even) td {
+    background: #f7f9ff; /* Nền xen kẽ màu xanh tím rất nhạt */
+}
+
+.payment-list-card tr:hover td {
+    background: #e0e9ff; /* Nền khi hover màu xanh tím sáng */
+    transition: background 0.3s ease;
+}
+
+.payment-list-card td {
+    color: #444;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.status-badge {
+    padding: 6px 14px; /* Tăng padding */
+    border-radius: 18px; /* Bo tròn hơn */
+    font-size: 0.9em;
+    color: #fff;
+    font-weight: 700; /* Đậm hơn */
+    display: inline-block;
+    min-width: 90px; /* Đảm bảo chiều rộng tối thiểu */
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Thêm bóng đổ nhẹ cho badge */
+}
+.status-completed {
+    background: linear-gradient(45deg, #16a34a 0%, #34d399 100%); /* Gradient xanh lá cây */
+}
+.status-pending {
+    background: linear-gradient(45deg, #f59e42 0%, #fbbf24 100%); /* Gradient cam */
+}
+.status-refunded {
+    background: linear-gradient(45deg, #0ea5e9 0%, #38bdf8 100%); /* Gradient xanh dương */
+}
+.status-cancelled {
+    background: linear-gradient(45deg, #ef4444 0%, #f87171 100%); /* Gradient đỏ */
+}
+
+/* Thêm styles cho Input và Select để phù hợp với giao diện mới */
+.main-header .search-input,
+.main-header .filter-select {
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.main-header .search-input:focus,
+.main-header .filter-select:focus {
+    border-color: #6200ea; /* Màu tím tương ứng với theme */
+    box-shadow: 0 0 0 0.2rem rgba(98, 0, 234, 0.25);
+    outline: none;
+    background-color: #fff;
+}

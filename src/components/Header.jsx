@@ -1,4 +1,3 @@
-// Header.jsx
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -12,12 +11,6 @@ export default function Header() {
     const navigate = useNavigate();
     const [showDropdown, setShowDropdown] = useState(false);
 
-    // Các hàm điều hướng
-    // const goToAbout = () => navigate('/about'); // Không cần thiết nếu dùng NavLink
-    // const goToServices = () => navigate('/services'); // Không cần thiết nếu dùng NavLink
-    // const goToInfo = () => navigate('/info'); // Không cần thiết nếu dùng NavLink
-    // const goToBookingCreate = () => navigate('/booking-create'); // Không cần thiết nếu dùng NavLink
-
     const handleProfileClick = () => {
         setShowDropdown(!showDropdown);
     };
@@ -30,9 +23,11 @@ export default function Header() {
     return (
         <header className="adn-header"> {/* Sử dụng class mới */}
             <div className="adn-header-content"> {/* Thêm div bọc nội dung */}
-                <div className="adn-header-logo"> {/* Sử dụng class mới */}
-                    <Link to="/home"> {/* Thêm Link cho logo */}
-                        <img src="/logo.png" alt="Bloodline Logo" className="header-logo-img" /> {/* Thêm class img */}
+
+                <div className="adn-footer-logo">
+                    {/* Đảm bảo logo là một phần của Link để click được */}
+                    <Link to="/home">
+                        <img src="/logo.png" alt="ADN Logo" />
                     </Link>
                 </div>
                 <nav className="adn-header-nav"> {/* Sử dụng class mới */}
@@ -76,6 +71,24 @@ export default function Header() {
                             >
                                 <span className="nav-icon"></span> ĐẶT LỊCH HẸN
                             </NavLink>
+                        </li>
+                        <li>
+                            {user && user.role === 'MANAGER' && (
+                                <NavLink
+                                    to="/manager"
+                                    className={({ isActive }) => isActive ? "active" : ""}
+                                >
+                                    <span className="nav-icon"></span> BẢNG ĐIỀU KHIỂN
+                                </NavLink>
+                            )}
+                            {user && user.role === 'STAFF' && (
+                                <NavLink
+                                    to="/staff"
+                                    className={({ isActive }) => isActive ? "active" : ""}
+                                >
+                                    <span className="nav-icon"></span> BẢNG ĐIỀU KHIỂN
+                                </NavLink>
+                            )}
                         </li>
                     </ul>
                 </nav>

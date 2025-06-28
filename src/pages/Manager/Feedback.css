@@ -1,0 +1,80 @@
+.feedback-card {
+    max-width: 1000px; /* Tăng chiều rộng */
+    margin: 32px auto;
+    padding: 35px 30px;
+    background: linear-gradient(135deg, #fff0f5 0%, #fcf0f8 100%); /* Nền gradient hồng nhẹ */
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(236, 72, 153, 0.15); /* Bóng đổ rõ ràng */
+    border: 1.5px solid #ffccdd; /* Viền hồng nhạt */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.feedback-card h3 {
+    margin-bottom: 25px;
+    color: #c02d6b; /* Màu tiêu đề hồng đậm */
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+
+.feedback-card table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.1); /* Bóng đổ cho bảng */
+}
+
+.feedback-card th,
+.feedback-card td {
+    padding: 16px 20px;
+    text-align: left;
+}
+
+.feedback-card th {
+    background: linear-gradient(90deg, #ec4899 0%, #f472b6 100%); /* Nền header hồng */
+    color: #fff;
+    font-weight: 700;
+    border-bottom: 2px solid #ffccdd;
+    font-size: 1.05rem;
+}
+
+.feedback-card tr:nth-child(even) td {
+    background: #fff5f8; /* Nền xen kẽ hồng rất nhạt */
+}
+
+.feedback-card tr:hover td {
+    background: #ffecf2; /* Nền khi hover hồng sáng hơn */
+    transition: background 0.3s ease;
+}
+
+.feedback-card td {
+    color: #444;
+    border-bottom: 1px solid #ffccdd;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+/* Thêm các button styles nếu cần cho các hành động trên feedback */
+/* Ví dụ cho nút "Reply" hoặc "Resolve" */
+.feedback-card .button-reply {
+    background-color: #6a0dad; /* Màu tím */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.feedback-card .button-reply:hover {
+    background-color: #530a84;
+    transform: translateY(-1px);
+}
