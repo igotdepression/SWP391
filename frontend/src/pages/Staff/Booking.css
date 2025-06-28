@@ -7,7 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    border: none;
+    background: #f6f8fa;
 }
 .booking-content {
     background-color: #ffffff;
@@ -24,7 +24,7 @@
     margin-top: 20px;
 }
 .booking-list-card h2 {
-    color: #2c3e50;
+    color: #2563eb;
     margin-bottom: 25px;
     text-align: center;
     font-size: 2.2em;
@@ -41,14 +41,16 @@
     margin-bottom: 25px;
 }
 .search-input,
-.filter-select {
-    border: 1px solid #c8d0d8;
+.filter-select,
+.filter-date {
+    border: 1.5px solid #c8d0d8;
     border-radius: 50px;
     padding: 12px 20px;
     font-size: 1.05em;
     color: #333;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    background: #f8fafc;
 }
 .search-input {
     border: 2.5px solid transparent;
@@ -58,11 +60,11 @@
         linear-gradient(120deg, #3b82f6, #22c55e) border-box;
     box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
     flex-grow: 2;
-    min-width: 280px;
+    min-width: 220px;
 }
-.filter-select {
+.filter-select, .filter-date {
     flex-grow: 1;
-    min-width: 180px;
+    min-width: 140px;
     background-color: #fff;
     cursor: pointer;
     border-radius: 20px;
@@ -74,6 +76,20 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+}
+.reset-filters {
+    background: linear-gradient(90deg, #3b82f6 0%, #22c55e 100%);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.reset-filters:hover {
+    background: linear-gradient(90deg, #2563eb 0%, #16a34a 100%);
 }
 
 /* Table */
@@ -87,7 +103,8 @@
     border-collapse: separate;
     border-spacing: 0;
     margin-top: 15px;
-    min-width: 800px;
+    min-width: 900px;
+    background: #fff;
 }
 .data-table th,
 .data-table td {
@@ -97,17 +114,17 @@
     border-bottom: 1px solid #e9ecef;
 }
 .data-table th {
-    background-color: #f8f9fa;
-    color: #495057;
+    background-color: #f1f5f9;
+    color: #2563eb;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 0.9em;
+    font-size: 0.95em;
     position: sticky;
     top: 0;
     z-index: 1;
 }
 .data-table tbody tr:hover {
-    background-color: #eef2f6;
+    background-color: #e0f2fe;
 }
 .data-table tbody tr:last-child td {
     border-bottom: none;
@@ -116,23 +133,23 @@
 /* Status badge */
 .status-badge {
     display: inline-block;
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 0.85em;
+    font-size: 0.95em;
     font-weight: bold;
     text-transform: capitalize;
     white-space: nowrap;
 }
 .status-badge.status-Chờ\ xác\ nhận {
-    background-color: #b3d8fd !important;
+    background-color: #dbeafe !important;
     color: #2563eb !important;
 }
 .status-badge.status-Hoàn\ thành {
-    background-color: #b9fbc0 !important;
+    background-color: #bbf7d0 !important;
     color: #15803d !important;
 }
 .status-badge.status-Đã\ hủy {
-    background-color: #ffd6d6 !important;
+    background-color: #fee2e2 !important;
     color: #c62828 !important;
 }
 
@@ -166,13 +183,17 @@
 }
 
 /* Responsive */
-@media (max-width: 992px) {
-    .booking-list-card {
-        padding: 25px;
+@media (max-width: 900px) {
+    .data-table, .table-responsive {
+        min-width: 600px;
     }
-    .data-table th,
-    .data-table td {
-        padding: 12px 15px;
+    .booking-list-card {
+        padding: 2px;
+    }
+    .booking-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
     }
 }
 @media (max-width: 768px) {
