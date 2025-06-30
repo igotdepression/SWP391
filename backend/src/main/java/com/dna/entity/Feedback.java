@@ -1,19 +1,21 @@
 package com.dna.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.NoArgsConstructor;
+
 
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Feedback")
-@Getter
-@Setter
 public class Feedback {
     
     @Id
@@ -21,18 +23,25 @@ public class Feedback {
     @Column(name = "feedbackID")
     private Integer feedbackID;
 
-    @OneToOne
-    @JoinColumn(name = "bookingID", unique = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bookingID", nullable = false)
     private Booking booking;
 
-    @Column(name = "comments", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "comments")
     private String comments;
 
+    @Column(name = "answers")
+    private String answers;
+
     @Column(name = "rating")
-    @Min(value = 1, message = "Rating phải từ 1 đến 5")
-    @Max(value = 5, message = "Rating phải từ 1 đến 5")
     private Integer rating;
 
     @Column(name = "createDate")
     private LocalDate createDate;
+
+    @Column(name = "returnDate")
+    private LocalDate returnDate;
+
+    @Column(name = "status")
+    private String status;
 }

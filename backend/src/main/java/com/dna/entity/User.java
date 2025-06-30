@@ -1,18 +1,22 @@
 package com.dna.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.NoArgsConstructor;
+
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Table(name = "[User]")
-@Getter
-@Setter
+@Table(name = "User")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,16 +27,16 @@ public class User {
     @JoinColumn(name = "roleID")
     private Role role;
 
-    @Column(name = "fullName", nullable = false)
+    @Column(name = "fullName")
     private String fullName;
 
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Column(name = "dateOfBirth")
@@ -44,18 +48,18 @@ public class User {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "status", nullable = false)
-    private String status = "Active";
+    @Column(name = "status")
+    private String status;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Sample> samples;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogPost> blogPosts;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consultant> consultants;
 } 

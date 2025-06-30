@@ -1,17 +1,37 @@
 // pages/Manager/BlogPost.jsx
-import React from 'react';
-import { Card, Button } from '../../components/ui/ui'; // Điều chỉnh đường dẫn ui nếu cần
+import React, { useEffect, useState } from 'react';
+import { Card, Button } from '../../components/ui/ui';
+import "./BlogPost.css";
 
-export default function BlogPost({ orders, setDetailOrder }) {
-    // orders và setDetailOrder được truyền từ ManagerPage, nhưng tên prop ban đầu là 'orders'
-    // nếu bạn muốn nó là bài đăng, bạn có thể đổi tên prop hoặc xử lý dữ liệu ở đây.
-    // Giả định 'orders' trong context này là 'bài đăng'
 
-    const posts = orders || [ // Sử dụng orders như dữ liệu bài đăng giả định
-        { id: "POST001", title: "Bài đăng 1: Tầm quan trọng của xét nghiệm ADN", author: "Quản trị viên", date: "2023-05-20", status: "Published" },
-        { id: "POST002", title: "Bài đăng 2: Các gói dịch vụ mới", author: "Marketing Team", date: "2023-06-01", status: "Draft" },
-        { id: "POST003", title: "Bài đăng 3: Câu chuyện thành công", author: "Quản trị viên", date: "2023-04-10", status: "Published" },
-    ];
+const fakeBlogPosts = [
+    {
+        id: 1,
+        title: "Giới thiệu dịch vụ mới",
+        content: "Chúng tôi vừa ra mắt dịch vụ xét nghiệm mới...",
+        author: "Nguyễn Văn A",
+        status: "published",
+        createdAt: "2024-06-01",
+        updatedAt: "2024-06-10"
+    },
+    {
+        id: 2,
+        title: "Ưu đãi tháng 7",
+        content: "Ưu đãi giảm giá 20% cho khách hàng mới...",
+        author: "Trần Thị B",
+        status: "draft",
+        createdAt: "2024-06-15",
+        updatedAt: "2024-06-15"
+    }
+];
+
+export default function BlogPost() {
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        // Giả lập fetch từ DB
+        setTimeout(() => setPosts(fakeBlogPosts), 300);
+    }, []);
 
     return (
         <Card className="data-table-card">
@@ -22,10 +42,11 @@ export default function BlogPost({ orders, setDetailOrder }) {
                         <tr>
                             <th>ID Bài đăng</th>
                             <th>Tiêu đề</th>
+                            <th>Nội dung</th>
                             <th>Tác giả</th>
-                            <th>Ngày đăng</th>
                             <th>Trạng thái</th>
-                            <th>Hành động</th>
+                            <th>Ngày tạo</th>
+                            <th>Ngày cập nhật</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,13 +54,11 @@ export default function BlogPost({ orders, setDetailOrder }) {
                             <tr key={post.id}>
                                 <td>{post.id}</td>
                                 <td>{post.title}</td>
+                                <td>{post.content}</td>
                                 <td>{post.author}</td>
-                                <td>{post.date}</td>
                                 <td><span className={`status-badge status-${post.status.toLowerCase()}`}>{post.status}</span></td>
-                                <td>
-                                    <Button size="sm" onClick={() => alert(`Xem chi tiết bài đăng: ${post.title}`)}>Xem</Button>
-                                    <Button size="sm" variant="secondary" className="ml-2">Sửa</Button>
-                                </td>
+                                <td>{post.createdAt}</td>
+                                <td>{post.updatedAt}</td>
                             </tr>
                         ))}
                     </tbody>

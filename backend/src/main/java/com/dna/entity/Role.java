@@ -1,10 +1,18 @@
 package com.dna.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Role")
 public class Role {
@@ -13,9 +21,10 @@ public class Role {
     @Column(name = "roleID")
     private Integer roleID;
 
-    @Column(name = "roleName", nullable = false)
+    @Column(name = "roleName")
     private String roleName;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<User> users = new ArrayList<>();
 } 

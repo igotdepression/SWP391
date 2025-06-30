@@ -1,7 +1,29 @@
 // pages/Manager/PersonalInfo.jsx
-import React from 'react';
-import { Card, Input, Button } from '../../components/ui/ui'; // Điều chỉnh đường dẫn ui nếu cần
-import { useAuth } from '../../context/AuthContext'; // Để lấy thông tin user
+import React, { useEffect, useState } from "react";
+import { Card, Input, Button } from "../../components/ui/ui"; // Điều chỉnh đường dẫn ui nếu cần
+import { useAuth } from "../../context/AuthContext"; // Để lấy thông tin user
+import "./PersonalInfo.css"; // Giả sử bạn có file CSS để định dạng
+
+const fakePersonalInfos = [
+    {
+        id: 1,
+        name: "Nguyễn Văn A",
+        email: "a@example.com",
+        phone: "0901234567",
+        address: "Hà Nội",
+        role: "Manager",
+        createdAt: "2024-06-01",
+    },
+    {
+        id: 2,
+        name: "Trần Thị B",
+        email: "b@example.com",
+        phone: "0909876543",
+        address: "TP.HCM",
+        role: "Staff",
+        createdAt: "2024-06-02",
+    },
+];
 
 export default function PersonalInfo() {
     const { user } = useAuth(); // Lấy thông tin người dùng từ context
@@ -10,6 +32,11 @@ export default function PersonalInfo() {
     const [name, setName] = React.useState(user?.name || "");
     const [email, setEmail] = React.useState(user?.email || "");
     const [role, setRole] = React.useState(user?.role || ""); // Vai trò thường không sửa được nhưng để demo
+    const [infos, setInfos] = useState([]);
+
+    useEffect(() => {
+        setTimeout(() => setInfos(fakePersonalInfos), 300);
+    }, []);
 
     const handleSaveInfo = () => {
         // Logic lưu thông tin cá nhân vào backend
@@ -53,8 +80,40 @@ export default function PersonalInfo() {
                 />
             </div>
 
-            <Button className="mt-4" onClick={handleSaveInfo}>Lưu Thay Đổi</Button>
-            <p className="note mt-3">Đây là nội dung placeholder cho trang Thông tin cá nhân. Bạn có thể thêm các trường khác như số điện thoại, địa chỉ, mật khẩu, v.v.</p>
+            <Button className="mt-4" onClick={handleSaveInfo}>
+                Lưu Thay Đổi
+            </Button>
+            <p className="note mt-3">
+                Đây là nội dung placeholder cho trang Thông tin cá nhân. Bạn có thể thêm
+                các trường khác như số điện thoại, địa chỉ, mật khẩu, v.v.
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Địa chỉ</th>
+                        <th>Vai trò</th>
+                        <th>Ngày tạo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {infos.map((i) => (
+                        <tr key={i.id}>
+                            <td>{i.id}</td>
+                            <td>{i.name}</td>
+                            <td>{i.email}</td>
+                            <td>{i.phone}</td>
+                            <td>{i.address}</td>
+                            <td>{i.role}</td>
+                            <td>{i.createdAt}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </Card>
     );
 }

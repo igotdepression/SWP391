@@ -1,6 +1,6 @@
 package com.dna.controller;
 
-import com.dna.service.ServiceManagementService;
+import com.dna.service.ServiceEntityService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
@@ -19,38 +19,38 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dna.entity.Services;
+import com.dna.entity.ServiceEntity;
 
 @RestController
 @RequestMapping("/api/service")
 public class ServiceAPI {
 
     @Autowired
-    ServiceManagementService serviceManagementService;
+    ServiceEntityService serviceManagementService;
 
     @PreAuthorize("hasRole('CUSTOMER') or hasRole('STAFF') or hasRole('MANAGER') or hasRole('ADMIN')")
     @GetMapping("/listService")
-    public ResponseEntity getService(){
-        List<Services> services = serviceManagementService.getAllServices();
+    public ResponseEntity<List<ServiceEntity>> getService(){
+        List<ServiceEntity> services = serviceManagementService.getAllServices();
         return ResponseEntity.ok(services);
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/addService")
-    public ResponseEntity addNewService(@Valid @RequestBody Services services){
-        Services newServices = serviceManagementService.createService(services);
+    public ResponseEntity<ServiceEntity> addNewService(@Valid @RequestBody ServiceEntity services){
+        ServiceEntity newServices = serviceManagementService.createService(services);
         return ResponseEntity.ok(newServices);
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/updateService/{id}")
-    public ResponseEntity updateService(@PathVariable Integer id, @RequestBody Services services){
+    public ResponseEntity<ServiceEntity> updateService(@PathVariable Integer id, @RequestBody ServiceEntity services){
         return ResponseEntity.ok(serviceManagementService.updateService(id, services));
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/deleteService/{id}")
-    public ResponseEntity deleteService(@PathVariable Integer id, @RequestBody Services services){
+    public ResponseEntity<String> deleteService(@PathVariable Integer id, @RequestBody ServiceEntity services){
         serviceManagementService.deleteService(id);
         return ResponseEntity.ok("Deleted");
     }

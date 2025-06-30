@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import "./PersonalInfoPage.css"; // Import the CSS file
 import { userAPI } from "../services/api"; // Import userAPI
 import vietnamLocations from "../data/vietnamLocations.json"; // Import location data
-<<<<<<< HEAD
 
 // Sample test history data
 const testHistory = [
@@ -35,12 +34,6 @@ const testHistory = [
     }
   }
 ];
-=======
-import api from "../services/api"; // Thêm dòng này để gọi API booking
-
-// XÓA testHistory mẫu
-// const testHistory = [ ... ];
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 
 export default function PersonalInfoPage() {
   const { user, updateUser, logout } = useAuth();
@@ -70,13 +63,6 @@ export default function PersonalInfoPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedTest, setSelectedTest] = useState(null);
 
-<<<<<<< HEAD
-=======
-  // Thêm state cho booking history
-  const [bookingHistory, setBookingHistory] = useState([]);
-  const [loadingBooking, setLoadingBooking] = useState(false);
-
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,16 +71,6 @@ export default function PersonalInfoPage() {
         setIsLoading(true);
         const response = await userAPI.getUserProfile();
         const userData = response.data;
-<<<<<<< HEAD
-=======
-        
-        // Cập nhật user trong AuthContext nếu user hiện tại không có id
-        if (user && !user.id && userData.id) {
-          const updatedUser = { ...user, ...userData };
-          updateUser(updatedUser);
-        }
-        
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
         setFullName(userData.fullName || "");
         setPhone(userData.phoneNumber || "");
         setAddress(userData.address || "");
@@ -149,11 +125,7 @@ export default function PersonalInfoPage() {
     };
 
     fetchUserProfile();
-<<<<<<< HEAD
   }, []);
-=======
-  }, [user, updateUser]);
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 
   // Update districts when province changes
   useEffect(() => {
@@ -178,46 +150,6 @@ export default function PersonalInfoPage() {
     }
   }, [selectedDistrict, districts]);
 
-<<<<<<< HEAD
-=======
-  // Lấy lịch sử booking thực tế
-  useEffect(() => {
-    const fetchBookingHistory = async () => {
-      console.log("=== DEBUG: Fetching booking history ===");
-      console.log("User object:", user);
-      
-      // Lấy user ID từ user object - ưu tiên id trước, sau đó mới đến userID
-      const userId = user?.id || user?.userID;
-      console.log("User ID:", userId);
-      
-      if (!userId) {
-        console.log("Không có user ID, không thể fetch booking history");
-        return;
-      }
-      
-      setLoadingBooking(true);
-      try {
-        // Sửa endpoint từ /api/bookings/user/ thành /bookings/user/ vì base URL đã có /api rồi
-        const response = await api.get(`/bookings/user/${userId}`);
-        console.log("API Response:", response);
-        console.log("Booking history data:", response.data);
-        setBookingHistory(response.data);
-      } catch (error) {
-        console.error("Lỗi lấy lịch sử booking:", error);
-        console.error("Error response:", error.response);
-        setBookingHistory([]);
-      } finally {
-        setLoadingBooking(false);
-      }
-    };
-    
-    // Chỉ fetch khi có user
-    if (user) {
-      fetchBookingHistory();
-    }
-  }, [user]);
-
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   const handleUpdateProfile = async (section) => {
     setIsLoading(true);
     try {
@@ -320,23 +252,9 @@ export default function PersonalInfoPage() {
     }
   };
 
-<<<<<<< HEAD
   const handleViewDetails = (test) => {
     setSelectedTest(test);
     setShowDetailModal(true);
-=======
-  const handleViewDetails = async (booking) => {
-    setIsLoading(true);
-    try {
-      const response = await api.get(`/bookings/${booking.bookingID}`);
-      setSelectedTest(response.data); // response.data là BookingResponseDTO chi tiết
-      setShowDetailModal(true);
-    } catch (error) {
-      alert("Không lấy được chi tiết booking!");
-    } finally {
-      setIsLoading(false);
-    }
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   };
 
   const handleCloseModal = () => {
@@ -668,7 +586,6 @@ export default function PersonalInfoPage() {
                       <th>Ngày ĐK</th>
                       <th>Loại Xét Nghiệm</th>
                       <th>Trạng Thái</th>
-<<<<<<< HEAD
                       <th>Kết Quả</th>
                       <th>Xem Kết Quả</th>
                     </tr>
@@ -695,38 +612,6 @@ export default function PersonalInfoPage() {
                         </td>
                       </tr>
                     ))}
-=======
-                      <th>Xem chi tiết</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loadingBooking ? (
-                      <tr>
-                        <td colSpan={5}>Đang tải...</td>
-                      </tr>
-                    ) : bookingHistory.length === 0 ? (
-                      <tr>
-                        <td colSpan={5}>Bạn chưa có lịch sử đặt lịch nào.</td>
-                      </tr>
-                    ) : (
-                      bookingHistory.map((booking) => (
-                        <tr key={booking.bookingID}>
-                          <td>#{booking.bookingID}</td>
-                          <td>{booking.bookingDate}</td>
-                          <td>{booking.testType}</td>
-                          <td>{booking.status || "Đang xử lý"}</td>
-                          <td>
-                            <button
-                              className="view-details-btn"
-                              onClick={() => handleViewDetails(booking)}
-                            >
-                              Xem chi tiết
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
                   </tbody>
                 </table>
               </div>
@@ -740,18 +625,13 @@ export default function PersonalInfoPage() {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-<<<<<<< HEAD
               <h3>Chi tiết xét nghiệm #{selectedTest.id}</h3>
-=======
-              <h3>Chi tiết booking #{selectedTest.bookingID}</h3>
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
               <button className="close-btn" onClick={handleCloseModal}>
                 <i className="fas fa-times">❌</i>
               </button>
             </div>
             <div className="modal-body">
               <div className="test-details">
-<<<<<<< HEAD
                 <h4>Thông tin mẫu</h4>
                 <p><strong>Ngày lấy mẫu:</strong> {selectedTest.details.sampleDate}</p>
                 <p><strong>Địa điểm lấy mẫu:</strong> {selectedTest.details.sampleLocation}</p>
@@ -778,38 +658,6 @@ export default function PersonalInfoPage() {
                   </div>
                 )}
 
-=======
-                <h4>Thông tin booking</h4>
-                <p><strong>Mã booking:</strong> #{selectedTest.bookingID}</p>
-                <p><strong>Khách hàng:</strong> {selectedTest.customerName}</p>
-                <p><strong>Số điện thoại:</strong> {selectedTest.phone}</p>
-                <p><strong>Email:</strong> {selectedTest.email}</p>
-                <p><strong>Loại xét nghiệm:</strong> {selectedTest.testType}</p>
-                <p><strong>Ngày đăng ký:</strong> {selectedTest.bookingDate}</p>
-                <p><strong>Ngày hẹn lấy mẫu:</strong> {selectedTest.appointmentDate}</p>
-                <p><strong>Trạng thái:</strong> {selectedTest.status}</p>
-                <p><strong>Tình trạng mẫu:</strong> {selectedTest.sampleStatus}</p>
-                {selectedTest.expertNotes && (
-                  <div className="expert-message">
-                    <strong>Lời nhắn chuyên gia:</strong>
-                    <p>{selectedTest.expertNotes}</p>
-                  </div>
-                )}
-                <p><strong>Ngày cập nhật:</strong> {selectedTest.updateDate}</p>
-                {/* Hiển thị danh sách người tham gia nếu có */}
-                {selectedTest.participants && selectedTest.participants.length > 0 && (
-                  <div>
-                    <h4>Danh sách người tham gia</h4>
-                    <ul>
-                      {selectedTest.participants.map((p, idx) => (
-                        <li key={idx}>
-                          {p.fullName} - {p.relationshipToCustomer} - {p.sampleType}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
                 <button 
                   className="contact-support-btn"
                   onClick={handleContactSupport}
