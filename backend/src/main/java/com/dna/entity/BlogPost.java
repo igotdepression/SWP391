@@ -47,4 +47,8 @@ public class BlogPost {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updateBy")
     private User updatedBy;
+
+    @Builder.Default
+    @Column(name = "hidden")
+    private Boolean hidden = false;
 } 

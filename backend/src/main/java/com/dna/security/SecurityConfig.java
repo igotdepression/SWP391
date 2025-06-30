@@ -69,7 +69,8 @@ public class SecurityConfig {
                     "/api/service"
                 ).permitAll()
                 // THÊM DÒNG NÀY ĐỂ CẤP QUYỀN CHO ENDPOINT CỦA STAFF
-                .requestMatchers("/api/staff/**").hasRole("STAFF") // Hoặc .hasAnyRole("STAFF", "ADMIN") nếu có vai trò ADMIN
+                .requestMatchers("/api/staff/**").hasRole("STAFF")
+                .requestMatchers("/api/blogposts/manager/**").hasRole("MANAGER")
                 .anyRequest().authenticated() // Mọi request khác phải được xác thực (đã có token)
             )
             .authenticationProvider(authenticationProvider())
