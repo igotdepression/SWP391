@@ -7,7 +7,7 @@ import com.dna.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -19,7 +19,7 @@ public class ConsultantService {
     @Autowired
     private UserRepository userRepository; // Để tìm User theo ID
 
-    public Consultant requestConsultation(Integer userId, LocalDateTime consultantDate, String notes) {
+    public Consultant requestConsultation(Integer userId, LocalDate consultantDate, String notes) {
         // 1. Kiểm tra userId có tồn tại không
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
@@ -29,7 +29,7 @@ public class ConsultantService {
 
         // 2. Tạo đối tượng Consultant
         Consultant consultation = new Consultant();
-        consultation.setUser(user);
+        consultation.setStaff(user);
         consultation.setConsultantDate(consultantDate);
         consultation.setNotes(notes);
         consultation.setStatus("Pending"); // Trạng thái mặc định

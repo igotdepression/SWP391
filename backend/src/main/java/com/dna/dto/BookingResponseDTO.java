@@ -41,8 +41,7 @@ public class BookingResponseDTO {
         // Giả định sampleStatus có thể lấy từ Booking hoặc liên quan đến Sample
         // Nếu Booking không trực tiếp có sampleStatus, bạn cần điều chỉnh logic này
         this.sampleStatus = "Đã nhận"; // <-- Cần thay đổi tùy theo logic thực tế của bạn
-        this.resultFileUrl = booking.getResultFileUrl(); // Giả định Booking entity có resultFileUrl
-        this.expertNotes = booking.getExpertNotes(); // Giả định Booking entity có expertNotes
+        this.expertNotes = booking.getNote(); // Giả định Booking entity có expertNotes
         this.updateDate = booking.getUpdateDate(); // Giả định Booking entity có updateDate
     }
 }

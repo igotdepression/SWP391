@@ -1,42 +1,50 @@
 package com.dna.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "BlogPost")
-@Data
-@Getter
-@Setter
 public class BlogPost {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "postID")
     private Integer postID;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID")
-    private User user;
+    private User author;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 255)
     private String title;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "image")
+    @Column(name = "createdDate")
+    private LocalDate createdDate;
+
+    @Column(name = "image", length = 255)
     private String image;
 
-    @Column(name = "status")
+    @Column(name = "status", length = 255)
     private String status;
 
-    @Column(name = "createdDate")
-    private LocalDateTime createdDate;
-
     @Column(name = "updatedDate")
-    private LocalDateTime updatedDate;
+    private LocalDate updatedDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updateBy")
+    private User updatedBy;
 } 

@@ -1,39 +1,44 @@
 package com.dna.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Sample")
-@Getter
-@Setter
 public class Sample {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sampleID")
     private Integer sampleID;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookingID", nullable = false)
     private Booking booking;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID")
-    private User user;
+    private User staff;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "participantID", nullable = false)
     private Participant participant;
 
+    @Column(name = "typeOfCollection", nullable = false, length = 100)
     private String typeOfCollection;
 
+    @Column(name = "sampleType", nullable = false, length = 100)
     private String sampleType;
 
+    @Column(name = "receivedDate")
     private LocalDate receivedDate;
-
-    private String status;
 } 

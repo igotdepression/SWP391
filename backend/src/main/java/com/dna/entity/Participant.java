@@ -1,45 +1,53 @@
 package com.dna.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Participant")
-@Getter
-@Setter
 public class Participant {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "participantID")
     private Integer participantID;
 
-    @ManyToOne
-    @JoinColumn(name = "bookingID", nullable = false)
-    private Booking booking;
+    @Column(name = "questionalbleRelationship")
+    private String questionalbleRelationship;
 
+    @Column(name = "fullName")
     private String fullName;
 
+    @Column(name = "dateOfBirth")
     private LocalDate dateOfBirth;
 
+    @Column(name = "gender")
     private String gender;
 
-    private String relationshipToCustomer;
-
-    private String identityNumber;
-
-    private String address;
-
+    @Column(name = "collectionMethod")
     private String collectionMethod;
 
-    private String phoneNumber;
+    @Column(name = "relationshipToCustomer")
+    private String relationshipToCustomer;
 
-    private String note;
+    @Column(name = "identityNumber")
+    private String identityNumber;
+
+    @Column(name = "address")
+    private String address;
 
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Sample> samples;
-} 
+
+}

@@ -1,56 +1,56 @@
 package com.dna.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Consultant")
-@Data
-@Getter
-@Setter
 public class Consultant {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "consultantID")
     private Integer consultantID;
 
-    @ManyToOne
-    @JoinColumn(name = "userID")
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userID", nullable = false)
+    private User staff;
 
-    @Column(name = "specialization")
-    private String specialization;
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
 
-    @Column(name = "experience")
-    private Integer experience;
+    @Column(name = "phone", nullable = false, length = 11)
+    private String phone;
 
-    @Column(name = "qualification")
-    private String qualification;
+    @Column(name = "type", columnDefinition = "TEXT")
+    private String type;
 
-    @Column(name = "status")
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "consultantDate", nullable = false)
+    private LocalDate consultantDate;
+
+    @Column(name = "notes", length = 255)
+    private String notes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "confirmBy")
+    private User confirmedBy;
+
+    @Column(name = "status", length = 255)
     private String status;
 
     @Column(name = "createdDate")
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
-    @Column(name = "updatedDate")
-    private LocalDateTime updatedDate;
-
-    @Column(name = "consultantDate")
-    private LocalDateTime consultantDate;
-
-    @Column(name = "notes")
-    private String notes;
-
-    public void setConsultantDate(LocalDateTime consultantDate) {
-        this.consultantDate = consultantDate;
-    }
-
-    public LocalDateTime getConsultantDate() {
-        return consultantDate;
-    }
 } 

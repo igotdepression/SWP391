@@ -1,12 +1,13 @@
 package com.dna.repository;
 
-import com.dna.entity.ServicePrice;
+import com.dna.entity.SurchargePrice;
 
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ServicePriceRepository extends JpaRepository<ServicePrice, Integer> {
-    Optional<ServicePrice> findByService_ServiceID(Integer serviceId);
+public interface ServicePriceRepository extends JpaRepository<SurchargePrice, Integer> {
+    // Removed the incorrect method findByService_ServiceID
+    // SurchargePrice doesn't have a direct relationship with Service
+    // The relationship is through IncludeSurcharge table
 } 

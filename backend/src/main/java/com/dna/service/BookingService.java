@@ -54,7 +54,7 @@ public class BookingService {
         // Giả định bạn có logic tìm User và Service
         User user = userRepository.findById(bookingRequestDTO.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + bookingRequestDTO.getUserId()));
-        com.dna.entity.Services service = serviceRepository.findById(bookingRequestDTO.getServiceId())
+        com.dna.entity.ServiceEntity service = serviceRepository.findById(bookingRequestDTO.getServiceId())
                 .orElseThrow(() -> new EntityNotFoundException("Service not found with ID: " + bookingRequestDTO.getServiceId()));
 
         Booking booking = new Booking();
@@ -64,7 +64,7 @@ public class BookingService {
         booking.setAppointmentDate(bookingRequestDTO.getAppointmentDate().toLocalDate());
         booking.setStatus("PENDING"); // Trạng thái mặc định khi tạo mới
         // Calculate total price based on service price and number of participants
-        BigDecimal totalPrice = service.getPriceSur().multiply(BigDecimal.valueOf(bookingRequestDTO.getParticipants().size()));
+        BigDecimal totalPrice = service.getPrice().multiply(BigDecimal.valueOf(bookingRequestDTO.getParticipants().size()));
         booking.setTotalPrice(totalPrice);
         booking.setUpdateDate(LocalDate.now()); // Ngày cập nhật ban đầu
 
@@ -132,9 +132,6 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
 
-        // TODO: Thêm kiểm tra logic chuyển trạng thái hợp lệ nếu cần
-        // Ví dụ: if (newStatus.equals("COMPLETED") && !booking.getStatus().equals("PROCESSING")) { throw new IllegalArgumentException(); }
-
         booking.setStatus(newStatus);
         booking.setUpdateDate(LocalDate.now());
 
@@ -150,7 +147,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
 
-        booking.setExpertNotes(expertNotes);
+        booking.setNote(expertNotes);
         booking.setUpdateDate(LocalDate.now());
 
         Booking updatedBooking = bookingRepository.save(booking);
@@ -184,7 +181,6 @@ public class BookingService {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             String fileUrl = "/uploads/" + fileName;
-            booking.setResultFileUrl(fileUrl);
             booking.setUpdateDate(LocalDate.now());
 
             Booking updatedBooking = bookingRepository.save(booking);

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @RestController
@@ -33,7 +34,7 @@ public class PaymentController {
         // Tạo payment mới
         Payment payment = new Payment();
         payment.setBooking(booking);
-        payment.setAmount(paymentRequest.getAmount());
+        payment.setAmount(BigDecimal.valueOf(paymentRequest.getAmount()));
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         payment.setPaymentDate(LocalDateTime.now());
         payment.setStatus("PENDING");

@@ -1,6 +1,6 @@
 package com.dna.service;
 
-import com.dna.entity.ServicePrice;
+import com.dna.entity.SurchargePrice;
 import com.dna.repository.ServicePriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,15 +14,15 @@ public class SurchargeService {
     @Autowired
     private ServicePriceRepository surchargeRepository;
 
-    public List<ServicePrice> findAll() {
+    public List<SurchargePrice> findAll() {
         return surchargeRepository.findAll();
     }
 
-    public Optional<ServicePrice> findById(Integer id) {
+    public Optional<SurchargePrice> findById(Integer id) {
         return surchargeRepository.findById(id);
     }
 
-    public ServicePrice save(ServicePrice surcharge) {
+    public SurchargePrice save(SurchargePrice surcharge) {
         return surchargeRepository.save(surcharge);
     }
 

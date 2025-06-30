@@ -73,12 +73,22 @@ export default function Header() {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink
-                                to="/manager"
-                                className={({ isActive }) => isActive ? "active" : ""}
-                            >
-                                <span className="nav-icon"></span> BẢNG ĐIỀU KHIỂN
-                            </NavLink>
+                            {user && user.role === 'MANAGER' && (
+                                <NavLink
+                                    to="/manager"
+                                    className={({ isActive }) => isActive ? "active" : ""}
+                                >
+                                    <span className="nav-icon"></span> BẢNG ĐIỀU KHIỂN
+                                </NavLink>
+                            )}
+                            {user && user.role === 'STAFF' && (
+                                <NavLink
+                                    to="/staff"
+                                    className={({ isActive }) => isActive ? "active" : ""}
+                                >
+                                    <span className="nav-icon"></span> BẢNG ĐIỀU KHIỂN
+                                </NavLink>
+                            )}
                         </li>
                     </ul>
                 </nav>

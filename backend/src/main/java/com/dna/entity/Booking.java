@@ -5,14 +5,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.NoArgsConstructor; // Thêm NoArgsConstructor
-import lombok.AllArgsConstructor; // Thêm AllArgsConstructor
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor; 
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime; // Thêm import LocalTime
-
-import java.util.List;
 
 @Data
 @Entity
@@ -33,34 +30,44 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY) // Đảm bảo mối quan hệ ManyToOne với Services
     @JoinColumn(name = "serviceID", nullable = false)
-    private Services service; // Đối tượng Services liên kết
+    private ServiceEntity service; // Đối tượng Services liên kết
 
+    @Column(name = "numberSample")
+    private Integer numberSample;
+
+    @Column(name = "bookingDate")
     private LocalDate bookingDate;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "totalPrice")
+    private BigDecimal totalPrice;
 
     @Column(name = "appointmentDate")
     private LocalDate appointmentDate;
 
-    @Column(name = "appointmentTime") // <-- Thêm cột giờ hẹn
-    private LocalTime appointmentTime; // <-- Kiểu dữ liệu LocalTime
+    @Column(name = "note")
+    private String note;
 
-    private String status;
-
-    private BigDecimal totalPrice;
-
-    @Column(columnDefinition = "NVARCHAR(MAX)") // Có thể cần nếu ghi chú dài
-    private String expertNotes;
-    private String resultFileUrl; // để lưu URL của file kết quả
+    @Column(name = "updateDate")
     private LocalDate updateDate;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Participant> participants;
+    @Column(name = "updateBy")
+    private String updateBy;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sample> samples; // Một booking có nhiều sample
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updateBy")
+    private User staff;
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Feedback feedback;
+
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private TestResult testResult;
+
 }

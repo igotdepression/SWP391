@@ -4,37 +4,44 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Payment")
-public class Payment {
-
+@Table(name = "Feedback")
+public class Feedback {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "paymentID")
-    private Integer paymentID;
+    @Column(name = "feedbackID")
+    private Integer feedbackID;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookingID", nullable = false)
     private Booking booking;
 
-    @Column(name = "amount")
-    private BigDecimal amount;
+    @Column(name = "comments")
+    private String comments;
 
-    @Column(name = "paymentDate")
-    private LocalDateTime paymentDate;
+    @Column(name = "answers")
+    private String answers;
 
-    @Column(name = "paymentMethod")
-    private String paymentMethod;
+    @Column(name = "rating")
+    private Integer rating;
+
+    @Column(name = "createDate")
+    private LocalDate createDate;
+
+    @Column(name = "returnDate")
+    private LocalDate returnDate;
 
     @Column(name = "status")
     private String status;
-} 
+}

@@ -17,12 +17,12 @@ public class ConsultantController {
     private ConsultantService consultantService;
 
     @PostMapping("/request")
-    public ResponseEntity<?> requestConsultation(@Valid @RequestBody ConsultationRequest request) {
+    public ResponseEntity<?> requestConsultation(@Valid @RequestBody ConsultationRequest requestConsultation) {
         try {
             Consultant newConsultation = consultantService.requestConsultation(
-                    request.getUserId(),
-                    request.getConsultantDate(),
-                    request.getNotes()
+                    requestConsultation.getUserId(),
+                    requestConsultation.getConsultantDate().toLocalDate(),
+                    requestConsultation.getNotes()
             );
             return new ResponseEntity<>(newConsultation, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
