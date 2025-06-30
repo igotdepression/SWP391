@@ -116,21 +116,12 @@ export default function StaffPage() {
             case "dashboard":
                 return {
                     title: "Tổng quan hệ thống (Staff)", // Điều chỉnh tiêu đề cho rõ ràng hơn
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: false,
+                    
                 };
             case "booking":
                 return {
                     title: "Quản lý Đơn đặt dịch vụ",
-                    showSearch: true,
-                    onSearchChange: (value) => setBookingSearchTerm(value),
-                    showFilter: true,
-                    filterOptions: bookingFilterOptions,
-                    onFilterChange: (value) => console.log("Lọc đơn đặt dịch vụ theo:", value),
-                    showAddNew: true,
-                    addNewText: "Tạo đơn đặt dịch vụ mới",
-                    onAddNewClick: () => alert("Chức năng tạo đơn đặt dịch vụ mới!"),
+                    
                 };
             case "consultation":
                 return {
