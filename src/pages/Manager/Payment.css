@@ -1,5 +1,214 @@
+/* --- Các Styles cho Biểu đồ Doanh thu (Revenue Chart) --- */
+
+.revenue-chart-container {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.12);
+    padding: 32px;
+    margin-bottom: 32px;
+    border: 2px solid rgba(37, 99, 235, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.revenue-chart-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+}
+
+.revenue-chart-container h4 {
+    margin-top: 0;
+    margin-bottom: 28px;
+    color: rgb(10, 61, 98);
+    font-size: 1.4em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.revenue-chart {
+    display: flex;
+    height: 240px;
+    position: relative;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    align-items: flex-end;
+    padding-left: 70px;
+    padding-right: 30px;
+}
+
+.chart-y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 70px;
+    height: 100%;
+    font-size: 0.85em;
+    color: rgb(10, 61, 98);
+    font-weight: 600;
+    padding-right: 12px;
+    border-right: 2px solid rgba(37, 99, 235, 0.2);
+    position: relative;
+    margin-bottom: -8px;
+}
+
+.chart-y-axis::before {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, rgb(37, 99, 235), rgb(34, 197, 94));
+}
+
+.chart-y-axis span {
+    padding: 4px 8px;
+    background: rgba(37, 99, 235, 0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+.chart-y-axis span:first-child {
+    margin-top: -8px;
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    color: white;
+    font-weight: 700;
+}
+
+.chart-y-axis span:last-child {
+    margin-bottom: 0;
+    background: rgba(156, 163, 175, 0.1);
+    color: rgb(107, 114, 128);
+}
+
+.chart-bars {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-around;
+    padding-left: 20px;
+    height: 100%;
+    position: relative;
+    align-items: flex-end;
+}
+
+.chart-bars::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, rgb(37, 99, 235), rgb(34, 197, 94));
+}
+
+.chart-bar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    width: 50px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.chart-bar-container:hover {
+    transform: translateY(-2px);
+}
+
+.chart-bar {
+    width: 80%;
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    border-radius: 8px 8px 0 0;
+    transition: all 0.4s ease;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.chart-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+    border-radius: 6px 6px 0 0;
+}
+
+.chart-bar:hover {
+    transform: scaleY(1.05);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+    background: linear-gradient(135deg, rgb(29, 78, 216) 0%, rgb(16, 185, 129) 100%);
+}
+
+.chart-date {
+    font-size: 0.75em;
+    color: rgb(10, 61, 98);
+    font-weight: 600;
+    margin-top: 8px;
+    text-align: center;
+    white-space: nowrap;
+    padding: 4px 8px;
+    background: rgba(37, 99, 235, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    transition: all 0.3s ease;
+}
+
+.chart-bar-container:hover .chart-date {
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    color: white;
+    transform: scale(1.05);
+}
+
+.chart-total {
+    margin-top: 24px;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(37, 99, 235, 0.1);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+}
+
+.chart-total strong {
+    font-size: 1.3em;
+    font-weight: 800;
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background-color: rgba(37, 99, 235, 0.05);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+
 .payment-manager-page {
-    max-width: 1200px; /* Tăng chiều rộng tổng thể */
+    max-width: 100%; /* Tăng chiều rộng tổng thể */
     margin: 0 auto;
     padding: 30px 0; /* Tăng padding */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,7 +226,7 @@
 .dashboard-card {
     flex: 1;
     min-width: 220px; /* Tăng chiều rộng tối thiểu */
-    max-width: 280px; /* Giới hạn chiều rộng tối đa */
+    max-width: 100%; /* Giới hạn chiều rộng tối đa */
     background: linear-gradient(135deg, #eaf2ff 0%, #f5f8ff 100%); /* Nền gradient nhẹ */
     border-radius: 18px; /* Bo góc lớn hơn */
     box-shadow: 0 6px 20px rgba(80, 112, 255, 0.12); /* Bóng đổ rõ ràng */
@@ -49,7 +258,6 @@
     margin-bottom: 40px; /* Khoảng cách lớn hơn dưới card */
     background: #ffffff; /* Nền trắng */
     border-radius: 16px; /* Bo góc lớn hơn */
-    padding: 30px 25px; /* Tăng padding */
     box-shadow: 0 6px 20px rgba(80, 112, 255, 0.08); /* Bóng đổ rõ hơn */
     border: 1.5px solid #e0e7ff;
 }
@@ -111,7 +319,7 @@
 }
 
 .status-badge {
-    padding: 6px 14px; /* Tăng padding */
+    padding: 6px 12px; /* Tăng padding */
     border-radius: 18px; /* Bo tròn hơn */
     font-size: 0.9em;
     color: #fff;
@@ -130,25 +338,713 @@
 .status-refunded {
     background: linear-gradient(45deg, #0ea5e9 0%, #38bdf8 100%); /* Gradient xanh dương */
 }
-.status-cancelled {
+.status-failed {
     background: linear-gradient(45deg, #ef4444 0%, #f87171 100%); /* Gradient đỏ */
 }
 
-/* Thêm styles cho Input và Select để phù hợp với giao diện mới */
-.main-header .search-input,
-.main-header .filter-select {
-    padding: 10px 15px;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: #f8f9fa;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+/* Payment Management Styles - Modern & Beautiful */
+.payment-management-container {
+    min-height: calc(100vh - var(--navbar-height, 60px));
+    max-width: 100%;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.main-header .search-input:focus,
-.main-header .filter-select:focus {
-    border-color: #6200ea; /* Màu tím tương ứng với theme */
-    box-shadow: 0 0 0 0.2rem rgba(98, 0, 234, 0.25);
+.payment-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(10, 61, 98, 0.15);
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.payment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+}
+/* Filters */
+.payment-filters {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(37, 99, 235, 0.1);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.05);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-weight: 700;
+    color: rgb(10, 61, 98);
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.search-input,
+.filter-select {
+    border: 2px solid rgba(37, 99, 235, 0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.95em;
+    color: rgb(10, 61, 98);
+    background: white;
+    min-width: 180px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.05);
+}
+
+.search-input:focus,
+.filter-select:focus {
     outline: none;
-    background-color: #fff;
+    border-color: rgb(37, 99, 235);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Statistics với layout mới */
+.payment-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    border-radius: 20px;
+    border: 3px solid rgba(37, 99, 235, 0.2);
+    flex: 1;
+    min-width: 0;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.25);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.stat-item:hover::before {
+    left: 100%;
+}
+
+.stat-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    justify-content: flex-start; /* Icon bên trái */
+    z-index: 1;
+    position: relative;
+}
+
+.stat-icon {
+    color: white;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.stat-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Label ở giữa */
+    gap: 4px;
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.8em;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.stat-item:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(37, 99, 235, 0.35);
+}
+
+/* Action buttons - Enhanced design */
+.action-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center; /* Căn giữa */
+    width: 100%;
+    padding: 8px 4px;
+    min-height: 50px;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+    transition: all 0.3s ease;
+    z-index: 1;
+    position: relative;
+}
+
+/* View button - Purple gradient */
+.view-btn {
+    color: white;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.view-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+/* Refund button - Green gradient */
+.refund-btn {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: white;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.refund-btn:hover {
+    background: linear-gradient(135deg, #047857 0%, #059669 100%);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+/* Refund button disabled */
+.refund-btn-disabled {
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(156, 163, 175, 0.3);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.refund-btn-disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:hover svg {
+    transform: scale(1.1);
+}
+
+.action-btn:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+.action-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+/* Tooltip effect cho action buttons */
+.action-btn::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7em;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.action-btn:hover::after {
+    opacity: 1;
+}
+
+/* Đảm bảo header và content căn chỉnh nhất quán */
+.payment-table th {
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    color: white;
+    padding: 16px 8px;
+    font-weight: 700;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    vertical-align: middle;
+}
+
+/* Căn chỉnh tất cả các cột theo yêu cầu */
+.payment-table th:nth-child(1), 
+.payment-table td:nth-child(1) { /* Payment ID */
+    text-align: left;
+    vertical-align: middle;
+    width: 8%;
+}
+
+.payment-table th:nth-child(2), 
+.payment-table td:nth-child(2) { /* Booking ID */
+    text-align: left;
+    vertical-align: middle;
+    width: 10%;
+}
+
+.payment-table th:nth-child(3), 
+.payment-table td:nth-child(3) { /* Customer */
+    text-align: left;
+    vertical-align: middle;
+    width: 12%;
+}
+
+.payment-table th:nth-child(4), 
+.payment-table td:nth-child(4) { /* Amount */
+    text-align: left;
+    vertical-align: middle;
+    width: 12%;
+}
+
+.payment-table th:nth-child(5), 
+.payment-table td:nth-child(5) { /* Date */
+    text-align: left;
+    vertical-align: middle;
+    width: 10%;
+}
+
+.payment-table th:nth-child(6), 
+.payment-table td:nth-child(6) { /* Method */
+    text-align: left;
+    vertical-align: middle;
+    width: 10%;
+}
+
+/* Căn chỉnh cột trạng thái - QUAN TRỌNG */
+.payment-table th:nth-child(7) 
+.payment-table td:nth-child(7) { /* Status column content */
+    text-align: left ;
+    vertical-align: middle;
+    width: 20%;
+}
+
+/* Căn chỉnh cột thao tác - QUAN TRỌNG */
+.payment-table th:nth-child(8) { /* Action column header */
+    text-align: center !important;
+    vertical-align: middle;
+    width: 12%;
+    min-width: 100px;
+}
+
+.payment-table td:nth-child(8) { /* Action column content */
+    text-align: center !important;
+    vertical-align: middle;
+    width: 12%;
+    min-width: 100px;
+}
+
+/* Status with Actions Container - FORCE CENTER */
+.status-with-actions {
+    display: flex !important;
+    align-items: left !important;
+    justify-content: left !important;
+    gap: 8px;
+    width: 100%;
+    padding: 4px;
+    margin: 0 auto;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 18px;
+    font-size: 0.9em;
+    color: #fff;
+    font-weight: 700;
+    display: inline-block;
+    min-width: 90px;
+    text-align: left;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+.status-actions {
+    display: flex !important;
+    gap: 4px;
+    align-items: center !important;
+    flex-shrink: 0;
+}
+
+/* Action buttons - FORCE CENTER */
+.action-cell {
+    display: flex !important;
+    gap: 8px;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100%;
+    padding: 8px 4px;
+    min-height: 50px;
+    margin: 0 auto;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.approve-btn {
+    background: linear-gradient(135deg, #16a34a 0%, #34d399 100%);
+    color: white;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.reject-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    color: white;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Remove horizontal scroll - Table responsive fix */
+.table-responsive {
+    margin-bottom: 24px;
+    border-radius: 16px;
+    border: 2px solid rgba(37, 99, 235, 0.1);
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.08);
+    overflow: hidden; /* Thay đổi từ overflow-x: auto */
+}
+
+.payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed; /* Đảm bảo table không vượt quá width */
+}
+
+.payment-table th,
+.payment-table td {
+    padding: 12px 6px; /* Giảm padding để tiết kiệm không gian */
+    border-bottom: 1px solid rgba(37, 99, 235, 0.08);
+    vertical-align: middle;
+    color: rgb(10, 61, 98);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Optimized column widths để không có scroll */
+.payment-table th:nth-child(1), 
+.payment-table td:nth-child(1) { /* Payment ID */
+    width: 7%;
+    text-align: left;
+}
+
+.payment-table th:nth-child(2), 
+.payment-table td:nth-child(2) { /* Booking ID */
+    width: 8%;
+    text-align: left;
+}
+
+.payment-table th:nth-child(3), 
+.payment-table td:nth-child(3) { /* Customer */
+    width: 10%;
+    text-align: left;
+}
+
+.payment-table th:nth-child(4), 
+.payment-table td:nth-child(4) { /* Amount */
+    width: 10%;
+    text-align: left;
+}
+
+.payment-table th:nth-child(5), 
+.payment-table td:nth-child(5) { /* Date */
+    width: 9%;
+    text-align: left;
+}
+
+.payment-table th:nth-child(6), 
+.payment-table td:nth-child(6) { /* Method */
+    width: 8%;
+    text-align: left;
+}
+
+.payment-table th:nth-child(7), 
+.payment-table td:nth-child(7) { /* Status */
+    width: 35%; /* Tăng để chứa status + action buttons */
+    text-align: left;
+}
+
+.payment-table th:nth-child(8), 
+.payment-table td:nth-child(8) { /* Action */
+    width: 13%;
+    text-align: center;
+}
+
+/* Compact action buttons */
+.action-cell {
+    display: flex !important;
+    gap: 4px; /* Giảm gap */
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100%;
+    padding: 4px 2px; /* Giảm padding */
+    min-height: 45px;
+}
+
+.action-btn {
+    width: 32px; /* Giảm kích thước */
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.action-btn svg {
+    width: 14px; /* Giảm kích thước icon */
+    height: 14px;
+}
+
+/* Compact status with actions */
+.status-with-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 6px; /* Giảm gap */
+    width: 100%;
+    padding: 2px;
+}
+
+.status-badge {
+    padding: 4px 8px; /* Giảm padding */
+    border-radius: 12px;
+    font-size: 0.8em; /* Giảm font size */
+    color: #fff;
+    font-weight: 700;
+    display: inline-block;
+    min-width: 70px; /* Giảm min-width */
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+.status-actions {
+    display: flex !important;
+    gap: 3px; /* Giảm gap */
+    align-items: center !important;
+    flex-shrink: 0;
+}
+
+.status-action-btn {
+    width: 24px; /* Giảm kích thước */
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-action-btn svg {
+    width: 10px; /* Giảm kích thước icon */
+    height: 10px;
+}
+
+/* Method badge compact */
+.method-badge-plain {
+    padding: 2px 6px; /* Giảm padding */
+    border-radius: 8px;
+    font-size: 0.7em; /* Giảm font size */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* Responsive - no scroll on mobile */
+@media (max-width: 1200px) {
+    .payment-table th,
+    .payment-table td {
+        padding: 8px 4px;
+        font-size: 0.85em;
+    }
+    
+    .action-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .action-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .status-badge {
+        min-width: 60px;
+        font-size: 0.75em;
+    }
+}
+
+@media (max-width: 768px) {
+    .payment-table th,
+    .payment-table td {
+        padding: 6px 3px;
+        font-size: 0.8em;
+    }
+    
+    .action-btn {
+        width: 26px;
+        height: 26px;
+    }
+    
+    .action-btn svg {
+        width: 11px;
+        height: 11px;
+    }
+    
+    .status-badge {
+        min-width: 50px;
+        font-size: 0.7em;
+        padding: 3px 6px;
+    }
+    
+    .status-action-btn {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .status-action-btn svg {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-cell {
+        gap: 3px;
+        padding: 3px 1px;
+        justify-content: center !important;
+    }
+    
+    .status-with-actions {
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .payment-table th:nth-child(7), 
+    .payment-table td:nth-child(7),
+    .payment-table th:nth-child(8), 
+    .payment-table td:nth-child(8) {
+        text-align: center !important;
+        vertical-align: middle;
+    }
+}
+
+/* Remove old duplicate styles */
+.payment-table th:nth-child(8), 
+.payment-table td:nth-child(8) {
+    width: 12%;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Hide old method color classes */
+.method-vnpay,
+.method-momo,
+.method-banking,
+.method-default {
+    display: none;
+}
+
+/* Force no overflow */
+.payment-management-container {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.payment-card {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.payment-modal{
+    background-color: white;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(10, 61, 98, 0.15);
+    border-radius: 16px;
 }

@@ -1,119 +1,225 @@
-// pages/Manager/PersonalInfo.jsx
-import React, { useEffect, useState } from "react";
-import { Card, Input, Button } from "../../components/ui/ui"; // Điều chỉnh đường dẫn ui nếu cần
-import { useAuth } from "../../context/AuthContext"; // Để lấy thông tin user
-import "./PersonalInfo.css"; // Giả sử bạn có file CSS để định dạng
-
-const fakePersonalInfos = [
-    {
-        id: 1,
-        name: "Nguyễn Văn A",
-        email: "a@example.com",
-        phone: "0901234567",
-        address: "Hà Nội",
-        role: "Manager",
-        createdAt: "2024-06-01",
-    },
-    {
-        id: 2,
-        name: "Trần Thị B",
-        email: "b@example.com",
-        phone: "0909876543",
-        address: "TP.HCM",
-        role: "Staff",
-        createdAt: "2024-06-02",
-    },
-];
+// Staff/PersonalInfo.jsx
+import React, { useState } from 'react';
+import { Card, Button, Input } from '../../components/ui/ui';
+import './PersonalInfo.css';
 
 export default function PersonalInfo() {
-    const { user } = useAuth(); // Lấy thông tin người dùng từ context
+    const [isEditing, setIsEditing] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [passwordData, setPasswordData] = useState({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    });
+    const [personalData, setPersonalData] = useState({
+        userID: 'MN01',
+        roleName: 'Quản lý',
+        fullName: 'Nguyễn Văn Anh',
+        phoneNumber: '0901234568',
+        email: 'anh.nguyen@example.com',
+        password: '********',
+        dateOfBirth: '1995-05-01',
+        gender: 'Nam',
+        address: '124 Đường ABC, Quận 1, TP.HCM',
+    });
 
-    // State để quản lý thông tin cá nhân có thể chỉnh sửa
-    const [name, setName] = React.useState(user?.name || "");
-    const [email, setEmail] = React.useState(user?.email || "");
-    const [role, setRole] = React.useState(user?.role || ""); // Vai trò thường không sửa được nhưng để demo
-    const [infos, setInfos] = useState([]);
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setPersonalData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
-    useEffect(() => {
-        setTimeout(() => setInfos(fakePersonalInfos), 300);
-    }, []);
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        setPasswordData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
-    const handleSaveInfo = () => {
-        // Logic lưu thông tin cá nhân vào backend
-        alert(`Lưu thông tin cá nhân: Tên - ${name}, Email - ${email}`);
-        console.log({ name, email, role });
+    const handleSave = () => {
+        console.log('Saving personal data:', personalData);
+        alert('Thông tin cá nhân đã được cập nhật!');
+        setIsEditing(false);
+    };
+
+    const handlePasswordSave = () => {
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            alert('Mật khẩu mới và xác nhận mật khẩu không khớp!');
+            return;
+        }
+        if (passwordData.newPassword.length < 6) {
+            alert('Mật khẩu mới phải có ít nhất 6 ký tự!');
+            return;
+        }
+        console.log('Changing password:', passwordData);
+        alert('Mật khẩu đã được thay đổi thành công!');
+        setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+        setShowPasswordModal(false);
+    };
+
+    const closePasswordModal = () => {
+        setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+        setShowPasswordModal(false);
     };
 
     return (
-        <Card className="info-card personal-info-card">
-            <h3>Thông tin Cá nhân</h3>
-            <p>Cập nhật thông tin hồ sơ của bạn.</p>
+        <div className="personal-info-container">
+            <Card className="personal-info-card">
+                <h3>Thông tin cá nhân</h3>
+                <div className="info-grid">
+                    <div className="info-item">
+                        <label>Mã người dùng:</label>
+                        <p>{personalData.userID}</p>
+                    </div>
+                    <div className="info-item">
+                        <label>Vai trò:</label>
+                        <p>{personalData.roleName}</p>
+                    </div>
+                    <div className="info-item full-width">
+                        <label>Họ và tên:</label>
+                        <p>{personalData.fullName}</p>
+                    </div>
+                    <div className="info-item">
+                        <label>Số điện thoại:</label>
+                        {isEditing ? (
+                            <Input
+                                type="tel"
+                                name="phoneNumber"
+                                value={personalData.phoneNumber}
+                                onChange={handleChange}
+                                maxLength="15"
+                                className="uniform-input"
+                            />
+                        ) : (
+                            <p>{personalData.phoneNumber}</p>
+                        )}
+                    </div>
+                    <div className="info-item">
+                        <label>Email:</label>
+                        {isEditing ? (
+                            <Input
+                                type="email"
+                                name="email"
+                                value={personalData.email}
+                                onChange={handleChange}
+                                required
+                                className="uniform-input"
+                            />
+                        ) : (
+                            <p>{personalData.email}</p>
+                        )}
+                    </div>
+                    <div className="info-item">
+                        <label>Ngày sinh:</label>
+                        {isEditing ? (
+                            <Input
+                                type="date"
+                                name="dateOfBirth"
+                                value={personalData.dateOfBirth}
+                                onChange={handleChange}
+                                className="uniform-input"
+                            />
+                        ) : (
+                            <p>{personalData.dateOfBirth ? new Date(personalData.dateOfBirth).toLocaleDateString('vi-VN') : 'Chưa cập nhật'}</p>
+                        )}
+                    </div>
+                    <div className="info-item">
+                        <label>Giới tính:</label>
+                        <p>{personalData.gender || 'Chưa cập nhật'}</p>
+                    </div>
+                    <div className="info-item full-width">
+                        <label>Địa chỉ:</label>
+                        {isEditing ? (
+                            <Input
+                                type="text"
+                                name="address"
+                                value={personalData.address}
+                                onChange={handleChange}
+                                maxLength="255"
+                                className="uniform-input"
+                            />
+                        ) : (
+                            <p>{personalData.address || 'Chưa cập nhật'}</p>
+                        )}
+                    </div>
+                    <div className="info-item password-item">
+                        <label>Mật khẩu:</label>
+                        <div className="password-field">
+                            <p>********</p>
+                            <Button 
+                                variant="outline" 
+                                size="small"
+                                onClick={() => setShowPasswordModal(true)}
+                                className="change-password-btn"
+                            >
+                                Đổi mật khẩu
+                            </Button>
+                        </div>
+                    </div>
+                </div>
 
-            <div className="form-group mt-4">
-                <label htmlFor="fullName">Họ và Tên:</label>
-                <Input
-                    id="fullName"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Nhập họ và tên"
-                />
-            </div>
-            <div className="form-group mt-3">
-                <label htmlFor="email">Email:</label>
-                <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Nhập email"
-                    disabled // Email thường không cho sửa trực tiếp qua form này
-                />
-            </div>
-            <div className="form-group mt-3">
-                <label htmlFor="role">Vai trò:</label>
-                <Input
-                    id="role"
-                    type="text"
-                    value={role}
-                    disabled // Vai trò thường chỉ hiển thị
-                />
-            </div>
+                <div className="personal-info-actions">
+                    {isEditing ? (
+                        <>
+                            <Button onClick={handleSave}>Lưu thay đổi</Button>
+                            <Button variant="outline" onClick={() => setIsEditing(false)}>Hủy</Button>
+                        </>
+                    ) : (
+                        <Button onClick={() => setIsEditing(true)}>Chỉnh sửa thông tin</Button>
+                    )}
+                </div>
+            </Card>
 
-            <Button className="mt-4" onClick={handleSaveInfo}>
-                Lưu Thay Đổi
-            </Button>
-            <p className="note mt-3">
-                Đây là nội dung placeholder cho trang Thông tin cá nhân. Bạn có thể thêm
-                các trường khác như số điện thoại, địa chỉ, mật khẩu, v.v.
-            </p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Họ tên</th>
-                        <th>Email</th>
-                        <th>Số điện thoại</th>
-                        <th>Địa chỉ</th>
-                        <th>Vai trò</th>
-                        <th>Ngày tạo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {infos.map((i) => (
-                        <tr key={i.id}>
-                            <td>{i.id}</td>
-                            <td>{i.name}</td>
-                            <td>{i.email}</td>
-                            <td>{i.phone}</td>
-                            <td>{i.address}</td>
-                            <td>{i.role}</td>
-                            <td>{i.createdAt}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </Card>
+            {/* Password Change Modal */}
+            {showPasswordModal && (
+                <div className="modal-overlay" onClick={closePasswordModal}>
+                    <div className="password-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Đổi mật khẩu</h3>
+                        <div className="password-form">
+                            <div className="password-input-group">
+                                <label>Mật khẩu cũ:</label>
+                                <Input
+                                    type="password"
+                                    name="oldPassword"
+                                    value={passwordData.oldPassword}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Nhập mật khẩu cũ"
+                                    required
+                                />
+                            </div>
+                            <div className="password-input-group">
+                                <label>Mật khẩu mới:</label>
+                                <Input
+                                    type="password"
+                                    name="newPassword"
+                                    value={passwordData.newPassword}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)"
+                                    required
+                                />
+                            </div>
+                            <div className="password-input-group">
+                                <label>Xác nhận mật khẩu mới:</label>
+                                <Input
+                                    type="password"
+                                    name="confirmPassword"
+                                    value={passwordData.confirmPassword}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Nhập lại mật khẩu mới"
+                                    required
+                                />
+                            </div>
+                            <div className="password-modal-actions">
+                                <Button onClick={handlePasswordSave}>Đổi mật khẩu</Button>
+                                <Button variant="outline" onClick={closePasswordModal}>Hủy</Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }

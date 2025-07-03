@@ -5,15 +5,22 @@ import './PersonalInfo.css';
 
 export default function PersonalInfo() {
     const [isEditing, setIsEditing] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [passwordData, setPasswordData] = useState({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    });
     const [personalData, setPersonalData] = useState({
+        userID: 'ST001',
+        roleName: 'Nhân viên',
         fullName: 'Nguyễn Thị Thu Hà',
-        employeeId: 'ST001',
-        role: 'Nhân viên xét nghiệm',
+        phoneNumber: '0901234567',
         email: 'ha.nguyen@example.com',
-        phone: '0901234567',
+        password: '********',
+        dateOfBirth: '1995-05-15',
+        gender: 'Nữ',
         address: '123 Đường ABC, Quận 1, TP.HCM',
-        department: 'Phòng Xét nghiệm',
-        joinDate: '2022-03-15',
     });
 
     const handleChange = (e) => {
@@ -24,11 +31,38 @@ export default function PersonalInfo() {
         }));
     };
 
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        setPasswordData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
+
     const handleSave = () => {
-        // Here you would typically send this data to your backend API
         console.log('Saving personal data:', personalData);
         alert('Thông tin cá nhân đã được cập nhật!');
         setIsEditing(false);
+    };
+
+    const handlePasswordSave = () => {
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            alert('Mật khẩu mới và xác nhận mật khẩu không khớp!');
+            return;
+        }
+        if (passwordData.newPassword.length < 6) {
+            alert('Mật khẩu mới phải có ít nhất 6 ký tự!');
+            return;
+        }
+        console.log('Changing password:', passwordData);
+        alert('Mật khẩu đã được thay đổi thành công!');
+        setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+        setShowPasswordModal(false);
+    };
+
+    const closePasswordModal = () => {
+        setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+        setShowPasswordModal(false);
     };
 
     return (
@@ -37,25 +71,31 @@ export default function PersonalInfo() {
                 <h3>Thông tin cá nhân</h3>
                 <div className="info-grid">
                     <div className="info-item">
-                        <label>Họ và tên:</label>
-                        {isEditing ? (
-                            <Input
-                                type="text"
-                                name="fullName"
-                                value={personalData.fullName}
-                                onChange={handleChange}
-                            />
-                        ) : (
-                            <p>{personalData.fullName}</p>
-                        )}
-                    </div>
-                    <div className="info-item">
-                        <label>Mã nhân viên:</label>
-                        <p>{personalData.employeeId}</p>
+                        <label>Mã người dùng:</label>
+                        <p>{personalData.userID}</p>
                     </div>
                     <div className="info-item">
                         <label>Vai trò:</label>
-                        <p>{personalData.role}</p>
+                        <p>{personalData.roleName}</p>
+                    </div>
+                    <div className="info-item full-width">
+                        <label>Họ và tên:</label>
+                        <p>{personalData.fullName}</p>
+                    </div>
+                    <div className="info-item">
+                        <label>Số điện thoại:</label>
+                        {isEditing ? (
+                            <Input
+                                type="tel"
+                                name="phoneNumber"
+                                value={personalData.phoneNumber}
+                                onChange={handleChange}
+                                maxLength="15"
+                                className="uniform-input"
+                            />
+                        ) : (
+                            <p>{personalData.phoneNumber}</p>
+                        )}
                     </div>
                     <div className="info-item">
                         <label>Email:</label>
@@ -65,23 +105,30 @@ export default function PersonalInfo() {
                                 name="email"
                                 value={personalData.email}
                                 onChange={handleChange}
+                                required
+                                className="uniform-input"
                             />
                         ) : (
                             <p>{personalData.email}</p>
                         )}
                     </div>
                     <div className="info-item">
-                        <label>Số điện thoại:</label>
+                        <label>Ngày sinh:</label>
                         {isEditing ? (
                             <Input
-                                type="tel"
-                                name="phone"
-                                value={personalData.phone}
+                                type="date"
+                                name="dateOfBirth"
+                                value={personalData.dateOfBirth}
                                 onChange={handleChange}
+                                className="uniform-input"
                             />
                         ) : (
-                            <p>{personalData.phone}</p>
+                            <p>{personalData.dateOfBirth ? new Date(personalData.dateOfBirth).toLocaleDateString('vi-VN') : 'Chưa cập nhật'}</p>
                         )}
+                    </div>
+                    <div className="info-item">
+                        <label>Giới tính:</label>
+                        <p>{personalData.gender || 'Chưa cập nhật'}</p>
                     </div>
                     <div className="info-item full-width">
                         <label>Địa chỉ:</label>
@@ -91,18 +138,26 @@ export default function PersonalInfo() {
                                 name="address"
                                 value={personalData.address}
                                 onChange={handleChange}
+                                maxLength="255"
+                                className="uniform-input"
                             />
                         ) : (
-                            <p>{personalData.address}</p>
+                            <p>{personalData.address || 'Chưa cập nhật'}</p>
                         )}
                     </div>
-                    <div className="info-item">
-                        <label>Phòng ban:</label>
-                        <p>{personalData.department}</p>
-                    </div>
-                    <div className="info-item">
-                        <label>Ngày vào làm:</label>
-                        <p>{personalData.joinDate}</p>
+                    <div className="info-item password-item">
+                        <label>Mật khẩu:</label>
+                        <div className="password-field">
+                            <p>********</p>
+                            <Button 
+                                variant="outline" 
+                                size="small"
+                                onClick={() => setShowPasswordModal(true)}
+                                className="change-password-btn"
+                            >
+                                Đổi mật khẩu
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
@@ -117,6 +172,54 @@ export default function PersonalInfo() {
                     )}
                 </div>
             </Card>
+
+            {/* Password Change Modal */}
+            {showPasswordModal && (
+                <div className="modal-overlay" onClick={closePasswordModal}>
+                    <div className="password-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Đổi mật khẩu</h3>
+                        <div className="password-form">
+                            <div className="password-input-group">
+                                <label>Mật khẩu cũ:</label>
+                                <Input
+                                    type="password"
+                                    name="oldPassword"
+                                    value={passwordData.oldPassword}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Nhập mật khẩu cũ"
+                                    required
+                                />
+                            </div>
+                            <div className="password-input-group">
+                                <label>Mật khẩu mới:</label>
+                                <Input
+                                    type="password"
+                                    name="newPassword"
+                                    value={passwordData.newPassword}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)"
+                                    required
+                                />
+                            </div>
+                            <div className="password-input-group">
+                                <label>Xác nhận mật khẩu mới:</label>
+                                <Input
+                                    type="password"
+                                    name="confirmPassword"
+                                    value={passwordData.confirmPassword}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Nhập lại mật khẩu mới"
+                                    required
+                                />
+                            </div>
+                            <div className="password-modal-actions">
+                                <Button onClick={handlePasswordSave}>Đổi mật khẩu</Button>
+                                <Button variant="outline" onClick={closePasswordModal}>Hủy</Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
