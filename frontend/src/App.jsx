@@ -11,6 +11,7 @@ import Admin from './pages/Admin';
 import BookingCreate from './pages/BookingCreate';
 import BookingDetails from './pages/BookingDetails';
 import BookingPayment from './pages/BookingPayment';
+import PaymentSuccess from './pages/PaymentSuccess';
 import About from './pages/About';
 
 
@@ -62,6 +63,7 @@ function App() {
           <Route path="/booking-create" element={<BookingCreate />} />
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path='/booking-payment' element={<BookingPayment />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
 
           {/* <Route path="/booking/create" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><BookingCreate /></ProtectedRoute>} /> Removed as booking functionality is removed */}
           <Route path="/about" element={<About />} />

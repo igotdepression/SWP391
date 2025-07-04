@@ -1,76 +1,88 @@
-// Footer.jsx
 import React from 'react';
+import './Footer.css'; // Import file CSS
 
-export default function Footer() {
-    return (
-        <footer className="adn-footer">
-            <div className="adn-footer-content">
-                {/* Column 1: Logo, Name, and Slogan */}
-                <div className="adn-footer-section adn-footer-col-logo-slogan">
-                    <div className="adn-footer-logo">
-                        <img src="/logo.png" alt="ADN Logo" />
-                    </div>
-                    {/* Tách DNAChain và khẩu hiệu ra */}
-                    <div className="adn-brand-name-container"> {/* Container cho tên */}
-                        <span className="adn-brand-name">DNAChain</span>
-                    </div>
-                    <div className="adn-slogan-container"> {/* Container cho khẩu hiệu */}
-                        <span className="adn-slogan">Nền tảng xét nghiệm ADN đáng tin cậy</span>
-                    </div>
-                </div>
+const Footer = () => {
+  return (
+    <footer className="footer">
+      <div className="footer-content">
+        {/* Cột 1: Logo, Tên, và Khẩu hiệu */}
+        <div className="footer-left">
+          <div className="footer-logo">
+            <div className="logo-icon">DNA</div>
+            <div className="logo-name">DNAChain</div>
+          </div>
+          <p className="footer-slogan">
+            Phòng xét nghiệm ADN hàng đầu Việt Nam với công nghệ tiên tiến và đội ngũ chuyên gia có kinh nghiệm hơn 15 năm trong lĩnh vực xét nghiệm di truyền học.
+          </p>
+          <div className="footer-certifications">
+            <p>Chứng nhận ISO 15189:2012</p>
+            <p>Giấy phép hoạt động số 123/BYT</p>
+            <p>Hơn 50,000 khách hàng tin tưởng</p>
+          </div>
+        </div>
 
-                {/* Column 2: Description + Social Links */}
-                <div className="adn-footer-section adn-footer-col-description-social">
-                    <p className="adn-footer-description">
-                        Chúng tôi cung cấp các dịch vụ xét nghiệm ADN chính xác và đáng tin cậy.
-                    </p>
-                    <div className="adn-social-links">
-                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                            <i className="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                            <i className="fab fa-twitter"></i>
-                        </a>
-                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                            <i className="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                            <i className="fab fa-instagram"></i>
-                        </a>
-                    </div>
-                </div>
+        {/* Cột 2: Dịch vụ */}
+        <div className="footer-services">
+          <h3>Dịch vụ xét nghiệm ADN</h3>
+          <ul>
+            <li>Xét nghiệm ADN xác định quan hệ huyết thống</li>
+            <li>Test ADN cha con (Paternity test)</li>
+            <li>Xét nghiệm ADN anh chị em ruột</li>
+            <li>Test ADN ông bà - cháu</li>
+            <li>Xét nghiệm ADN tiền sinh (Pre-natal)</li>
+            <li>Giám định ADN pháp y</li>
+            <li>Test ADN tìm nguồn gốc dân tộc</li>
+          </ul>
+        </div>
 
-                {/* Column 3: Location & Contact Us (grouped) */}
-                <div className="adn-footer-section adn-footer-col-contact-location">
-                    <span className="adn-footer-label">LOCATION</span>
-                    <div className="contact-item">
-                        <i className="fas fa-map-marker-alt"></i>
-                        <span>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</span>
-                    </div>
-                    <span className="adn-footer-label" style={{ marginTop: '1rem' }}> CONTACT US</span>
-                    <div className="contact-item">
-                        <i className="fas fa-phone-alt"></i>
-                        <span>02020202304</span>
-                    </div>
-                    <div className="contact-item">
-                        <i className="fas fa-envelope"></i>
-                        <span>abc123@gmail.com</span>
-                    </div>
-                </div>
+        {/* Cột 3: Hỗ trợ khách hàng */}
+        <div className="footer-support">
+          <h3>Hỗ trợ khách hàng</h3>
+          <ul>
+            <li>Hướng dẫn lấy mẫu xét nghiệm</li>
+            <li>Quy trình xét nghiệm ADN</li>
+            <li>Tra cứu kết quả online</li>
+            <li>Câu hỏi thường gặp</li>
+            <li>Chính sách bảo mật thông tin</li>
+            <li>Điều khoản sử dụng dịch vụ</li>
+            <li>Chế độ bảo hành kết quả</li>
+          </ul>
+        </div>
 
-                {/* Column 4: Payment */}
-                <div className="adn-footer-section adn-footer-col-payment">
-                    <span className="adn-footer-label">PAYMENT</span>
-                    <div className="payment-icons">
-                        <img src="https://cdn.tgdd.vn/2020/04/GameApp/image-180x180.png" alt="ZaloPay" />
-                        <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo" />
-                    </div>
-                </div>
-            </div>
+        {/* Cột 4: Liên hệ */}
+        <div className="footer-contact">
+          <h3>Liên hệ</h3>
+          <div className="contact-item">
+            <i className="fas fa-map-marker-alt"></i>
+            <span>Trụ sở chính: 123 Nguyễn Văn Cừ, Quận 5, TP.HCM</span>
+          </div>
+          <div className="contact-item">
+            <i className="fas fa-phone-alt"></i>
+            <span>Hotline: 1900 2468 (24/7 - Miễn phí tư vấn)</span>
+          </div>
+          <div className="contact-item">
+            <i className="fas fa-envelope"></i>
+            <span>Email: info@dnachain.vn</span>
+          </div>
+          <p>Giờ làm việc: T2-T6: 7:30 - 17:30 | T7-CN: 8:00 - 12:00</p>
+          {/* Dấu gạch dưới trụ sở chính */}
+          <div className="footer-divider"></div>
+        </div>
+      </div>
 
-            <div className="adn-footer-bottom">
-                <p>&copy; {new Date().getFullYear()} Bloodline. All rights reserved.</p>
-            </div>
-        </footer>
-    );
+      {/* Phần thêm: Chịu trách nhiệm nội dung và Giám đốc */}
+      <div className="footer-bottom">
+        <div className="footer-bottom-left">
+          <p>&copy; 2025 DNAChain - Phòng xét nghiệm ADN. Giấy phép hoạt động số 123/BYT-GP do Bộ Y tế cấp.</p>
+          <p>Trụ sở chính: 123 Nguyễn Văn Cừ, Quận 5, TP.HCM</p>
+        </div>
+        <div className="footer-bottom-right">
+          <p>Chịu trách nhiệm nội dung: Nguyễn Văn A</p>
+          <p>Giám đốc: Trần Thị B</p>
+        </div>
+      </div>
+    </footer>
+  );
 }
+
+export default Footer;

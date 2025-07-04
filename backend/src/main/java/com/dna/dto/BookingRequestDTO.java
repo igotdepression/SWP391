@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,5 +25,7 @@ public class BookingRequestDTO {
     private LocalDateTime appointmentDate;
 
     @NotNull(message = "Participants list cannot be null")
-    private List<@Valid ParticipantRequestDTO> participants; // Danh sách người tham gia và mẫu
+    private List<@Valid ParticipantRequestDTO> participants; 
+
+    private Integer numberSample;
 }

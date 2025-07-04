@@ -1,80 +1,689 @@
-.feedback-card {
-    max-width: 1000px; /* Tăng chiều rộng */
-    margin: 32px auto;
-    padding: 35px 30px;
-    background: linear-gradient(135deg, #fff0f5 0%, #fcf0f8 100%); /* Nền gradient hồng nhẹ */
-    border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(236, 72, 153, 0.15); /* Bóng đổ rõ ràng */
-    border: 1.5px solid #ffccdd; /* Viền hồng nhạt */
+/* Feedback Management Styles - Class names riêng */
+.feedback-management-container {
+    padding: 20px;
+    min-height: calc(100vh - var(--navbar-height, 60px));
+    max-width: 100%;
+    box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+}
+
+.feedback-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(10, 61, 98, 0.3);
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.feedback-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
 }
 
 .feedback-card h3 {
-    margin-bottom: 25px;
-    color: #c02d6b; /* Màu tiêu đề hồng đậm */
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    text-align: center;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
-}
-
-.feedback-card table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: #ffffff;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.1); /* Bóng đổ cho bảng */
-}
-
-.feedback-card th,
-.feedback-card td {
-    padding: 16px 20px;
-    text-align: left;
-}
-
-.feedback-card th {
-    background: linear-gradient(90deg, #ec4899 0%, #f472b6 100%); /* Nền header hồng */
-    color: #fff;
+    color: rgb(10, 61, 98);
+    font-size: 1.8em;
     font-weight: 700;
-    border-bottom: 2px solid #ffccdd;
-    font-size: 1.05rem;
+    margin-bottom: 24px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 12px;
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.feedback-card tr:nth-child(even) td {
-    background: #fff5f8; /* Nền xen kẽ hồng rất nhạt */
+.feedback-card h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    border-radius: 2px;
 }
 
-.feedback-card tr:hover td {
-    background: #ffecf2; /* Nền khi hover hồng sáng hơn */
-    transition: background 0.3s ease;
+/* Filters */
+.feedback-filters {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(34, 197, 94, 0.08) 100%);
+    border-radius: 12px;
+    border: 2px solid rgba(37, 99, 235, 0.15);
 }
 
-.feedback-card td {
-    color: #444;
-    border-bottom: 1px solid #ffccdd;
-    font-size: 1rem;
-    line-height: 1.4;
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-/* Thêm các button styles nếu cần cho các hành động trên feedback */
-/* Ví dụ cho nút "Reply" hoặc "Resolve" */
-.feedback-card .button-reply {
-    background-color: #6a0dad; /* Màu tím */
-    color: white;
-    padding: 8px 15px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.95rem;
+.filter-group label {
     font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    color: rgb(10, 61, 98);
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.feedback-card .button-reply:hover {
-    background-color: #530a84;
+.search-input,
+.filter-select {
+    border: 2px solid rgba(37, 99, 235, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    color: rgb(10, 61, 98);
+    background: white;
+    min-width: 150px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: rgb(37, 99, 235);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* Statistics với gradient xanh dương xanh lá - nằm trên 1 hàng */
+.feedback-stats {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    border-radius: 12px;
+    border: 2px solid rgba(37, 99, 235, 0.3);
+    flex: 1;
+    min-width: 0;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+}
+
+.stat-number {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+}
+
+.stat-label {
+    font-size: 0.85em;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Table */
+.table-responsive {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 2px solid rgba(37, 99, 235, 0.1);
+}
+
+.feedback-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.feedback-table th {
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    color: white;
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+    vertical-align: middle;
+    color: rgb(10, 61, 98);
+    font-weight: 500;
+}
+
+.feedback-table tr:hover {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(34, 197, 94, 0.03) 100%);
+}
+
+.booking-id {
+    font-weight: 600;
+    color: rgb(37, 99, 235);
+}
+
+.rating-cell {
+    font-size: 0.9em;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 600;
+    color: rgb(37, 99, 235);
+}
+
+.comment-cell {
+    max-width: 150px;
+    min-width: 100px;
+    font-size: 0.9em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Action Buttons với SVG Icons */
+.action-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+    transition: all 0.3s ease;
+}
+
+.view-btn {
+    color: rgb(255, 115, 0);
+}
+
+.view-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+}
+
+.view-btn:hover svg {
+    transform: scale(1.1);
+}
+
+.reply-btn {
+    color: rgb(2, 184, 71);
+}
+
+.reply-btn:hover {
+    background: linear-gradient(135deg, rgb(22, 163, 74) 0%, rgb(21, 128, 61) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
+.reply-btn:hover svg {
+    transform: scale(1.1);
+}
+
+.hide-btn {
+    color: rgb(52, 67, 240);
+}
+
+.hide-btn:hover {
+    background: linear-gradient(135deg, rgb(29, 78, 216) 0%, rgb(37, 99, 235) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.hide-btn:hover svg {
+    transform: scale(1.1);
+}
+
+.show-btn {
+    background: linear-gradient(135deg, rgb(6, 182, 212) 0%, rgb(34, 197, 94) 100%);
+    color: white;
+    border: 2px solid rgba(6, 182, 212, 0.3);
+}
+
+.show-btn:hover {
+    background: linear-gradient(135deg, rgb(8, 145, 178) 0%, rgb(22, 163, 74) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+}
+
+.show-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Active states */
+.action-btn:active {
+    transform: translateY(0);
+}
+
+.action-btn:focus {
+    outline: 2px solid rgba(37, 99, 235, 0.5);
+    outline-offset: 2px;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: rgb(255, 242, 233);
+    color: #ff8800;
+    border: 1px solid #ff8800;
+}
+
+.status-replied {
+    background: rgb(246, 255, 249);
+    color: #00a835;
+    border: 1px solid #00a835;
+}
+
+.visibility-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.visibility-badge.visible {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(34, 197, 94, 0.2) 100%);
+    color: rgb(21, 87, 36);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.visibility-badge.hidden {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(245, 101, 101, 0.2) 100%);
+    color: rgb(185, 28, 28);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.feedback-modal {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    animation: modalSlideIn 0.3s ease-out;
+    margin: 20px;
+    box-sizing: border-box;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.feedback-modal h3 {
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.4em;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(37, 99, 235, 0.15);
+}
+
+.feedback-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.detail-row label {
+    font-weight: 600;
+    color: rgb(10, 61, 98);
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.feedback-content,
+.answer-content {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border: 2px solid rgba(37, 99, 235, 0.15);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0;
+    line-height: 1.5;
+    color: rgb(45, 55, 72);
+}
+
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.feedback-info {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border: 2px solid rgba(37, 99, 235, 0.15);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.feedback-info p {
+    margin: 0 0 8px 0;
+    color: rgb(10, 61, 98);
+    font-weight: 500;
+}
+
+.reply-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reply-input-group label {
+    font-weight: 600;
+    color: rgb(10, 61, 98);
+    font-size: 0.95em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reply-textarea {
+    border: 2px solid rgba(37, 99, 235, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1em;
+    font-family: inherit;
+    color: rgb(10, 61, 98);
+    background: white;
+    resize: vertical;
+    min-height: 100px;
+    transition: all 0.3s ease;
+}
+
+.reply-textarea:focus {
+    outline: none;
+    border-color: rgb(37, 99, 235);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.reply-textarea::placeholder {
+    color: rgba(10, 61, 98, 0.5);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 2px solid rgba(37, 99, 235, 0.15);
+}
+
+.modal-actions button {
+    min-width: 120px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.modal-actions button:not([variant="outline"]) {
+    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+
+.modal-actions button:not([variant="outline"]):hover {
+    background: linear-gradient(135deg, rgb(29, 78, 216) 0%, rgb(22, 163, 74) 100%);
     transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.modal-actions button[variant="outline"] {
+    background: white;
+    color: rgb(10, 61, 98);
+    border: 2px solid rgb(10, 61, 98);
+}
+
+.modal-actions button[variant="outline"]:hover {
+    background: rgb(10, 61, 98);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(10, 61, 98, 0.3);
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgb(10, 61, 98);
+    font-size: 1.1em;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .feedback-management-container {
+        padding: 16px;
+    }
+    
+    .feedback-card {
+        padding: 24px;
+    }
+    
+    .feedback-filters {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    
+    .feedback-stats {
+        gap: 16px;
+    }
+    
+    .stat-item {
+        padding: 14px 20px;
+    }
+    
+    .stat-number {
+        font-size: 1.6em;
+    }
+    
+    .stat-label {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 768px) {
+    .feedback-management-container {
+        padding: 12px;
+    }
+    
+    .feedback-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+    
+    .feedback-card h3 {
+        font-size: 1.5em;
+    }
+    
+    .feedback-filters {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .feedback-stats {
+        gap: 12px;
+    }
+    
+    .stat-item {
+        padding: 12px 16px;
+    }
+    
+    .stat-number {
+        font-size: 1.4em;
+    }
+    
+    .stat-label {
+        font-size: 0.75em;
+    }
+    
+    .feedback-table {
+        font-size: 0.85em;
+    }
+    
+    .feedback-table th,
+    .feedback-table td {
+        padding: 8px 6px;
+    }
+    
+    .action-cell {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    .action-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .feedback-modal {
+        margin: 10px;
+        padding: 20px;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .modal-actions button {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .feedback-management-container {
+        padding: 8px;
+    }
+    
+    .feedback-card {
+        padding: 16px;
+    }
+    
+    .feedback-stats {
+        gap: 8px;
+    }
+    
+    .stat-item {
+        padding: 10px 12px;
+    }
+    
+    .stat-number {
+        font-size: 1.2em;
+    }
+    
+    .stat-label {
+        font-size: 0.7em;
+    }
+    
+    .feedback-table {
+        font-size: 0.8em;
+    }
+    
+    .action-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+    
+    .action-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* Focus styles for accessibility */
+.feedback-card *:focus {
+    outline: 2px solid rgb(37, 99, 235);
+    outline-offset: 2px;
 }

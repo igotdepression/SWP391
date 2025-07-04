@@ -1,0 +1,120 @@
+.container {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px 0 rgba(31, 41, 55, 0.08);
+  border: 1px solid #f3f4f6;
+  overflow: hidden;
+}
+.header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  background: linear-gradient(to right, #eff6ff, #f3e8ff);
+}
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #ea580c;
+}
+.title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #111827;
+}
+.body {
+  padding: 1.5rem;
+  overflow-x: auto;
+  background: #e0edfa;
+  border-radius: 0 0 1rem 1rem;
+}
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(31,41,55,0.04);
+}
+.table th, .table td {
+  border-bottom: 1px solid #f3f4f6;
+}
+.table th {
+  text-align: left;
+  padding: 1.25rem 1rem;
+  font-weight: 600;
+  color: #374151;
+  background: #f9fafb;
+}
+.table tr:last-child td {
+  border-bottom: none;
+}
+.table tbody tr {
+  transition: background 0.2s;
+}
+.table tbody tr:hover {
+  background: #f3f4f6;
+}
+.table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+.table td {
+  padding: 1.25rem 1rem;
+  vertical-align: middle;
+}
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.95rem;
+  color: #6366f1;
+  font-weight: 500;
+}
+.type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ea580c;
+  font-weight: 500;
+}
+.iconSmall {
+  width: 1rem;
+  height: 1rem;
+}
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: #f3f4f6;
+  color: #374151;
+  display: inline-block;
+}
+.text-green-600 {
+  color: #22c55e !important;
+}
+.text-gray-400 {
+  color: #9ca3af !important;
+}
+.font-medium {
+  font-weight: 500;
+}
+.viewBtn {
+  background: #2563eb;
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: background 0.2s, box-shadow 0.2s;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+}
+.viewBtn:hover {
+  background: #1d4ed8;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.12);
+}
+  

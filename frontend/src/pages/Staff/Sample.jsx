@@ -1,11 +1,11 @@
 // Staff/Sample.jsx
 import React, { useState } from 'react';
-import './Sample.css';
+
 
 export default function Sample() {
     const [samples, setSamples] = useState([
-        { 
-            sampleID: 1, 
+        {
+            sampleID: 1,
             bookingID: 1001,
             userID: 201, // Staff ID
             participantID: 301,
@@ -13,8 +13,8 @@ export default function Sample() {
             sampleType: 'Máu',
             receivedDate: '2025-06-15'
         },
-        { 
-            sampleID: 2, 
+        {
+            sampleID: 2,
             bookingID: 1002,
             userID: 202, // Staff ID
             participantID: 302,
@@ -22,8 +22,8 @@ export default function Sample() {
             sampleType: 'Tế bào niêm mạc miệng',
             receivedDate: '2025-06-20'
         },
-        { 
-            sampleID: 3, 
+        {
+            sampleID: 3,
             bookingID: 1003,
             userID: 203, // Staff ID
             participantID: 303,
@@ -31,8 +31,8 @@ export default function Sample() {
             sampleType: 'Tóc',
             receivedDate: '2025-06-25'
         },
-        { 
-            sampleID: 4, 
+        {
+            sampleID: 4,
             bookingID: 1004,
             userID: 204, // Staff ID
             participantID: 304,
@@ -40,8 +40,8 @@ export default function Sample() {
             sampleType: 'Móng tay',
             receivedDate: '2025-06-28'
         },
-        { 
-            sampleID: 5, 
+        {
+            sampleID: 5,
             bookingID: 1005,
             userID: 202, // Staff ID
             participantID: 305,
@@ -58,12 +58,12 @@ export default function Sample() {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [currentSample, setCurrentSample] = useState(null);
     const [currentParticipant, setCurrentParticipant] = useState(null);
-    const [newSample, setNewSample] = useState({ 
+    const [newSample, setNewSample] = useState({
         bookingID: '',
         userID: '', // Staff ID
         participantID: '',
-        typeOfCollection: '', 
-        sampleType: '', 
+        typeOfCollection: '',
+        sampleType: '',
         receivedDate: ''
     });
 
@@ -128,7 +128,7 @@ export default function Sample() {
 
     const filteredSamples = samples.filter(sample => {
         if (!searchTerm) return true;
-        
+
         switch (searchType) {
             case 'sampleID':
                 return sample.sampleID.toString().includes(searchTerm);
@@ -146,19 +146,19 @@ export default function Sample() {
                 return sample.receivedDate.includes(searchTerm);
             default:
                 return sample.sampleID.toString().includes(searchTerm) ||
-                       sample.bookingID.toString().includes(searchTerm) ||
-                       sample.participantID.toString().includes(searchTerm);
+                    sample.bookingID.toString().includes(searchTerm) ||
+                    sample.participantID.toString().includes(searchTerm);
         }
     });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        
+
         // Validation cho các trường ID - không cho phép số âm
         if ((name === 'userID' || name === 'participantID') && value < 0) {
             return; // Không cập nhật state nếu giá trị âm
         }
-        
+
         setNewSample(prev => ({ ...prev, [name]: value }));
     };
 
@@ -168,7 +168,7 @@ export default function Sample() {
             alert('Vui lòng điền đầy đủ thông tin bắt buộc (Loại mẫu, Phương thức lấy mẫu, Ngày nhận mẫu).');
             return;
         }
-        
+
         // Validation cho các ID - phải là số dương
         if (newSample.userID && newSample.userID <= 0) {
             alert('Mã nhân viên phải là số dương!');
@@ -178,25 +178,25 @@ export default function Sample() {
             alert('Mã bệnh nhân phải là số dương!');
             return;
         }
-        
+
         const newSampleID = samples.length > 0 ? Math.max(...samples.map(s => s.sampleID)) + 1 : 1;
         // Tự động tạo mã booking tăng dần
         const maxBookingID = samples.length > 0 ? Math.max(...samples.map(s => s.bookingID)) : 1000;
         const newBookingID = maxBookingID + 1;
-        
-        setSamples(prev => [...prev, { 
-            ...newSample, 
+
+        setSamples(prev => [...prev, {
+            ...newSample,
             sampleID: newSampleID,
             bookingID: newBookingID,
             participantID: newSample.participantID || (300 + samples.length + 1),
             userID: newSample.userID || 201 // Default staff ID
         }]);
-        setNewSample({ 
+        setNewSample({
             bookingID: '',
             userID: '',
             participantID: '',
-            typeOfCollection: '', 
-            sampleType: '', 
+            typeOfCollection: '',
+            sampleType: '',
             receivedDate: ''
         });
         setShowAddModal(false);
@@ -205,17 +205,17 @@ export default function Sample() {
 
     const handleEditSample = () => {
         if (currentSample && newSample.typeOfCollection && newSample.sampleType && newSample.receivedDate) {
-            setSamples(prev => prev.map(sample => 
+            setSamples(prev => prev.map(sample =>
                 sample.sampleID === currentSample.sampleID ? { ...currentSample, ...newSample } : sample
             ));
             setShowEditModal(false);
             setCurrentSample(null);
-            setNewSample({ 
+            setNewSample({
                 bookingID: '',
                 userID: '',
                 participantID: '',
-                typeOfCollection: '', 
-                sampleType: '', 
+                typeOfCollection: '',
+                sampleType: '',
                 receivedDate: ''
             });
             alert('Mẫu xét nghiệm đã được cập nhật thành công!');
@@ -264,12 +264,12 @@ export default function Sample() {
         setShowDetailModal(false);
         setCurrentSample(null);
         setCurrentParticipant(null);
-        setNewSample({ 
+        setNewSample({
             bookingID: '',
             userID: '',
             participantID: '',
-            typeOfCollection: '', 
-            sampleType: '', 
+            typeOfCollection: '',
+            sampleType: '',
             receivedDate: ''
         });
     };
@@ -285,11 +285,11 @@ export default function Sample() {
     const homeSamples = samples.filter(s => s.typeOfCollection === 'Tại nhà').length;
 
     return (
-        <div className="consultation-container">
-            <div className="consultation-content">
-                <div className="consultation-list-card">
-                    <div className="consultation-header-row">
-                        <h2 className="consultation-title">Quản lý Mẫu Xét nghiệm</h2>
+        <div className="sample-container">
+            <div className="sample-content">
+                <div className="sample-list-card">
+                    <div className="sample-header-row">
+                        <h2 className="sample-title">Quản lý Mẫu Xét nghiệm</h2>
                     </div>
 
                     {/* Statistics Section */}
@@ -321,7 +321,7 @@ export default function Sample() {
                     </div>
 
                     {/* Controls Section */}
-                    <div className="consultation-controls">
+                    <div className="sample-controls">
                         <div className="search-controls">
                             <select
                                 value={searchType}
@@ -375,14 +375,9 @@ export default function Sample() {
                                             <td>{sample.bookingID}</td>
                                             <td>{sample.userID}</td>
                                             <td>
-                                                <span 
+                                                <span
                                                     onClick={() => openDetailModal(sample)}
-                                                    style={{
-                                                        color: '#007bff',
-                                                        cursor: 'pointer',
-                                                        textDecoration: 'underline',
-                                                        fontWeight: '600'
-                                                    }}
+                                                    className="participant-link"
                                                     title="Click để xem chi tiết bệnh nhân"
                                                 >
                                                     {sample.participantID}
@@ -396,18 +391,21 @@ export default function Sample() {
                                                     <button
                                                         onClick={() => openEditModal(sample)}
                                                         title="Chỉnh sửa mẫu"
+                                                        className="edit-btn"
                                                     >
                                                         ✎
                                                     </button>
                                                     <button
                                                         onClick={() => openDeleteModal(sample)}
                                                         title="Xóa mẫu"
+                                                        className="delete-btn"
                                                     >
                                                         ✕
                                                     </button>
                                                     <button
                                                         onClick={() => openDetailModal(sample)}
                                                         title="Xem chi tiết bệnh nhân"
+                                                        className="view-btn"
                                                     >
                                                         👁
                                                     </button>
@@ -418,7 +416,7 @@ export default function Sample() {
                                 </tbody>
                             </table>
                         ) : (
-                            <div style={{textAlign: 'center', padding: '40px', color: '#6c757d'}}>
+                            <div className="empty-state">
                                 <p>Không tìm thấy mẫu xét nghiệm nào phù hợp với từ khóa tìm kiếm.</p>
                             </div>
                         )}
@@ -432,16 +430,7 @@ export default function Sample() {
                     <div className="sample-add-card" onClick={(e) => e.stopPropagation()}>
                         <h3>Thêm mẫu xét nghiệm mới</h3>
                         <div className="add-sample-form">
-                            <div style={{
-                                padding: '12px 16px',
-                                backgroundColor: '#e7f3ff',
-                                border: '1px solid #b3d9ff',
-                                borderRadius: '8px',
-                                marginBottom: '15px',
-                                color: '#0056b3',
-                                fontSize: '0.9em',
-                                textAlign: 'center'
-                            }}>
+                            <div className="booking-info">
                                 📋 Mã booking sẽ được tạo tự động: {samples.length > 0 ? Math.max(...samples.map(s => s.bookingID)) + 1 : 1001}
                             </div>
                             <input
@@ -494,8 +483,8 @@ export default function Sample() {
                                 required
                             />
                             <div className="form-buttons">
-                                <button onClick={handleAddSample}>✅ Thêm mẫu</button>
-                                <button onClick={closeModal}>❌ Hủy</button>
+                                <button onClick={handleAddSample} className="confirm-btn">✅ Thêm mẫu</button>
+                                <button onClick={closeModal} className="cancel-btn">❌ Hủy</button>
                             </div>
                         </div>
                     </div>
@@ -515,7 +504,7 @@ export default function Sample() {
                                 value={newSample.bookingID}
                                 onChange={handleInputChange}
                                 readOnly
-                                style={{backgroundColor: '#e9ecef', color: '#6c757d'}}
+                                className="readonly-input"
                             />
                             <input
                                 name="userID"
@@ -524,7 +513,7 @@ export default function Sample() {
                                 value={newSample.userID}
                                 onChange={handleInputChange}
                                 readOnly
-                                style={{backgroundColor: '#e9ecef', color: '#6c757d'}}
+                                className="readonly-input"
                             />
                             <input
                                 name="participantID"
@@ -533,7 +522,7 @@ export default function Sample() {
                                 value={newSample.participantID}
                                 onChange={handleInputChange}
                                 readOnly
-                                style={{backgroundColor: '#e9ecef', color: '#6c757d'}}
+                                className="readonly-input"
                             />
                             <select
                                 name="typeOfCollection"
@@ -567,8 +556,8 @@ export default function Sample() {
                                 required
                             />
                             <div className="form-buttons">
-                                <button onClick={handleEditSample}>✅ Cập nhật</button>
-                                <button onClick={closeModal}>❌ Hủy</button>
+                                <button onClick={handleEditSample} className="confirm-btn">✅ Cập nhật</button>
+                                <button onClick={closeModal} className="cancel-btn">❌ Hủy</button>
                             </div>
                         </div>
                     </div>
@@ -581,15 +570,15 @@ export default function Sample() {
                     <div className="delete-confirmation-card" onClick={(e) => e.stopPropagation()}>
                         <h3>Xác nhận xóa mẫu</h3>
                         <p>
-                            Bạn có chắc chắn muốn xóa mẫu <strong>ID: {currentSample?.sampleID}</strong> 
-                            (Booking ID: <strong>{currentSample?.bookingID}</strong>, 
+                            Bạn có chắc chắn muốn xóa mẫu <strong>ID: {currentSample?.sampleID}</strong>
+                            (Booking ID: <strong>{currentSample?.bookingID}</strong>,
                             Participant ID: <strong>{currentSample?.participantID}</strong>) không?
-                            <br/><br/>
+                            <br /><br />
                             Hành động này không thể hoàn tác!
                         </p>
                         <div className="delete-buttons">
-                            <button onClick={handleDeleteSample}>🗑️ Xóa</button>
-                            <button onClick={closeModal}>❌ Hủy</button>
+                            <button onClick={handleDeleteSample} className="delete-confirm-btn">🗑️ Xóa</button>
+                            <button onClick={closeModal} className="cancel-btn">❌ Hủy</button>
                         </div>
                     </div>
                 </div>
@@ -600,7 +589,7 @@ export default function Sample() {
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="sample-add-card participant-detail-modal" onClick={(e) => e.stopPropagation()}>
                         <h3>Chi tiết bệnh nhân</h3>
-                        
+
                         {/* Thông tin bệnh nhân theo SQL Schema */}
                         <div className="participant-info-container">
                             <div className="participant-details">
@@ -643,7 +632,7 @@ export default function Sample() {
                             </div>
 
                             <div className="form-buttons">
-                                <button onClick={closeModal}>✅ Đóng</button>
+                                <button onClick={closeModal} className="confirm-btn">✅ Đóng</button>
                             </div>
                         </div>
                     </div>

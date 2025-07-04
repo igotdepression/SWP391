@@ -49,18 +49,14 @@ export default function HeaderStaff() { // <--- Component name is HeaderStaff
             <div className="staff-header-right">
                 <input type="text" placeholder="Tìm kiếm..." className="staff-header-search-input" />
                 {user ? (
-                    <div className="staff-header-user-profile-area" onClick={handleProfileClick}>
-                        <span className="staff-header-user-info">Chào, {user.fullName || user.email}</span>
-                        <div className="staff-header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName) }}>
+                    <div className="staff-header-user-badge">
+                        <div className="staff-header-avatar" style={{ backgroundColor: getAvatarColor(user.fullName) }}>
                             {getInitials(user.fullName)}
                         </div>
-                        {showDropdown && (
-                            <div className="staff-profile-dropdown">
-                                {/* Assuming staff profile page is /staff/profile. Adjust as needed. */}
-                                <div className="dropdown-item" onClick={() => navigate('/staff/profile')}>Thông tin cá nhân</div>
-                                <div className="dropdown-item" onClick={handleLogout}>Đăng xuất</div>
-                            </div>
-                        )}
+                        <div className="staff-header-user-text">
+                            <div>Chào, {user.role === 'STAFF' ? 'Staff' : user.fullName}!</div>
+                            <div>ID: {user.staffCode || user.userId}</div>
+                        </div>
                     </div>
                 ) : (
                     <button className="staff-header-login-button" onClick={() => navigate('/login')}>Đăng nhập</button>

@@ -1,223 +1,543 @@
 // pages/Manager/Payment.jsx
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Input, Select } from '../../components/ui/ui';
-import './Payment.css'; // Giả sử bạn có file CSS để định dạng bảng
+import { Card, Button, Input } from '../../components/ui/ui';
+import { Eye, CreditCard, DollarSign, TrendingUp, CheckCircle, Clock, XCircle } from 'lucide-react';
+import './Payment.css';
 
 const fakePayments = [
     {
-        id: 'PAY001',
-        customer: 'Nguyễn Văn A',
+        paymentID: 1,
+        bookingID: 'BK001',
+        paymentDate: '2024-06-15',
         amount: 5000000,
-        date: '2023-06-15',
-        status: 'Completed',
-        method: 'VNPay',
-        email: 'a@example.com',
-        orderId: 'ORD001',
+        paymentMethod: 'VNPay',
+        status: 'Hoàn thành',
+        customerName: 'Nguyễn Văn A',
+        email: 'a@example.com'
     },
     {
-        id: 'PAY002',
-        customer: 'Trần Thị B',
+        paymentID: 2,
+        bookingID: 'BK002',
+        paymentDate: '2024-06-14',
         amount: 7500000,
-        date: '2023-06-14',
-        status: 'Pending',
-        method: 'Momo',
-        email: 'b@example.com',
-        orderId: 'ORD002',
+        paymentMethod: 'Momo',
+        status: 'Chờ xác nhận',
+        customerName: 'Trần Thị B',
+        email: 'b@example.com'
     },
-];
-
-const statusOptions = [
-    { value: '', label: 'Tất cả trạng thái' },
-    { value: 'Completed', label: 'Hoàn thành' },
-    { value: 'Pending', label: 'Đang xử lý' },
-    { value: 'Refunded', label: 'Đã hoàn tiền' },
-    { value: 'Cancelled', label: 'Đã hủy' },
+    {
+        paymentID: 3,
+        bookingID: 'BK003',
+        paymentDate: '2024-06-13',
+        amount: 3200000,
+        paymentMethod: 'Banking',
+        status: 'Thất bại',
+        customerName: 'Lê Văn C',
+        email: 'c@example.com'
+    },
+    {
+        paymentID: 4,
+        bookingID: 'BK004',
+        paymentDate: '2024-06-12',
+        amount: 8900000,
+        paymentMethod: 'VNPay',
+        status: 'Hoàn tiền',
+        customerName: 'Phạm Thị D',
+        email: 'd@example.com'
+    },
+    {
+        paymentID: 5,
+        bookingID: 'BK005',
+        paymentDate: '2024-06-11',
+        amount: 4200000,
+        paymentMethod: 'Momo',
+        status: 'Hoàn thành',
+        customerName: 'Hoàng Văn E',
+        email: 'e@example.com'
+    },
+    {
+        paymentID: 6,
+        bookingID: 'BK006',
+        paymentDate: '2024-06-10',
+        amount: 6800000,
+        paymentMethod: 'VNPay',
+        status: 'Hoàn thành',
+        customerName: 'Vũ Thị F',
+        email: 'f@example.com'
+    },
+    {
+        paymentID: 7,
+        bookingID: 'BK007',
+        paymentDate: '2024-06-09',
+        amount: 2500000,
+        paymentMethod: 'Banking',
+        status: 'Chờ xác nhận',
+        customerName: 'Ngô Minh G',
+        email: 'g@example.com'
+    },
+    {
+        paymentID: 8,
+        bookingID: 'BK008',
+        paymentDate: '2024-06-08',
+        amount: 9200000,
+        paymentMethod: 'VNPay',
+        status: 'Hoàn thành',
+        customerName: 'Đặng Thị H',
+        email: 'h@example.com'
+    },
+    {
+        paymentID: 9,
+        bookingID: 'BK009',
+        paymentDate: '2024-06-07',
+        amount: 1800000,
+        paymentMethod: 'Momo',
+        status: 'Thất bại',
+        customerName: 'Bùi Văn I',
+        email: 'i@example.com'
+    },
+    {
+        paymentID: 10,
+        bookingID: 'BK010',
+        paymentDate: '2024-06-06',
+        amount: 5500000,
+        paymentMethod: 'Banking',
+        status: 'Hoàn thành',
+        customerName: 'Lý Thị K',
+        email: 'k@example.com'
+    }
 ];
 
 function formatCurrency(amount) {
-    return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+    }).format(amount);
 }
 
 export default function Payment() {
-    const [search, setSearch] = useState('');
-    const [statusFilter, setStatusFilter] = useState('');
-    const [selectedPayment, setSelectedPayment] = useState(null);
     const [payments, setPayments] = useState([]);
+    const [searchBookingID, setSearchBookingID] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [filterMethod, setFilterMethod] = useState('all');
+    const [selectedPayment, setSelectedPayment] = useState(null);
+    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [pendingAction, setPendingAction] = useState(null);
 
     useEffect(() => {
-        setTimeout(() => setPayments(fakePayments), 300);
+        // Simulate API call
+        setTimeout(() => {
+            setPayments(fakePayments);
+        }, 500);
     }, []);
 
-    // Dashboard summary
-    const totalRevenue = payments
-        .filter(p => p.status === 'Completed')
-        .reduce((sum, p) => sum + p.amount, 0);
-    const totalTransactions = payments.length;
-    const completed = payments.filter(p => p.status === 'Completed').length;
-    const pending = payments.filter(p => p.status === 'Pending').length;
-    const refunded = payments.filter(p => p.status === 'Refunded').length;
-    const cancelled = payments.filter(p => p.status === 'Cancelled').length;
-
     // Filtered payments
-    const filteredPayments = payments.filter(p => {
-        const matchSearch =
-            p.customer.toLowerCase().includes(search.toLowerCase()) ||
-            p.id.toLowerCase().includes(search.toLowerCase()) ||
-            p.email.toLowerCase().includes(search.toLowerCase());
-        const matchStatus = !statusFilter || p.status === statusFilter;
-        return matchSearch && matchStatus;
+    const filteredPayments = payments.filter(payment => {
+        const matchBookingID = !searchBookingID ||
+            payment.bookingID.toLowerCase().includes(searchBookingID.toLowerCase()) ||
+            payment.customerName.toLowerCase().includes(searchBookingID.toLowerCase());
+
+        const matchStatus = filterStatus === 'all' || payment.status === filterStatus;
+        const matchMethod = filterMethod === 'all' || payment.paymentMethod === filterMethod;
+
+        return matchBookingID && matchStatus && matchMethod;
     });
 
-    // Handle refund/cancel
-    const handleRefund = (id) => {
-        setPayments(payments =>
-            payments.map(p =>
-                p.id === id ? { ...p, status: 'Refunded' } : p
-            )
-        );
-        setSelectedPayment(null);
+    // Statistics
+    const totalRevenue = payments
+        .filter(p => p.status === 'Hoàn thành')
+        .reduce((sum, p) => sum + p.amount, 0);
+
+    const completedPayments = payments.filter(p => p.status === 'Hoàn thành');
+    const avgOrderValue = completedPayments.length > 0 ? totalRevenue / completedPayments.length : 0;
+
+    // Tỷ lệ thành công
+    const successRate = payments.length > 0 ?
+        ((payments.filter(p => p.status === 'Hoàn thành').length / payments.length) * 100).toFixed(1) : 0;
+
+    // Chart data for revenue by day - Fixed sorting
+    const revenueByDay = payments
+        .filter(p => p.status === 'Hoàn thành')
+        .reduce((acc, payment) => {
+            const date = payment.paymentDate; // Keep original date format
+            acc[date] = (acc[date] || 0) + payment.amount;
+            return acc;
+        }, {});
+
+    const chartData = Object.entries(revenueByDay)
+        .sort(([a], [b]) => new Date(a) - new Date(b)) // Sort by actual date
+        .slice(-7) // Last 7 days
+        .map(([date, revenue]) => [
+            new Date(date).toLocaleDateString('vi-VN'), // Format for display
+            revenue
+        ]);
+
+    const maxRevenue = Math.max(...Object.values(revenueByDay), 1);
+
+    const handleViewDetail = (payment) => {
+        setSelectedPayment(payment);
+        setShowDetailModal(true);
     };
 
-    const handleCancel = (id) => {
-        setPayments(payments =>
-            payments.map(p =>
-                p.id === id ? { ...p, status: 'Cancelled' } : p
-            )
-        );
+    const handleStatusChange = (paymentID, newStatus, actionType) => {
+        setPendingAction({ paymentID, newStatus, actionType });
+        setShowConfirmModal(true);
+    };
+
+    const confirmStatusChange = () => {
+        if (pendingAction) {
+            setPayments(payments =>
+                payments.map(p =>
+                    p.paymentID === pendingAction.paymentID ? { ...p, status: pendingAction.newStatus } : p
+                )
+            );
+        }
+        setShowConfirmModal(false);
+        setShowDetailModal(false);
         setSelectedPayment(null);
+        setPendingAction(null);
+    };
+
+    const getActionText = (actionType) => {
+        switch (actionType) {
+            case 'approve':
+                return 'xác nhận thanh toán';
+            case 'reject':
+                return 'từ chối thanh toán';
+            case 'refund':
+                return 'hoàn tiền';
+            default:
+                return 'thay đổi trạng thái';
+        }
+    };
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'Hoàn thành':
+                return 'status-completed';
+            case 'Chờ xác nhận':
+                return 'status-pending';
+            case 'Thất bại':
+                return 'status-failed';
+            case 'Hoàn tiền':
+                return 'status-refunded';
+            default:
+                return 'status-pending';
+        }
+    };
+
+    const getMethodColor = (method) => {
+        switch (method) {
+            case 'VNPay':
+                return 'method-vnpay';
+            case 'Momo':
+                return 'method-momo';
+            case 'Banking':
+                return 'method-banking';
+            default:
+                return 'method-default';
+        }
+    };
+
+    const canRefund = (payment) => {
+        return payment.status === 'Hoàn thành';
     };
 
     return (
-        <div className="payment-manager-page">
-            <Card className="dashboard-summary mb-4">
-                <h3>Bảng điều khiển tổng quan</h3>
-                <div className="dashboard-grid">
-                    <div className="dashboard-item">
-                        <div className="dashboard-label">Tổng doanh thu</div>
-                        <div className="dashboard-value">{formatCurrency(totalRevenue)}</div>
+        <div className="payment-management-container">
+            <Card className="payment-card">
+                {/* Revenue Chart */}
+                <div className="revenue-chart-container">
+                    <h4>📊 Biểu đồ Doanh thu (7 ngày gần nhất)</h4>
+                    <div className="revenue-chart">
+                        <div className="chart-y-axis">
+                            <span>{formatCurrency(maxRevenue)}</span>
+                            <span>{formatCurrency(maxRevenue * 0.75)}</span>
+                            <span>{formatCurrency(maxRevenue * 0.5)}</span>
+                            <span>{formatCurrency(maxRevenue * 0.25)}</span>
+                            <span>0</span>
+                        </div>
+                        <div className="chart-bars">
+                            {chartData.map(([date, revenue]) => (
+                                <div key={date} className="chart-bar-container">
+                                    <div
+                                        className="chart-bar"
+                                        style={{
+                                            height: `${(revenue / maxRevenue) * 100}%`,
+                                            minHeight: revenue > 0 ? '0' : '8px'
+                                        }}
+                                        title={`${date}: ${formatCurrency(revenue)}`}
+                                    ></div>
+                                    <span className="chart-date">{date}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <div className="dashboard-item">
-                        <div className="dashboard-label">Tổng giao dịch</div>
-                        <div className="dashboard-value">{totalTransactions}</div>
-                    </div>
-                    <div className="dashboard-item">
-                        <div className="dashboard-label">Hoàn thành</div>
-                        <div className="dashboard-value">{completed}</div>
-                    </div>
-                    <div className="dashboard-item">
-                        <div className="dashboard-label">Đang xử lý</div>
-                        <div className="dashboard-value">{pending}</div>
-                    </div>
-                    <div className="dashboard-item">
-                        <div className="dashboard-label">Đã hoàn tiền</div>
-                        <div className="dashboard-value">{refunded}</div>
-                    </div>
-                    <div className="dashboard-item">
-                        <div className="dashboard-label">Đã hủy</div>
-                        <div className="dashboard-value">{cancelled}</div>
+                    <div className="chart-total">
+                        <strong>💰 Tổng doanh thu: {formatCurrency(totalRevenue)}</strong>
                     </div>
                 </div>
-            </Card>
 
-            <Card className="payment-list-card">
-                <div className="payment-list-header">
-                    <h3>Danh sách giao dịch</h3>
-                    <div className="payment-filters">
+                {/* Statistics - horizontal layout */}
+                <div className="payment-stats">
+                    <div className="stat-item">
+                        <div className="stat-content">
+                            <TrendingUp className="stat-icon" size={28} />
+                            <div className="stat-text">
+                                <span className="stat-label">Tổng giao dịch</span>
+                                <span className="stat-number">{payments.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="stat-item">
+                        <div className="stat-content">
+                            <CheckCircle className="stat-icon" size={28} />
+                            <div className="stat-text">
+                                <span className="stat-label">Thành công</span>
+                                <span className="stat-number">{payments.filter(p => p.status === 'Hoàn thành').length}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="stat-item">
+                        <div className="stat-content">
+                            <Clock className="stat-icon" size={28} />
+                            <div className="stat-text">
+                                <span className="stat-label">Tỷ lệ thành công</span>
+                                <span className="stat-number">{successRate}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="stat-item">
+                        <div className="stat-content">
+                            <DollarSign className="stat-icon" size={28} />
+                            <div className="stat-text">
+                                <span className="stat-label">Tổng doanh thu</span>
+                                <span className="stat-number">{formatCurrency(totalRevenue)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Filters */}
+                <div className="payment-filters">
+                    <div className="filter-group">
+                        <label>Tìm theo Booking ID:</label>
                         <Input
-                            placeholder="Tìm kiếm theo tên, email hoặc mã giao dịch..."
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
+                            type="text"
+                            placeholder="Nhập Booking ID hoặc tên khách hàng..."
+                            value={searchBookingID}
+                            onChange={(e) => setSearchBookingID(e.target.value)}
                             className="search-input"
                         />
-                        <Select
-                            value={statusFilter}
-                            onChange={e => setStatusFilter(e.target.value)}
+                    </div>
+                    <div className="filter-group">
+                        <label>Trạng thái:</label>
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
                             className="filter-select"
                         >
-                            {statusOptions.map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                            ))}
-                        </Select>
+                            <option value="all">Tất cả</option>
+                            <option value="Hoàn thành">Hoàn thành</option>
+                            <option value="Chờ xác nhận">Chờ xác nhận</option>
+                            <option value="Thất bại">Thất bại</option>
+                            <option value="Hoàn tiền">Hoàn tiền</option>
+                        </select>
+                    </div>
+                    <div className="filter-group">
+                        <label>Phương thức:</label>
+                        <select
+                            value={filterMethod}
+                            onChange={(e) => setFilterMethod(e.target.value)}
+                            className="filter-select"
+                        >
+                            <option value="all">Tất cả</option>
+                            <option value="VNPay">VNPay</option>
+                            <option value="Momo">Momo</option>
+                            <option value="Banking">Banking</option>
+                        </select>
                     </div>
                 </div>
-                <div className="table-responsive mt-3">
-                    <table>
+
+
+
+
+
+                {/* Table */}
+                <div className="table-responsive">
+                    <table className="payment-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Khách hàng</th>
-                                <th>Email</th>
-                                <th>Số tiền</th>
-                                <th>Ngày</th>
-                                <th>Phương thức</th>
-                                <th>Trạng thái</th>
-                                <th>Mã đơn hàng</th>
-                                <th>Hành động</th>
+                                <th style={{ width: '9%' }}>Payment ID</th>
+                                <th style={{ width: '11%' }}>Booking ID</th>
+                                <th style={{ width: '15%' }}>Khách hàng</th>
+                                <th style={{ width: '12%' }}>Số tiền</th>
+                                <th style={{ width: '12%' }}>Ngày thanh toán</th>
+                                <th style={{ width: '10%' }}>Phương thức</th>
+                                <th style={{ width: '20%' }}>Trạng thái</th>
+                                <th style={{ width: '10%' }}>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredPayments.length === 0 && (
-                                <tr>
-                                    <td colSpan={9} style={{ textAlign: 'center' }}>Không có giao dịch phù hợp.</td>
-                                </tr>
-                            )}
                             {filteredPayments.map(payment => (
-                                <tr key={payment.id}>
-                                    <td>{payment.id}</td>
-                                    <td>{payment.customer}</td>
-                                    <td>{payment.email}</td>
-                                    <td>{formatCurrency(payment.amount)}</td>
-                                    <td>{payment.date}</td>
-                                    <td>{payment.method}</td>
+                                <tr key={payment.paymentID}>
+                                    <td className="payment-id">#{payment.paymentID}</td>
+                                    <td className="booking-id">{payment.bookingID}</td>
+                                    <td>{payment.customerName}</td>
+                                    <td className="amount-cell">{formatCurrency(payment.amount)}</td>
+                                    <td>{new Date(payment.paymentDate).toLocaleDateString('vi-VN')}</td>
                                     <td>
-                                        <span className={`status-badge status-${payment.status.toLowerCase()}`}>
-                                            {payment.status === 'Completed' && 'Hoàn thành'}
-                                            {payment.status === 'Pending' && 'Đang xử lý'}
-                                            {payment.status === 'Refunded' && 'Đã hoàn tiền'}
-                                            {payment.status === 'Cancelled' && 'Đã hủy'}
+                                        <span className="method-badge-plain">
+                                            {payment.paymentMethod}
                                         </span>
                                     </td>
                                     <td>
-                                        <Button size="sm" onClick={() => setSelectedPayment(payment)}>Chi tiết</Button>
+                                        <div className="status-with-actions">
+                                            <span className={`status-badge ${getStatusColor(payment.status)}`}>
+                                                {payment.status}
+                                            </span>
+                                            {payment.status === 'Chờ xác nhận' && (
+                                                <div className="status-actions">
+                                                    <button
+                                                        className="status-action-btn approve-btn"
+                                                        onClick={() => handleStatusChange(payment.paymentID, 'Hoàn thành', 'approve')}
+                                                        title="Xác nhận thanh toán"
+                                                    >
+                                                        <CheckCircle size={14} />
+                                                    </button>
+                                                    <button
+                                                        className="status-action-btn reject-btn"
+                                                        onClick={() => handleStatusChange(payment.paymentID, 'Thất bại', 'reject')}
+                                                        title="Từ chối thanh toán"
+                                                    >
+                                                        <XCircle size={14} />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td className="action-cell">
+                                        <button
+                                            className="action-btn view-btn"
+                                            onClick={() => handleViewDetail(payment)}
+                                            title="Xem chi tiết"
+                                        >
+                                            <Eye size={16} />
+                                        </button>
+                                        <button
+                                            className={`action-btn ${canRefund(payment) ? 'refund-btn' : 'refund-btn-disabled'}`}
+                                            onClick={() => canRefund(payment) && handleStatusChange(payment.paymentID, 'Hoàn tiền', 'refund')}
+                                            title={canRefund(payment) ? 'Hoàn tiền' : 'Không thể hoàn tiền'}
+                                            disabled={!canRefund(payment)}
+                                        >
+                                            <DollarSign size={16} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+
+                {filteredPayments.length === 0 && (
+                    <div className="no-data">
+                        <p>📭 Không có giao dịch nào phù hợp với bộ lọc hiện tại.</p>
+                    </div>
+                )}
             </Card>
 
-            {selectedPayment && (
-                <Card className="payment-detail-card mt-4">
-                    <h3>Chi tiết giao dịch</h3>
-                    <p><strong>Mã giao dịch:</strong> {selectedPayment.id}</p>
-                    <p><strong>Khách hàng:</strong> {selectedPayment.customer}</p>
-                    <p><strong>Email:</strong> {selectedPayment.email}</p>
-                    <p><strong>Số tiền:</strong> {formatCurrency(selectedPayment.amount)}</p>
-                    <p><strong>Ngày thanh toán:</strong> {selectedPayment.date}</p>
-                    <p><strong>Phương thức:</strong> {selectedPayment.method}</p>
-                    <p><strong>Trạng thái:</strong> <span className={`status-badge status-${selectedPayment.status.toLowerCase()}`}>
-                        {selectedPayment.status === 'Completed' && 'Hoàn thành'}
-                        {selectedPayment.status === 'Pending' && 'Đang xử lý'}
-                        {selectedPayment.status === 'Refunded' && 'Đã hoàn tiền'}
-                        {selectedPayment.status === 'Cancelled' && 'Đã hủy'}
-                    </span></p>
-                    <div className="payment-detail-actions mt-3">
-                        {selectedPayment.status === 'Completed' && (
-                            <Button variant="secondary" onClick={() => handleRefund(selectedPayment.id)}>
-                                Hoàn tiền
+            {/* Detail Modal */}
+            {showDetailModal && selectedPayment && (
+                <div className="modal-overlay" onClick={() => setShowDetailModal(false)}>
+                    <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>💳 Chi tiết Thanh toán</h3>
+                        <div className="payment-detail">
+                            <div className="detail-row">
+                                <label>Payment ID:</label>
+                                <span>#{selectedPayment.paymentID}</span>
+                            </div>
+                            <div className="detail-row">
+                                <label>Booking ID:</label>
+                                <span>{selectedPayment.bookingID}</span>
+                            </div>
+                            <div className="detail-row">
+                                <label>Khách hàng:</label>
+                                <span>{selectedPayment.customerName}</span>
+                            </div>
+                            <div className="detail-row">
+                                <label>Email:</label>
+                                <span>{selectedPayment.email}</span>
+                            </div>
+                            <div className="detail-row">
+                                <label>Số tiền:</label>
+                                <span className="amount-value">{formatCurrency(selectedPayment.amount)}</span>
+                            </div>
+                            <div className="detail-row">
+                                <label>Ngày thanh toán:</label>
+                                <span>{new Date(selectedPayment.paymentDate).toLocaleDateString('vi-VN')}</span>
+                            </div>
+                            <div className="detail-row">
+                                <label>Phương thức:</label>
+                                <span className={`method-badge ${getMethodColor(selectedPayment.paymentMethod)}`}>
+                                    {selectedPayment.paymentMethod}
+                                </span>
+                            </div>
+                            <div className="detail-row">
+                                <label>Trạng thái:</label>
+                                <span className={`status-badge ${getStatusColor(selectedPayment.status)}`}>
+                                    {selectedPayment.status}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="modal-actions">
+                            {selectedPayment.status === 'Chờ xác nhận' && (
+                                <>
+                                    <Button onClick={() => handleStatusChange(selectedPayment.paymentID, 'Hoàn thành', 'approve')}>
+                                        ✅ Xác nhận
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => handleStatusChange(selectedPayment.paymentID, 'Thất bại', 'reject')}
+                                    >
+                                        ❌ Từ chối
+                                    </Button>
+                                </>
+                            )}
+                            {canRefund(selectedPayment) && (
+                                <Button
+                                    variant="outline"
+                                    onClick={() => handleStatusChange(selectedPayment.paymentID, 'Hoàn tiền', 'refund')}
+                                >
+                                    💰 Hoàn tiền
+                                </Button>
+                            )}
+                            <Button variant="outline" onClick={() => setShowDetailModal(false)}>
+                                🔙 Đóng
                             </Button>
-                        )}
-                        {selectedPayment.status === 'Pending' && (
-                            <Button variant="secondary" onClick={() => handleCancel(selectedPayment.id)}>
-                                Hủy giao dịch
-                            </Button>
-                        )}
-                        <Button className="ml-2" variant="outline" onClick={() => setSelectedPayment(null)}>
-                            Đóng
-                        </Button>
+                        </div>
                     </div>
-                </Card>
+                </div>
+            )}
+
+            {/* Confirmation Modal */}
+            {showConfirmModal && pendingAction && (
+                <div className="modal-overlay" onClick={() => setShowConfirmModal(false)}>
+                    <div className="payment-modal confirm-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>⚠️ Xác nhận thao tác</h3>
+                        <div className="confirm-content">
+                            <p>Bạn có chắc chắn muốn <strong>{getActionText(pendingAction.actionType)}</strong> cho giao dịch <strong>#{pendingAction.paymentID}</strong>?</p>
+                            <p className="confirm-warning">⚠️ Thao tác này không thể hoàn tác!</p>
+                        </div>
+                        <div className="modal-actions">
+                            <Button onClick={confirmStatusChange}>
+                                ✅ Xác nhận
+                            </Button>
+                            <Button variant="outline" onClick={() => setShowConfirmModal(false)}>
+                                ❌ Hủy
+                            </Button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

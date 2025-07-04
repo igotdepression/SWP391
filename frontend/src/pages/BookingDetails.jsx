@@ -1,57 +1,136 @@
-import React, { useEffect, useMemo } from 'react'; // Added useMemo for optimization
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import './BookingDetails.css';
+import api from '../services/api';
 
 export default function BookingDetails() {
+    // ==== State & Context ====
     const { user, loading: authLoading } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const bookingData = location.state?.bookingData;
+    const [serviceList, setServiceList] = useState([]);
 
+    // ==== Effect: Auth & Data Guard ====
     useEffect(() => {
-        // Redirect if not authenticated
         if (!authLoading && !user) {
             navigate('/login');
             return;
         }
-        // Redirect if no booking data is passed
         if (!bookingData) {
             alert('Không tìm thấy thông tin đặt lịch để xác nhận. Vui lòng tạo lịch mới.');
-            navigate('/booking-create'); // Redirect to booking creation if no data
+            navigate('/booking-create');
         }
     }, [bookingData, navigate, user, authLoading]);
 
+    useEffect(() => {
+        api.get('/service/listService')
+            .then(res => {
+                let services = res.data;
+                if (typeof services === 'string') {
+                    try { services = JSON.parse(services); } catch (e) { services = []; }
+                }
+                setServiceList(Array.isArray(services) ? services : []);
+            })
+            .catch(() => setServiceList([]));
+    }, []);
+
+    // ==== Logic: Helper Functions ====
     const calculateAge = (dobYear) => {
         if (!dobYear) return null;
         const currentYear = new Date().getFullYear();
         return currentYear - parseInt(dobYear);
     };
 
-    const handleProceedToPayment = () => {
-        navigate('/booking-payment', { state: { bookingData } });
+    const toLocalDateTimeString = (dateStr) => {
+        if (dateStr && dateStr.includes('T')) return dateStr;
+        if (dateStr && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr + 'T00:00:00';
+        return dateStr;
     };
 
-    const handleEditBooking = () => {
-        navigate('/booking-create', { state: { initialBookingData: bookingData } });
-    };
-
-    // Memoize the data transformation for main booking details for performance
+    // ==== Logic: Main Booking Details (Memoized) ====
     const mainBookingDetails = useMemo(() => {
         if (!bookingData) return [];
         return [
-            { label: "Loại dịch vụ", value: bookingData.serviceType || 'Chưa điền' },
-            { label: "Số lượng mẫu", value: bookingData.numSamples || 'Chưa điền' },
-            { label: "Loại xét nghiệm", value: bookingData.testType || 'Chưa điền' },
-            { label: "Ngày hẹn", value: bookingData.appointmentDate || 'Chưa điền' },
-            { label: "Thời gian trả kết quả", value: bookingData.resultTime || 'Chưa điền' }, // Use resultTime
-            { label: "Ghi chú", value: bookingData.notes || 'Không có' },
+            { label: 'Loại dịch vụ', value: bookingData.serviceName || 'Chưa điền' },
+            { label: 'Số lượng mẫu', value: bookingData.numSamples || 'Chưa điền' },
+            { label: 'Loại xét nghiệm', value: bookingData.serviceType || 'Chưa điền' },
+            { label: 'Loại mẫu', value: bookingData.typeSample || 'Chưa điền' },
+            { label: 'Ngày hẹn', value: bookingData.appointmentDate || 'Chưa điền' },
+            { label: 'Thời gian trả kết quả', value: bookingData.resultTime || 'Chưa điền' },
+            { label: 'Ghi chú', value: bookingData.notes || 'Không có' },
         ];
     }, [bookingData]);
 
-    if (!bookingData) { // Check bookingData here before rendering anything
+    // ==== Logic: Action Handlers ====
+    const handleProceedToPayment = async () => {
+        try {
+            // So sánh serviceName và serviceType không phân biệt hoa/thường, có kiểm tra null
+            const selectedService = (serviceList || []).find(
+                s =>
+                    s.serviceName && bookingData.serviceName &&
+                    s.serviceName.trim().toLowerCase() === bookingData.serviceName.trim().toLowerCase() &&
+                    (
+                        !bookingData.serviceType ||
+                        (s.serviceType && s.serviceType.trim().toLowerCase() === bookingData.serviceType.trim().toLowerCase())
+                    )
+            );
+            console.log('serviceList:', serviceList);
+            console.log('bookingData:', bookingData);
+            console.log('selectedService:', selectedService);
+            if (!selectedService) {
+                alert('Không tìm thấy dịch vụ phù hợp! Vui lòng kiểm tra lại lựa chọn.');
+                return;
+            }
+            const pricePerSample = selectedService.price || 0;
+            const totalPrice = bookingData.numSamples * pricePerSample;
+            const serviceId = selectedService.serviceID;
+            const userId = user?.userId || 1;
+            const payload = {
+                userId: userId,
+                serviceId: serviceId,
+                appointmentDate: toLocalDateTimeString(bookingData.appointmentDate),
+                participants: bookingData.participants,
+                numberSample: bookingData.numSamples,
+            };
+            const response = await api.post('/bookings/create', payload);
+            const createdBooking = response.data;
+            navigate('/booking-payment', {
+                state: {
+                    bookingData: {
+                        ...bookingData,
+                        bookingID: createdBooking.bookingID || createdBooking.id,
+                        pricePerSample,
+                        totalPrice
+                    }
+                }
+            });
+        } catch (error) {
+            alert('Đặt lịch thất bại: ' + (error.message || 'Lỗi không xác định'));
+            console.error(error);
+        }
+    };
+
+    const handleEditBooking = () => {
+        const initialBookingData = {
+            serviceName: bookingData.serviceName,
+            serviceType: bookingData.serviceType,
+            typeSample: bookingData.typeSample,
+            testType: bookingData.testType,
+            appointmentDate: bookingData.appointmentDate,
+            resultTime: bookingData.resultTime,
+            notes: bookingData.notes,
+            numSamples: bookingData.numSamples,
+            participants: bookingData.participants
+        };
+        navigate('/booking-create', { state: { initialBookingData } });
+    };
+
+    // ==== Guard: No Data ====
+    if (!bookingData) {
         return (
             <div className="homepage-container">
                 <Header />
@@ -63,10 +142,10 @@ export default function BookingDetails() {
         );
     }
 
-    // Determine if participant's full personal info (CCCD/CMND, DOB, Gender, Address, Relation) is relevant
-    // These fields are considered 'hành chính' (administrative/official) based on testType.
-    const isAdministrativeTest = bookingData.testType === 'Hành chính'; //
+    // ==== Logic: Check if administrative test ====
+    const isAdministrativeTest = bookingData.testType === 'Hành chính';
 
+    // ==== Render ====
     return (
         <div className="homepage-root">
             <Header />
@@ -89,78 +168,31 @@ export default function BookingDetails() {
                         {bookingData.participants && bookingData.participants.length > 0 ? (
                             bookingData.participants.map((p, index) => (
                                 <div key={index} className="participant-detail-block">
-                                    {/* Display relationship in the heading */}
                                     <h4>Người tham gia {index + 1}: {p.relationship || 'Chưa xác định'}</h4>
-
-                                    {p.relationship === 'Thai nhi (Mẫu từ mẹ)' && (
-                                        <p className="sub-label">**(Thông tin của người mẹ)**</p>
-                                    )}
-                                    {/* This is a general label for other participants in admin service, if needed */}
-                                    {isAdministrativeTest && p.isRegistrant === false && (
-                                        <p className="sub-label">
-                                            (Đây là thông tin của người tham gia khác, không phải người đăng ký)
-                                        </p>
-                                    )}
-
                                     <div className="detail-row">
                                         <strong>Họ và tên:</strong> <span>{p.fullName || 'Chưa điền'}</span>
                                     </div>
-                                    {/* Giới tính và Năm sinh always show, as they are basic info unless specifically hidden*/}
                                     <div className="detail-row">
                                         <strong>Giới tính:</strong> <span>{p.gender || 'Chưa điền'}</span>
                                     </div>
                                     <div className="detail-row">
-                                        <strong>Năm sinh:</strong> <span>{p.dob ? `${p.dob} (${calculateAge(p.dob)} tuổi)` : 'Chưa điền'}</span>
+                                        <strong>Năm sinh:</strong> <span>{p.dateOfBirth || 'Chưa điền'}</span>
                                     </div>
-
-                                    {/* Conditional display for administrative-related fields */}
-                                    {isAdministrativeTest && (
-                                        <>
-                                            {/* Mã định danh cá nhân only appears for age >= 14 if administrative test */}
-                                            {(calculateAge(p.dob) === null || calculateAge(p.dob) >= 14) ? ( // Match logic in BookingCreate.jsx
-                                                <div className="detail-row">
-                                                    <strong>Mã định danh cá nhân:</strong> <span>{p.personalId || 'Chưa điền'}</span>
-                                                </div>
-                                            ) : (
-                                                <div className="detail-row">
-                                                    <strong>Mã định danh cá nhân:</strong> <span>Không bắt buộc với trẻ dưới 14 tuổi</span>
-                                                </div>
-                                            )}
-
-                                            <div className="detail-row">
-                                                <strong>Địa chỉ:</strong> <span>{p.address || 'Chưa điền'}</span>
-                                            </div>
-                                            <div className="detail-row">
-                                                <strong>Quan hệ với người đăng ký:</strong> <span>{p.relationToRegistrant || 'Chưa điền'}</span>
-                                            </div>
-                                        </>
-                                    )}
-
-                                    {/* Sample Type is displayed conditionally in BookingCreate based on 'Thai nhi (Mẫu từ mẹ)' */}
-                                    {!(bookingData.serviceType === 'Xét nghiệm ADN Thai nhi' && p.relationship === 'Thai nhi (Mẫu từ mẹ)') ? (
-                                        <div className="detail-row">
-                                            <strong>Mẫu xét nghiệm:</strong> <span>{p.sampleType || 'Chưa điền'}</span>
-                                        </div>
-                                    ) : (
-                                        // If it's 'Thai nhi (Mẫu từ mẹ)', sampleType is fixed, so we might not display this line at all
-                                        // or display a placeholder if required. For now, matching BookingCreate, we don't need to show it as a selectable field.
-                                        // If you want to show it as a static text, you can add:
-                                        // <div className="detail-row">
-                                        //     <strong>Mẫu xét nghiệm:</strong> <span>Mẫu từ mẹ</span>
-                                        // </div>
-                                        null
-                                    )}
-
-                                    {/* Collection Method is conditionally static in BookingCreate.jsx */}
-                                    {(bookingData.testType === 'Hành chính' || bookingData.serviceType === 'Xét nghiệm ADN Thai nhi') ? (
-                                        <div className="detail-row">
-                                            <strong>Phương pháp thu mẫu:</strong> <span>Thu mẫu tại trung tâm</span>
-                                        </div>
-                                    ) : (
-                                        <div className="detail-row">
-                                            <strong>Phương pháp thu mẫu:</strong> <span>{p.collectionMethod || 'Chưa điền'}</span>
-                                        </div>
-                                    )}
+                                    <div className="detail-row">
+                                        <strong>Mã định danh cá nhân:</strong> <span>{p.personalId || 'Chưa điền'}</span>
+                                    </div>
+                                    <div className="detail-row">
+                                        <strong>Địa chỉ:</strong> <span>{p.address || 'Chưa điền'}</span>
+                                    </div>
+                                    <div className="detail-row">
+                                        <strong>Quan hệ với người đăng ký:</strong> <span>{p.relationToRegistrant || 'Chưa điền'}</span>
+                                    </div>
+                                    <div className="detail-row">
+                                        <strong>Mẫu xét nghiệm:</strong> <span>{p.sampleType || 'Chưa điền'}</span>
+                                    </div>
+                                    <div className="detail-row">
+                                        <strong>Phương pháp thu mẫu:</strong> <span>{p.typeOfCollection || 'Chưa điền'}</span>
+                                    </div>
                                 </div>
                             ))
                         ) : (
