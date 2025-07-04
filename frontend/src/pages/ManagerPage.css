@@ -1,4 +1,4 @@
-
+<<<<<<< HEAD
 /* Layout: sidebar + main */
 .layout-container {
   display: flex;
@@ -694,7 +694,6 @@ tbody tr:hover {
 }
 
 .pie-svg text {
-  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -769,7 +768,7 @@ tbody tr:hover {
   opacity: 0.97;
   border: 1px solid #fff;
 }
-
+=======
 /* ManagerPage.css */
 
 /* Use colors similar to LoginPage/SignUpPage and ManagerPage for consistency */
@@ -1235,4 +1234,4 @@ body {
     color: var(--light-text);
     flex-shrink: 0;
 }
-
+>>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8

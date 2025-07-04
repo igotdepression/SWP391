@@ -10,13 +10,6 @@
 /build
 /dist
 
-# Maven build output
-target/
-*.jar
-*.war
-*.ear
-*.class
-
 # Misc
 .DS_Store
 .env
