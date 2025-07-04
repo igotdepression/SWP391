@@ -278,6 +278,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    -webkit-backdrop-filter: blur(3px); /* Subtle blur effect */
     backdrop-filter: blur(3px); /* Subtle blur effect */
 }
 
