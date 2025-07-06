@@ -163,10 +163,10 @@
     top: calc(100% + 8px); /* Cách header một chút */
     right: 0;
     background-color: #fff;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Shadow nổi hơn */
-    border-radius: 8px; /* Bo tròn hơn */
-    min-width: 160px; /* Giảm min-width */
-    z-index: 1001;
+    box_shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Shadow nổi hơn */
+    border_radius: 8px; /* Bo tròn hơn */
+    min_width: 160px; /* Giảm min-width */
+    z_index: 1001;
     overflow: hidden;
     animation: fadeIn 0.2s ease-out; /* Thêm hiệu ứng fade in */
 }
