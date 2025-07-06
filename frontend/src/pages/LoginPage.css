@@ -1,11 +1,4 @@
 /* Font hiện đại */
-<<<<<<< HEAD
-.login-root {
-  min-height: 100vh;
-  display: flex;
-  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
-  background: linear-gradient(90deg, #eaf0fa 0%, #f7faff 100%);
-=======
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 .login-root {
@@ -14,30 +7,17 @@
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); /* Nhẹ nhàng và hiện đại hơn */
   overflow: hidden; /* Ngăn chặn scroll không mong muốn */
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 .login-left {
   flex: 1;
-<<<<<<< HEAD
-  background: linear-gradient(135deg, #0a3d62 80%, #2563eb 100%);
-=======
   background: linear-gradient(135deg, #0f4c75 0%, #1a5e90 100%); /* Sắc xanh sâu và sang trọng */
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 48px 20px 40px 20px;
-<<<<<<< HEAD
-  box-shadow: 2px 0 16px 0 rgba(10,61,98,0.07);
-}
-
-.login-logo {
-  width: 120px;
-  height: 120px;
-=======
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1); /* Bóng đổ mềm hơn */
   position: relative;
   overflow: hidden;
@@ -83,21 +63,10 @@
 .login-logo {
   width: 140px; /* Lớn hơn một chút */
   height: 140px;
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   margin-bottom: 32px;
   border-radius: 50%;
   background: #fff;
   object-fit: contain;
-<<<<<<< HEAD
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  transition: transform 0.3s, box-shadow 0.3s;
-  animation: logoFadeIn 0.8s ease-out;
-}
-
-.login-logo:hover {
-  transform: scale(1.05) rotate(5deg);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-=======
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Bóng đổ nổi bật hơn */
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
   animation: logoFadeIn 1s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animation mượt hơn */
@@ -106,17 +75,12 @@
 .login-logo:hover {
   transform: scale(1.08) rotate(7deg); /* Hiệu ứng hover mạnh hơn */
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 @keyframes logoFadeIn {
   from {
     opacity: 0;
-<<<<<<< HEAD
-    transform: scale(0.8) rotate(-10deg);
-=======
     transform: scale(0.7) rotate(-15deg);
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   }
   to {
     opacity: 1;
@@ -125,39 +89,6 @@
 }
 
 .login-left h2 {
-<<<<<<< HEAD
-  font-size: 2.1rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  letter-spacing: 1px;
-}
-
-.login-left p {
-  font-size: 1.08rem;
-  margin-bottom: 32px;
-  text-align: center;
-  max-width: 260px;
-  opacity: 0.95;
-}
-
-.signup-btn {
-  background: linear-gradient(90deg, #34A853 60%, #0a3d62 100%);
-  color: #fff;
-  border: none;
-  border-radius: 24px;
-  padding: 13px 38px;
-  font-size: 1.13rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-  margin-top: 10px;
-}
-.signup-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(10,61,98,0.10);
-  background: linear-gradient(90deg, #0a3d62 60%, #34A853 100%);
-=======
   font-size: 2.5rem; /* Kích thước lớn hơn */
   font-weight: 700;
   margin-bottom: 16px;
@@ -196,16 +127,11 @@
   transform: translateY(-4px); /* Nhấc lên nhiều hơn */
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   background: linear-gradient(90deg, #2a9d8f 0%, #38b2ac 100%);
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 .login-right {
   flex: 1;
-<<<<<<< HEAD
-  background: #fff;
-=======
   background: #ffffff;
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   display: flex;
   align-items: center;
   justify-content: center;
@@ -214,17 +140,6 @@
 
 .login-form {
   width: 100%;
-<<<<<<< HEAD
-  max-width: 370px;
-  background: #fff;
-  border-radius: 22px;
-  box-shadow: 0 4px 32px rgba(10,61,98,0.10);
-  padding: 40px 32px 32px 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  animation: formFadeIn 0.8s ease-out;
-=======
   max-width: 420px; /* Rộng hơn một chút */
   background: #ffffff;
   border-radius: 28px; /* Bo tròn nhiều hơn */
@@ -234,17 +149,12 @@
   flex-direction: column;
   align-items: stretch;
   animation: formFadeIn 1s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animation mượt hơn */
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 @keyframes formFadeIn {
   from {
     opacity: 0;
-<<<<<<< HEAD
-    transform: translateY(20px);
-=======
     transform: translateY(30px);
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   }
   to {
     opacity: 1;
@@ -253,63 +163,16 @@
 }
 
 .login-form h2 {
-<<<<<<< HEAD
-  color: #0a3d62;
-  font-size: 1.55rem;
-  font-weight: 700;
-  margin-bottom: 28px;
-  text-align: center;
-  letter-spacing: 0.5px;
-=======
   color: #0f4c75; /* Màu chữ tiêu đề khớp với bên trái */
   font-size: 2rem; /* Lớn hơn */
   font-weight: 700;
   margin-bottom: 35px; /* Khoảng cách lớn hơn */
   text-align: center;
   letter-spacing: 1px;
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 .input-group {
   position: relative;
-<<<<<<< HEAD
-  margin-bottom: 20px;
-}
-.input-group input {
-  width: 100%;
-  padding: 13px 44px 13px 16px;
-  border: 1.5px solid #b0c4de;
-  border-radius: 18px;
-  font-size: 1.04rem;
-  outline: none;
-  background: #f7faff;
-  color: #222;
-  transition: border 0.2s, box-shadow 0.2s, transform 0.2s;
-  box-shadow: 0 1px 4px rgba(10,61,98,0.03);
-}
-.input-group input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
-  transform: translateY(-1px);
-}
-.show-password {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.97rem;
-  color: #2563eb;
-  cursor: pointer;
-  user-select: none;
-  opacity: 0.85;
-  font-weight: 500;
-  transition: color 0.2s, opacity 0.2s, transform 0.2s;
-}
-.show-password:hover {
-  color: #0a3d62;
-  opacity: 1;
-  transform: translateY(-50%) scale(1.05);
-=======
   margin-bottom: 25px; /* Khoảng cách lớn hơn */
 }
 .input-group input {
@@ -347,28 +210,11 @@
   color: #0f4c75;
   opacity: 1;
   transform: translateY(-50%) scale(1.08); /* Hiệu ứng phóng to nhẹ */
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 .forgot-row {
   display: flex;
   justify-content: flex-end;
-<<<<<<< HEAD
-  margin-bottom: 12px;
-}
-.forgot-link {
-  color: #2563eb;
-  font-size: 1.01rem;
-  text-decoration: none;
-  transition: color 0.2s, opacity 0.2s, transform 0.2s;
-  opacity: 0.93;
-}
-.forgot-link:hover {
-  color: #0a3d62;
-  text-decoration: underline;
-  opacity: 1;
-  transform: translateX(-2px);
-=======
   margin-bottom: 20px; /* Khoảng cách lớn hơn */
 }
 .forgot-link {
@@ -384,20 +230,10 @@
   text-decoration: underline;
   opacity: 1;
   transform: translateX(-3px);
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 .error-msg {
   color: #d32f2f;
-<<<<<<< HEAD
-  background: #ffeaea;
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-bottom: 12px;
-  font-size: 1.01rem;
-  text-align: center;
-  animation: shake 0.5s ease-in-out;
-=======
   background: #ffebee; /* Nền báo lỗi nhẹ hơn */
   border-radius: 12px; /* Bo tròn nhiều hơn */
   padding: 10px 15px;
@@ -406,35 +242,10 @@
   text-align: center;
   animation: shake 0.5s ease-in-out;
   border: 1px solid #ef9a9a; /* Viền nhẹ */
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-<<<<<<< HEAD
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-
-.signin-btn {
-  background: linear-gradient(90deg, #2563eb 60%, #34A853 100%);
-  color: #fff;
-  border: none;
-  border-radius: 24px;
-  padding: 13px 0;
-  font-size: 1.13rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  box-shadow: 0 2px 8px rgba(10,61,98,0.07);
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-}
-.signin-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(10,61,98,0.10);
-  background: linear-gradient(90deg, #34A853 60%, #2563eb 100%);
-=======
   25% { transform: translateX(-8px); } /* Rung mạnh hơn */
   75% { transform: translateX(8px); }
 }
@@ -459,41 +270,17 @@
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   background: linear-gradient(90deg, #0f4c75 0%, #1a5e90 100%);
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 .other-login-btns {
   display: flex;
   flex-direction: column;
-<<<<<<< HEAD
-  gap: 14px;
-  margin-top: 22px;
-=======
   gap: 18px; /* Khoảng cách lớn hơn */
   margin-top: 30px;
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   align-items: stretch;
 }
 
 .guest-btn {
-<<<<<<< HEAD
-  background: #fff;
-  color: #0a3d62;
-  border: 1.2px solid #b0c4de;
-  border-radius: 24px;
-  padding: 12px 0;
-  font-size: 1.04rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.2s, color 0.2s, border 0.2s;
-  box-shadow: 0 1px 4px rgba(10,61,98,0.04);
-}
-.guest-btn:hover {
-  transform: translateY(-2px);
-  background: #eaf0fa;
-  color: #2563eb;
-  border: 1.2px solid #2563eb;
-=======
   background: #f0f4f8; /* Nền nhẹ nhàng */
   color: #0f4c75;
   border: 1.5px solid #d9e2ec; /* Viền mỏng */
@@ -511,54 +298,20 @@
   color: #1a5e90;
   border-color: #1a5e90;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 }
 
 .google-btn {
   background: #fff;
-<<<<<<< HEAD
-  color: #222;
-  border: 1.2px solid #e0e7ef;
-  border-radius: 24px;
-  padding: 12px 0;
-  font-size: 1.04rem;
-=======
   color: #333;
   border: 1.5px solid #e0e7ef;
   border-radius: 28px;
   padding: 14px 0;
   font-size: 1.1rem;
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-<<<<<<< HEAD
-  gap: 10px;
-  transition: transform 0.2s, background 0.2s, color 0.2s, border 0.2s;
-  box-shadow: 0 1px 4px rgba(10,61,98,0.04);
-}
-.google-btn:hover {
-  transform: translateY(-2px);
-  background: #eaf0fa;
-  color: #34A853;
-  border: 1.2px solid #34A853;
-}
-
-.google-svg {
-  width: 22px;
-  height: 22px;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 2px;
-  transition: transform 0.2s;
-}
-.google-btn:hover .google-svg {
-  transform: scale(1.1);
-}
-
-=======
   gap: 12px; /* Khoảng cách icon và text lớn hơn */
   transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -584,7 +337,6 @@
 }
 
 /* Media Queries cho Responsive Design */
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 @media (max-width: 900px) {
   .login-root {
     flex-direction: column;
@@ -592,20 +344,6 @@
   .login-left, .login-right {
     flex: unset;
     width: 100%;
-<<<<<<< HEAD
-    min-height: 320px;
-    padding: 32px 8px 24px 8px;
-  }
-  .login-form {
-    max-width: 100%;
-    padding: 28px 8px 20px 8px;
-  }
-  .login-logo {
-    width: 100px;
-    height: 100px;
-  }
-} 
-=======
     min-height: 280px; /* Chiều cao tối thiểu cho phần trái */
     padding: 30px 15px 20px 15px;
   }
@@ -702,4 +440,3 @@
     margin-top: 20px;
   }
 }
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8

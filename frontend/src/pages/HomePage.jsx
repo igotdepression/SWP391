@@ -9,18 +9,6 @@ import { getAvatarColor, getInitials } from '../utils/avatarUtils';
 import { useNavigation } from '../hooks/useNavigation';
 
 const labSlides = [
-<<<<<<< HEAD
-  { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRemWZjv5ir6K4K2RMsjfA5-KCMN5rUDgBVkA&s', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://img.docnhanh.vn/images/uploads/2024/04/08/xet-nghiem-adn-585.png', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://zalo-article-photo.zadn.vn/c2707386aad0438e1ac1#333778904', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://phuongnamhospital.com/wp-content/uploads/2024/08/cac-dich-vu-xet-nghiem-adn-tai-da-khoa-phuong-nam-da-lat.jpg', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://static-images.vnncdn.net/vps_images_publish/000001/000003/2024/6/17/giam-dinh-adn-680.jpg?width=260&s=kEz5ph5JV8GCloNtIBNw1g', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://ccrd.org.vn/wp-content/uploads/2023/10/p31.jpg', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://ccrd.org.vn/wp-content/uploads/2023/10/BV-DK-Tam-Tri-Dong-Thap-4.jpg', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://genplus.vn/wp-content/uploads/2022/07/xet-nghiem-ADN-tai-TP-HCM-24-1.jpg', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://genplus.vn/wp-content/uploads/2022/10/xet-nghiem-adn-thai-nguyen-4.jpg', icon: '/img/icon-lab-blue.png'},
-  { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDgmiwU7-l35jziKuayzp9_KVgfYl65-UnVQ&s', icon: '/img/icon-lab-blue.png'}
-=======
   { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRemWZjv5ir6K4K2RMsjfA5-KCMN5rUDgBVkA&s', icon: '/img/icon-lab-blue.png' },
   { img: 'https://img.docnhanh.vn/images/uploads/2024/04/08/xet-nghiem-adn-585.png', icon: '/img/icon-lab-blue.png' },
   { img: 'https://zalo-article-photo.zadn.vn/c2707386aad0438e1ac1#333778904', icon: '/img/icon-lab-blue.png' },
@@ -31,7 +19,6 @@ const labSlides = [
   { img: 'https://genplus.vn/wp-content/uploads/2022/07/xet-nghiem-ADN-tai-TP-HCM-24-1.jpg', icon: '/img/icon-lab-blue.png' },
   { img: 'https://genplus.vn/wp-content/uploads/2022/10/xet-nghiem-adn-thai-nguyen-4.jpg', icon: '/img/icon-lab-blue.png' },
   { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDgmiwU7-l35jziKuayzp9_KVgfYl65-UnVQ&s', icon: '/img/icon-lab-blue.png' }
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
 ];
 
 const services = [
@@ -67,6 +54,18 @@ function HomePage() {
   const navigate = useNavigate();
   const { goToBookingCreate, goToContact } = useNavigation();
 
+  // Form state cho consultation
+  const [consultationForm, setConsultationForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    serviceType: '',
+    message: '',
+    preferredTime: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handlePrevLabSlide = () => {
     setLabSlideIdx(labSlideIdx === 0 ? labSlides.length - 1 : labSlideIdx - 1);
   };
@@ -92,6 +91,40 @@ function HomePage() {
     }
   };
 
+  const handleConsultationInputChange = (e) => {
+    const { name, value } = e.target;
+    setConsultationForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleConsultationSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      alert('Đăng ký tư vấn thành công! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
+      
+      // Reset form
+      setConsultationForm({
+        name: '',
+        phone: '',
+        email: '',
+        serviceType: '',
+        message: '',
+        preferredTime: ''
+      });
+    } catch (error) {
+      alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const labSlide = labSlides[labSlideIdx];
 
   return (
@@ -101,11 +134,7 @@ function HomePage() {
         <div className="adn-main">
           <div className="adn-banner">
             <div className="adn-banner-img">
-<<<<<<< HEAD
-              <img src="https://login.medlatec.vn//ImagePath/images/20200306/20200306_xet-nghiem-adn-het-bao-nhieu-tien-01.jpg" alt="ADN Test Banner" />
-=======
               <img src="https://genplus.vn/wp-content/uploads/2022/10/xet-nghiem-adn-bac-giang-3.jpg" alt="ADN Test Banner" />
->>>>>>> 8e0ece6428b87162344c8e84a8b730fb73989ce8
             </div>
             <div className="adn-banner-content adn-banner-center">
               <div className="adn-banner-intro">
@@ -212,6 +241,137 @@ function HomePage() {
             </div>
           </section>
 
+          
+
+          {/* Consultation Form Section */}
+          <section className="adn-section consultation-section" id="consultation">
+            <div className="adn-section-title-group">
+              <span className="adn-section-icon">+</span>
+              <span className="adn-section-title">ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</span>
+            </div>
+            
+            <div className="consultation-container">
+              <div className="consultation-intro">
+                <h3>Nhận tư vấn chuyên sâu từ các chuyên gia</h3>
+                <p>Để lại thông tin của bạn, chúng tôi sẽ liên hệ tư vấn miễn phí về dịch vụ xét nghiệm ADN phù hợp nhất.</p>
+              </div>
+
+              <div className="consultation-form-wrapper">
+                <form className="consultation-form" onSubmit={handleConsultationSubmit}>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="name">Họ và tên *</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={consultationForm.name}
+                        onChange={handleConsultationInputChange}
+                        placeholder="Nhập họ và tên của bạn"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="phone">Số điện thoại *</label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={consultationForm.phone}
+                        onChange={handleConsultationInputChange}
+                        placeholder="Nhập số điện thoại"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="email">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={consultationForm.email}
+                        onChange={handleConsultationInputChange}
+                        placeholder="Nhập địa chỉ email"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="serviceType">Dịch vụ quan tâm *</label>
+                      <select
+                        id="serviceType"
+                        name="serviceType"
+                        value={consultationForm.serviceType}
+                        onChange={handleConsultationInputChange}
+                        required
+                      >
+                        <option value="">Chọn dịch vụ</option>
+                        <option value="paternity">Xét nghiệm ADN cha con</option>
+                        <option value="maternity">Xét nghiệm ADN mẹ con</option>
+                        <option value="grandpa">Xét nghiệm ADN ông cháu</option>
+                        <option value="grandma">Xét nghiệm ADN bà cháu</option>
+                        <option value="sibling">Xét nghiệm ADN anh em</option>
+                        <option value="other">Khác</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="preferredTime">Thời gian mong muốn được liên hệ</label>
+                      <select
+                        id="preferredTime"
+                        name="preferredTime"
+                        value={consultationForm.preferredTime}
+                        onChange={handleConsultationInputChange}
+                      >
+                        <option value="">Chọn thời gian</option>
+                        <option value="morning">Buổi sáng (8h-12h)</option>
+                        <option value="afternoon">Buổi chiều (13h-17h)</option>
+                        <option value="evening">Buổi tối (18h-20h)</option>
+                        <option value="anytime">Bất kỳ lúc nào</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="message">Nội dung cần tư vấn</label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={consultationForm.message}
+                      onChange={handleConsultationInputChange}
+                      placeholder="Mô tả chi tiết tình huống và những gì bạn cần tư vấn..."
+                      rows="4"
+                    />
+                  </div>
+
+                  <div className="form-submit">
+                    <button 
+                      type="submit" 
+                      className="adn-btn adn-btn-main consultation-submit-btn"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span className="loading-spinner"></span>
+                          Đang gửi...
+                        </>
+                      ) : (
+                        ' Đăng ký tư vấn ngay'
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="form-note">
+                    <p>* Các thông tin bạn cung cấp sẽ được bảo mật tuyệt đối và chỉ phục vụ mục đích tư vấn.</p>
+                    <p>📞 Hotline: <strong>1900 1234</strong> | 📧 Email: <strong>tuvan@adnchain.com</strong></p>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
           <section className="adn-section" id="news">
             <div className="adn-section-title-group">
               <span className="adn-section-icon">+</span>
