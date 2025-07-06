@@ -1,84 +1,93 @@
 import React from 'react';
-import './Footer.css'; // Import file CSS
+import './Footer.css';
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
-        {/* Cột 1: Logo, Tên, và Khẩu hiệu */}
-        <div className="footer-left">
+        {/* Cột 1: Logo và thông tin công ty */}
+        <div className="footer-section logo-section">
           <div className="footer-logo">
-            <div className="logo-icon">DNA</div>
-            <div className="logo-name">DNAChain</div>
+            <div className="logo-container">
+              <img src="/logo.png" alt="DNA CHAIN Logo" className="footer-logo-img" />
+              <div className="logo-text-container">
+                <span className="logo-text">DNA CHAIN</span>
+                <span className="logo-subtitle">CHÍNH XÁC - NHANH CHÓNG - BẢO MẬT</span>
+              </div>
+            </div>
           </div>
-          <p className="footer-slogan">
-            Phòng xét nghiệm ADN hàng đầu Việt Nam với công nghệ tiên tiến và đội ngũ chuyên gia có kinh nghiệm hơn 15 năm trong lĩnh vực xét nghiệm di truyền học.
-          </p>
-          <div className="footer-certifications">
-            <p>Chứng nhận ISO 15189:2012</p>
-            <p>Giấy phép hoạt động số 123/BYT</p>
-            <p>Hơn 50,000 khách hàng tin tưởng</p>
+          <div className="company-description">
+            <p>Trung tâm xét nghiệm ADN hàng đầu Việt Nam, cung cấp dịch vụ xác định huyết thống với độ chính xác cao nhất.</p>
           </div>
         </div>
 
-        {/* Cột 2: Dịch vụ */}
-        <div className="footer-services">
-          <h3>Dịch vụ xét nghiệm ADN</h3>
+        {/* Cột 2: Liên hệ */}
+        <div className="footer-section contact-section">
+          <h3>LIÊN HỆ</h3>
+          <div className="contact-info">
+            <div className="contact-item">
+              <i className="fas fa-map-marker-alt"></i>
+              <span>7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh</span>
+            </div>
+            <div className="contact-item">
+              <i className="fas fa-phone"></i>
+              <span>0899 265 999 | 0899 65 9999</span>
+            </div>
+            <div className="contact-item">
+              <i className="fas fa-envelope"></i>
+              <span>dnachain@gmail.com</span>
+            </div>
+            <div className="contact-item">
+              <i className="fas fa-clock"></i>
+              <span>Thứ 2 - Thứ 6: 8:00 - 17:00<br/>Thứ 7: 8:00 - 12:00</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Cột 3: Dịch vụ */}
+        <div className="footer-section services-section">
+          <h3>DỊCH VỤ</h3>
           <ul>
-            <li>Xét nghiệm ADN xác định quan hệ huyết thống</li>
-            <li>Test ADN cha con (Paternity test)</li>
-            <li>Xét nghiệm ADN anh chị em ruột</li>
-            <li>Test ADN ông bà - cháu</li>
-            <li>Xét nghiệm ADN tiền sinh (Pre-natal)</li>
-            <li>Giám định ADN pháp y</li>
-            <li>Test ADN tìm nguồn gốc dân tộc</li>
+            <li><a href="#paternity">Xét nghiệm ADN cha con</a></li>
+            <li><a href="#maternity">Xét nghiệm ADN mẹ con</a></li>
+            <li><a href="#grandparents">Xét nghiệm ADN ông bà cháu</a></li>
+            <li><a href="#siblings">Xét nghiệm ADN anh em</a></li>
+            <li><a href="#consultation">Tư vấn miễn phí</a></li>
+          </ul>
+          
+          <h3 className="quick-links">HỖ TRỢ</h3>
+          <ul>
+            <li><a href="#booking">Đặt lịch hẹn</a></li>
+            <li><a href="#pricing">Bảng giá dịch vụ</a></li>
+            <li><a href="#guide">Hướng dẫn lấy mẫu</a></li>
+            <li><a href="#faq">Câu hỏi thường gặp</a></li>
           </ul>
         </div>
 
-        {/* Cột 3: Hỗ trợ khách hàng */}
-        <div className="footer-support">
-          <h3>Hỗ trợ khách hàng</h3>
+        {/* Cột 4: Kết nối & Chính sách */}
+        <div className="footer-section connect-section">
+          <h3 className="social-section-title">KẾT NỐI VỚI CHÚNG TÔI</h3>
+          <div className="social-links">
+            <a href="#" className="social-link zalo" aria-label="Zalo">
+              <span className="zalo-icon">Z</span>
+            </a>
+            <a href="#" className="social-link facebook" aria-label="Facebook">
+              <i className="fab fa-facebook-f"></i>
+            </a>
+          </div>
+          
+          <h3 className="quick-links">CHÍNH SÁCH</h3>
           <ul>
-            <li>Hướng dẫn lấy mẫu xét nghiệm</li>
-            <li>Quy trình xét nghiệm ADN</li>
-            <li>Tra cứu kết quả online</li>
-            <li>Câu hỏi thường gặp</li>
-            <li>Chính sách bảo mật thông tin</li>
-            <li>Điều khoản sử dụng dịch vụ</li>
-            <li>Chế độ bảo hành kết quả</li>
+            <li><a href="#privacy">Chính sách bảo mật</a></li>
+            <li><a href="#terms">Điều khoản sử dụng</a></li>
+            <li><a href="#security">Bảo mật thông tin</a></li>
           </ul>
-        </div>
-
-        {/* Cột 4: Liên hệ */}
-        <div className="footer-contact">
-          <h3>Liên hệ</h3>
-          <div className="contact-item">
-            <i className="fas fa-map-marker-alt"></i>
-            <span>Trụ sở chính: 123 Nguyễn Văn Cừ, Quận 5, TP.HCM</span>
-          </div>
-          <div className="contact-item">
-            <i className="fas fa-phone-alt"></i>
-            <span>Hotline: 1900 2468 (24/7 - Miễn phí tư vấn)</span>
-          </div>
-          <div className="contact-item">
-            <i className="fas fa-envelope"></i>
-            <span>Email: info@dnachain.vn</span>
-          </div>
-          <p>Giờ làm việc: T2-T6: 7:30 - 17:30 | T7-CN: 8:00 - 12:00</p>
-          {/* Dấu gạch dưới trụ sở chính */}
-          <div className="footer-divider"></div>
         </div>
       </div>
-
-      {/* Phần thêm: Chịu trách nhiệm nội dung và Giám đốc */}
+      
       <div className="footer-bottom">
-        <div className="footer-bottom-left">
-          <p>&copy; 2025 DNAChain - Phòng xét nghiệm ADN. Giấy phép hoạt động số 123/BYT-GP do Bộ Y tế cấp.</p>
-          <p>Trụ sở chính: 123 Nguyễn Văn Cừ, Quận 5, TP.HCM</p>
-        </div>
-        <div className="footer-bottom-right">
-          <p>Chịu trách nhiệm nội dung: Nguyễn Văn A</p>
-          <p>Giám đốc: Trần Thị B</p>
+        <div className="footer-bottom-content">
+          <p>© 2025 Bản quyền DNA CHAIN - All rights reserved.</p>
         </div>
       </div>
     </footer>
