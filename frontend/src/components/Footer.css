@@ -1,153 +1,518 @@
 .footer {
-  background-color: #1A4064;
+  background: #2c5282;
   color: white;
-  padding: 40px 0;
+  padding: 60px 0 0 0;
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2.5fr 1.8fr 1.8fr 1.5fr;
+  gap: 40px;
+  padding: 0 40px 40px 40px;
+  position: relative;
+}
+
+.footer-section {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
-.footer-left, .footer-services, .footer-support, .footer-contact {
-  flex: 1;
-  min-width: 220px;
-  margin-bottom: 20px;
-}
-
-/* Cột 1: Logo, Tên, và Khẩu hiệu */
+/* Logo Section */
 .footer-logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
 }
 
-.logo-icon {
-  width: 40px;
-  height: 40px;
-  background-color: #FFD700;
-  color: #1A4064;
-  font-weight: bold;
-  font-size: 18px;
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: nowrap;
+}
+
+.footer-logo-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
   border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  padding: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.footer-logo-img:hover {
+  transform: scale(1.05);
+}
+
+/* Ensure DNA CHAIN stays on one line */
+.logo-text-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
-.logo-name {
-  font-size: 24px;
-  font-weight: bold;
-  color: #FFD700;
+.logo-text {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+  white-space: nowrap;
 }
 
-.footer-slogan {
-  font-size: 14px;
+.logo-subtitle {
+  font-size: 0.9rem;
+  color: #cbd5e0;
+  font-weight: 400;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Section Headers */
+.footer-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-bottom: 10px;
+  white-space: nowrap;
+}
+
+/* Special handling for social section title */
+.social-section-title {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin-bottom: 20px !important;
+}
+
+/* Improve connect section spacing after removing certification logos */
+.connect-section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.connect-section .social-links {
+  margin-bottom: 35px;
+}
+
+.footer-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, #60a5fa, #3b82f6);
+}
+
+.sub-location {
+  margin-top: 25px !important;
+}
+
+.quick-links {
+  margin-top: 30px !important;
+}
+
+/* Logo Section Specific */
+.logo-section {
+  padding-right: 15px;
+}
+
+.logo-container {
   margin-bottom: 20px;
 }
 
-.footer-certifications p {
-  font-size: 12px;
+/* Contact Section */
+.contact-section {
+  padding: 0 10px;
 }
 
-/* Cột 2: Dịch vụ */
-.footer-services h3, .footer-support h3, .footer-contact h3 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+/* Services Section */
+.services-section {
+  padding: 0 10px;
 }
 
-.footer-services ul, .footer-support ul {
-  list-style-type: none;
-  padding: 0;
+/* Connect Section - improved spacing after removing certification logos */
+.connect-section {
+  padding-left: 5px;
 }
 
-.footer-services li, .footer-support li {
-  font-size: 14px;
-  margin-bottom: 8px;
+/* Address and Contact Items */
+.address-item, .contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 15px;
+  padding: 8px 0;
 }
 
-/* Cột 3: Liên hệ */
-.footer-contact p {
-  font-size: 14px;
+.address-item i, .contact-item i {
+  color: #60a5fa;
+  font-size: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.address-item span, .contact-item span {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.9);
+}
+
+/* Company Description */
+.company-description {
+  margin-top: 15px;
+  padding-right: 10px;
+}
+
+.company-description p {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  text-align: justify;
+}
+
+/* Contact Section */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .contact-item {
   display: flex;
-  align-items: center;
-  gap: 10px;  /* Cải thiện khoảng cách giữa biểu tượng và văn bản */
-  margin-bottom: 10px;
+  align-items: flex-start;
+  gap: 12px;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .contact-item i {
-  color: #FFD700;
-  font-size: 18px;
+  color: #60a5fa;
+  font-size: 1rem;
+  margin-top: 2px;
+  width: 16px;
+  flex-shrink: 0;
 }
 
-/* Dấu gạch dưới trụ sở chính */
-.footer-divider {
-  margin-top: 10px;
-  border-bottom: 2px solid white; /* Dấu gạch dưới màu trắng */
-  width: 50%;
+/* Lists */
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   margin-bottom: 20px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-/* Căn chỉnh phần dưới dấu gạch */
-.footer-bottom {
+.footer-section li {
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-left: 18px;
+}
+
+.footer-section li::before {
+  content: '▶';
+  position: absolute;
+  left: 0;
+  color: #60a5fa;
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+}
+
+.footer-section li:hover {
+  color: #ffffff;
+  transform: translateX(5px);
+}
+
+.footer-section li:hover::before {
+  transform: translateX(3px);
+}
+
+.footer-section li a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-section li a:hover {
+  color: #60a5fa;
+}
+
+/* Social Links */
+.social-links {
   display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  font-size: 12px;
+  gap: 15px;
+  margin-bottom: 30px;
+  align-items: center;
 }
 
-.footer-bottom-left {
-  text-align: left;
-  flex: 1;
+.social-link {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 16px;
 }
 
-.footer-bottom-right {
-  text-align: right;
-  flex: 1;
+.social-link:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-3px);
 }
 
-.footer-bottom-left p, .footer-bottom-right p {
+.social-link.facebook:hover {
+  background: #1877f2;
+}
+
+.social-link.zalo:hover {
+  background: #0068ff;
+}
+
+/* Custom Zalo icon styling */
+.zalo-icon {
+  font-weight: bold;
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+}
+
+.social-link.instagram:hover {
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+}
+
+.social-link.youtube:hover {
+  background: #ff0000;
+}
+
+.social-link.pinterest:hover {
+  background: #bd081c;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  background: #1a365d;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-bottom-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+/* Partner Logos */
+.partner-logos {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.partner-logo {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  border-left: 4px solid #60a5fa;
+  transition: all 0.3s ease;
+}
+
+.partner-logo:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(5px);
+}
+
+.partner-logo > span:first-child {
+  font-weight: 700;
+  font-size: 1.1rem;
   margin-bottom: 5px;
+  color: #ffffff;
 }
 
-/* Phần Chịu trách nhiệm nội dung và Giám đốc */
-.footer-responsibility {
-  text-align: right;
-  margin-top: 20px;
+.partner-subtitle {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+  font-style: italic;
 }
 
-.footer-responsibility p {
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-/* Đảm bảo responsive */
-@media (max-width: 992px) {
+/* Responsive Design */
+@media (max-width: 1024px) {
   .footer-content {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+    padding: 0 30px 30px 30px;
+  }
+  
+  .logo-section, .contact-section, .services-section, .connect-section {
+    padding: 0;
+  }
+  
+  .company-description {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 0 20px 30px 20px;
+  }
+  
+  .footer {
+    padding: 35px 0 0 0;
+  }
+  
+  .logo-container {
+    flex-direction: row;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: nowrap;
+  }
+  
+  .footer-logo-img {
+    width: 55px;
+    height: 55px;
+    padding: 8px;
+    flex-shrink: 0;
+  }
+  
+  .logo-text {
+    font-size: 1.8rem;
+    letter-spacing: 1.3px;
+  }
+  
+  .logo-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.4px;
+  }
+  
+  .footer-section h3 {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Special handling for social section title on mobile */
+  .social-section-title {
+    font-size: 0.9rem !important;
+    letter-spacing: 0.3px !important;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+  
+  .footer-bottom-content {
     padding: 0 20px;
   }
+}
 
-  .footer-left, .footer-services, .footer-support, .footer-contact {
-    text-align: center;
+@media (max-width: 480px) {
+  .logo-container {
+    gap: 10px;
   }
-
-  .footer-bottom {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+  
+  .footer-logo-img {
+    width: 45px;
+    height: 45px;
+    padding: 6px;
+    flex-shrink: 0;
   }
-
-  .footer-bottom-left, .footer-bottom-right {
-    text-align: center;
+  
+  .logo-text {
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+  }
+  
+  .logo-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 0.3px;
+  }
+  
+  /* Ensure social section header fits on one line */
+  .footer-section h3 {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  .social-section-title {
+    font-size: 0.85rem !important;
+    letter-spacing: 0.2px !important;
   }
 }
+
+/* Special handling for very small screens */
+@media (max-width: 320px) {
+  .logo-text {
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .logo-subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+  }
+  
+  .footer-logo-img {
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+  }
+  
+  /* Extra small screen adjustments for section headers */
+  .footer-section h3 {
+    font-size: 0.8rem;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .social-section-title {
+    font-size: 0.75rem !important;
+    letter-spacing: 0.1px !important;
+  }
+}
+
+
