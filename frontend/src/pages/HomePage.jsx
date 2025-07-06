@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import './HomePage.css';
 import { useAuth } from '../context/AuthContext';
@@ -53,6 +53,8 @@ function HomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { goToBookingCreate, goToContact } = useNavigation();
+  const [progressAnimated, setProgressAnimated] = useState(false);
+  const progressRef = useRef(null);
 
   // Form state cho consultation
   const [consultationForm, setConsultationForm] = useState({
@@ -65,6 +67,35 @@ function HomePage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Intersection Observer cho progress bars
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setProgressAnimated(true);
+          } else {
+            setProgressAnimated(false);
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Kích hoạt khi 50% element hiển thị
+        rootMargin: '-50px 0px', // Offset để animation mượt hơn
+      }
+    );
+
+    if (progressRef.current) {
+      observer.observe(progressRef.current);
+    }
+
+    return () => {
+      if (progressRef.current) {
+        observer.unobserve(progressRef.current);
+      }
+    };
+  }, []); // Chỉ chạy 1 lần khi mount
 
   const handlePrevLabSlide = () => {
     setLabSlideIdx(labSlideIdx === 0 ? labSlides.length - 1 : labSlideIdx - 1);
@@ -202,6 +233,54 @@ function HomePage() {
             </div>
           </section>
 
+          <section className="adn-section" id="experts">
+            <div className="adn-section-title-group">
+              <span className="adn-section-icon">+</span>
+              <span className="adn-section-title">CỐ VẤN CHUYÊN MÔN</span>
+            </div>
+            <div className="experts-subtitle">
+              Những chuyên gia hàng đầu trong lĩnh vực y sinh, di truyền
+            </div>
+            <div className="experts-grid">
+              <Link to="/doctor/chris-tan" className="expert-card-link">
+                <div className="expert-card">
+                  <div className="expert-avatar">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Bác sĩ Chris Tan" />
+                  </div>
+                  <h4 className="expert-name">BÁC SĨ CHRIS TAN</h4>
+                  <p className="expert-specialty">Cố vấn chuyên môn</p>
+                </div>
+              </Link>
+              <Link to="/doctor/robert-elliott" className="expert-card-link">
+                <div className="expert-card">
+                  <div className="expert-avatar">
+                    <img src="https://genplus.vn/wp-content/uploads/2022/08/image-3-e1661323749235-1.jpg" alt="TS Robert Elliott" />
+                  </div>
+                  <h4 className="expert-name">TS ROBERT ELLIOTT</h4>
+                  <p className="expert-specialty">Di truyền học & Sinh học ung thư</p>
+                </div>
+              </Link>
+              <Link to="/doctor/ronald-gulick" className="expert-card-link">
+                <div className="expert-card">
+                  <div className="expert-avatar">
+                    <img src="https://genplus.vn/wp-content/uploads/2022/08/image-6-e1674405216860.jpg" alt="TS Ronald Gulick" />
+                  </div>
+                  <h4 className="expert-name">TS RONALD GULICK</h4>
+                  <p className="expert-specialty">Miễn dịch & Di truyền</p>
+                </div>
+              </Link>
+              <Link to="/doctor/andrea-miller" className="expert-card-link">
+                <div className="expert-card">
+                  <div className="expert-avatar">
+                    <img src="https://genplus.vn/wp-content/uploads/2022/08/image-e1674405251682.jpg" alt="TS Andrea Miller" />
+                  </div>
+                  <h4 className="expert-name">TS ANDREA MILLER</h4>
+                  <p className="expert-specialty">Sinh học</p>
+                </div>
+              </Link>
+            </div>
+          </section>
+
           <section className="modernlab-section" id="labs">
             <div className="modernlab-box">
               <div className="modernlab-left">
@@ -210,7 +289,7 @@ function HomePage() {
                 <div className="modernlab-desc">
                   Phòng thí nghiệm được trang bị những thiết bị tiên tiến nhất trong sinh học phân tử và phân tích di truyền. Đặc biệt, các hệ thống giải trình tự gen và hệ gen thế hệ mới đã được lắp đặt và vận hành, phục vụ nghiên cứu và dịch vụ xét nghiệm.
                 </div>
-                <div className="modernlab-progress-list">
+                <div className="modernlab-progress-list" ref={progressRef}>
                   {[
                     { label: 'ĐỘ CHÍNH XÁC', value: '99.99%', percent: 99.99 },
                     { label: 'BẢO MẬT THÔNG TIN KHÁCH HÀNG', value: '100%', percent: 100 },
@@ -220,8 +299,11 @@ function HomePage() {
                       <span className="modernlab-progress-label">{item.label}</span>
                       <div className="modernlab-progress-bar">
                         <div
-                          className="modernlab-progress-bar-inner"
-                          style={{ width: `${item.percent}%` }}
+                          className={`modernlab-progress-bar-inner ${progressAnimated ? 'animated' : ''}`}
+                          style={{ 
+                            width: progressAnimated ? `${item.percent}%` : '0%',
+                            transitionDelay: `${i * 0.3}s`
+                          }}
                         ></div>
                       </div>
                       <span className="modernlab-progress-value">{item.value}</span>
@@ -241,9 +323,76 @@ function HomePage() {
             </div>
           </section>
 
-          
+          <section className="adn-section advantages-section" id="advantages">
+            <div className="adn-section-title-group">
+              <span className="adn-section-title">LỢI THẾ CỦA CHÚNG TÔI</span>
+            </div>
+            <div className="advantages-subtitle">
+              <div className="dna-icon">🧬</div>
+              <p>Đem tới chất lượng dịch vụ tốt nhất về xét nghiệm ADN cho người Việt Nam</p>
+            </div>
+            
+            <div className="advantages-container">
+              <div className="advantages-left">
+                <div className="lab-image">
+                  <img src="https://login.medlatec.vn//ImagePath/images/20201216/20201216_trung-tam-xet-nghiem-adn-uy-tin-1.jpg" alt="Phòng thí nghiệm DNA CHAIN" />
+                  <div className="lab-watermark">DNACHAIN.vn</div>
+                </div>
+                <div className="consultation-cta">
+                  <p>Đặt lịch hẹn tư vấn <strong>miễn phí</strong> cùng đội ngũ chuyên gia</p>
+                  <button className="schedule-btn" onClick={() => handleRestrictedAction('advice')}>
+                    Đặt lịch ngay →
+                  </button>
+                </div>
+              </div>
 
-          {/* Consultation Form Section */}
+              <div className="advantages-right">
+                <div className="advantages-grid">
+                  <div className="advantage-item">
+                    <div className="advantage-icon">✓</div>
+                    <div className="advantage-content">
+                      <h4>ĐỘ CHÍNH XÁC CAO</h4>
+                      <p>Sử dụng các bộ Kit từ Promega, ThermoFisher, Mỹ, Đức,... đem tới kết quả có độ tin cậy tuyệt đối cho các xét nghiệm ADN tại DNA CHAIN.</p>
+                    </div>
+                  </div>
+
+                  <div className="advantage-item">
+                    <div className="advantage-icon">✓</div>
+                    <div className="advantage-content">
+                      <h4>TƯ VẤN TẬN TÌNH, CHÍNH XÁC</h4>
+                      <p>Tư vấn miễn phí 24/7 với đội ngũ chuyên viên và chuyên gia giày dạn kinh nghiệm</p>
+                    </div>
+                  </div>
+
+                  <div className="advantage-item">
+                    <div className="advantage-icon">✓</div>
+                    <div className="advantage-content">
+                      <h4>NHANH CHÓNG, TIỆN LỢI</h4>
+                      <p>Chỉ mất 5-10 lày mẫu, hệ thống thu mẫu toàn Quốc. Hỗ trợ thu mẫu tận nhà</p>
+                    </div>
+                  </div>
+
+                  <div className="advantage-item">
+                    <div className="advantage-icon">✓</div>
+                    <div className="advantage-content">
+                      <h4>THỜI GIAN TRẢ KẾT QUẢ NHANH</h4>
+                      <p>DNA CHAIN luôn tối ưu hóa dây chuyền xử lý mẫu. Hiện nay đã có thể trả kết quả cho khách hàng nhanh nhất sau 04h làm việc</p>
+                    </div>
+                  </div>
+
+                  <div className="advantage-item">
+                    <div className="advantage-icon">✓</div>
+                    <div className="advantage-content">
+                      <h4>TUYỆT ĐỐI BẢO MẬT</h4>
+                      <p>Mọi thông tin khách hàng đều được bảo mật không chia sẻ với bên thứ 3. DNA CHAIN bảo hành kết quả cho khách hàng trên kết quả.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Consultation Form Section - moved to end of page */}
           <section className="adn-section consultation-section" id="consultation">
             <div className="adn-section-title-group">
               <span className="adn-section-icon">+</span>
@@ -372,36 +521,6 @@ function HomePage() {
               </div>
             </div>
           </section>
-          <section className="adn-section" id="news">
-            <div className="adn-section-title-group">
-              <span className="adn-section-icon">+</span>
-              <span className="adn-section-title">TIN TỨC</span>
-            </div>
-            <div className="adn-news-items">
-              <div className="adn-news-card">
-                <img src="/img/news-img-1.jpg" alt="News 1" className="adn-news-img" />
-                <div className="adn-news-title">ADN CHAIN - Nâng tầm sức khỏe Việt bằng công nghệ di truyền</div>
-                <div className="adn-news-date">10/05/2024</div>
-                <div className="adn-news-desc">ADN CHAIN không ngừng đổi mới, ứng dụng các công nghệ sinh học tiên tiến nhất, hợp tác cùng các viện nghiên cứu, bệnh viện hàng đầu trong và ngoài nước, góp phần nâng cao chất lượng sống và sức khỏe cộng đồng.</div>
-                <a href="#" className="adn-btn adn-btn-small">Xem chi tiết</a>
-              </div>
-              <div className="adn-news-card">
-                <img src="/img/news-img-2.jpg" alt="News 2" className="adn-news-img" />
-                <div className="adn-news-title">Chính xác - Nhanh chóng - Bảo mật: 3 tiêu chí vàng của ADN CHAIN</div>
-                <div className="adn-news-date">08/05/2024</div>
-                <div className="adn-news-desc">Với phương châm hoạt động "Chính xác – Bảo mật – Tận tâm", ADN CHAIN không ngừng hoàn thiện dịch vụ, hỗ trợ khách hàng thu mẫu tận nhà, gửi kit tận nơi hoặc xét nghiệm trực tiếp tại trung tâm – giúp việc kiểm tra huyết thống trở nên dễ dàng, minh bạch và đáng tin cậy.</div>
-                <a href="#" className="adn-btn adn-btn-small">Xem chi tiết</a>
-              </div>
-              <div className="adn-news-card">
-                <img src="/img/news-img-3.jpg" alt="News 3" className="adn-news-img" />
-                <div className="adn-news-title">Dịch vụ xét nghiệm ADN tận nhà: Tiện lợi và bảo mật</div>
-                <div className="adn-news-date">05/05/2024</div>
-                <div className="adn-news-desc">ADN CHAIN cung cấp dịch vụ thu mẫu tận nhà, mang đến sự tiện lợi tối đa cho khách hàng. Đội ngũ chuyên gia của chúng tôi sẽ đến tận nơi để thực hiện thu mẫu, đảm bảo quá trình diễn ra nhanh chóng, an toàn và bảo mật thông tin.</div>
-                <a href="#" className="adn-btn adn-btn-small">Xem chi tiết</a>
-              </div>
-            </div>
-          </section>
-
         </div>
       </main>
       <Footer />

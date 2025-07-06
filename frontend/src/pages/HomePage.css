@@ -20,13 +20,22 @@ body {
     font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #dbeafe;
+    background-color: #ffffff;
 }
 
 .homepage-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.homepage-content {
+    background-color: #ffffff;
+}
+
+.adn-main {
+    background-color: #ffffff;
 }
 
 /* Header Styling (giữ nguyên hoặc điều chỉnh nếu cần cho mục mới) */
@@ -181,7 +190,7 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    background: #f7fafd;
+    background: #ffffff;
     gap: 0;
     min-height: 240px;
     /* Có thể tăng min-height nếu bạn muốn banner cao hơn nữa */
@@ -205,7 +214,7 @@ body {
     height: auto; /* Giữ tỷ lệ khung hình */
     border-radius: 12px; /* Tăng bo tròn góc */
     object-fit: cover; /* Đảm bảo ảnh bao phủ toàn bộ khu vực */
-    box-shadow: 0 5px 20px rgba(0,0,0,0.15); /* Bóng đổ mạnh hơn */
+    box-shadow: none;
 }
 
 .adn-banner-content {
@@ -336,13 +345,14 @@ body {
 
 .adn-section {
     margin-top: 38px;
+    background-color: #ffffff;
 }
 
 .adn-section-title-group {
     display: flex;
     align-items: center;
     gap: 5px;
-    background: var(--light-gray-bg); /* Sử dụng biến màu */
+    background: #ffffff; /* Nền trắng thống nhất */
     border-radius: 8px 8px 0 0;
     padding: 12px 34px 12px 24px;
     border-bottom: 4px solid var(--primary-blue); /* Sử dụng biến màu */
@@ -401,10 +411,11 @@ body {
     flex-direction: column;
     min-height: 190px;
     position: relative;
-    background: #f7fafc;
+    background: #ffffff;
     border-radius: 8px;
     padding: 28px 26px 24px 26px;
-    box-shadow: 0 2px 16px 0 rgba(35,60,110,0.04);
+    box-shadow: none;
+    border: 1px solid #f1f5f9;
 }
 
 .adn-about-headline {
@@ -446,12 +457,13 @@ body {
 .adn-service-card {
     background: #f6fafd;
     border-radius: 18px;
-    box-shadow: 0 2px 10px #b8e0fa33;
+    box-shadow: none;
     padding: 20px 16px 22px 16px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+    border: 1px solid #e3f2fd;
 }
 
 .adn-service-image img {
@@ -461,7 +473,7 @@ body {
     object-fit: cover;
     border-radius: 12px;
     margin-bottom: 12px;
-    box-shadow: 0 2px 8px #b8e0fa33;
+    box-shadow: none;
 }
 
 .adn-service-name {
@@ -481,8 +493,193 @@ body {
     text-align: center;
 }
 
+/* Experts Section */
+.experts-subtitle {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #5a6c7d;
+    margin-bottom: 50px;
+    font-weight: 400;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.experts-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 36px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.expert-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 25px;
+    text-align: center;
+    box-shadow: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #f0f8ff;
+    position: relative;
+    overflow: hidden;
+}
+
+.expert-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-blue), #60a5fa);
+}
+
+.expert-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border-color: var(--primary-blue);
+}
+
+.expert-avatar {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 25px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid var(--primary-blue);
+    box-shadow: none;
+    transition: transform 0.3s ease;
+}
+
+.expert-card:hover .expert-avatar {
+    transform: scale(1.05);
+}
+
+.expert-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.expert-name-link {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.expert-name-link:hover {
+  transform: translateY(-2px);
+}
+
+.expert-name-link:hover .expert-name {
+  color: var(--primary-blue);
+}
+
+.expert-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 20px 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.expert-specialty {
+    font-size: 1rem;
+    color: var(--primary-blue);
+    margin: 0;
+    line-height: 1.5;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Responsive for Experts Section */
+@media (max-width: 1200px) {
+    .experts-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        max-width: 700px;
+    }
+}
+
+@media (max-width: 1024px) {
+  .experts-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    max-width: 700px;
+  }
+  .expert-card {
+    padding: 28px 10px 22px 10px;
+    min-height: 300px;
+  }
+  .expert-avatar {
+    width: 90px;
+    height: 90px;
+    border-width: 3px;
+  }
+}
+
+@media (max-width: 768px) {
+  .experts-section {
+    padding: 40px 0 30px 0;
+  }
+  .experts-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    max-width: 400px;
+    padding: 0 8px;
+  }
+  .expert-card {
+    padding: 22px 6px 18px 6px;
+    min-height: 220px;
+  }
+  .expert-avatar {
+    width: 70px;
+    height: 70px;
+  }
+  .expert-name {
+    font-size: 1rem;
+    margin: 12px 0 7px 0;
+  }
+  .expert-specialty {
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 480px) {
+    .experts-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        max-width: 350px;
+    }
+    
+    .expert-card {
+        padding: 30px 20px;
+    }
+    
+    .expert-avatar {
+        width: 110px;
+        height: 110px;
+    }
+    
+    .expert-name {
+        font-size: 1.15rem;
+    }
+    
+    .experts-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 30px;
+    }
+}
+
 .modernlab-section {
-    background-color: #f8f8f8;
+    background-color: #ffffff;
     padding: 60px 0;
     margin: 40px 0;
 }
@@ -492,8 +689,8 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     background-color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border-radius: 10px;
+    box-shadow: none;
+    border-radius: 0px;
     overflow: hidden;
 }
 
@@ -559,6 +756,33 @@ body {
     height: 100%;
     background-color: #2196f3;
     border-radius: 4px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.modernlab-progress-bar-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.modernlab-progress-bar-inner.animated::before {
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
 }
 
 .modernlab-progress-value {
@@ -674,7 +898,7 @@ body {
 
 /* Consultation Section */
 .consultation-section {
-  background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+  background: #ffffff;
   margin-top: 60px;
 }
 
@@ -708,8 +932,8 @@ body {
   background: white;
   border-radius: 20px;
   padding: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border: 2px solid rgba(25, 118, 210, 0.1);
+  box-shadow: none;
+  border: 1px solid rgba(25, 118, 210, 0.2);
 }
 
 .consultation-form {
@@ -823,47 +1047,330 @@ body {
   font-weight: 600;
 }
 
-/* Responsive */
+/* ADVANTAGES SECTION - Thiết kế theo hình mẫu */
+.advantages-section {
+  background: #ffffff;
+  padding: 80px 0;
+}
+
+.advantages-section .adn-section-title-group {
+  text-align: center;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border-bottom: 4px solid var(--primary-blue);
+  padding: 12px 34px 12px 24px;
+  border-radius: 8px 8px 0 0;
+}
+
+.advantages-section .adn-section-title {
+  font-size: 2.5em;
+  font-weight: 700;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.advantages-subtitle {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 0 20px;
+}
+
+.advantages-subtitle .dna-icon {
+  font-size: 3em;
+  color: #2563eb;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.advantages-subtitle p {
+  font-size: 1.2em;
+  color: #666;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.advantages-container {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 50px;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 30px;
+  align-items: start;
+}
+
+/* Phần bên trái - Ảnh lab */
+.advantages-left {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.lab-image {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.lab-image img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.lab-watermark {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(37, 99, 235, 0.9);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.consultation-cta {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e3f2fd 100%);
+  padding: 30px 25px;
+  border-radius: 15px;
+  text-align: center;
+  border: 2px solid rgba(37, 99, 235, 0.1);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.1);
+}
+
+.consultation-cta p {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 1.1em;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.consultation-cta strong {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.schedule-btn {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 25px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.schedule-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-2px);
+    box-shadow: none;
+}
+
+/* Phần bên phải - Grid lợi thế */
+.advantages-right {
+  padding-top: 0;
+}
+
+.advantages-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.advantage-item {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  border: 1px solid #e3f2fd;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.advantage-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.1);
+  border-color: #2563eb;
+}
+
+.advantage-icon {
+  width: 28px;
+  height: 28px;
+  background: #2563eb;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 0;
+  box-shadow: none;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.advantage-content h4 {
+  margin: 0 0 8px 0;
+  font-size: 1em;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.advantage-content p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.5;
+  font-size: 0.85em;
+}
+
+/* Responsive cho Advantages Section */
+@media (max-width: 1200px) {
+  .advantages-container {
+    gap: 40px;
+    padding: 0 30px;
+    max-width: 1100px;
+  }
+  
+  .lab-image img {
+    height: 350px;
+  }
+  
+  .advantages-grid {
+    gap: 18px;
+  }
+  
+  .advantage-item {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 968px) {
+  .advantages-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .advantages-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .advantage-item {
+    padding: 18px;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  
+  .lab-image img {
+    height: 300px;
+  }
+}
+
 @media (max-width: 768px) {
-  .consultation-section {
+  .advantages-section {
     padding: 60px 0;
   }
   
-  .consultation-form-wrapper {
-    padding: 30px 20px;
+  .advantages-section .adn-section-title {
+    font-size: 2em;
   }
   
-  .form-row {
-    flex-direction: column;
-    gap: 0;
+  .advantages-subtitle p {
+    font-size: 1.1em;
+    padding: 0 20px;
   }
   
-  .consultation-intro h3 {
-    font-size: 1.8em;
+  .advantages-container {
+    padding: 0 20px;
   }
   
-  .consultation-submit-btn {
-    width: 100%;
-    padding: 12px 20px !important;
+  .consultation-cta {
+    padding: 25px 20px;
+  }
+  
+  .consultation-cta p {
+    font-size: 1em;
+  }
+  
+  .schedule-btn {
+    padding: 12px 30px;
+    font-size: 0.9em;
+  }
+  
+  .advantage-item {
+    padding: 15px;
+    gap: 12px;
+  }
+  
+  .advantage-icon {
+    width: 25px;
+    height: 25px;
+    font-size: 0.9em;
+  }
+  
+  .advantage-content h4 {
+    font-size: 0.95em;
+  }
+  
+  .advantage-content p {
+    font-size: 0.8em;
   }
 }
 
 @media (max-width: 480px) {
-  .consultation-container {
+  .advantages-container {
     padding: 0 15px;
+    gap: 25px;
   }
   
-  .consultation-form-wrapper {
+  .lab-image img {
+    height: 250px;
+  }
+  
+  .advantage-item {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .advantage-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 0.8em;
+  }
+  
+  .advantage-content h4 {
+    font-size: 0.9em;
+  }
+  
+  .advantage-content p {
+    font-size: 0.75em;
+  }
+  
+  .consultation-cta {
     padding: 20px 15px;
   }
   
-  .consultation-intro h3 {
-    font-size: 1.6em;
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 10px 12px;
+  .schedule-btn {
+    padding: 10px 25px;
+    font-size: 0.85em;
   }
 }

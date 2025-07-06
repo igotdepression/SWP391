@@ -1,0 +1,422 @@
+/* Doctor Detail Page Styles */
+.doctor-detail-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.doctor-detail-content {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 40px 0;
+}
+
+.doctor-detail-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.breadcrumb {
+  margin-bottom: 30px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  font-size: 0.9rem;
+  color: #1976d2;
+  border-bottom: none;
+}
+
+.breadcrumb a {
+  color: #1976d2;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 400;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb span {
+  margin: 0 5px;
+  color: #666;
+}
+
+.doctor-header {
+  display: block;
+  margin-bottom: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  position: relative;
+}
+
+.doctor-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 20px 0;
+  text-transform: none;
+  letter-spacing: normal;
+  line-height: 1.2;
+}
+
+.doctor-header-info {
+  margin-bottom: 20px;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #666;
+  background: transparent;
+  padding: 0;
+  border: none;
+  margin-bottom: 30px;
+}
+
+.article-meta img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.article-meta .author {
+  font-weight: 600;
+  color: #1976d2;
+  margin-right: 10px;
+}
+
+.article-meta .publish-time {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.doctor-content {
+  margin-bottom: 30px;
+}
+
+.doctor-image {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+.doctor-content section {
+  margin-bottom: 30px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  position: relative;
+}
+
+.doctor-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 10px 0;
+  border-bottom: none;
+  padding-bottom: 0;
+  display: block;
+  position: relative;
+}
+
+.doctor-content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+  margin: 0 0 15px 0;
+  text-align: left;
+}
+
+.doctor-content ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.doctor-content li {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 10px;
+  padding-left: 0;
+  position: relative;
+}
+
+.doctor-content li::before {
+  display: none;
+}
+
+.specialty-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.specialty-tag {
+  background: #2563eb;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.specialty-tag:hover {
+  background: #1d4ed8;
+}
+
+.philosophy-section blockquote {
+  background: transparent;
+  border-left: none;
+  margin: 15px 0;
+  padding: 0;
+  border-radius: 0;
+  font-style: normal;
+  position: relative;
+}
+
+.philosophy-section blockquote p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+  font-weight: 400;
+  margin: 0 0 15px 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Rating and Social Section */
+.rating-social-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0;
+  padding: 20px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.rating-stars .star {
+  color: #ffc107;
+  font-size: 1.2rem;
+}
+
+.rating-stars .star.empty {
+  color: #e0e0e0;
+}
+
+.rating-text {
+  font-size: 0.9rem;
+  color: #666;
+  margin-left: 10px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.social-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  border: none;
+  transition: transform 0.3s ease;
+}
+
+.social-icon.zalo,
+.social-icon.facebook {
+  background: none;
+}
+
+.social-icon:hover {
+  transform: translateY(-2px) scale(1.08);
+}
+
+.last-updated {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 20px 0;
+}
+
+/* Comment Section */
+.comment-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.comment-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+.comment-form-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  margin: 30px 0 15px 0;
+  text-transform: uppercase;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.comment-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.comment-form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.comment-input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.comment-submit-btn {
+  background-color: #1976d2;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.comment-submit-btn:hover {
+  background-color: #1565c0;
+}
+
+.doctor-actions {
+  display: none;
+}
+
+.doctor-not-found {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.doctor-not-found h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.back-home-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.back-home-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .doctor-detail-wrapper {
+    padding: 0 15px;
+  }
+
+  .doctor-title {
+    font-size: 2rem;
+  }
+
+  .doctor-image {
+    max-width: 100%;
+  }
+
+  .rating-social-section {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .comment-form-row {
+    flex-direction: column;
+  }
+
+  .social-icons {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .doctor-detail-content {
+    padding: 20px 0;
+  }
+
+  .doctor-title {
+    font-size: 1.7rem;
+  }
+
+  .article-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .rating-social-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
