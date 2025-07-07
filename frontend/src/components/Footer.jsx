@@ -45,7 +45,7 @@ const Footer = () => {
         </div>
 
         {/* Cột 3: Dịch vụ */}
-        <div className="footer-section services-section">
+        <div className="footer-section service-section">
           <h3>DỊCH VỤ</h3>
           <ul>
             <li><a href="#paternity">Xét nghiệm ADN cha con</a></li>

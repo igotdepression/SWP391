@@ -96,60 +96,30 @@ export default function ManagerPage() {
             case "blogpost":
                 return {
                     title: "Quản lý bài đăng",
-                    showSearch: true,
-                    onSearchChange: (value) => setOrderSearchTerm(value),
-                    showFilter: false,
-                    showAddNew: true,
-                    addNewText: "Tạo bài đăng mới",
-                    onAddNewClick: () => alert("Tạo bài đăng mới!"),
                 };
             case "banggia":
                 return {
                     title: "Quản lý giá dịch vụ",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: true,
-                    addNewText: "Thêm giá dịch vụ",
-                    onAddNewClick: () => alert("Thêm giá dịch vụ mới!"),
                 };
             case "payments":
                 return {
                     title: "Quản lý thanh toán",
-                    showSearch: true,
-                    showFilter: true,
-                    filterOptions: [{ value: "", label: "Tất cả" }, { value: "pending", label: "Đang chờ" }, { value: "completed", label: "Hoàn thành" }],
-                    onFilterChange: (value) => console.log("Lọc thanh toán theo:", value),
-                    showAddNew: false,
                 };
             case "feedback":
                 return {
                     title: "Quản lý Phản hồi & Đánh giá",
-                    showSearch: true,
-                    showFilter: true,
-                    filterOptions: [{ value: "", label: "Tất cả" }, { value: "rating", label: "Đánh giá" }, { value: "feedback", label: "Phản hồi" }],
-                    onFilterChange: (value) => console.log("Lọc phản hồi theo:", value),
-                    showAddNew: false,
                 };
             case "testResults":
                 return {
                     title: "Quản lý kết quả xét nghiệm",
-                    showSearch: true,
-                    showFilter: false,
-                    showAddNew: false,
                 };
             case "personalInfo":
                 return {
                     title: "Thông tin cá nhân",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: false,
                 };
             default:
                 return {
                     title: "Trang quản lý",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: false,
                 };
         }
     };

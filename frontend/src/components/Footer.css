@@ -142,7 +142,7 @@
 }
 
 /* Services Section */
-.services-section {
+.service-section {
   padding: 0 10px;
 }
 
@@ -375,7 +375,7 @@
     padding: 0 30px 30px 30px;
   }
   
-  .logo-section, .contact-section, .services-section, .connect-section {
+  .logo-section, .contact-section, .service-section, .connect-section {
     padding: 0;
   }
   

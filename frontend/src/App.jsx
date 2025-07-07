@@ -13,6 +13,7 @@ import BookingDetails from './pages/BookingDetails';
 import BookingPayment from './pages/BookingPayment';
 import About from './pages/About';
 import DoctorDetail from './pages/DoctorDetail';
+import ServicePage from './pages/ServicePage';
 
 
 // Protected Route component
@@ -63,6 +64,8 @@ function App() {
           <Route path="/booking-create" element={<BookingCreate />} />
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path='/booking-payment' element={<BookingPayment />} />
+
+          <Route path="/services" element={<ServicePage  />} />
 
           {/* <Route path="/booking/create" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><BookingCreate /></ProtectedRoute>} /> Removed as booking functionality is removed */}
           <Route path="/about" element={<About />} />
