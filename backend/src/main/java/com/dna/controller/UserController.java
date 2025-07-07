@@ -65,17 +65,9 @@ public class UserController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("customer/profile/{id}")
-    public ResponseEntity<UserDTO> updateProfileCustomer(@PathVariable Integer id, @RequestBody UserDTO userDTO){
-        UserDTO updateToCustomer = userService.updateToCustomer(id, userDTO);
+    public ResponseEntity<UserDTO> updateProfileCustomer(@PathVariable Integer id){
+        UserDTO updateToCustomer = userService.updateToCustomer(id, null);
         return ResponseEntity.ok(updateToCustomer);
-    }
-
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @PutMapping("/profile")
-    public ResponseEntity<UserDTO> updateCustomerProfile(Authentication authentication, @RequestBody UserDTO userDTO) {
-        String email = authentication.getName();
-        UserDTO updated = userService.updateCustomerProfileByEmail(email, userDTO);
-        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 }
 

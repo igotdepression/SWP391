@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -59,10 +58,8 @@ public class ServiceEntity {
         joinColumns = @JoinColumn(name = "serviceID"),
         inverseJoinColumns = @JoinColumn(name = "surchargeID")
     )
-    @JsonIgnore
     private Set<SurchargePrice> surcharges;
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private List<Booking> bookings;
 } 

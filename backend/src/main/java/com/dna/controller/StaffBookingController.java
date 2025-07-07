@@ -75,6 +75,7 @@ public class StaffBookingController {
         }
     }
 
+    // POST /api/staff/bookings/{bookingId}/upload-result: Tải lên file kết quả
     @PostMapping("/{bookingId}/upload-result")
     @PreAuthorize("hasRole('STAFF') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<?> uploadResultFile(

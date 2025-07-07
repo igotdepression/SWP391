@@ -84,8 +84,6 @@ public class UserService {
         dto.setRole(user.getRole().getRoleName());
         dto.setStatus(user.getStatus());
         dto.setAddress(user.getAddress());
-        dto.setGender(user.getGender());
-        dto.setDateOfBirth(user.getDateOfBirth());
         return dto;
     }
 
@@ -100,21 +98,6 @@ public class UserService {
             user.setPhoneNumber(userDTO.getPhoneNumber());
             user.setAddress(userDTO.getAddress());
             user.setStatus(userDTO.getStatus());
-            User savedUser = userRepository.save(user);
-            return mapToUserDto(savedUser);
-        }).orElse(null);
-    }
-
-    public UserDTO updateCustomerProfileByEmail(String email, UserDTO userDTO) {
-        return userRepository.findByEmail(email).map(user -> {
-            if (user.getRole() == null || !user.getRole().getRoleName().equalsIgnoreCase("CUSTOMER")) {
-                return null;
-            }
-            user.setFullName(userDTO.getFullName());
-            user.setPhoneNumber(userDTO.getPhoneNumber());
-            user.setAddress(userDTO.getAddress());
-            user.setDateOfBirth(userDTO.getDateOfBirth());
-            user.setGender(userDTO.getGender());
             User savedUser = userRepository.save(user);
             return mapToUserDto(savedUser);
         }).orElse(null);

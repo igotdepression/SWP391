@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,7 +25,6 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "roleID")
-    @JsonIgnore
     private Role role;
 
     @Column(name = "fullName")
@@ -52,10 +51,9 @@ public class User {
     @Column(name = "status")
     private String status;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings;
-    
+
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Sample> samples;
 

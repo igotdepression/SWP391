@@ -112,9 +112,4 @@ export const testAPI = {
     testConnection: () => api.get('/auth/test'),
 };
 
-// Service API
-export const serviceAPI = {
-    getAllServices: () => api.get('/service/listService'),
-};
-
 export default api; 

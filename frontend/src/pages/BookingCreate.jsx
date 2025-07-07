@@ -4,8 +4,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './BookingCreate.css';
-import api from '../services/api';
-import vietnamLocations from '../data/vietnamLocations.json';
 
 export default function BookingCreate() {
     const { user, loading: authLoading } = useAuth();
@@ -14,46 +12,16 @@ export default function BookingCreate() {
 
     const initialBookingData = location.state?.initialBookingData;
 
-    const [serviceID, setServiceID] = useState('');
-    const [serviceList, setServiceList] = useState([]);
-    const [serviceListError, setServiceListError] = useState('');
-    const [serviceName, setServiceName] = useState(initialBookingData?.serviceName || '');
     const [serviceType, setServiceType] = useState(initialBookingData?.serviceType || '');
-    const [typeSample, setTypeSample] = useState(initialBookingData?.typeSample || '');
+    // Cho phép numSamples thay đổi cho xét nghiệm thai nhi
+    const [numSamples, setNumSamples] = useState(initialBookingData?.numSamples || 2);
+    const [testType, setTestType] = useState(initialBookingData?.testType || '');
     const [appointmentDate, setAppointmentDate] = useState(initialBookingData?.appointmentDate || '');
     const [notes, setNotes] = useState(initialBookingData?.notes || '');
     const [resultTime, setResultTime] = useState(initialBookingData?.resultTime || '');
     const today = new Date().toISOString().split('T')[0];
 
     const [participants, setParticipants] = useState(initialBookingData?.participants || []);
-    const [numSamples, setNumSamples] = useState(initialBookingData?.numSamples || 2);
-
-    // State mới để lưu relationship options tách từ serviceName
-    const [relationshipOptions, setRelationshipOptions] = useState(['Quan hệ nghi vấn']);
-
-    // Không hardcode serviceOptions nữa
-    // Sử dụng serviceList để lấy các serviceName duy nhất
-    const uniqueServiceNames = Array.from(new Set(serviceList.map(s => s.serviceName)));
-
-    // Mapping quan hệ nghi vấn cho từng loại dịch vụ
-    const getRelationshipOptions = () => {
-        switch (serviceName) {
-            case 'Xét nghiệm cha con':
-                return ['Cha', 'Con'];
-            case 'Xét nghiệm mẹ con':
-                return ['Mẹ', 'Con'];
-            case 'Xét nghiệm ông cháu':
-                return ['Ông', 'Cháu'];
-            case 'Xét nghiệm bà cháu':
-                return ['Bà', 'Cháu'];
-            case 'Xét nghiệm anh em ruột':
-                return ['Anh', 'Em', 'Mẹ (tùy chọn)'];
-            case 'Thai nhi (không xâm lấn)':
-                return ['Thai nhi (Mẫu từ mẹ)', 'Cha nghi vấn'];
-            default:
-                return ['Khác'];
-        }
-    };
 
     const serviceOptions = [
         'Xét nghiệm ADN Cha con',
@@ -70,37 +38,32 @@ export default function BookingCreate() {
         'Thu mẫu tại trung tâm',
     ];
 
-    const [sampleTypeOptions, setSampleTypeOptions] = useState([
+    const sampleTypeOptions = [
         'Mẫu máu/Tế bào niêm mạc miệng',
         'Mẫu tóc, móng tay, chân',
         'Mẫu bàn chải đánh răng, dao cạo râu',
         // Add more sample types as needed
-    ]);
+    ];
 
-    // Parse lại locationSelections và addressDetails từ initialBookingData nếu có
-    const parseLocationSelections = (participants) =>
-        (participants || []).map(p => {
-            const addressParts = (p.address || '').split(',').map(s => s.trim());
-            return {
-                province: addressParts[3] || '',
-                district: addressParts[2] || '',
-                ward: addressParts[1] || '',
-            };
-        });
-    const parseAddressDetails = (participants) =>
-        (participants || []).map(p => {
-            const addressParts = (p.address || '').split(',').map(s => s.trim());
-            return addressParts[0] || '';
-        });
-
-    const [locationSelections, setLocationSelections] = useState(
-        initialBookingData?.participants ? parseLocationSelections(initialBookingData.participants)
-        : []
-    );
-    const [addressDetails, setAddressDetails] = useState(
-        initialBookingData?.participants ? parseAddressDetails(initialBookingData.participants)
-        : []
-    );
+    const getRelationshipOptions = useCallback(() => {
+        switch (serviceType) {
+            case 'Xét nghiệm ADN Cha con':
+                return ['Cha', 'Con'];
+            case 'Xét nghiệm ADN Mẹ con':
+                return ['Mẹ', 'Con'];
+            case 'Xét nghiệm ADN Ông cháu':
+                return ['Ông', 'Cháu'];
+            case 'Xét nghiệm ADN Bà cháu':
+                return ['Bà', 'Cháu'];
+            case 'Xét nghiệm ADN Anh em ruột':
+                return ['Anh/Em ruột 1', 'Anh/Em ruột 2', 'Mẹ (tùy chọn)'];
+            case 'Xét nghiệm ADN Thai nhi':
+                // Cho phép nhiều "Cha nghi vấn"
+                return ['Thai nhi (Mẫu từ mẹ)', 'Cha nghi vấn'];
+            default:
+                return ['Quan hệ nghi vấn'];
+        }
+    }, [serviceType]);
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -109,152 +72,92 @@ export default function BookingCreate() {
     }, [user, authLoading, navigate]);
 
     useEffect(() => {
-        if (serviceName === 'Thai nhi (không xâm lấn)') {
+        if (serviceType === 'Xét nghiệm ADN Thai nhi') {
             setResultTime('Tiêu chuẩn (7-10 ngày làm việc)');
-        } else if (initialBookingData?.resultTime && resultTime === '') {
-            setResultTime(initialBookingData.resultTime);
+        } else if (initialBookingData?.serviceType !== serviceType) {
+            setResultTime('');
         }
-    }, [serviceName]);
+    }, [serviceType, initialBookingData]);
 
     useEffect(() => {
-        // Copy logic getRelationshipOptions vào trong useEffect để tránh vòng lặp
-        const getRelationshipOptions = () => {
-            switch (serviceName) {
-                case 'Xét nghiệm cha con':
-                    return ['Cha', 'Con'];
-                case 'Xét nghiệm mẹ con':
-                    return ['Mẹ', 'Con'];
-                case 'Xét nghiệm ông cháu':
-                    return ['Ông', 'Cháu'];
-                case 'Xét nghiệm bà cháu':
-                    return ['Bà', 'Cháu'];
-                case 'Xét nghiệm anh em ruột':
-                    return ['Anh', 'Em', 'Mẹ (tùy chọn)'];
-                case 'Thai nhi (không xâm lấn)':
-                    return ['Thai nhi (Mẫu từ mẹ)', 'Cha nghi vấn'];
-                default:
-                    return ['Khác'];
-            }
-        };
-        if (!initialBookingData || initialBookingData.numSamples !== numSamples) {
-            setParticipants(prevParticipants => {
-                const newParticipants = Array.from({ length: numSamples }, (_, i) => {
-                    const existingParticipant = prevParticipants[i];
-                    const relationshipOptions = getRelationshipOptions();
-                    let defaultRelationship = 'Quan hệ nghi vấn';
-                    if (serviceName === 'Thai nhi (không xâm lấn)') {
-                        if (i === 0) { defaultRelationship = 'Thai nhi (Mẫu từ mẹ)'; }
-                        else { defaultRelationship = 'Cha nghi vấn'; }
-                    } else {
-                        defaultRelationship = relationshipOptions[i] || 'Quan hệ nghi vấn';
-                    }
-                    let defaultCollectionMethod = '';
-                    if (serviceName === 'Thai nhi (không xâm lấn)') {
-                        defaultCollectionMethod = 'Thu mẫu tại trung tâm';
-                    }
-                    let defaultGender = '';
-                    if (defaultRelationship === 'Cha' || defaultRelationship === 'Ông' || defaultRelationship === 'Cha nghi vấn') {
-                        defaultGender = 'Nam';
-                    } else if (defaultRelationship === 'Mẹ' || defaultRelationship === 'Bà' || defaultRelationship === 'Thai nhi (Mẫu từ mẹ)') {
-                        defaultGender = 'Nữ';
-                    }
-                    if (existingParticipant) {
-                        return {
-                            ...existingParticipant,
-                            gender: existingParticipant.gender || defaultGender,
-                            collectionMethod: (serviceName === 'Thai nhi (không xâm lấn)')
-                                ? 'Thu mẫu tại trung tâm'
-                                : (existingParticipant.collectionMethod || ''),
-                            relationship: relationshipOptions.includes(existingParticipant.relationship)
-                                ? existingParticipant.relationship
-                                : defaultRelationship,
-                            personalId: existingParticipant.personalId || '',
-                            address: existingParticipant.address || '',
-                            relationToRegistrant: existingParticipant.relationToRegistrant || '',
-                            fullName: existingParticipant.fullName || '',
-                            dob: existingParticipant.dob || '',
-                            sampleType: existingParticipant.sampleType || '',
-                        };
-                    } else {
-                        const baseParticipant = {
-                            fullName: '',
-                            gender: defaultGender,
-                            dob: '',
-                            relationship: defaultRelationship,
-                            collectionMethod: defaultCollectionMethod,
-                            sampleType: '',
-                        };
-                        if (serviceName === 'Thai nhi (không xâm lấn)') {
-                            return {
-                                ...baseParticipant,
-                                personalId: '',
-                                address: '',
-                                relationToRegistrant: '',
-                            };
-                        } else {
-                            return baseParticipant;
-                        }
-                    }
-                });
-                return newParticipants;
-            });
-        }
-    }, [numSamples, serviceName, initialBookingData]);
+        // Cập nhật participants khi numSamples hoặc serviceType, testType thay đổi
+        setParticipants(prevParticipants => {
+            const newParticipants = Array.from({ length: numSamples }, (_, i) => {
+                const existingParticipant = prevParticipants[i];
+                const relationshipOptions = getRelationshipOptions();
 
-    // Fetch service list from backend on mount
-    useEffect(() => {
-        api.get('/service/listService')
-            .then(res => {
-                let services = res.data;
-                // Nếu là string, parse lại thành mảng
-                if (typeof services === 'string') {
-                    try {
-                        services = JSON.parse(services);
-                    } catch (e) {
-                        services = [];
+                let defaultRelationship = 'Quan hệ nghi vấn';
+                if (serviceType === 'Xét nghiệm ADN Thai nhi') {
+                    if (i === 0) { // Giả định người đầu tiên là thai nhi
+                        defaultRelationship = 'Thai nhi (Mẫu từ mẹ)';
+                    } else { // Các người còn lại là cha nghi vấn
+                        defaultRelationship = 'Cha nghi vấn';
                     }
-                }
-                if (Array.isArray(services)) {
-                    setServiceList(services);
-                    setServiceListError('');
-                    console.log('serviceList từ backend:', services);
                 } else {
-                    setServiceList([]);
-                    setServiceListError('Không lấy được danh sách dịch vụ. Vui lòng thử lại hoặc liên hệ quản trị.');
+                    defaultRelationship = relationshipOptions[i] || 'Quan hệ nghi vấn';
                 }
-            })
-            .catch(err => {
-                setServiceList([]);
-                setServiceListError('Không lấy được danh sách dịch vụ. Có thể bạn chưa đăng nhập hoặc backend đang lỗi.');
-                console.error('Lỗi lấy danh sách dịch vụ:', err);
-            });
-    }, []);
 
-    // Lấy danh sách sampleType từ backend
-    useEffect(() => {
-        api.get('/service/sample-types')
-            .then(res => {
-                if (Array.isArray(res.data) && res.data.length > 0) {
-                    setSampleTypeOptions(res.data);
+                let defaultCollectionMethod = '';
+                if (testType === 'Hành chính' || (serviceType === 'Xét nghiệm ADN Thai nhi' && defaultRelationship === 'Thai nhi (Mẫu từ mẹ)')) {
+                    defaultCollectionMethod = 'Thu mẫu tại trung tâm';
                 }
-            })
-            .catch(err => {
-                // Nếu lỗi thì giữ nguyên danh sách mặc định
-                console.error('Không lấy được danh sách sampleType:', err);
-            });
-    }, []);
 
-    // Hàm tính tuổi chính xác (tính cả tháng và ngày)
-    const calculateAge = (dob) => {
-        if (!dob) return null;
-        const birthDate = new Date(dob);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        return age;
+
+                let defaultGender = '';
+                if (defaultRelationship === 'Cha' || defaultRelationship === 'Ông' || defaultRelationship === 'Cha nghi vấn') {
+                    defaultGender = 'Nam';
+                } else if (defaultRelationship === 'Mẹ' || defaultRelationship === 'Bà' || defaultRelationship === 'Thai nhi (Mẫu từ mẹ)') {
+                    defaultGender = 'Nữ';
+                }
+
+                if (existingParticipant) {
+                    return {
+                        ...existingParticipant,
+                        gender: existingParticipant.gender || defaultGender,
+                        collectionMethod: (testType === 'Hành chính' || (serviceType === 'Xét nghiệm ADN Thai nhi' && existingParticipant.relationship === 'Thai nhi (Mẫu từ mẹ)'))
+                            ? 'Thu mẫu tại trung tâm'
+                            : (existingParticipant.collectionMethod || ''),
+                        relationship: relationshipOptions.includes(existingParticipant.relationship)
+                            ? existingParticipant.relationship
+                            : defaultRelationship,
+                        personalId: existingParticipant.personalId || '',
+                        address: existingParticipant.address || '',
+                        relationToRegistrant: existingParticipant.relationToRegistrant || '',
+                        fullName: existingParticipant.fullName || '',
+                        dob: existingParticipant.dob || '',
+                        sampleType: existingParticipant.sampleType || '',
+                    };
+                } else {
+                    const baseParticipant = {
+                        fullName: '',
+                        gender: defaultGender,
+                        dob: '',
+                        relationship: defaultRelationship,
+                        collectionMethod: defaultCollectionMethod,
+                        sampleType: '',
+                    };
+
+                    if (testType === 'Hành chính') {
+                        return {
+                            ...baseParticipant,
+                            personalId: '',
+                            address: '',
+                            relationToRegistrant: '',
+                        };
+                    } else {
+                        return baseParticipant;
+                    }
+                }
+            });
+            return newParticipants;
+        });
+    }, [numSamples, testType, serviceType, getRelationshipOptions, initialBookingData]);
+
+
+    const calculateAge = (dobYear) => {
+        if (!dobYear) return null;
+        const currentYear = new Date().getFullYear();
+        return currentYear - parseInt(dobYear);
     };
 
     const handleParticipantChange = (index, field, value) => {
@@ -263,84 +166,15 @@ export default function BookingCreate() {
         setParticipants(updatedParticipants);
     };
 
-    // Sửa handleServiceChange để lưu lại các trường
-    const handleServiceNameChange = (e) => {
-        const name = e.target.value;
-        setServiceName(name);
-        setServiceType('');
-        setTypeSample('');
-    };
-
-    const handleServiceTypeChange = (e) => {
-        const type = e.target.value;
-        setServiceType(type);
-        setTypeSample('');
-    };
-
-    const handleTypeSampleChange = (e) => {
-        setTypeSample(e.target.value);
-    };
-
-    // Khi thay đổi dropdown địa chỉ
-    const handleLocationChange = (index, field, value) => {
-        const updated = [...locationSelections];
-        updated[index] = {
-            ...updated[index],
-            [field]: value,
-            // Reset các trường sau nếu thay đổi trường trước
-            ...(field === 'province' ? { district: '', ward: '' } : {}),
-            ...(field === 'district' ? { ward: '' } : {})
-        };
-        setLocationSelections(updated);
-        // Ghép lại thành chuỗi địa chỉ
-        const province = updated[index].province;
-        const district = updated[index].district;
-        const ward = updated[index].ward;
-        const address = [ward, district, province].filter(Boolean).join(', ');
-        handleParticipantChange(index, 'address', address);
-    };
-
-    // Khi thay đổi số lượng participant, đồng bộ state locationSelections
-    useEffect(() => {
-        setLocationSelections(prev => {
-            const arr = [...prev];
-            while (arr.length < numSamples) arr.push({ province: '', district: '', ward: '' });
-            return arr.slice(0, numSamples);
-        });
-    }, [numSamples]);
-
-    // Khi thay đổi input số nhà/ấp, đường
-    const handleAddressDetailChange = (index, value) => {
-        const updated = [...addressDetails];
-        updated[index] = value;
-        setAddressDetails(updated);
-        // Ghép lại thành chuỗi địa chỉ
-        const province = locationSelections[index]?.province;
-        const district = locationSelections[index]?.district;
-        const ward = locationSelections[index]?.ward;
-        const detail = value;
-        const address = [detail, ward, district, province].filter(Boolean).join(', ');
-        handleParticipantChange(index, 'address', address);
-    };
-
-    // Khi thay đổi số lượng participant, đồng bộ state addressDetails
-    useEffect(() => {
-        setAddressDetails(prev => {
-            const arr = [...prev];
-            while (arr.length < numSamples) arr.push('');
-            return arr.slice(0, numSamples);
-        });
-    }, [numSamples]);
-
     const handleSubmitBooking = (e) => {
         e.preventDefault();
 
-        if (!serviceName || !appointmentDate || !resultTime) {
+        if (!serviceType || !testType || !appointmentDate || !resultTime) {
             alert('Vui lòng điền đầy đủ các thông tin bắt buộc.');
             return;
         }
 
-        if (serviceName === 'Thai nhi (không xâm lấn)') {
+        if (serviceType === 'Xét nghiệm ADN Thai nhi') {
             const fetalSamples = participants.filter(p => p.relationship === 'Thai nhi (Mẫu từ mẹ)').length;
             const allegedFatherSamples = participants.filter(p => p.relationship === 'Cha nghi vấn').length;
 
@@ -356,7 +190,7 @@ export default function BookingCreate() {
                 alert('Số lượng mẫu và quan hệ của người tham gia không khớp. Vui lòng kiểm tra lại.');
                 return;
             }
-        } else if (serviceName === 'Xét nghiệm anh em ruột') {
+        } else if (serviceType === 'Xét nghiệm ADN Anh em ruột') {
             const hasMother = participants.some(p => p.relationship === 'Mẹ (tùy chọn)');
             if (hasMother && numSamples < 3) {
                 alert('Khi xét nghiệm "Anh em ruột" có bao gồm "Mẹ (tùy chọn)", số mẫu phải là 3.');
@@ -374,11 +208,11 @@ export default function BookingCreate() {
         }
 
         const allParticipantsFilled = participants.every(p => {
-            const shouldRequirePersonalInfo = !(serviceName === 'Xét nghiệm anh em ruột' && p.relationship === 'Mẹ (tùy chọn)');
+            const shouldRequirePersonalInfo = !(serviceType === 'Xét nghiệm ADN Anh em ruột' && p.relationship === 'Mẹ (tùy chọn)');
 
             let commonRequiredFieldsFilled = true;
 
-            const isSampleTypeRequired = !(serviceName === 'Thai nhi (không xâm lấn)' && p.relationship === 'Thai nhi (Mẫu từ mẹ)');
+            const isSampleTypeRequired = !(serviceType === 'Xét nghiệm ADN Thai nhi' && p.relationship === 'Thai nhi (Mẫu từ mẹ)');
 
             if (shouldRequirePersonalInfo) {
                 commonRequiredFieldsFilled = p.relationship && p.fullName && p.gender && p.dob && p.collectionMethod && (isSampleTypeRequired ? p.sampleType : true);
@@ -390,7 +224,7 @@ export default function BookingCreate() {
                 return false;
             }
 
-            if (serviceName === 'Thai nhi (không xâm lấn)' && p.relationship === 'Thai nhi (Mẫu từ mẹ)') {
+            if (testType === 'Hành chính' && shouldRequirePersonalInfo) {
                 const age = calculateAge(p.dob);
                 const personalIdConditionMet = (age !== null && age < 14) || (p.personalId && age >= 14);
 
@@ -406,33 +240,18 @@ export default function BookingCreate() {
             return;
         }
 
-        // Chuẩn hóa participants cho đúng backend
-        const formattedParticipants = participants.map(p => ({
-            fullName: p.fullName,
-            gender: p.gender,
-            dateOfBirth: p.dob,
-            relationshipToCustomer: p.relationship,
-            identityNumber: p.personalId,
-            address: p.address,
-            typeOfCollection: p.collectionMethod,
-            sampleType: p.sampleType
-        }));
-
-        const bookingDetailsData = {
-            serviceName: serviceName,
-            serviceType: serviceType,
-            numSamples: numSamples,
-            testType: serviceType,
-            typeSample: typeSample,
-            appointmentDate: appointmentDate,
-            resultTime: resultTime,
-            notes: notes,
-            participants: formattedParticipants
+        const bookingData = {
+            serviceType,
+            numSamples,
+            testType,
+            appointmentDate,
+            notes,
+            resultTime,
+            participants,
+            registrantId: user.id
         };
-        console.log('serviceName state:', serviceName);
-        console.log('bookingDetailsData:', bookingDetailsData);
-        // Chỉ chuyển sang trang xác nhận, KHÔNG gọi API
-        navigate('/booking-details', { state: { bookingData: bookingDetailsData } });
+
+        navigate('/booking-details', { state: { bookingData } });
     };
 
     if (authLoading || !user) {
@@ -451,26 +270,34 @@ export default function BookingCreate() {
                     <h2>Tạo Lịch Hẹn Mới</h2>
                     <p>Vui lòng điền thông tin dưới đây để đặt lịch xét nghiệm ADN.</p>
 
-                    {serviceListError ? (
-                        <div style={{color: 'red', marginBottom: 8}}>{serviceListError}</div>
-                    ) : (
-                        <div className="form-group">
-                            <label htmlFor="serviceName">Loại dịch vụ:</label>
-                            <select
-                                id="serviceName"
-                                value={serviceName}
-                                onChange={handleServiceNameChange}
-                                required
-                            >
-                                <option value="">Chọn loại dịch vụ</option>
-                                {uniqueServiceNames.map((name, idx) => (
-                                    <option key={name || idx} value={name}>{name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
+                    <div className="form-group">
+                        <label htmlFor="serviceType">Loại dịch vụ:</label>
+                        <select
+                            id="serviceType"
+                            value={serviceType}
+                            onChange={(e) => {
+                                const selectedService = e.target.value;
+                                setServiceType(selectedService);
+                                // Thay đổi logic numSamples cho Xét nghiệm ADN Thai nhi
+                                if (selectedService === 'Xét nghiệm ADN Thai nhi') {
+                                    setNumSamples(3); // Mặc định 1 thai nhi + 2 cha nghi vấn
+                                } else if (selectedService === 'Xét nghiệm ADN Anh em ruột') {
+                                    setNumSamples(2);
+                                } else {
+                                    setNumSamples(2);
+                                }
+                                setTestType('');
+                            }}
+                            required
+                        >
+                            <option value="">Chọn loại dịch vụ</option>
+                            {serviceOptions.map((service, index) => (
+                                <option key={index} value={service}>{service}</option>
+                            ))}
+                        </select>
+                    </div>
 
-                    {serviceName === 'Thai nhi (không xâm lấn)' ? (
+                    {serviceType === 'Xét nghiệm ADN Thai nhi' ? (
                         <div className="form-group">
                             <label htmlFor="numSamples">Số mẫu cần xét nghiệm:</label>
                             <input
@@ -494,43 +321,23 @@ export default function BookingCreate() {
                                 min="2"
                                 required
                             />
-                            {serviceName === 'Xét nghiệm anh em ruột' && (
+                            {serviceType === 'Xét nghiệm ADN Anh em ruột' && (
                                 <small>Nếu có mẹ (tùy chọn), vui lòng chọn 3 mẫu.</small>
                             )}
                         </div>
                     )}
 
                     <div className="form-group">
-                        <label htmlFor="serviceType">Loại xét nghiệm:</label>
+                        <label htmlFor="testType">Loại xét nghiệm:</label>
                         <select
-                            id="serviceType"
-                            value={serviceType}
-                            onChange={handleServiceTypeChange}
+                            id="testType"
+                            value={testType}
+                            onChange={(e) => setTestType(e.target.value)}
                             required
-                            disabled={!serviceName}
                         >
                             <option value="">Chọn loại xét nghiệm</option>
-                            {Array.from(new Set(
-                                serviceList.filter(s => s.serviceName === serviceName).map(s => s.serviceType)
-                            )).map((type, idx) => (
-                                <option key={type || idx} value={type}>{type}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="typeSample">Mẫu:</label>
-                        <select
-                            id="typeSample"
-                            value={typeSample}
-                            onChange={handleTypeSampleChange}
-                            required
-                            disabled={!serviceType}
-                        >
-                            <option value="">Chọn loại mẫu</option>
-                            {sampleTypeOptions.map((sample, idx) => (
-                                <option key={sample || idx} value={sample}>{sample}</option>
-                            ))}
+                            <option value="Dân sự">Dân sự</option>
+                            <option value="Hành chính">Hành chính</option>
                         </select>
                     </div>
 
@@ -548,8 +355,8 @@ export default function BookingCreate() {
 
                     <div className="form-group">
                         <label htmlFor="resultTime">Thời gian nhận kết quả:</label>
-                        {serviceName === 'Thai nhi (không xâm lấn)' ? (
-                            <p className="static-option">{resultTime || 'Tiêu chuẩn (7-10 ngày làm việc)'}</p>
+                        {serviceType === 'Xét nghiệm ADN Thai nhi' ? (
+                            <p className="static-option">Tiêu chuẩn (7-10 ngày làm việc)</p>
                         ) : (
                             <select
                                 id="resultTime"
@@ -558,16 +365,8 @@ export default function BookingCreate() {
                                 required
                             >
                                 <option value="">Chọn thời gian nhận kết quả</option>
-                                {Array.from(new Set(
-                                    serviceList
-                                        .filter(s =>
-                                            s.serviceName === serviceName &&
-                                            s.serviceType === serviceType
-                                        )
-                                        .map(s => s.packageType)
-                                )).map((pkg, idx) => (
-                                    <option key={pkg || idx} value={pkg}>{pkg}</option>
-                                ))}
+                                <option value="Tiêu chuẩn (2-5 ngày)">Tiêu chuẩn (2-5 ngày)</option>
+                                <option value="Lấy nhanh (6-24 tiếng)">Lấy nhanh (6-24 tiếng)</option>
                             </select>
                         )}
                     </div>
@@ -589,10 +388,10 @@ export default function BookingCreate() {
                             const currentParticipant = participants[index] || {};
                             const participantAge = calculateAge(currentParticipant.dob);
 
-                            const isPersonalInfoRequired = !(serviceName === 'Xét nghiệm anh em ruột' && currentParticipant.relationship === 'Mẹ (tùy chọn)');
-                            const hideSampleType = serviceName === 'Thai Nhi' && currentParticipant.relationship === 'Thai nhi (Mẫu từ mẹ)';
+                            const isPersonalInfoRequired = !(serviceType === 'Xét nghiệm ADN Anh em ruột' && currentParticipant.relationship === 'Mẹ (tùy chọn)');
+                            const hideSampleType = serviceType === 'Xét nghiệm ADN Thai nhi' && currentParticipant.relationship === 'Thai nhi (Mẫu từ mẹ)';
 
-                            const isCollectionMethodFixedToCenter = serviceName === 'Thai nhi (không xâm lấn)' && currentParticipant.relationship === 'Thai nhi (Mẫu từ mẹ)';
+                            const isCollectionMethodFixedToCenter = testType === 'Hành chính' || (serviceType === 'Xét nghiệm ADN Thai nhi' && currentParticipant.relationship === 'Thai nhi (Mẫu từ mẹ)');
 
                             return (
                                 <div key={index} className="participant-form">
@@ -605,10 +404,12 @@ export default function BookingCreate() {
                                                 value={currentParticipant.relationship || ''}
                                                 onChange={(e) => handleParticipantChange(index, 'relationship', e.target.value)}
                                                 required
+                                                // Disable chọn quan hệ nếu là thai nhi và đã được gán mặc định
+                                                disabled={serviceType === 'Xét nghiệm ADN Thai nhi' && (index === 0 || (index > 0 && currentParticipant.relationship === 'Cha nghi vấn'))}
                                             >
                                                 <option value="">Chọn quan hệ</option>
                                                 {getRelationshipOptions().map((rel, relIndex) => (
-                                                    <option key={rel} value={rel}>{rel}</option>
+                                                    <option key={relIndex} value={rel}>{rel}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -642,12 +443,13 @@ export default function BookingCreate() {
                                                 </select>
                                             </div>
                                             <div className="form-group">
-                                                <label>Ngày sinh:</label>
+                                                <label>Năm sinh:</label>
                                                 <input
-                                                    type="date"
-                                                    value={currentParticipant.dob ? currentParticipant.dob.slice(0, 10) : ''}
-                                                    onChange={(e) => handleParticipantChange(index, 'dob', e.target.value)}
-                                                    max={today}
+                                                    type="number"
+                                                    value={currentParticipant.dob || ''}
+                                                    onChange={(e) => handleParticipantChange(index, 'dob', parseInt(e.target.value) || '')}
+                                                    min="1900"
+                                                    max={new Date().getFullYear()}
                                                     required={true}
                                                 />
                                             </div>
@@ -656,7 +458,7 @@ export default function BookingCreate() {
                                         <p>**(Thông tin cá nhân không bắt buộc cho mẫu này)**</p>
                                     )}
 
-                                    {serviceType === 'Hành chính' && isPersonalInfoRequired && (
+                                    {testType === 'Hành chính' && isPersonalInfoRequired && (
                                         <>
                                             {participantAge === null || participantAge >= 14 ? (
                                                 <div className="form-group">
@@ -683,48 +485,10 @@ export default function BookingCreate() {
 
                                             <div className="form-group">
                                                 <label>Địa chỉ:</label>
-                                                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                                    <select
-                                                        value={locationSelections[index]?.province || ''}
-                                                        onChange={e => handleLocationChange(index, 'province', e.target.value)}
-                                                        required={isPersonalInfoRequired}
-                                                    >
-                                                        <option value="">Chọn tỉnh/thành</option>
-                                                        {(vietnamLocations.provinces || []).map((prov, i) => (
-                                                            <option key={prov.name} value={prov.name}>{prov.name}</option>
-                                                        ))}
-                                                    </select>
-                                                    <select
-                                                        value={locationSelections[index]?.district || ''}
-                                                        onChange={e => handleLocationChange(index, 'district', e.target.value)}
-                                                        required={isPersonalInfoRequired}
-                                                        disabled={!locationSelections[index]?.province}
-                                                    >
-                                                        <option value="">Chọn quận/huyện</option>
-                                                        {(vietnamLocations.provinces.find(p => p.name === locationSelections[index]?.province)?.districts || []).map((dist, i) => (
-                                                            <option key={dist.name} value={dist.name}>{dist.name}</option>
-                                                        ))}
-                                                    </select>
-                                                    <select
-                                                        value={locationSelections[index]?.ward || ''}
-                                                        onChange={e => handleLocationChange(index, 'ward', e.target.value)}
-                                                        required={isPersonalInfoRequired}
-                                                        disabled={!locationSelections[index]?.district}
-                                                    >
-                                                        <option value="">Chọn phường/xã</option>
-                                                        {(vietnamLocations.provinces.find(p => p.name === locationSelections[index]?.province)?.districts.find(d => d.name === locationSelections[index]?.district)?.communes || []).map((ward, i) => (
-                                                            <option key={ward.name} value={ward.name}>{ward.name}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Số nhà/ấp, đường:</label>
                                                 <input
                                                     type="text"
-                                                    value={addressDetails[index] || ''}
-                                                    onChange={e => handleAddressDetailChange(index, e.target.value)}
-                                                    placeholder="Số nhà, ấp, đường..."
+                                                    value={currentParticipant.address || ''}
+                                                    onChange={(e) => handleParticipantChange(index, 'address', e.target.value)}
                                                     required={isPersonalInfoRequired}
                                                 />
                                             </div>
@@ -750,7 +514,7 @@ export default function BookingCreate() {
                                             >
                                                 <option value="">Chọn loại mẫu</option>
                                                 {sampleTypeOptions.map((sample, sampleIndex) => (
-                                                    <option key={sample} value={sample}>{sample}</option>
+                                                    <option key={sampleIndex} value={sample}>{sample}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -771,7 +535,7 @@ export default function BookingCreate() {
                                             >
                                                 <option value="">Chọn phương pháp thu mẫu</option>
                                                 {collectionMethodOptions.map((method, methodIndex) => (
-                                                    <option key={method} value={method}>{method}</option>
+                                                    <option key={methodIndex} value={method}>{method}</option>
                                                 ))}
                                             </select>
                                         </div>

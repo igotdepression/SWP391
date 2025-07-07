@@ -5,8 +5,6 @@ import com.dna.dto.BookingRequestDTO; // Có thể cần nếu bạn có phươn
 import com.dna.dto.BookingResponseDTO;
 import com.dna.entity.Booking;
 import com.dna.entity.User; // Import User nếu entity Booking có quan hệ với User
-import com.dna.entity.Participant;
-import com.dna.entity.Sample;
 import com.dna.repository.BookingRepository;
 import com.dna.repository.UserRepository; // Có thể cần nếu bạn tạo booking và cần tìm User
 import com.dna.repository.ServiceRepository; // Có thể cần nếu bạn tạo booking và cần tìm Service
@@ -40,15 +38,20 @@ public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
 
-    @Autowired(required = false) 
+    @Autowired(required = false) // Chỉ cần nếu bạn dùng trong các phương thức cũ hoặc tạo mới booking
     private UserRepository userRepository;
-    @Autowired
-    private ServiceRepository serviceRepository; 
+
+    @Autowired(required = false) // Chỉ cần nếu bạn dùng trong các phương thức cũ hoặc tạo mới booking
+    private ServiceRepository serviceRepository; // Giả định bạn có ServiceRepository
+
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+    // --- CÁC PHƯƠNG THỨC CŨ (VÍ DỤ) ---
+    // Phương thức tạo booking (ví dụ dựa trên BookingRequestDTO)
     @Transactional
     public Booking createBooking(BookingRequestDTO bookingRequestDTO) {
+        // Giả định bạn có logic tìm User và Service
         User user = userRepository.findById(bookingRequestDTO.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + bookingRequestDTO.getUserId()));
         com.dna.entity.ServiceEntity service = serviceRepository.findById(bookingRequestDTO.getServiceId())
@@ -57,40 +60,21 @@ public class BookingService {
         Booking booking = new Booking();
         booking.setUser(user);
         booking.setService(service);
-        booking.setBookingDate(LocalDate.now()); 
+        booking.setBookingDate(LocalDate.now()); // Hoặc từ DTO
         booking.setAppointmentDate(bookingRequestDTO.getAppointmentDate().toLocalDate());
-        booking.setStatus("PENDING"); 
+        booking.setStatus("PENDING"); // Trạng thái mặc định khi tạo mới
+        // Calculate total price based on service price and number of participants
         BigDecimal totalPrice = service.getPrice().multiply(BigDecimal.valueOf(bookingRequestDTO.getParticipants().size()));
         booking.setTotalPrice(totalPrice);
-        booking.setUpdateDate(LocalDate.now()); 
-        booking.setNumberSample(bookingRequestDTO.getNumberSample());
+        booking.setUpdateDate(LocalDate.now()); // Ngày cập nhật ban đầu
 
-        // Map participants
-        List<Participant> participants = bookingRequestDTO.getParticipants().stream().map(dto -> {
-            Participant p = new Participant();
-            p.setFullName(dto.getFullName());
-            p.setDateOfBirth(dto.getDateOfBirth());
-            p.setGender(dto.getGender());
-            p.setRelationshipToCustomer(dto.getRelationshipToCustomer());
-            p.setIdentityNumber(dto.getIdentityNumber());
-            p.setAddress(dto.getAddress());
-            p.setCollectionMethod(dto.getTypeOfCollection());
-            // Map Sample cho participant
-            Sample sample = new Sample();
-            sample.setSampleType(dto.getSampleType());
-            System.out.println("Type of collection: " + dto.getTypeOfCollection());
-            sample.setTypeOfCollection(dto.getTypeOfCollection());
-            sample.setReceivedDate(null); // hoặc LocalDate.now() nếu muốn set ngày nhận mẫu
-            sample.setParticipant(p); // gán participant cho sample
-            sample.setBooking(booking); // gán booking cho sample để bookingID không null
-            p.setSamples(List.of(sample));
-            return p;
-        }).collect(Collectors.toList());
-        booking.setParticipants(participants);
-
+        // Các trường khác nếu có trong DTO và entity
+        // booking.setTestType(bookingRequestDTO.getTestType()); // Nếu có trường testType riêng
+        
         return bookingRepository.save(booking);
     }
 
+    // Phương thức lấy booking theo ID (có thể dùng cho các vai trò khác)
     @Transactional(readOnly = true)
     public Optional<Booking> getBookingById(Integer id) {
         return bookingRepository.findById(id);
@@ -104,7 +88,8 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
 
-    // Khách hàng theo dõi trạng thái booking của họ.
+    // Phương thức từ cuộc trò chuyện trước: Khách hàng theo dõi trạng thái booking của họ.
+    // Đã có logic kiểm tra quyền CUSTOMER.
     @Transactional(readOnly = true)
     public Optional<BookingResponseDTO> getBookingStatusForCustomer(Integer bookingId, Integer currentUserId) {
         Booking booking = bookingRepository.findById(bookingId)
@@ -128,6 +113,7 @@ public class BookingService {
     }
 
 
+    // --- CÁC PHƯƠNG THỨC MỚI DÀNH CHO STAFF (ĐÃ THÊM TRONG LẦN TRƯỚC) ---
 
     // Lấy tất cả bookings cho Staff
     @Transactional(readOnly = true)
@@ -154,7 +140,7 @@ public class BookingService {
         return new BookingResponseDTO(updatedBooking);
     }
 
-    // Cập nhật ghi chú 
+    // Cập nhật ghi chú chuyên gia
     @Transactional
     public BookingResponseDTO updateExpertNotes(Integer bookingId, String expertNotes) {
         log.info("Attempting to update expert notes for booking ID {}.", bookingId);
@@ -204,14 +190,5 @@ public class BookingService {
             log.error("Could not store file for booking ID {}. Error: {}", bookingId, ex.getMessage(), ex);
             throw new IOException("Could not store file " + file.getOriginalFilename() + ". Please try again!", ex);
         }
-    }
-
-    @Transactional
-    public void updateStatus(Integer bookingId, String newStatus) {
-        Booking booking = bookingRepository.findById(bookingId)
-            .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
-        booking.setStatus(newStatus);
-        booking.setUpdateDate(LocalDate.now());
-        bookingRepository.save(booking);
     }
 }

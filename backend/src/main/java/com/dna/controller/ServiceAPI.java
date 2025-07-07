@@ -1,10 +1,8 @@
 package com.dna.controller;
 
 import com.dna.service.ServiceEntityService;
-import com.dna.service.SurchargeService;
-import com.dna.entity.SurchargePrice;
 
-import org.springframework.web.bind.annotation.RequestBody;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,9 +28,7 @@ public class ServiceAPI {
     @Autowired
     ServiceEntityService serviceManagementService;
 
-    @Autowired
-    SurchargeService surchargeService;
-
+    @PreAuthorize("hasRole('CUSTOMER') or hasRole('STAFF') or hasRole('MANAGER') or hasRole('ADMIN')")
     @GetMapping("/listService")
     public ResponseEntity<List<ServiceEntity>> getService(){
         List<ServiceEntity> services = serviceManagementService.getAllServices();
@@ -59,14 +55,5 @@ public class ServiceAPI {
         return ResponseEntity.ok("Deleted");
     }
 
-    @GetMapping("/sample-types")
-    public ResponseEntity<List<String>> getSampleTypes() {
-        List<SurchargePrice> surcharges = surchargeService.findAll();
-        List<String> sampleTypes = surcharges.stream()
-            .map(SurchargePrice::getSampleType)
-            .distinct()
-            .toList();
-        return ResponseEntity.ok(sampleTypes);
-    }
 
 }

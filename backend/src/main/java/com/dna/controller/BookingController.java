@@ -3,7 +3,9 @@ package com.dna.controller;
 
 import com.dna.dto.BookingRequestDTO;
 import com.dna.dto.BookingResponseDTO;
-import com.dna.security.CustomUserDetails; 
+// import com.bloodline.bloodline_backend.model.User; // Có thể không cần import này nữa nếu chỉ lấy từ principal
+// import com.bloodline.bloodline_backend.repository.UserRepository; // Có thể không cần import này nữa
+import com.dna.security.CustomUserDetails; // <-- ĐẢM BẢO CÓ DÒNG IMPORT NÀY
 import com.dna.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,11 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+// import org.springframework.security.core.userdetails.UsernameNotFoundException; // Có thể không cần import này nữa
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -24,6 +26,8 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+    // @Autowired // Có thể bỏ @Autowired này nếu không cần UserRepository trực tiếp ở đây nữa
+    // private UserRepository userRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingRequestDTO request) {
@@ -43,6 +47,18 @@ public class BookingController {
         return bookingService.getBookingById(bookingId)
                 .map(booking -> new ResponseEntity<>(new BookingResponseDTO(booking), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping("/{bookingId}/status")
+    public ResponseEntity<?> updateBookingStatus(@PathVariable Integer bookingId, @RequestParam String status) {
+        try {
+            bookingService.updateBookingStatus(bookingId, status);
+            return new ResponseEntity<>("Booking status updated successfully.", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error updating booking status: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/user/{userId}")
@@ -95,18 +111,5 @@ public class BookingController {
             // Log lỗi chi tiết
             return new ResponseEntity<>("Error retrieving booking status: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @GetMapping("/staff/all")
-    public ResponseEntity<List<BookingResponseDTO>> getAllBookingsForStaff() {
-        List<BookingResponseDTO> bookings = bookingService.getAllBookingsForStaff();
-        return ResponseEntity.ok(bookings);
-    }
-
-    @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateBookingStatus(@PathVariable Integer id, @RequestBody Map<String, String> body) {
-        String newStatus = body.get("status");
-        bookingService.updateStatus(id, newStatus);
-        return ResponseEntity.ok().build();
     }
 }
