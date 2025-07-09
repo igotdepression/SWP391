@@ -25,88 +25,6 @@ const FatherChildService = () => {
         }
     }, [searchParams]);
 
-    const pricingPlans = [
-        {
-            type: "Tiêu chuẩn",
-            timeFrame: "3 - 5 ngày",
-            civilPrice: "2.500.000",
-            legalPrice: "3.500.000",
-            extraSampleFee: "1.250.000",
-            features: [
-                "Xét nghiệm 20 markers",
-                "Báo cáo chi tiết",
-                "Tư vấn chuyên sâu",
-                "Lấy mẫu tại nhà/ trung tâm (ADN Dân sự)"
-            ],
-            popular: true
-        },
-        {
-            type: "Làm nhanh",
-            timeFrame: "6 - 24 tiếng",
-            civilPrice: "5.000.000",
-            legalPrice: "6.000.000",
-            extraSampleFee: "2.500.000",
-            features: [
-                "Xét nghiệm 25 markers",
-                "Báo cáo chi tiết + phân tích",
-                "Tư vấn chuyên sâu",
-                "Lấy mẫu tại trung tâm",
-                "Xử lý ưu tiên"
-            ]
-        }
-    ];
-
-    const fatherChildTypes = [
-        {
-            type: "Xét nghiệm tiền sinh",
-            description: "Xét nghiệm ADN thai nhi trong bụng mẹ",
-            icon: "🤰",
-            minWeeks: "9 tuần tuổi thai"
-        },
-        {
-            type: "Xét nghiệm sau sinh",
-            description: "Xét nghiệm sau khi bé đã chào đời",
-            icon: "👶",
-            minWeeks: "Ngay sau sinh"
-        }
-    ];
-
-    // Cập nhật sampleRequirements để bao gồm cuống rốn
-    const sampleRequirements = [
-        {
-            title: "Mẫu cha",
-            samples: ["Nước bọt", "Tóc có chân tóc", "Máu", "Móng tay", "Cuống rốn (nếu có)"]
-        },
-        {
-            title: "Mẫu con",
-            samples: ["Nước bọt", "Tóc có chân tóc", "Máu", "Móng tay", "Cuống rốn (trẻ sơ sinh)"]
-        }
-    ];
-
-    const handleBooking = (planType, serviceType) => {
-        // Tìm thông tin gói được chọn
-        const selectedPlan = pricingPlans.find(plan => plan.type === planType);
-
-        // Xác định giá dựa trên loại dịch vụ
-        const price = serviceType === 'civil' ? selectedPlan?.civilPrice : selectedPlan?.legalPrice;
-        const serviceTypeName = serviceType === 'civil' ? 'Dân sự' : 'Hành chính';
-
-        // Chuyển hướng đến booking-create với state
-        navigate('/booking-create', {
-            state: {
-                serviceInfo: {
-                    serviceName: 'Xét nghiệm cha con',
-                    serviceType: serviceTypeName,
-                    packageType: planType,
-                    price: price,
-                    extraSampleFee: selectedPlan?.extraSampleFee,
-                    timeFrame: selectedPlan?.timeFrame,
-                    features: selectedPlan?.features
-                }
-            }
-        });
-    };
-
     // Hàm để thay đổi tab và cập nhật URL
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -119,7 +37,7 @@ const FatherChildService = () => {
             {/* Hero Section */}
             <section className="service-hero">
                 <div className="hero-background-container">
-                    <img src="https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2022/10/7/adn-1059-1665111664462-16651116645482069003285.jpg" className="hero-background" alt="Hero Background" />
+                    <img src="https://bestselfatlanta.com/wp-content/uploads/2017/05/father-son.jpg" className="hero-background" alt="Hero Background" />
                 </div>
                 <div className="container">
                     <div className="hero-content">
