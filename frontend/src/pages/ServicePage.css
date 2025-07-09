@@ -101,7 +101,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 1;   
+  opacity: 0.3;
   display: block;
 }
 
@@ -570,7 +570,7 @@
   border-radius: 2px;
 }
 
-.comparison-table {
+.service-comparison-table {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 2px;
@@ -678,8 +678,8 @@
     font-size: 1.6rem;
   }
   
-  .comparison-table {
-    grid-template-columns: 1fr;
+  .service-comparison-table {
+    grid-template-columns: 1fr; /* Chỉ 1 cột cho mobile */
   }
   
   .comparison-cell {
