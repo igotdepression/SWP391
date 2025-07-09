@@ -15,6 +15,16 @@ import About from './pages/About';
 import DoctorDetail from './pages/DoctorDetail';
 import ServicePage from './pages/ServicePage';
 
+// Import các trang service
+import FatherChild from './pages/Service/Father-child';
+import MotherChild from './pages/Service/Mother-child';
+import GrandfatherGrandchild from './pages/Service/Grandfather-grandchild';
+import GrandmotherGrandchild from './pages/Service/Grandmother-grandchild';
+import Siblings from './pages/Service/Siblings';
+import Prenatal from './pages/Service/Prenatal';
+import Civil from './pages/Service/Civil';
+import Legal from './pages/Service/Legal';
+
 
 // Protected Route component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -57,7 +67,7 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/home" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN', 'GUEST']}><HomePage /></ProtectedRoute>} />
           {/*<Route path="/personal-info" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><PersonalInfoPage /></ProtectedRoute>} /> */}
-          <Route path="/personal-info" element={<PersonalInfoPage  />} />
+          <Route path="/personal-info" element={<PersonalInfoPage />} />
           <Route path="/staff" element={<StaffPage />} />
           <Route path="/manager" element={<ManagerPage />} />
           <Route path="/admin" element={<Admin />} />
@@ -65,14 +75,24 @@ function App() {
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path='/booking-payment' element={<BookingPayment />} />
 
-          <Route path="/services" element={<ServicePage  />} />
+          <Route path="/services" element={<ServicePage />} />
+          {/* Các route cho các dịch vụ */}
+          <Route path="/services/father-child" element={<FatherChild />} />
+          <Route path="/services/mother-child" element={<MotherChild />} />
+          <Route path="/services/grandfather-grandchild" element={<GrandfatherGrandchild />} />
+          <Route path="/services/grandmother-grandchild" element={<GrandmotherGrandchild />} />
+          <Route path="/services/siblings" element={<Siblings />} />
+          <Route path="/services/prenatal" element={<Prenatal />} />
+          <Route path="/services/civil" element={<Civil />} />
+          <Route path="/services/legal" element={<Legal />} />
+
 
           {/* <Route path="/booking/create" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><BookingCreate /></ProtectedRoute>} /> Removed as booking functionality is removed */}
           <Route path="/about" element={<About />} />
           <Route path="/doctor/:doctorId" element={<DoctorDetail />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+        </Routes> 
       </Router>
     </AuthProvider>
   );

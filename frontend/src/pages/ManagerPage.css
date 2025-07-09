@@ -463,3 +463,324 @@ body {
     color: var(--light-text);
     flex-shrink: 0;
 }
+
+/* Success Rate Comparison Table */
+.success-rate-comparison {
+    margin-top: 50px;
+}
+
+.success-rate-comparison h4 {
+    color: #2d3748;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.success-table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+}
+
+.success-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr 1fr;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.success-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr 1fr;
+    border-bottom: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.success-row:last-child {
+    border-bottom: none;
+}
+
+.success-row:hover {
+    background: #f8fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.success-cell {
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.success-header .success-cell {
+    padding: 18px 20px;
+    font-size: 0.9rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Sample Type Column */
+.success-cell:first-child {
+    justify-content: flex-start;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+}
+
+.success-header .success-cell:first-child {
+    color: white;
+    font-weight: 700;
+}
+
+/* Success Rate Column with Progress Bar Effect */
+.success-cell:nth-child(2) {
+    position: relative;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.success-cell:nth-child(2)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(102, 126, 234, 0.1) 100%);
+    border-radius: 0 8px 8px 0;
+    transition: width 0.8s ease;
+    z-index: 1;
+}
+
+/* Progress bar widths based on success rates */
+.success-row.excellent .success-cell:nth-child(2)::before {
+    width: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(16, 185, 129, 0.15) 100%);
+}
+
+.success-row.good .success-cell:nth-child(2)::before {
+    width: 85%;
+    background: linear-gradient(90deg, transparent 0%, rgba(52, 168, 83, 0.12) 100%);
+}
+
+.success-row.fair .success-cell:nth-child(2)::before {
+    width: 70%;
+    background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.12) 100%);
+}
+
+.success-row.poor .success-cell:nth-child(2)::before {
+    width: 50%;
+    background: linear-gradient(90deg, transparent 0%, rgba(239, 68, 68, 0.12) 100%);
+}
+
+/* Row Background Colors */
+.success-row.excellent {
+    background: linear-gradient(135deg, #f0fff4 0%, #ecfdf5 100%);
+    border-left: 4px solid #10b981;
+}
+
+.success-row.good {
+    background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+    border-left: 4px solid #34a853;
+}
+
+.success-row.fair {
+    background: linear-gradient(135deg, #fef3cd 0%, #fde68a 100%);
+    border-left: 4px solid #f59e0b;
+}
+
+.success-row.poor {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    border-left: 4px solid #ef4444;
+}
+
+/* Success Rate Color Coding */
+.success-row.excellent .success-cell:nth-child(2) {
+    color: #059669;
+}
+
+.success-row.good .success-cell:nth-child(2) {
+    color: #16a34a;
+}
+
+.success-row.fair .success-cell:nth-child(2) {
+    color: #d97706;
+}
+
+.success-row.poor .success-cell:nth-child(2) {
+    color: #dc2626;
+}
+
+/* Time Column Styling */
+.success-cell:nth-child(3) {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+/* Cost Column Styling */
+.success-cell:nth-child(4) {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Add icons to success rates */
+.success-cell:nth-child(2)::after {
+    content: '';
+    margin-left: 8px;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.success-row.excellent .success-cell:nth-child(2)::after {
+    content: '🎯';
+}
+
+.success-row.good .success-cell:nth-child(2)::after {
+    content: '✅';
+}
+
+.success-row.fair .success-cell:nth-child(2)::after {
+    content: '⚠️';
+}
+
+.success-row.poor .success-cell:nth-child(2)::after {
+    content: '❌';
+}
+
+/* Table Header Icons */
+.success-header .success-cell:first-child::before {
+    content: '🧬 ';
+    margin-right: 8px;
+}
+
+.success-header .success-cell:nth-child(2)::before {
+    content: '📊 ';
+    margin-right: 8px;
+}
+
+.success-header .success-cell:nth-child(3)::before {
+    content: '⏱️ ';
+    margin-right: 8px;
+}
+
+.success-header .success-cell:nth-child(4)::before {
+    content: '💰 ';
+    margin-right: 8px;
+}
+
+/* Responsive Design for Success Table */
+@media (max-width: 768px) {
+    .success-header,
+    .success-row {
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        font-size: 0.85rem;
+    }
+    
+    .success-cell {
+        padding: 12px 8px;
+    }
+    
+    .success-header .success-cell {
+        padding: 15px 8px;
+    }
+    
+    .success-cell:first-child {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .success-table {
+        overflow-x: auto;
+    }
+    
+    .success-header,
+    .success-row {
+        min-width: 500px;
+        grid-template-columns: 140px 80px 100px 80px;
+    }
+    
+    .success-cell {
+        padding: 10px 6px;
+        font-size: 0.8rem;
+    }
+    
+    .success-header .success-cell {
+        padding: 12px 6px;
+        font-size: 0.75rem;
+    }
+    
+    /* Hide icons on very small screens */
+    .success-header .success-cell::before,
+    .success-cell:nth-child(2)::after {
+        display: none;
+    }
+}
+
+/* Table Animation */
+.success-row {
+    opacity: 0;
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+.success-row:nth-child(1) { animation-delay: 0.1s; }
+.success-row:nth-child(2) { animation-delay: 0.2s; }
+.success-row:nth-child(3) { animation-delay: 0.3s; }
+.success-row:nth-child(4) { animation-delay: 0.4s; }
+.success-row:nth-child(5) { animation-delay: 0.5s; }
+.success-row:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Table Summary Footer */
+.table-summary {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.table-summary h5 {
+    color: #2d3748;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.table-summary p {
+    color: #64748b;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.table-summary .highlight {
+    color: #667eea;
+    font-weight: 600;
+}
