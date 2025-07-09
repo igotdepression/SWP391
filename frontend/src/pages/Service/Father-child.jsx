@@ -435,7 +435,7 @@ const FatherChildService = () => {
                                                 <div className="sample-icon">💧</div>
                                                 <h5>Niêm mạc miệng</h5>
                                                 <p><strong>Độ thành công:</strong> 99%</p>
-                                                <p><strong>Cách lấy:</strong> Dùng cotton swab chà vào má trong 30 giây</p>
+                                                <p><strong>Cách lấy:</strong> Dùng tăm bông chà vào má trong 30 giây</p>
                                                 <p><strong>Ưu điểm:</strong> Dễ lấy, không đau, phù hợp mọi lứa tuổi</p>
                                                 <span className="price-tag">Không phụ phí</span>
                                             </div>
@@ -457,9 +457,9 @@ const FatherChildService = () => {
                                                 <div className="sample-icon">💇</div>
                                                 <h5>Tóc có chân tóc</h5>
                                                 <p><strong>Độ thành công:</strong> 85%</p>
-                                                <p><strong>Cách lấy:</strong> Nhổ 10-15 sợi tóc có đầy đủ chân tóc</p>
+                                                <p><strong>Cách lấy:</strong> Nhổ 5-7 sợi tóc có đầy đủ chân tóc</p>
                                                 <p><strong>Lưu ý:</strong> Tóc cắt không có giá trị</p>
-                                                <span className="price-tag extra">+500K VNĐ</span>
+                                                <span className="price-tag extra">+500.000 VNĐ</span>
                                             </div>
                                             <div className="sample-item-card">
                                                 <div className="sample-icon">💅</div>
@@ -467,7 +467,7 @@ const FatherChildService = () => {
                                                 <p><strong>Độ thành công:</strong> 75%</p>
                                                 <p><strong>Cách lấy:</strong> Cắt sát da, lấy 3-5 mảnh móng</p>
                                                 <p><strong>Lưu ý:</strong> Không sơn móng trước khi lấy</p>
-                                                <span className="price-tag extra">+500K VNĐ</span>
+                                                <span className="price-tag extra">+500.000 VNĐ</span>
                                             </div>
                                             <div className="sample-item-card">
                                                 <div className="sample-icon">🤱</div>
@@ -475,7 +475,7 @@ const FatherChildService = () => {
                                                 <p><strong>Độ thành công:</strong> 85%</p>
                                                 <p><strong>Cách lấy:</strong> Cắt đoạn cuống rốn 3-5cm sau sinh</p>
                                                 <p><strong>Ưu điểm:</strong> Mẫu lý tưởng cho trẻ sơ sinh</p>
-                                                <span className="price-tag extra">+500K VNĐ</span>
+                                                <span className="price-tag extra">+500.000 VNĐ</span>
                                             </div>
                                         </div>
                                     </div>
@@ -488,28 +488,28 @@ const FatherChildService = () => {
                                                 <h5>Dao cạo râu</h5>
                                                 <p><strong>Độ thành công:</strong> 60%</p>
                                                 <p><strong>Yêu cầu:</strong> Sử dụng trong 24h, bảo quản khô ráo</p>
-                                                <span className="price-tag special">+2M VNĐ</span>
+                                                <span className="price-tag special">+2.000.000 VNĐ</span>
                                             </div>
                                             <div className="sample-item-card">
                                                 <div className="sample-icon">🚬</div>
                                                 <h5>Đầu lọc thuốc lá</h5>
                                                 <p><strong>Độ thành công:</strong> 50%</p>
                                                 <p><strong>Yêu cầu:</strong> Hút ít nhất 1/3 điếu thuốc</p>
-                                                <span className="price-tag special">+2M VNĐ</span>
+                                                <span className="price-tag special">+2.000.000 VNĐ</span>
                                             </div>
                                             <div className="sample-item-card">
                                                 <div className="sample-icon">🦷</div>
                                                 <h5>Bàn chải đánh răng</h5>
                                                 <p><strong>Độ thành công:</strong> 65%</p>
                                                 <p><strong>Yêu cầu:</strong> Sử dụng ít nhất 1 tháng</p>
-                                                <span className="price-tag special">+2M VNĐ</span>
+                                                <span className="price-tag special">+2.000.000 VNĐ</span>
                                             </div>
                                             <div className="sample-item-card">
                                                 <div className="sample-icon">🩺</div>
                                                 <h5>Mẫu tinh trùng</h5>
                                                 <p><strong>Độ thành công:</strong> 90%</p>
                                                 <p><strong>Yêu cầu:</strong> Bảo quản lạnh, gửi trong 24h</p>
-                                                <span className="price-tag special">+2M VNĐ</span>
+                                                <span className="price-tag special">+2.000.000 VNĐ</span>
                                             </div>
                                         </div>
                                     </div>
@@ -524,15 +524,11 @@ const FatherChildService = () => {
                                         </div>
                                         <div className="note-item">
                                             <span className="note-icon">💰</span>
-                                            <p>Nếu 2 mẫu đều đặc biệt, chỉ cộng thêm 500K VNĐ (thay vì 4M VNĐ)</p>
+                                            <p>Nếu 2 mẫu đều đặc biệt, cộng thêm 500.000 VNĐ</p>
                                         </div>
                                         <div className="note-item">
                                             <span className="note-icon">🔄</span>
                                             <p>Xét nghiệm lại miễn phí nếu mẫu không đạt chất lượng</p>
-                                        </div>
-                                        <div className="note-item">
-                                            <span className="note-icon">📞</span>
-                                            <p>Tư vấn miễn phí về cách lấy và bảo quản mẫu</p>
                                         </div>
                                     </div>
                                 </div>
@@ -566,11 +562,11 @@ const FatherChildService = () => {
                                                     </div>
                                                     <div className="mini-step">
                                                         <span className="mini-step-number">2</span>
-                                                        <p>Lấy cotton swab từ kit, tháo bao bì cẩn thận không chạm vào đầu cotton</p>
+                                                        <p>Lấy tăm bông từ kit, tháo bao bì cẩn thận không chạm vào đầu tăm bông</p>
                                                     </div>
                                                     <div className="mini-step">
                                                         <span className="mini-step-number">3</span>
-                                                        <p>Chà cotton swab vào má trong, xoay tròn 20-30 giây với lực vừa phải</p>
+                                                        <p>Chà tăm bông vào má trong, xoay tròn 20-30 giây với lực vừa phải</p>
                                                     </div>
                                                     <div className="mini-step">
                                                         <span className="mini-step-number">4</span>
@@ -581,7 +577,7 @@ const FatherChildService = () => {
                                                 <div className="instruction-tips">
                                                     <h6>💡 Lưu ý quan trọng:</h6>
                                                     <ul>
-                                                        <li>Lấy 2 cotton swab cho mỗi người</li>
+                                                        <li>Lấy 2 tăm bông cho mỗi người</li>
                                                         <li>Không thổi khô hay dùng máy sấy</li>
                                                         <li>Tránh nhiễm chéo giữa các mẫu</li>
                                                         <li>Ghi rõ tên và thời gian lấy mẫu</li>
@@ -749,11 +745,11 @@ const FatherChildService = () => {
                                                 <div className="instruction-steps">
                                                     <div className="mini-step">
                                                         <span className="mini-step-number">1</span>
-                                                        <p>Lấy mẫu tinh trùng vào container vô trùng</p>
+                                                        <p>Lấy mẫu tinh trùng vào ống nghiệm vô trùng</p>
                                                     </div>
                                                     <div className="mini-step">
                                                         <span className="mini-step-number">2</span>
-                                                        <p>Đậy kín container, ghi rõ tên và thời gian</p>
+                                                        <p>Đậy kín nắp ống, ghi rõ tên và thời gian</p>
                                                     </div>
                                                     <div className="mini-step">
                                                         <span className="mini-step-number">3</span>
@@ -867,7 +863,7 @@ const FatherChildService = () => {
                                                     • Gói làm nhanh: 6.000.000 VNĐ
                                                 </p>
                                                 <div className="faq-warning">
-                                                    <strong>Phụ phí:</strong> Mẫu thay thế +500K VNĐ, mẫu đặc biệt +2M VNĐ
+                                                    <strong>Phụ phí:</strong> Mẫu thay thế +500.000 VNĐ, mẫu đặc biệt +2.000.000 VNĐ
                                                 </div>
                                             </div>
 
