@@ -9,7 +9,6 @@ import { FaTachometerAlt, FaCalendarAlt, FaVial, FaFileAlt, FaUserAlt, FaQuestio
 
 // Import các component con từ thư mục Staff
 // (Giả định các file này đã tồn tại hoặc sẽ được tạo trong cấu trúc Staff/)
-import DashboardStaff from './Staff/Dashboard'; // Đổi tên thành DashboardStaff để tránh nhầm lẫn
 import Booking from './Staff/Booking'; // Quản lý Đơn đặt dịch vụ
 import Consultation from './Staff/Consultation'; // Quản lý Đơn tư vấn
 import Sample from './Staff/Sample'; // Quản lý Mẫu xét nghiệm
@@ -21,9 +20,9 @@ export default function StaffPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    // Lấy menu đang chọn từ localStorage, nếu chưa có thì mặc định là "dashboard"
+    // Lấy menu đang chọn từ localStorage, nếu chưa có thì mặc định là "booking"
     const [activeMenuItem, setActiveMenuItem] = useState(() => {
-        return localStorage.getItem("staff_active_menu") || "dashboard";
+        return localStorage.getItem("staff_active_menu") || "booking";
     });
 
     // Khi activeMenuItem thay đổi thì lưu vào localStorage
@@ -58,7 +57,6 @@ export default function StaffPage() {
 
     // Sidebar menu items với FaQuestionCircle cho Consultation
     const sidebarMenuItems = [
-        { key: "dashboard", label: "Tổng quan", icon: <FaTachometerAlt /> },
         { key: "consultation", label: "Quản lý Đơn tư vấn", icon: <FaQuestionCircle /> },
         { key: "booking", label: "Quản lý Đơn đặt dịch vụ", icon: <FaCalendarAlt /> },
         { key: "sample", label: "Quản lý Mẫu xét nghiệm", icon: <FaVial /> },
@@ -69,8 +67,8 @@ export default function StaffPage() {
     const getActiveMenuLabel = () => {
         const activeItem = sidebarMenuItems.find(item => item.key === activeMenuItem);
         if (activeItem) {
-            if (activeItem.key === "dashboard") {
-                return "Tổng quan hệ thống";
+            if (activeItem.key === "booking") {
+                return "Quản lý Đơn đặt dịch vụ";
             }
             return activeItem.label;
         }
@@ -113,15 +111,9 @@ export default function StaffPage() {
 
     const getHeaderContent = () => {
         switch (activeMenuItem) {
-            case "dashboard":
-                return {
-                    title: "Tổng quan hệ thống (Staff)", // Điều chỉnh tiêu đề cho rõ ràng hơn
-                    
-                };
             case "booking":
                 return {
-                    title: "Quản lý Đơn đặt dịch vụ",
-                    
+                    title: "Quản lý Đơn đặt dịch vụ"
                 };
             case "consultation":
                 return {
@@ -150,8 +142,6 @@ export default function StaffPage() {
 
     const renderMainContent = () => {
         switch (activeMenuItem) {
-            case "dashboard":
-                return <DashboardStaff />; // Component Dashboard riêng cho Staff
             case "booking":
                 return <Booking bookings={bookings} setBookings={setBookings} searchTerm={bookingSearchTerm} />;
             case "consultation":
