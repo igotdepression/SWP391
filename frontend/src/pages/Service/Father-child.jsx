@@ -220,13 +220,13 @@ const FatherChildService = () => {
 
                                         <div className="pricing-row">
                                             <div className="pricing-cell">Tiêu Chuẩn</div>
-                                            <div className="pricing-cell">02 Ngày</div>
+                                            <div className="pricing-cell">03 - 05 Ngày</div>
                                             <div className="pricing-cell">2.500.000</div>
                                             <div className="pricing-cell extra-sample-cell">1.250.000</div>
                                         </div>
                                         <div className="pricing-row">
                                             <div className="pricing-cell">Làm Nhanh</div>
-                                            <div className="pricing-cell">06 – 08 Tiếng</div>
+                                            <div className="pricing-cell">06 – 24 Tiếng</div>
                                             <div className="pricing-cell">5.000.000</div>
                                             <div className="pricing-cell extra-sample-cell">2.500.000</div>
                                         </div>
@@ -258,13 +258,13 @@ const FatherChildService = () => {
 
                                         <div className="pricing-row">
                                             <div className="pricing-cell">Tiêu chuẩn</div>
-                                            <div className="pricing-cell">02 Ngày</div>
+                                            <div className="pricing-cell">03 - 05 Ngày</div>
                                             <div className="pricing-cell">3.500.000</div>
                                             <div className="pricing-cell extra-sample-cell">1.750.000</div>
                                         </div>
                                         <div className="pricing-row">
                                             <div className="pricing-cell">Làm Nhanh</div>
-                                            <div className="pricing-cell">06 – 08 Tiếng</div>
+                                            <div className="pricing-cell">06 – 24 Tiếng</div>
                                             <div className="pricing-cell">6.000.000</div>
                                             <div className="pricing-cell extra-sample-cell">3.000.000</div>
                                         </div>
