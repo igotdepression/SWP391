@@ -37,7 +37,7 @@ const SiblingsService = () => {
             {/* Hero Section */}
             <section className="service-hero">
                 <div className="hero-background-container">
-                    <img src="https://static.wixstatic.com/media/bd583d_35da8d7c9c0e4f4496fa6ed9da8d405f~mv2.jpg/v1/fill/w_319,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/42-31107334.jpg" className="hero-background" alt="Hero Background" />
+                    <img src="https://duyendangvietnam.net.vn/public/uploads/file1s/Siblings%20Day%2010_04_21%201.jpg" className="hero-background" alt="Hero Background" />
                 </div>
                 <div className="container">
                     <div className="hero-content">
@@ -64,7 +64,7 @@ const SiblingsService = () => {
                         </div>
                         <div className="hero-image">
                             <img
-                                src="https://static.wixstatic.com/media/bd583d_35da8d7c9c0e4f4496fa6ed9da8d405f~mv2.jpg/v1/fill/w_319,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/42-31107334.jpg"
+                                src="https://duyendangvietnam.net.vn/public/uploads/file1s/Siblings%20Day%2010_04_21%201.jpg"
                                 alt="Siblings DNA Testing"
                             />
                         </div>
