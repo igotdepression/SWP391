@@ -250,10 +250,6 @@ const FatherChildService = () => {
                     {/* Types Tab */}
                     {activeTab === 'types' && (
                         <div className="content-tab">
-
-
-
-                            {/* Section 2: Quy trình xét nghiệm */}
                             <div className="process-section">
                                 <h3>2. Quy trình xét nghiệm ADN cha con</h3>
 
@@ -339,7 +335,7 @@ const FatherChildService = () => {
                         </div>
                     )}
 
-                    {/* Samples Tab - Bổ sung hướng dẫn cuống rốn */}
+                    {/* Samples Tab*/}
                     {activeTab === 'samples' && (
                         <div className="content-tab">
                             <div className="sample-types-section">

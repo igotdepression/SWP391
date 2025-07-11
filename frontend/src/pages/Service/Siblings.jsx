@@ -733,9 +733,11 @@ const SiblingsService = () => {
                     {activeTab === 'faq' && (
                         <div className="content-tab">
                             <div className="faq-section">
-                                <h3>5. Câu hỏi thường gặp về xét nghiệm ADN anh em</h3>
+                                
 
                                 <div className="faq-categories">
+                                    <h3>5. Câu hỏi thường gặp về xét nghiệm ADN anh em</h3>
+
                                     {/* Câu hỏi về dịch vụ */}
                                     <div className="faq-category">
                                         <h4>🔍 Câu hỏi về dịch vụ xét nghiệm</h4>

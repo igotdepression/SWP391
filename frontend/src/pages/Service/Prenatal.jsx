@@ -116,7 +116,7 @@ const PrenatalService = () => {
                     {/* Overview Tab */}
                     {activeTab === 'overview' && (
                         <div className="content-tab">
-                            <h3>1. Xét nghiệm ADN Thai nhi không xâm lấn - Xác định huyết thống cha con</h3>
+                            <h2>1. Xét nghiệm ADN Thai nhi không xâm lấn - Xác định huyết thống cha con</h2>
                             <p>
                                 Xét nghiệm ADN thai nhi không xâm lấn là phương pháp hiện đại, an toàn giúp xác định quan hệ huyết thống cha con ngay từ tuần thai thứ 10 mà không gây ảnh hưởng đến sức khỏe mẹ và thai nhi.
                             </p>
@@ -731,9 +731,10 @@ const PrenatalService = () => {
                     {/* FAQ Tab */}
                     {activeTab === 'faq' && (
                         <div className="content-tab">
-                            <h3>Câu hỏi thường gặp về xét nghiệm ADN Thai nhi</h3>
+                            
 
                             <div className="faq-section">
+                                <h3>5. Câu hỏi thường gặp về xét nghiệm ADN Thai nhi</h3>
                                 <div className="faq-categories">
                                     <div className="faq-category">
                                         <h4>🔍 Câu hỏi về xét nghiệm</h4>

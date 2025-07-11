@@ -181,11 +181,10 @@
   min-height: 500px;
 }
 
-.content-tab h3 {
+.content-tab h2 {
   font-size: 2rem;
   margin-bottom: 30px;
   color: #1f2937;
-  border-bottom: 2px solid #667eea;
   padding-bottom: 10px;
   text-align: left; /* giống mother-child.css */
 }
@@ -730,7 +729,7 @@
 }
 
 .process-section h3 {
-  color: #2d3748;
+   color: #2d3748;
   font-size: 2rem;
   margin-bottom: 40px;
   text-align: center;
@@ -1658,7 +1657,7 @@
 }
 
 .advantage-col {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(251, 24, 24, 0.12);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
@@ -1727,7 +1726,7 @@
 
 .guarantee-item strong {
   font-weight: 700;
-  color: #FFE066;
+  color: #ff2f00;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
