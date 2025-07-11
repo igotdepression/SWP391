@@ -59,14 +59,14 @@ const ServicePage = () => {
       title: "ADN Dân sự",
       description: "Phù hợp cho mục đích cá nhân, nội bộ gia đình. Quy trình linh hoạt, có thể tự lấy mẫu tại nhà. Bảo mật tuyệt đối nhưng không có giá trị pháp lý.",
       image: "https://xetnghiemadn.info/gen/wp-content/uploads/2014/07/ADN-nguoi-600x320.jpg",
-      route: "/services/civil-dna"
+      route: "/services/civil"
     },
     {
       id: 2,
       title: "ADN Pháp lý / Hành chính",
       description: "Dành cho các thủ tục pháp lý, hành chính. Quy trình nghiêm ngặt, lấy mẫu tại trung tâm. Kết quả được công nhận bởi tòa án và cơ quan nhà nước.",
       image: "https://baokhanhhoa.vn/file/e7837c02857c8ca30185a8c39b582c03/022025/1_20250207182332.webp",
-      route: "/services/legal-dna"
+      route: "/services/legal"
     }
   ];
 
