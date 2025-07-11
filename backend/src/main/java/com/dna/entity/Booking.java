@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -53,9 +54,6 @@ public class Booking {
     @Column(name = "updateDate")
     private LocalDate updateDate;
 
-    @Column(name = "updateBy")
-    private String updateBy;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updateBy")
@@ -69,4 +67,9 @@ public class Booking {
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private TestResult testResult;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "bookingID")
+    private List<Participant> participants;
+
 }

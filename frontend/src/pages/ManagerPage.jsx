@@ -9,7 +9,6 @@ import { FaTachometerAlt, FaNewspaper, FaDollarSign, FaCreditCard, FaStar, FaVia
 // Đã xóa FaUsers vì không còn sử dụng cho quản lý nhân viên
 
 // Import các component con
-import DashboardManager from './Manager/Dashboard';
 // Đã xóa import StaffManagement từ đây
 import BlogPost from './Manager/BlogPost';
 import ServicePrice from './Manager/ServicePrice';
@@ -22,12 +21,7 @@ import PersonalInfo from './Manager/PersonalInfo';
 export default function ManagerPage() {
     const { user } = useAuth(); // Lấy thông tin người dùng từ AuthContext
     const navigate = useNavigate();
-
-    const [activeMenuItem, setActiveMenuItem] = useState("dashboard");
-    // Đã xóa các state liên quan đến nhân viên: employees, setEmployees, detailEmployee, setDetailEmployee, employeeSearchTerm, setEmployeeSearchTerm
-    // const [employees, setEmployees] = useState([...]); // Xóa dòng này và dữ liệu mẫu
-    // const [detailEmployee, setDetailEmployee] = useState(null); // Xóa dòng này
-    // const [employeeSearchTerm, setEmployeeSearchTerm] = useState(""); // Xóa dòng này
+    const [activeMenuItem, setActiveMenuItem] = useState("blogpost");
 
     const [orders, setOrders] = useState([
         { id: "ORD001", customer: "Khách hàng X", date: "2023-01-15", status: "New" },
@@ -38,8 +32,6 @@ export default function ManagerPage() {
     const [orderSearchTerm, setOrderSearchTerm] = useState("");
 
     const sidebarMenuItems = [
-        { key: "dashboard", label: "Tổng quan", icon: <FaTachometerAlt /> }, // Icon cho Dashboard
-        // Đã xóa { key: "nhanvien", label: "Quản lý phân quyền nhân viên", icon: <FaUsers /> },
         { key: "blogpost", label: "Quản lý bài đăng", icon: <FaNewspaper /> }, // Icon cho Bài đăng
         { key: "banggia", label: "Quản lý giá dịch vụ", icon: <FaDollarSign /> }, // Icon cho Giá dịch vụ
         { key: "payments", label: "Quản lý thanh toán", icon: <FaCreditCard /> }, // Icon cho Thanh toán
@@ -51,8 +43,8 @@ export default function ManagerPage() {
     const getActiveMenuLabel = () => {
         const activeItem = sidebarMenuItems.find(item => item.key === activeMenuItem);
         if (activeItem) {
-            if (activeItem.key === "dashboard") {
-                return "Tổng quan hệ thống";
+            if (activeItem.key === "blogpost") {
+                return "Quản lý bài đăng";
             }
             return activeItem.label;
         }
@@ -73,83 +65,33 @@ export default function ManagerPage() {
 
     const getHeaderContent = () => {
         switch (activeMenuItem) {
-            case "dashboard":
-                return {
-                    title: "Tổng quan hệ thống",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: false,
-                };
-            // Đã xóa case "nhanvien"
-            // case "nhanvien":
-            //     return {
-            //         title: "Quản lý nhân viên",
-            //         showSearch: true,
-            //         onSearchChange: (value) => setEmployeeSearchTerm(value),
-            //         showFilter: true,
-            //         filterOptions: employeeFilterOptions,
-            //         onFilterChange: (value) => console.log("Lọc nhân viên theo:", value),
-            //         showAddNew: true,
-            //         addNewText: "Thêm nhân viên mới",
-            //         onAddNewClick: () => alert("Thêm nhân viên mới!"),
-            //     };
             case "blogpost":
                 return {
                     title: "Quản lý bài đăng",
-                    showSearch: true,
-                    onSearchChange: (value) => setOrderSearchTerm(value),
-                    showFilter: false,
-                    showAddNew: true,
-                    addNewText: "Tạo bài đăng mới",
-                    onAddNewClick: () => alert("Tạo bài đăng mới!"),
                 };
             case "banggia":
                 return {
                     title: "Quản lý giá dịch vụ",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: true,
-                    addNewText: "Thêm giá dịch vụ",
-                    onAddNewClick: () => alert("Thêm giá dịch vụ mới!"),
                 };
             case "payments":
                 return {
                     title: "Quản lý thanh toán",
-                    showSearch: true,
-                    showFilter: true,
-                    filterOptions: [{ value: "", label: "Tất cả" }, { value: "pending", label: "Đang chờ" }, { value: "completed", label: "Hoàn thành" }],
-                    onFilterChange: (value) => console.log("Lọc thanh toán theo:", value),
-                    showAddNew: false,
                 };
             case "feedback":
                 return {
                     title: "Quản lý Phản hồi & Đánh giá",
-                    showSearch: true,
-                    showFilter: true,
-                    filterOptions: [{ value: "", label: "Tất cả" }, { value: "rating", label: "Đánh giá" }, { value: "feedback", label: "Phản hồi" }],
-                    onFilterChange: (value) => console.log("Lọc phản hồi theo:", value),
-                    showAddNew: false,
                 };
             case "testResults":
                 return {
                     title: "Quản lý kết quả xét nghiệm",
-                    showSearch: true,
-                    showFilter: false,
-                    showAddNew: false,
                 };
             case "personalInfo":
                 return {
                     title: "Thông tin cá nhân",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: false,
                 };
             default:
                 return {
                     title: "Trang quản lý",
-                    showSearch: false,
-                    showFilter: false,
-                    showAddNew: false,
                 };
         }
     };
@@ -158,11 +100,6 @@ export default function ManagerPage() {
 
     const renderMainContent = () => {
         switch (activeMenuItem) {
-            case "dashboard":
-                return <DashboardManager />;
-            // Đã xóa case "nhanvien"
-            // case "nhanvien":
-            //     return <StaffManagement employees={employees} setDetailEmployee={setDetailEmployee} />;
             case "blogpost":
                 return <BlogPost orders={orders} setDetailOrder={setDetailOrder} />;
             case "banggia":

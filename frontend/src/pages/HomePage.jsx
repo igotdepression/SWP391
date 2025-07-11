@@ -137,9 +137,9 @@ function HomePage() {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       alert('Đăng ký tư vấn thành công! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
-      
+
       // Reset form
       setConsultationForm({
         name: '',
@@ -153,6 +153,16 @@ function HomePage() {
       alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleScrollToConsultation = () => {
+    const consultationSection = document.getElementById('consultation');
+    if (consultationSection) {
+      consultationSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
     }
   };
 
@@ -181,7 +191,7 @@ function HomePage() {
               </div>
               <div className="adn-banner-actions">
                 <button className="adn-btn adn-btn-main" onClick={() => handleRestrictedAction('register')}>Đăng ký xét nghiệm ngay</button>
-                <button className="adn-btn adn-btn-outline" onClick={() => handleRestrictedAction('advice')}>Đặt lịch tư vấn miễn phí</button>
+                <button className="adn-btn adn-btn-outline" onClick={handleScrollToConsultation}>Đặt lịch tư vấn miễn phí</button>
               </div>
             </div>
           </div>
@@ -300,7 +310,7 @@ function HomePage() {
                       <div className="modernlab-progress-bar">
                         <div
                           className={`modernlab-progress-bar-inner ${progressAnimated ? 'animated' : ''}`}
-                          style={{ 
+                          style={{
                             width: progressAnimated ? `${item.percent}%` : '0%',
                             transitionDelay: `${i * 0.3}s`
                           }}
@@ -331,7 +341,7 @@ function HomePage() {
               <div className="dna-icon">🧬</div>
               <p>Đem tới chất lượng dịch vụ tốt nhất về xét nghiệm ADN cho người Việt Nam</p>
             </div>
-            
+
             <div className="advantages-container">
               <div className="advantages-left">
                 <div className="lab-image">
@@ -394,11 +404,11 @@ function HomePage() {
 
           {/* Consultation Form Section - moved to end of page */}
           <section className="adn-section consultation-section" id="consultation">
-            <div className="adn-section-title-group">
+            <div className="adn-section-title-group" >
               <span className="adn-section-icon">+</span>
-              <span className="adn-section-title">ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</span>
+              <span className="adn-section-title" >ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</span>
             </div>
-            
+
             <div className="consultation-container">
               <div className="consultation-intro">
                 <h3>Nhận tư vấn chuyên sâu từ các chuyên gia</h3>
@@ -497,8 +507,8 @@ function HomePage() {
                   </div>
 
                   <div className="form-submit">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="adn-btn adn-btn-main consultation-submit-btn"
                       disabled={isSubmitting}
                     >
