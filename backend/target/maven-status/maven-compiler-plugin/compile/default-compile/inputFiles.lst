@@ -17,6 +17,7 @@ D:\SWP391\backend\src\main\java\com\dna\dto\FeedbackRequestDTO.java
 D:\SWP391\backend\src\main\java\com\dna\dto\FeedbackResponseDTO.java
 D:\SWP391\backend\src\main\java\com\dna\dto\LoginRequest.java
 D:\SWP391\backend\src\main\java\com\dna\dto\LoginResponse.java
+D:\SWP391\backend\src\main\java\com\dna\dto\ParticipantDTO.java
 D:\SWP391\backend\src\main\java\com\dna\dto\ParticipantRequestDTO.java
 D:\SWP391\backend\src\main\java\com\dna\dto\ParticipantResponseDTO.java
 D:\SWP391\backend\src\main\java\com\dna\dto\PaymentRequestDTO.java
@@ -62,3 +63,4 @@ D:\SWP391\backend\src\main\java\com\dna\service\RoleService.java
 D:\SWP391\backend\src\main\java\com\dna\service\ServiceEntityService.java
 D:\SWP391\backend\src\main\java\com\dna\service\SurchargeService.java
 D:\SWP391\backend\src\main\java\com\dna\service\UserService.java
+D:\SWP391\backend\src\main\java\com\dna\service\VNPayService.java
