@@ -1,0 +1,119 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+.modal {
+  background: #fff;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 32rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+}
+.header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(to right, #eff6ff, #f3e8ff);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #111827;
+}
+.closeBtn {
+  width: 2rem;
+  height: 2rem;
+  background: #f3f4f6;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.closeBtn:hover {
+  background: #e5e7eb;
+}
+.iconSmall {
+  width: 1rem;
+  height: 1rem;
+  color: #6b7280;
+}
+.body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.section {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+.sectionTitle {
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.bold {
+  font-weight: 500;
+}
+.code {
+  background: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+.downloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #22c55e;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+.downloadBtn:hover {
+  background: #16a34a;
+}
+.footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+.callBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f59e42;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: background 0.2s;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+.callBtn:hover {
+  background: #ea580c;
+}
+  
