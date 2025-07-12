@@ -155,13 +155,13 @@ function DoctorDetail() {
               <a href="https://zalo.me/" className="social-icon zalo" target="_blank" rel="noopener noreferrer">
                 <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="24" cy="24" r="24" fill="#1976d2"/>
-                  <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="18" font-family="Arial, Helvetica, sans-serif" dy=".3em">z</text>
+                  <text x="50%" y="55%" textAnchor="middle" fill="#fff" fontSize="18" fontFamily="Arial, Helvetica, sans-serif" dy=".3em">z</text>
                 </svg>
               </a>
               <a href="https://facebook.com/" className="social-icon facebook" target="_blank" rel="noopener noreferrer">
                 <svg width="22" height="22" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="24" cy="24" r="24" fill="#4267b2"/>
-                  <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="18" font-family="Arial, Helvetica, sans-serif" dy=".3em">f</text>
+                  <text x="50%" y="55%" textAnchor="middle" fill="#fff" fontSize="18" fontFamily="Arial, Helvetica, sans-serif" dy=".3em">f</text>
                 </svg>
               </a>
             </div>
