@@ -1,12 +1,12 @@
 // src/pages/PersonalInfoPage.tsx
 import React, { useState, useEffect } from "react";
 import "./PersonalInfoPage.css";
-import { Sidebar } from "./Customer/Sidebar.tsx";
-import { BasicInfoTab } from "./Customer/BasicInfoTab.tsx";
-import { ContactInfoTab } from "./Customer/ContactInfoTab.tsx";
-import { IDCardTab } from "./Customer/IDCardTab.tsx";
-import { TestHistoryTab } from "./Customer/TestHistoryTab.tsx";
-import { TestDetailsModal } from "./Customer/TestDetailsModal.tsx";
+import { Sidebar } from "./Customer/Sidebar";
+import { BasicInfoTab } from "./Customer/BasicInfoTab";
+import { ContactInfoTab } from "./Customer/ContactInfoTab";
+import { IDCardTab } from "./Customer/IDCardTab";
+import { TestHistoryTab } from "./Customer/TestHistoryTab";
+import { TestDetailsModal } from "./Customer/TestDetailsModal";
 
 const mockUser = {
   fullName: "Nguyễn Văn An",
@@ -74,7 +74,7 @@ export default function PersonalInfoPage() {
     }
   }, [success]);
 
-  const updateProfile = (field) => {
+  const updateProfile = (field: string) => {
     setLoading(true);
     setTimeout(() => {
       setUser(editData);
@@ -101,7 +101,7 @@ export default function PersonalInfoPage() {
               formData={editData}
               isEditing={isEditingBasic}
               onEditToggle={() => setEditBasic(true)}
-              onChange={(k, v) => setEditData(prev => ({ ...prev, [k]: v }))}
+              onChange={(k: string, v: any) => setEditData(prev => ({ ...prev, [k]: v }))}
               onSave={() => updateProfile("basic")}
               onCancel={() => { setEditBasic(false); setEditData(user); }}
               isLoading={isLoading}
@@ -113,7 +113,7 @@ export default function PersonalInfoPage() {
               formData={editData}
               isEditing={isEditingContact}
               onEditToggle={() => setEditContact(true)}
-              onChange={(k, v) => setEditData(prev => ({ ...prev, [k]: v }))}
+              onChange={(k: string, v: any) => setEditData(prev => ({ ...prev, [k]: v }))}
               onSave={() => updateProfile("contact")}
               onCancel={() => { setEditContact(false); setEditData(user); }}
               isLoading={isLoading}

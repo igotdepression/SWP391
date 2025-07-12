@@ -70,7 +70,7 @@ function App() {
           <Route path="/personal-info" element={<PersonalInfoPage />} />
           <Route path="/staff" element={<StaffPage />} />
           <Route path="/manager" element={<ManagerPage />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN']}><Admin /></ProtectedRoute>} />
           <Route path="/booking-create" element={<BookingCreate />} />
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path='/booking-payment' element={<BookingPayment />} />
