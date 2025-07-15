@@ -36,6 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String path = request.getRequestURI();
             log.debug("Processing request for path: {}", path);
 
+            // Bỏ qua JWT filter cho các endpoint không cần authentication
+            if (shouldSkipJwtFilter(path)) {
+                log.debug("Skipping JWT filter for path: {}", path);
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String jwt = getJwtFromRequest(request);
             if (jwt == null) {
                 log.debug("No JWT token found in request");
@@ -65,6 +72,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean shouldSkipJwtFilter(String path) {
+        return path.startsWith("/api/auth/") ||
+               path.startsWith("/api/public/") ||
+               path.startsWith("/swagger-ui") ||
+               path.startsWith("/v3/api-docs") ||
+               path.startsWith("/api-docs") ||
+               path.startsWith("/swagger-resources") ||
+               path.startsWith("/webjars") ||
+               path.equals("/api/service") ||
+               path.equals("/swagger-ui.html") ||
+               path.equals("/error");
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
