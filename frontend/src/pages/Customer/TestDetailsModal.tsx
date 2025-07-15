@@ -1,7 +1,7 @@
 // src/components/TestDetailsModal.tsx
 import React from "react";
 import "./TestDetailsModal.css";
-import { X, Settings, Download, Users, Headphones } from "lucide-react";
+import { X, Settings, Download, Users, Headphones, FileText } from "lucide-react";
 
 interface TestDetailsModalProps {
   test: {
@@ -12,12 +12,20 @@ interface TestDetailsModalProps {
       sampleCode: string;
       resultFile?: string;
       expertMessage?: string;
+      bookingDetails?: {
+        serviceName: string;
+        appointmentDate: string;
+        numSamples: number;
+        notes?: string;
+        participants?: { fullName: string; relationship: string }[];
+      };
     };
   };
   onClose: () => void;
 }
 
 export function TestDetailsModal({ test, onClose }: TestDetailsModalProps) {
+  console.log('TestDetailsModal nhận test:', test);
   return (
     <div className="overlay">
       <div className="modal">
@@ -28,6 +36,42 @@ export function TestDetailsModal({ test, onClose }: TestDetailsModalProps) {
           </button>
         </header>
         <div className="body">
+          {/* Đưa section bookingDetails lên đầu để dễ thấy */}
+          {test.details.bookingDetails && (
+            <div className="section">
+              <h4 className="sectionTitle">
+                <span className="iconSmall" style={{ color: '#a855f7' }}><FileText size={16} /></span> Chi tiết đơn booking
+              </h4>
+              <table style={{ width: '100%', marginBottom: 12 }}>
+                <tbody>
+                  <tr>
+                    <td className="bold" style={{ width: 120 }}>Dịch vụ:</td>
+                    <td>{test.details.bookingDetails.serviceName}</td>
+                  </tr>
+                  <tr>
+                    <td className="bold">Ngày hẹn:</td>
+                    <td>{test.details.bookingDetails.appointmentDate}</td>
+                  </tr>
+                  <tr>
+                    <td className="bold">Số mẫu:</td>
+                    <td>{test.details.bookingDetails.numSamples}</td>
+                  </tr>
+                  <tr>
+                    <td className="bold">Ghi chú:</td>
+                    <td>{test.details.bookingDetails.notes || 'Không có'}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style={{ marginTop: 8 }}>
+                <span className="bold">Người tham gia:</span>
+                <ul style={{ margin: 0, paddingLeft: 20, listStyle: 'disc' }}>
+                  {test.details.bookingDetails.participants?.map((p: any, idx: number) => (
+                    <li key={idx}><span className="bold">{p.fullName}</span> ({p.relationship})</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
           <div className="section">
             <h4 className="sectionTitle">
               <span className="iconSmall" style={{ color: '#2563eb' }}><Settings size={16} /></span> Thông tin mẫu

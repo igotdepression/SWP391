@@ -4,6 +4,7 @@ import com.dna.entity.Feedback;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 
@@ -18,6 +19,9 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
     
     // Tìm feedback có rating >= giá trị nhất định
     List<Feedback> findByRatingGreaterThanEqual(Integer rating);
+    
+    // Tìm feedback theo khoảng ngày
+    List<Feedback> findByCreateDateBetween(LocalDate from, LocalDate to);
     
     // Kiểm tra booking đã có feedback chưa
     boolean existsByBookingBookingID(Integer bookingID);
