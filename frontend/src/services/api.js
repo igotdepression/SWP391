@@ -117,4 +117,8 @@ export const serviceAPI = {
     getAllServices: () => api.get('/service/listService'),
 };
 
+export const sampleAPT = {
+    getAllSample: () => api.get('/samplesample'),
+};
+
 export default api; 

@@ -1,6 +1,7 @@
 // Staff/Sample.jsx
 import React, { useState, useEffect } from 'react';
 import './Sample.css';
+import api from '../services/api';
 
 export default function Sample() {
     // Statistics state
