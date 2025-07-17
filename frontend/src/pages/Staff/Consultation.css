@@ -790,7 +790,7 @@
 .consultation-stats-row {
     display: flex;
     gap: 18px;
-    margin: 0 0 18px 0;
+    margin: 0 0 18px 30px;
     flex-wrap: nowrap; /* Không xuống dòng khi đủ 5 thẻ */
     justify-content: space-between;
     width: 100%;

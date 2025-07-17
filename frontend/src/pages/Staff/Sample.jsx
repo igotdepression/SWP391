@@ -337,22 +337,22 @@ export default function Sample() {
                 {/* Statistics Header */}
                 <div className="sample-stats-header">
                     <h2>Quản lý Mẫu Xét nghiệm</h2>
-                    <div className="sample-stats-cards">
-                        <div className="sample-stat-card sample-stat-total">
-                            <div className="sample-stat-number">{stats.totalSamples}</div>
-                            <div className="sample-stat-label">TỔNG MẪU</div>
+                    <div className="sample-stats-row">
+                        <div className="stat-card sample-stat-total">
+                            <div className="stat-number">{stats.totalSamples}</div>
+                            <div className="stat-label">TỔNG MẪU</div>
                         </div>
-                        <div className="sample-stat-card sample-stat-standard">
-                            <div className="sample-stat-number">{stats.standardSamples}</div>
-                            <div className="sample-stat-label">MẪU CHUẨN</div>
+                        <div className="stat-card sample-stat-standard">
+                            <div className="stat-number">{stats.standardSamples}</div>
+                            <div className="stat-label">MẪU CHUẨN</div>
                         </div>
-                        <div className="sample-stat-card sample-stat-normal">
-                            <div className="sample-stat-number">{stats.normalSamples}</div>
-                            <div className="sample-stat-label">MẪU THÔNG THƯỜNG</div>
+                        <div className="stat-card sample-stat-normal">
+                            <div className="stat-number">{stats.normalSamples}</div>
+                            <div className="stat-label">MẪU THÔNG THƯỜNG</div>
                         </div>
-                        <div className="sample-stat-card sample-stat-special">
-                            <div className="sample-stat-number">{stats.specialSamples}</div>
-                            <div className="sample-stat-label">MẪU ĐẶC BIỆT</div>
+                        <div className="stat-card sample-stat-special">
+                            <div className="stat-number">{stats.specialSamples}</div>
+                            <div className="stat-label">MẪU ĐẶC BIỆT</div>
                         </div>
                     </div>
                 </div>
