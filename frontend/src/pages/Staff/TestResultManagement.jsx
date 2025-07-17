@@ -1,6 +1,7 @@
 // Staff/TestResultManagement.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Input, Select } from '../../components/ui/ui';
+import { TestResultAPI } from '../../services/api';
 import './TestResultManagement.css';
 
 const beautifulStyles = `
@@ -530,106 +531,36 @@ const beautifulStyles = `
 `;
 
 export default function TestResultManagement() {
-    // Sample data based on SQL structure - Extended with sample status
-    const [testResults, setTestResults] = useState([
-        {
-            testResultID: 1,
-            bookingID: 1001,
-            resultDate: '2025-07-01',
-            createdBy: 'Dr. Nguyen',
-            createdDate: '2025-07-01T10:30:00',
-            resultConclution: 'Kết quả xét nghiệm ADN đã hoàn tất',
-            resultFile: 'result_1001.pdf',
-            updatedBy: 'Staff01',
-            updatedDate: '2025-07-02T14:20:00',
-            customerName: 'Nguyễn Văn An',
-            serviceName: 'Xét nghiệm ADN xác định bố con',
-            sampleStaffID: 201,
-            patientID: 301,
-            sampleMethod: 'Tại cơ sở',
-            sampleReceiveDate: '2025-06-15',
-            sampleStatus: 'ready', // ready, processing, normal, special
-            sampleType: 'Mẫu Chuẩn'
-        },
-        {
-            testResultID: 2,
-            bookingID: 1002,
-            resultDate: '2025-07-02',
-            createdBy: 'Dr. Tran',
-            createdDate: '2025-07-02T09:15:00',
-            resultConclution: 'Kết quả xét nghiệm cho thấy mối quan hệ huyết thống',
-            resultFile: 'result_1002.pdf',
-            updatedBy: null,
-            updatedDate: null,
-            customerName: 'Trần Thị Bình',
-            serviceName: 'Xét nghiệm ADN xác định anh em ruột',
-            sampleStaffID: 202,
-            patientID: 302,
-            sampleMethod: 'Tại nhà',
-            sampleReceiveDate: '2025-06-20',
-            sampleStatus: 'processing',
-            sampleType: 'Mẫu Thông Thường'
-        },
-        {
-            testResultID: 3,
-            bookingID: 1003,
-            resultDate: null,
-            createdBy: null,
-            createdDate: null,
-            resultConclution: null,
-            resultFile: null,
-            updatedBy: null,
-            updatedDate: null,
-            customerName: 'Lê Văn Cường',
-            serviceName: 'Xét nghiệm ADN xác định bố con',
-            sampleStaffID: 203,
-            patientID: 303,
-            sampleMethod: 'Tại cơ sở',
-            sampleReceiveDate: '2025-06-22',
-            sampleStatus: 'ready',
-            sampleType: 'Mẫu Chuẩn'
-        },
-        {
-            testResultID: 4,
-            bookingID: 1004,
-            resultDate: '2025-07-03',
-            createdBy: 'Dr. Le',
-            createdDate: '2025-07-03T11:00:00',
-            resultConclution: 'Hoàn thành xét nghiệm',
-            resultFile: 'result_1004.pdf',
-            updatedBy: 'Staff02',
-            updatedDate: '2025-07-03T15:30:00',
-            customerName: 'Phạm Thị Dung',
-            serviceName: 'Xét nghiệm ADN xác định bố con',
-            sampleStaffID: 204,
-            patientID: 304,
-            sampleMethod: 'Tại nhà',
-            sampleReceiveDate: '2025-06-25',
-            sampleStatus: 'normal',
-            sampleType: 'Mẫu Đặc Biệt'
-        },
-        {
-            testResultID: 5,
-            bookingID: 1005,
-            resultDate: null,
-            createdBy: null,
-            createdDate: null,
-            resultConclution: null,
-            resultFile: null,
-            updatedBy: null,
-            updatedDate: null,
-            customerName: 'Vũ Văn Em',
-            serviceName: 'Xét nghiệm ADN xác định anh em ruột',
-            sampleStaffID: 205,
-            patientID: 305,
-            sampleMethod: 'Tại cơ sở',
-            sampleReceiveDate: '2025-06-28',
-            sampleStatus: 'ready',
-            sampleType: 'Mẫu Chuẩn'
-        }
-    ]);
+    // State for API data
+    const [testResults, setTestResults] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Sample detail results
+    // Component state
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [selectedResult, setSelectedResult] = useState(null);
+    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [editMode, setEditMode] = useState(false);
+    const [editingResult, setEditingResult] = useState(null);
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [newResult, setNewResult] = useState({
+        bookingID: '',
+        resultDate: '',
+        createdBy: '',
+        resultConclution: '',
+        resultFile: '',
+        customerName: '',
+        serviceName: '',
+        sampleStaffID: '',
+        patientID: '',
+        sampleMethod: 'Tại cơ sở',
+        sampleReceiveDate: '',
+        sampleStatus: 'ready',
+        sampleType: 'Mẫu Chuẩn'
+    });
+
+    // Detail results - this would come from another API in real implementation
     const [detailResults, setDetailResults] = useState([
         {
             detailResultID: 1,
@@ -663,12 +594,27 @@ export default function TestResultManagement() {
         }
     ]);
 
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState('all');
-    const [selectedResult, setSelectedResult] = useState(null);
-    const [showDetailModal, setShowDetailModal] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    const [editingResult, setEditingResult] = useState(null);
+    // Load test results on component mount
+    useEffect(() => {
+        loadTestResults();
+    }, []);
+
+    const loadTestResults = async () => {
+        try {
+            setLoading(true);
+            const response = await TestResultAPI.getAllTestResults();
+            const testResultsData = response.data;
+            setTestResults(testResultsData);
+            setError(null);
+        } catch (err) {
+            console.error('Error loading test results:', err);
+            setError('Không thể tải danh sách kết quả xét nghiệm');
+            // Fallback to empty array
+            setTestResults([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Calculate statistics
     const totalSamples = testResults.length;
@@ -685,17 +631,38 @@ export default function TestResultManagement() {
         return matchesSearch && matchesStatus;
     });
 
-    const handleViewDetails = (result) => {
-        setSelectedResult(result);
-        setShowDetailModal(true);
-        setEditMode(false);
+    const handleViewDetails = async (result) => {
+        try {
+            const response = await TestResultAPI.getTestResultById(result.testResultID);
+            setSelectedResult(response.data);
+            setShowDetailModal(true);
+            setEditMode(false);
+        } catch (err) {
+            console.error('Error loading test result details:', err);
+            setError('Không thể tải chi tiết kết quả xét nghiệm');
+            // Fallback to display basic data
+            setSelectedResult(result);
+            setShowDetailModal(true);
+            setEditMode(false);
+        }
     };
 
-    const handleEditResult = (result) => {
-        setSelectedResult(result);
-        setEditingResult({ ...result });
-        setShowDetailModal(true);
-        setEditMode(true);
+    const handleEditResult = async (result) => {
+        try {
+            const response = await TestResultAPI.getTestResultById(result.testResultID);
+            setSelectedResult(response.data);
+            setEditingResult({ ...response.data });
+            setShowDetailModal(true);
+            setEditMode(true);
+        } catch (err) {
+            console.error('Error loading test result for editing:', err);
+            setError('Không thể tải dữ liệu để chỉnh sửa');
+            // Fallback to basic data
+            setSelectedResult(result);
+            setEditingResult({ ...result });
+            setShowDetailModal(true);
+            setEditMode(true);
+        }
     };
 
     const handleCloseModal = () => {
@@ -705,15 +672,104 @@ export default function TestResultManagement() {
         setEditMode(false);
     };
 
-    const handleSaveResult = () => {
+    const handleSaveResult = async () => {
         if (editingResult) {
-            setTestResults(prevResults =>
-                prevResults.map(r =>
-                    r.testResultID === editingResult.testResultID ? editingResult : r
-                )
-            );
-            handleCloseModal();
-            alert('Kết quả đã được cập nhật!');
+            try {
+                setLoading(true);
+                await TestResultAPI.updateTestResult(editingResult.testResultID, editingResult);
+                
+                // Refresh the test results list
+                await loadTestResults();
+                
+                handleCloseModal();
+                alert('Kết quả đã được cập nhật!');
+            } catch (err) {
+                console.error('Error updating test result:', err);
+                setError('Không thể cập nhật kết quả xét nghiệm');
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    const handleDeleteResult = async (resultId) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa kết quả này?')) {
+            try {
+                setLoading(true);
+                await TestResultAPI.deleteTestResult(resultId);
+                
+                // Refresh the test results list
+                await loadTestResults();
+                
+                alert('Kết quả đã được xóa!');
+            } catch (err) {
+                console.error('Error deleting test result:', err);
+                setError('Không thể xóa kết quả xét nghiệm');
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    const handleCreateNew = () => {
+        setNewResult({
+            bookingID: '',
+            resultDate: '',
+            createdBy: '',
+            resultConclution: '',
+            resultFile: '',
+            customerName: '',
+            serviceName: '',
+            sampleStaffID: '',
+            patientID: '',
+            sampleMethod: 'Tại cơ sở',
+            sampleReceiveDate: '',
+            sampleStatus: 'ready',
+            sampleType: 'Mẫu Chuẩn'
+        });
+        setShowCreateModal(true);
+    };
+
+    const handleCloseCreateModal = () => {
+        setShowCreateModal(false);
+        setNewResult({
+            bookingID: '',
+            resultDate: '',
+            createdBy: '',
+            resultConclution: '',
+            resultFile: '',
+            customerName: '',
+            serviceName: '',
+            sampleStaffID: '',
+            patientID: '',
+            sampleMethod: 'Tại cơ sở',
+            sampleReceiveDate: '',
+            sampleStatus: 'ready',
+            sampleType: 'Mẫu Chuẩn'
+        });
+    };
+
+    const handleSaveNewResult = async () => {
+        // Basic validation
+        if (!newResult.bookingID || !newResult.customerName || !newResult.serviceName) {
+            alert('Vui lòng điền đầy đủ thông tin bắt buộc (Booking ID, Tên khách hàng, Dịch vụ)');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await TestResultAPI.createTestResult(newResult);
+            
+            // Refresh the test results list
+            await loadTestResults();
+            
+            handleCloseCreateModal();
+            alert('Kết quả mới đã được tạo thành công!');
+        } catch (err) {
+            console.error('Error creating test result:', err);
+            setError('Không thể tạo kết quả xét nghiệm mới');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -764,12 +820,60 @@ export default function TestResultManagement() {
         <>
             <style>{beautifulStyles}</style>
             <div className="test-result-management-container">
-                {/* Statistics Section */}
-                <div className="statistics-section">
-                    <h1 className="page-title">Quản lý kết quả xét nghiệm</h1>
-                    <div className="stats-container">
-                        <div className="stat-card stat-total">
-                            <div className="stat-number">{totalSamples}</div>
+                {/* Loading State */}
+                {loading && (
+                    <div className="loading-container" style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '200px',
+                        fontSize: '16px',
+                        color: '#666'
+                    }}>
+                        <div>Đang tải dữ liệu...</div>
+                    </div>
+                )}
+
+                {/* Error State */}
+                {error && (
+                    <div className="error-container" style={{
+                        backgroundColor: '#fee',
+                        border: '1px solid #fcc',
+                        borderRadius: '4px',
+                        padding: '12px',
+                        margin: '10px 0',
+                        color: '#c33'
+                    }}>
+                        <strong>Lỗi:</strong> {error}
+                        <button 
+                            onClick={() => {
+                                setError(null);
+                                loadTestResults();
+                            }}
+                            style={{
+                                marginLeft: '10px',
+                                padding: '4px 8px',
+                                backgroundColor: '#007bff',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Thử lại
+                        </button>
+                    </div>
+                )}
+
+                {/* Content - only show when not loading */}
+                {!loading && (
+                    <>
+                        {/* Statistics Section */}
+                        <div className="statistics-section">
+                            <h1 className="page-title">Quản lý kết quả xét nghiệm</h1>
+                            <div className="stats-container">
+                                <div className="stat-card stat-total">
+                                    <div className="stat-number">{totalSamples}</div>
                             <div className="stat-label">TỔNG MẪU</div>
                         </div>
                         <div className="stat-card stat-ready">
@@ -809,7 +913,23 @@ export default function TestResultManagement() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="search-input-main"
                         />
-                        <Button className="add-sample-btn">+ Thêm mẫu mới</Button>
+                        <button 
+                            onClick={loadTestResults}
+                            className="add-sample-btn"
+                            style={{ 
+                                marginRight: '10px',
+                                backgroundColor: '#28a745',
+                                border: 'none'
+                            }}
+                        >
+                            🔄 Làm mới
+                        </button>
+                        <Button 
+                            className="add-sample-btn"
+                            onClick={handleCreateNew}
+                        >
+                            + Thêm mẫu mới
+                        </Button>
                     </div>
                 </div>
 
@@ -861,6 +981,7 @@ export default function TestResultManagement() {
                                                 size="sm" 
                                                 className="btn-delete"
                                                 variant="outline"
+                                                onClick={() => handleDeleteResult(result.testResultID)}
                                             >
                                                 XÓA
                                             </Button>
@@ -1035,7 +1156,162 @@ export default function TestResultManagement() {
                     </div>
                 </div>
             )}
-        </div>
+
+            {/* Create New Modal */}
+            {showCreateModal && (
+                <div className="modal-overlay" onClick={handleCloseCreateModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Tạo kết quả xét nghiệm mới</h2>
+                            <button className="close-button" onClick={handleCloseCreateModal}>×</button>
+                        </div>
+                        
+                        <div className="modal-body">
+                            <div className="result-info-section">
+                                <h3>Thông tin cơ bản <span style={{color: 'red'}}>*</span></h3>
+                                <div className="info-grid">
+                                    <div className="info-item">
+                                        <label>Mã Booking <span style={{color: 'red'}}>*</span>:</label>
+                                        <Input
+                                            type="number"
+                                            value={newResult.bookingID}
+                                            onChange={(e) => setNewResult(prev => ({...prev, bookingID: e.target.value}))}
+                                            placeholder="Nhập mã booking"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Tên khách hàng <span style={{color: 'red'}}>*</span>:</label>
+                                        <Input
+                                            value={newResult.customerName}
+                                            onChange={(e) => setNewResult(prev => ({...prev, customerName: e.target.value}))}
+                                            placeholder="Nhập tên khách hàng"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Dịch vụ <span style={{color: 'red'}}>*</span>:</label>
+                                        <Select
+                                            value={newResult.serviceName}
+                                            onChange={(e) => setNewResult(prev => ({...prev, serviceName: e.target.value}))}
+                                        >
+                                            <option value="">Chọn dịch vụ</option>
+                                            <option value="Xét nghiệm ADN xác định bố con">Xét nghiệm ADN xác định bố con</option>
+                                            <option value="Xét nghiệm ADN xác định anh em ruột">Xét nghiệm ADN xác định anh em ruột</option>
+                                            <option value="Xét nghiệm ADN xác định ông bà cháu">Xét nghiệm ADN xác định ông bà cháu</option>
+                                        </Select>
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Mã nhân viên lấy mẫu:</label>
+                                        <Input
+                                            type="number"
+                                            value={newResult.sampleStaffID}
+                                            onChange={(e) => setNewResult(prev => ({...prev, sampleStaffID: e.target.value}))}
+                                            placeholder="Nhập mã nhân viên"
+                                        />
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Mã bệnh nhân:</label>
+                                        <Input
+                                            type="number"
+                                            value={newResult.patientID}
+                                            onChange={(e) => setNewResult(prev => ({...prev, patientID: e.target.value}))}
+                                            placeholder="Nhập mã bệnh nhân"
+                                        />
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Phương thức lấy mẫu:</label>
+                                        <Select
+                                            value={newResult.sampleMethod}
+                                            onChange={(e) => setNewResult(prev => ({...prev, sampleMethod: e.target.value}))}
+                                        >
+                                            <option value="Tại cơ sở">Tại cơ sở</option>
+                                            <option value="Tại nhà">Tại nhà</option>
+                                        </Select>
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Loại mẫu:</label>
+                                        <Select
+                                            value={newResult.sampleType}
+                                            onChange={(e) => setNewResult(prev => ({...prev, sampleType: e.target.value}))}
+                                        >
+                                            <option value="Mẫu Chuẩn">Mẫu Chuẩn</option>
+                                            <option value="Mẫu Thông Thường">Mẫu Thông Thường</option>
+                                            <option value="Mẫu Đặc Biệt">Mẫu Đặc Biệt</option>
+                                        </Select>
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Trạng thái mẫu:</label>
+                                        <Select
+                                            value={newResult.sampleStatus}
+                                            onChange={(e) => setNewResult(prev => ({...prev, sampleStatus: e.target.value}))}
+                                        >
+                                            <option value="ready">Đã tiếp nhận</option>
+                                            <option value="processing">Đang xét nghiệm</option>
+                                            <option value="normal">Hoàn thành</option>
+                                            <option value="special">Đặc biệt</option>
+                                        </Select>
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Ngày nhận mẫu:</label>
+                                        <Input
+                                            type="date"
+                                            value={newResult.sampleReceiveDate}
+                                            onChange={(e) => setNewResult(prev => ({...prev, sampleReceiveDate: e.target.value}))}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="result-conclusion-section">
+                                <h3>Thông tin kết quả (tùy chọn)</h3>
+                                <div className="info-grid">
+                                    <div className="info-item">
+                                        <label>Ngày kết quả:</label>
+                                        <Input
+                                            type="date"
+                                            value={newResult.resultDate}
+                                            onChange={(e) => setNewResult(prev => ({...prev, resultDate: e.target.value}))}
+                                        />
+                                    </div>
+                                    <div className="info-item">
+                                        <label>Người tạo:</label>
+                                        <Input
+                                            value={newResult.createdBy}
+                                            onChange={(e) => setNewResult(prev => ({...prev, createdBy: e.target.value}))}
+                                            placeholder="Nhập tên người tạo"
+                                        />
+                                    </div>
+                                </div>
+                                <div style={{marginTop: '16px'}}>
+                                    <label style={{display: 'block', marginBottom: '8px', fontSize: '12px', fontWeight: '700', color: '#718096', textTransform: 'uppercase'}}>
+                                        Kết luận:
+                                    </label>
+                                    <textarea
+                                        value={newResult.resultConclution}
+                                        onChange={(e) => setNewResult(prev => ({...prev, resultConclution: e.target.value}))}
+                                        rows="4"
+                                        placeholder="Nhập kết luận xét nghiệm (nếu có)..."
+                                        className="conclusion-textarea"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="modal-footer">
+                            <Button variant="primary" onClick={handleSaveNewResult}>
+                                Tạo mới
+                            </Button>
+                            <Button variant="outline" onClick={handleCloseCreateModal}>
+                                Hủy
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+                    </>
+                )}
+            </div>
         </>
     );
 }
