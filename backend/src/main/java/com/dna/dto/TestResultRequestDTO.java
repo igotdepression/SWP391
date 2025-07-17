@@ -1,0 +1,80 @@
+package com.dna.dto;
+
+import java.time.LocalDate;
+import java.util.List;
+
+/**
+ * DTO for TestResult creation/update requests
+ */
+public class TestResultRequestDTO {
+    private Integer bookingID;
+    private LocalDate resultDate;
+    private String resultConclution;
+    private String resultFile;
+    private String createdBy;
+    private List<DetailResultRequestDTO> detailResults;
+
+    // Default constructor
+    public TestResultRequestDTO() {
+    }
+
+    // Constructor with all parameters
+    public TestResultRequestDTO(Integer bookingID, LocalDate resultDate, String resultConclution, 
+                               String resultFile, String createdBy, List<DetailResultRequestDTO> detailResults) {
+        this.bookingID = bookingID;
+        this.resultDate = resultDate;
+        this.resultConclution = resultConclution;
+        this.resultFile = resultFile;
+        this.createdBy = createdBy;
+        this.detailResults = detailResults;
+    }
+
+    // Getters and Setters
+    public Integer getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(Integer bookingID) {
+        this.bookingID = bookingID;
+    }
+
+    public LocalDate getResultDate() {
+        return resultDate;
+    }
+
+    public void setResultDate(LocalDate resultDate) {
+        this.resultDate = resultDate;
+    }
+
+    public String getResultConclution() {
+        return resultConclution;
+    }
+
+    public void setResultConclution(String resultConclution) {
+        this.resultConclution = resultConclution;
+    }
+
+    public String getResultFile() {
+        return resultFile;
+    }
+
+    public void setResultFile(String resultFile) {
+        this.resultFile = resultFile;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<DetailResultRequestDTO> getDetailResults() {
+        return detailResults;
+    }
+
+    public void setDetailResults(List<DetailResultRequestDTO> detailResults) {
+        this.detailResults = detailResults;
+    }
+}
