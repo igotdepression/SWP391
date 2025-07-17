@@ -441,69 +441,57 @@ export default function Booking() {
                     <div className="booking-header-row">
                         <h2 className="booking-title">Danh sách Đặt lịch</h2>
                         {/* Phần thống kê tổng quan */}
-                        <div className="stats-container">
-                            <div className="stats-grid">
-                                <div className="stat-card stat-card--total">
-                                    <div className="stat-icon">
-                                        <MdVisibility size={24} />
-                                    </div>
-                                    <div className="stat-content">
-                                        <span className="stat-label">Tổng đơn</span>
-                                        <span className="stat-value">{bookings.length}</span>
-                                    </div>
+                        <div className="consultation-stats-row">
+                            <div className="stat-card stat-card--total">
+                                <div className="stat-icon">
+                                    <MdVisibility size={24} />
                                 </div>
+                                <span className="stat-label">Tổng đơn</span>
+                                <span className="stat-value">{bookings.length}</span>
+                            </div>
 
-                                <div className="stat-card stat-card--pending">
-                                    <div className="stat-icon">
-                                        <MdCheckCircle size={24} />
-                                    </div>
-                                    <div className="stat-content">
-                                        <span className="stat-label">Chờ xác nhận</span>
-                                        <span className="stat-value">
-                                            {bookings.filter(b => b.status === "Chờ xác nhận").length}
-                                        </span>
-                                    </div>
+                            <div className="stat-card stat-card--pending">
+                                <div className="stat-icon">
+                                    <MdCheckCircle size={24} />
                                 </div>
+                                <span className="stat-label">Chờ xác nhận</span>
+                                <span className="stat-value">
+                                    {bookings.filter(b => b.status === "Chờ xác nhận").length}
+                                </span>
+                            </div>
 
-                                <div className="stat-card stat-card--processing">
-                                    <div className="stat-icon">
-                                        <MdArrowForward size={24} />
-                                    </div>
-                                    <div className="stat-content">
-                                        <span className="stat-label">Đang xử lý</span>
-                                        <span className="stat-value">
-                                            {bookings.filter(b =>
-                                                ["Chờ lấy mẫu", "Chờ kết quả", "Chờ giám định pháp lý"].includes(b.status)
-                                            ).length}
-                                        </span>
-                                    </div>
+                            <div className="stat-card stat-card--processing">
+                                <div className="stat-icon">
+                                    <MdArrowForward size={24} />
                                 </div>
+                                <span className="stat-label">Đang xử lý</span>
+                                <span className="stat-value">
+                                    {bookings.filter(b =>
+                                        ["Chờ lấy mẫu", "Chờ kết quả", "Chờ giám định pháp lý"].includes(b.status)
+                                    ).length}
+                                </span>
+                            </div>
 
-                                <div className="stat-card stat-card--completed">
-                                    <div className="stat-icon">
-                                        <MdCheckCircle size={24} />
-                                    </div>
-                                    <div className="stat-content">
-                                        <span className="stat-label">Hoàn thành</span>
-                                        <span className="stat-value">
-                                            {bookings.filter(b => b.status === "Hoàn thành").length}
-                                        </span>
-                                    </div>
+                            <div className="stat-card stat-card--completed">
+                                <div className="stat-icon">
+                                    <MdCheckCircle size={24} />
                                 </div>
+                                <span className="stat-label">Hoàn thành</span>
+                                <span className="stat-value">
+                                    {bookings.filter(b => b.status === "Hoàn thành").length}
+                                </span>
+                            </div>
 
-                                <div className="stat-card stat-card--cancelled">
-                                    <div className="stat-icon">
-                                        <MdCancel size={24} />
-                                    </div>
-                                    <div className="stat-content">
-                                        <span className="stat-label">Đã hủy/Từ chối</span>
-                                        <span className="stat-value">
-                                            {bookings.filter(b =>
-                                                ["Đã hủy", "Không xác nhận"].includes(b.status)
-                                            ).length}
-                                        </span>
-                                    </div>
+                            <div className="stat-card stat-card--cancelled">
+                                <div className="stat-icon">
+                                    <MdCancel size={24} />
                                 </div>
+                                <span className="stat-label">Đã hủy/Từ chối</span>
+                                <span className="stat-value">
+                                    {bookings.filter(b =>
+                                        ["Đã hủy", "Không xác nhận"].includes(b.status)
+                                    ).length}
+                                </span>
                             </div>
                         </div>
 
@@ -872,12 +860,12 @@ export default function Booking() {
                                 <label>Dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.serviceName || editBooking.service || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            serviceName: e.target.value 
-                                        } 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            serviceName: e.target.value
+                                        }
                                     })}
                                 >
                                     {serviceOptions.map(s => (
@@ -889,11 +877,11 @@ export default function Booking() {
                                 <label>Loại dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.serviceType || editBooking.serviceType || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            serviceType: e.target.value 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            serviceType: e.target.value
                                         },
                                         serviceType: e.target.value
                                     })}
@@ -907,11 +895,11 @@ export default function Booking() {
                                 <label>Gói dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.packageType || editBooking.packageType || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            packageType: e.target.value 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            packageType: e.target.value
                                         },
                                         packageType: e.target.value
                                     })}

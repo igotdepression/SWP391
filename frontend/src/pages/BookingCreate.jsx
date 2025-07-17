@@ -95,11 +95,11 @@ export default function BookingCreate() {
 
     const [locationSelections, setLocationSelections] = useState(
         initialBookingData?.participants ? parseLocationSelections(initialBookingData.participants)
-        : []
+            : []
     );
     const [addressDetails, setAddressDetails] = useState(
         initialBookingData?.participants ? parseAddressDetails(initialBookingData.participants)
-        : []
+            : []
     );
 
     useEffect(() => {
@@ -452,7 +452,7 @@ export default function BookingCreate() {
                     <p>Vui lòng điền thông tin dưới đây để đặt lịch xét nghiệm ADN.</p>
 
                     {serviceListError ? (
-                        <div style={{color: 'red', marginBottom: 8}}>{serviceListError}</div>
+                        <div style={{ color: 'red', marginBottom: 8 }}>{serviceListError}</div>
                     ) : (
                         <div className="form-group">
                             <label htmlFor="serviceName">Loại dịch vụ:</label>
@@ -514,22 +514,6 @@ export default function BookingCreate() {
                                 serviceList.filter(s => s.serviceName === serviceName).map(s => s.serviceType)
                             )).map((type, idx) => (
                                 <option key={type || idx} value={type}>{type}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="typeSample">Mẫu:</label>
-                        <select
-                            id="typeSample"
-                            value={typeSample}
-                            onChange={handleTypeSampleChange}
-                            required
-                            disabled={!serviceType}
-                        >
-                            <option value="">Chọn loại mẫu</option>
-                            {sampleTypeOptions.map((sample, idx) => (
-                                <option key={sample || idx} value={sample}>{sample}</option>
                             ))}
                         </select>
                     </div>
