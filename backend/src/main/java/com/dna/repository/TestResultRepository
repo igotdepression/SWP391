@@ -1,0 +1,38 @@
+package com.dna.repository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.dna.entity.TestResult;
+
+@Repository
+public interface TestResultRepository extends JpaRepository<TestResult, Integer> {
+    
+    // Tìm test result theo bookingID
+    Optional<TestResult> findByBookingBookingID(Integer bookingID);
+    
+    // Tìm test result theo ngày tạo kết quả
+    List<TestResult> findByResultDate(LocalDate resultDate);
+    
+    // Tìm test result trong khoảng thời gian
+    List<TestResult> findByResultDateBetween(LocalDate startDate, LocalDate endDate);
+    
+    // Tìm test result theo người tạo
+    List<TestResult> findByCreatedBy(String createdBy);
+    
+    // Tìm test result có file kết quả
+    List<TestResult> findByResultFileIsNotNull();
+    
+    // Tìm test result theo booking status
+    @Query("SELECT tr FROM TestResult tr WHERE tr.booking.status = :status")
+    List<TestResult> findByBookingStatus(@Param("status") String status);
+    
+    // Kiểm tra test result đã tồn tại cho booking chưa
+    boolean existsByBookingBookingID(Integer bookingID);
+}
