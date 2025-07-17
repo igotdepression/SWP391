@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../../components/Card";
 import "./Booking.css";
 import { MdCheckCircle, MdCancel, MdArrowForward, MdVisibility, MdEdit, MdPerson, MdSort, MdSortByAlpha } from "react-icons/md";
 import { ThermometerIcon } from "lucide-react";
+import api from "../../services/api";
 
 const getNextStatus = (current, serviceType) => {
-    if (current === "Chờ xác nhận" || current === "Không xác nhận") return "Chờ lấy mẫu";
-    if (current === "Chờ lấy mẫu") return "Chờ kết quả";
-    if (current === "Chờ kết quả") {
+    if (
+        current === "Chờ xác nhận" ||
+        current === "Không xác nhận" ||
+        current === "PENDING" ||
+        current === "REJECTED"
+    ) return "Chờ lấy mẫu";
+    if (current === "Chờ lấy mẫu" || current === "WAITING_SAMPLE" || current === "PROCESSING") return "Chờ kết quả";
+    if (current === "Chờ kết quả" || current === "WAITING_RESULT") {
         return serviceType === "Hành chính" ? "Chờ giám định pháp lý" : "Hoàn thành";
     }
-    if (current === "Chờ giám định pháp lý") return "Hoàn thành";
+    if (current === "Chờ giám định pháp lý" || current === "WAITING_LEGAL") return "Hoàn thành";
+    if (current === "Hoàn thành" || current === "COMPLETED") return "Hoàn thành";
     return current;
 };
 
@@ -126,340 +133,7 @@ const users = [
 ];
 
 export default function Booking() {
-    const [bookings, setBookings] = useState([
-        {
-            bookingID: 1,
-            userID: 101,
-            serviceID: 201,
-            customerName: "Nguyễn Văn A",
-            phoneNumber: "0901234567",
-            service: "Xét nghiệm cha con",
-            serviceType: "Dân sự",
-            packageType: "Tiêu chuẩn",
-            numberSample: 2,
-            bookingDate: "2024-06-28",
-            status: "Chờ xác nhận",
-            totalPrice: 2500000,
-            appointmentDate: "2024-06-30",
-            note: "Tôi muốn lấy mẫu tại nhà.",
-            participants: [
-                {
-                    participantID: 1,
-                    fullName: "Nguyễn Văn A",
-                    gender: "Nam",
-                    dob: 1980,
-                    relationship: "Cha nghi vấn",
-                    sampleType: "Máu",
-                    collectionMethod: "Tại trung tâm"
-                },
-                {
-                    participantID: 2,
-                    fullName: "Nguyễn Văn B",
-                    gender: "Nam",
-                    dob: 2010,
-                    relationship: "Con",
-                    sampleType: "Niêm mạc miệng",
-                    collectionMethod: "Tại nhà"
-                }
-            ]
-        },
-        {
-            bookingID: 2,
-            userID: 102,
-            serviceID: 202,
-            customerName: "Trần Thị B",
-            phoneNumber: "0912345678",
-            service: "Xét nghiệm thai nhi",
-            serviceType: "Dân sự", // Đã sửa lại
-            packageType: "Lấy nhanh",
-            numberSample: 2,
-            bookingDate: "2024-06-27",
-            status: "Chờ lấy mẫu", // Đổi từ "Đã xác nhận" sang "Chờ lấy mẫu"
-            totalPrice: 1200000,
-            appointmentDate: "2024-06-28",
-            note: "Tôi cần kết quả gấp.",
-            participants: [
-                {
-                    participantID: 1,
-                    fullName: "Trần Thị B",
-                    gender: "Nữ",
-                    dob: 1985,
-                    relationship: "Mẹ nghi vấn",
-                    sampleType: "Máu",
-                    collectionMethod: "Tại trung tâm"
-                },
-                {
-                    participantID: 2,
-                    fullName: "Trần Văn D",
-                    gender: "Nam",
-                    dob: 2012,
-                    relationship: "Con",
-                    sampleType: "Tóc",
-                    collectionMethod: "Tại nhà"
-                }
-            ]
-        },
-        {
-            bookingID: 3,
-            userID: 103,
-            serviceID: 203,
-            customerName: "Lê Văn C",
-            phoneNumber: "0987654321",
-            service: "Xét nghiệm ông cháu",
-            serviceType: "Dân sự",
-            packageType: "Tiêu chuẩn",
-            numberSample: 3,
-            bookingDate: "2024-06-26",
-            status: "Chờ lấy mẫu",
-            totalPrice: 3200000,
-            appointmentDate: "2024-06-29",
-            note: "Tôi muốn được tư vấn thêm.",
-            participants: [
-                { participantID: 1, name: "Nguyễn Văn A", relationship: "Cha" },
-                { participantID: 2, name: "Nguyễn Văn B", relationship: "Con" }
-            ]
-        },
-        {
-            bookingID: 4,
-            userID: 104,
-            serviceID: 204,
-            customerName: "Phạm Thị D",
-            phoneNumber: "0978123456",
-            service: "Xét nghiệm mẹ con",
-            serviceType: "Hành chính",
-            packageType: "Lấy nhanh",
-            numberSample: 2,
-            bookingDate: "2024-06-25",
-            status: "Chờ kết quả", // Đổi từ "Đã lấy mẫu" sang "Chờ kết quả"
-            totalPrice: 2700000,
-            appointmentDate: "2024-06-27",
-            note: "Tôi muốn đổi lịch lấy mẫu.",
-            participants: [
-                { participantID: 1, name: "Nguyễn Văn A", relationship: "Cha" },
-                { participantID: 2, name: "Nguyễn Văn B", relationship: "Con" }
-            ]
-        },
-        {
-            bookingID: 5,
-            userID: 105,
-            serviceID: 205,
-            customerName: "Ngô Minh E",
-            phoneNumber: "0911222333",
-            service: "Xét nghiệm bà cháu",
-            serviceType: "Dân sự",
-            packageType: "Tiêu chuẩn",
-            numberSample: 2,
-            bookingDate: "2024-06-24",
-            status: "Chờ kết quả",
-            totalPrice: 2500000,
-            appointmentDate: "2024-06-26",
-            note: "Tôi muốn lấy mẫu tại nhà.",
-            participants: [
-                { participantID: 1, name: "Nguyễn Văn A", relationship: "Cha" },
-                { participantID: 2, name: "Nguyễn Văn B", relationship: "Con" }
-            ]
-        },
-        {
-            bookingID: 6,
-            userID: 106,
-            serviceID: 206,
-            customerName: "Đặng Thị F",
-            phoneNumber: "0909988776",
-            service: "Xét nghiệm ông cháu",
-            serviceType: "Hành chính",
-            packageType: "Lấy nhanh",
-            numberSample: 3,
-            bookingDate: "2024-06-23",
-            status: "Chờ giám định pháp lý", // Đổi từ "Đã có kết quả" sang "Chờ giám định pháp lý" (nếu là Hành chính) hoặc "Hoàn thành" (nếu Dân sự)
-            totalPrice: 3500000,
-            appointmentDate: "2024-06-25",
-            note: "Tôi rất hài lòng với dịch vụ.",
-            participants: [
-                { participantID: 1, name: "Nguyễn Văn A", relationship: "Cha" },
-                { participantID: 2, name: "Nguyễn Văn B", relationship: "Con" }
-            ]
-        },
-        {
-            bookingID: 7,
-            userID: 107,
-            serviceID: 207,
-            customerName: "Vũ Văn G",
-            phoneNumber: "0933445566",
-            service: "Xét nghiệm thai nhi",
-            serviceType: "Dân sự",
-            packageType: "Tiêu chuẩn",
-            numberSample: 2,
-            bookingDate: "2024-06-22",
-            status: "Chờ giám định pháp lý",
-            totalPrice: 1800000,
-            appointmentDate: "2024-06-24",
-            note: "Tôi muốn lấy mẫu ngoài giờ.",
-            participants: [
-                { participantID: 1, name: "Nguyễn Văn A", relationship: "Cha" },
-                { participantID: 2, name: "Nguyễn Văn B", relationship: "Con" }
-            ]
-        },
-        {
-            bookingID: 8,
-            userID: 108,
-            serviceID: 208,
-            customerName: "Trịnh Thị H",
-            phoneNumber: "0922334455",
-            service: "Xét nghiệm cha con",
-            serviceType: "Hành chính",
-            packageType: "Lấy nhanh",
-            numberSample: 2,
-            bookingDate: "2024-06-21",
-            status: "Hoàn thành",
-            totalPrice: 2700000,
-            appointmentDate: "2024-06-23",
-            note: "Tôi muốn đổi địa điểm lấy mẫu.",
-            participants: [
-                { participantID: 1, name: "Nguyễn Văn A", relationship: "Cha" },
-                { participantID: 2, name: "Nguyễn Văn B", relationship: "Con" }
-            ]
-        },
-        {
-            bookingID: 9,
-            userID: 109,
-            serviceID: 209,
-            customerName: "Bùi Văn I",
-            phoneNumber: "0911555777",
-            email: "buivani@gmail.com",
-            address: "852 Đường I, Quận 9, TP.HCM",
-            gender: "Nam",
-            dob: 1980,
-            service: "Xét nghiệm anh em ruột",
-            serviceType: "Dân sự",
-            packageType: "Tiêu chuẩn",
-            numberSample: 3,
-            bookingDate: "2024-06-20",
-            status: "Đã hủy",
-            totalPrice: 3300000,
-            appointmentDate: "2024-06-22",
-            note: "Tôi muốn nhận kết quả qua email.",
-            participants: [
-                { participantID: 1, name: "Nguyễn Văn A", relationship: "Cha" },
-                { participantID: 2, name: "Nguyễn Văn B", relationship: "Con" }
-            ]
-        },
-        {
-            bookingID: 10,
-            userID: 110,
-            serviceID: 210,
-            customerName: "Phan Thị K",
-            phoneNumber: "0901122334",
-            service: "Xét nghiệm mẹ con",
-            serviceType: "Hành chính",
-            packageType: "Lấy nhanh",
-            numberSample: 2,
-            bookingDate: "2024-06-19",
-            status: "Không xác nhận",
-            totalPrice: 1900000,
-            appointmentDate: "2024-06-21",
-            note: "Tôi muốn trả kết quả sớm.",
-            participants: [
-                { participantID: 1, name: "Nguyễn Văn A", relationship: "Cha" },
-                { participantID: 2, name: "Nguyễn Văn B", relationship: "Con" }
-            ]
-        },
-        {
-            bookingID: 11,
-            userID: 111,
-            serviceID: 211,
-            customerName: "Lê Thị E",
-            phoneNumber: "0912345670",
-            service: "Xét nghiệm thai nhi",
-            serviceType: "Hành chính",
-            packageType: "Tiêu chuẩn",
-            numberSample: 2,
-            bookingDate: "2024-06-29",
-            status: "Chờ xác nhận",
-            totalPrice: 2500000,
-            appointmentDate: "2024-07-01",
-            note: "Lần đầu tiên làm xét nghiệm.",
-            participants: [
-                {
-                    participantID: 1,
-                    fullName: "Lê Thị E",
-                    gender: "Nữ",
-                    dob: 1990,
-                    relationship: "Thai nhi (Mẫu từ mẹ)",
-                    sampleType: "Máu mẹ",
-                    collectionMethod: "Tại trung tâm",
-                    personalId: "1122334455",
-                    address: "789 Đường C, Quận 3, TP.HCM",
-                    relationToRegistrant: "Bản thân"
-                },
-                {
-                    participantID: 2,
-                    fullName: "Nguyễn Văn F",
-                    gender: "Nam",
-                    dob: 1988,
-                    relationship: "Cha nghi vấn",
-                    sampleType: "Máu",
-                    collectionMethod: "Tại nhà",
-                    personalId: "5566778899",
-                    address: "789 Đường C, Quận 3, TP.HCM",
-                    relationToRegistrant: "Chồng"
-                }
-            ]
-        },
-        {
-            bookingID: 12,
-            userID: 112,
-            serviceID: 212,
-            customerName: "Phạm Văn G",
-            phoneNumber: "0903344556",
-            service: "Xét nghiệm cha con",
-            serviceType: "Dân sự",
-            packageType: "Tiêu chuẩn",
-            numberSample: 3,
-            bookingDate: "2024-07-01",
-            status: "Chờ xác nhận",
-            totalPrice: 3000000,
-            appointmentDate: "2024-07-03",
-            note: "Yêu cầu lấy mẫu tại nhà.",
-            participants: [
-                {
-                    participantID: 1,
-                    fullName: "Phạm Văn G",
-                    gender: "Nam",
-                    dob: 2000,
-                    relationship: "Anh",
-                    sampleType: "Niêm mạc miệng",
-                    collectionMethod: "Tại trung tâm",
-                    personalId: "2233445566",
-                    address: "101 Đường D, Quận 4, TP.HCM",
-                    relationToRegistrant: "Bản thân"
-                },
-                {
-                    participantID: 2,
-                    fullName: "Phạm Văn H",
-                    gender: "Nam",
-                    dob: 2002,
-                    relationship: "Em",
-                    sampleType: "Tóc",
-                    collectionMethod: "Tại nhà",
-                    personalId: "6677889900",
-                    address: "101 Đường D, Quận 4, TP.HCM",
-                    relationToRegistrant: "Em"
-                },
-                {
-                    participantID: 3,
-                    fullName: "Ngô Thị I",
-                    gender: "Nữ",
-                    dob: 1975,
-                    relationship: "Mẹ",
-                    sampleType: "Máu",
-                    collectionMethod: "Tại trung tâm",
-                    personalId: "3344556677",
-                    address: "101 Đường D, Quận 4, TP.HCM",
-                    relationToRegistrant: "Mẹ"
-                }
-            ]
-        }
-    ]);
+    const [bookings, setBookings] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
     const [filterService, setFilterService] = useState("all");
@@ -468,7 +142,7 @@ export default function Booking() {
     const [filterAppointmentDate, setFilterAppointmentDate] = useState("");
     const [filterPackageType, setFilterPackageType] = useState("all");
 
-    // New sorting states
+    // Trạng thái sắp xếp mới
     const [sortField, setSortField] = useState("");
     const [sortDirection, setSortDirection] = useState("asc"); // "asc" or "desc"
 
@@ -486,7 +160,15 @@ export default function Booking() {
         "Chờ giám định pháp lý": { label: "Chờ giám định pháp lý", className: "cho-giam-dinh-phap-ly" },
         "Hoàn thành": { label: "Hoàn thành", className: "hoan-thanh" },
         "Đã hủy": { label: "Đã hủy", className: "da-huy" },
-        "Không xác nhận": { label: "Không xác nhận", className: "khong-xac-nhan" }
+        "Không xác nhận": { label: "Không xác nhận", className: "khong-xac-nhan" },
+        "PENDING": { label: "Chờ xác nhận", className: "cho-xac-nhan" },
+        "PROCESSING": { label: "Đang xử lý", className: "cho-lay-mau" },
+        "WAITING_SAMPLE": { label: "Chờ lấy mẫu", className: "cho-lay-mau" },
+        "WAITING_RESULT": { label: "Chờ kết quả", className: "cho-ket-qua" },
+        "WAITING_LEGAL": { label: "Chờ giám định pháp lý", className: "cho-giam-dinh-phap-ly" },
+        "COMPLETED": { label: "Hoàn thành", className: "hoan-thanh" },
+        "CANCELLED": { label: "Đã hủy", className: "da-huy" },
+        "REJECTED": { label: "Không xác nhận", className: "khong-xac-nhan" },
     };
 
     const availableStatuses = [
@@ -495,16 +177,33 @@ export default function Booking() {
     ];
 
     const getStatusLabel = (status) => STATUS_MAP[status]?.label || status;
-    const getStatusClass = (status) => {
+    const getStatusClass = (status) => STATUS_MAP[status]?.className || "";
+
+    const getStatusColor = (status) => {
         switch (status) {
-            case "Chờ xác nhận": return "cho-xac-nhan";
-            case "Chờ lấy mẫu": return "cho-lay-mau";
-            case "Chờ kết quả": return "cho-ket-qua";
-            case "Chờ giám định pháp lý": return "cho-giam-dinh-phap-ly";
-            case "Hoàn thành": return "hoan-thanh";
-            case "Đã hủy": return "da-huy";
-            case "Không xác nhận": return "khong-xac-nhan";
-            default: return "";
+            case "Chờ xác nhận":
+            case "PENDING":
+                return "#f07903";
+            case "Chờ lấy mẫu":
+            case "Chờ kết quả":
+            case "Chờ giám định pháp lý":
+            case "Đang xử lý":
+            case "PROCESSING":
+            case "WAITING_SAMPLE":
+            case "WAITING_RESULT":
+            case "WAITING_LEGAL":
+                return "#f07903";
+            case "Hoàn thành":
+            case "COMPLETED":
+                return "#16a34a";
+            case "Không xác nhận":
+            case "REJECTED":
+                return "#dc2626";
+            case "Đã hủy":
+            case "CANCELLED":
+                return "#6b7280";
+            default:
+                return "#222";
         }
     };
 
@@ -521,30 +220,30 @@ export default function Booking() {
 
     // Lấy danh sách số mẫu duy nhất >= 2
     const numberSampleOptions = Array.from(
-        new Set(bookings.map(b => b.numberSample).filter(n => n >= 2))
+        new Set(bookings.map(b => b.numberSample).filter(n => n && n >= 2))
     );
 
     // Lấy danh sách gói dịch vụ duy nhất
     const packageTypeOptions = Array.from(
-        new Set(bookings.map(b => b.packageType))
+        new Set(bookings.map(b => b.service?.packageType || b.packageType).filter(Boolean))
     );
 
-    // Enhanced filtering logic
+    // Logic lọc nâng cao
     const filteredBookings = bookings.filter(b => {
-        const searchLower = searchTerm.toLowerCase();
-        const matchesSearch = searchTerm === "" ||
-            b.customerName.toLowerCase().includes(searchLower) ||
-            b.phoneNumber.includes(searchTerm) ||
-            b.service.toLowerCase().includes(searchLower) ||
-            b.bookingID.toString().includes(searchTerm) ||
-            b.userID.toString().includes(searchTerm) ||
+        const searchLower = (searchTerm || '').toLowerCase();
+        const matchesSearch = (searchTerm || '') === "" ||
+            (b.customerName && b.customerName.toLowerCase().includes(searchLower)) ||
+            (b.phoneNumber && b.phoneNumber.includes(searchTerm || '')) ||
+            (b.serviceName && b.serviceName.toLowerCase().includes(searchLower)) ||
+            (b.bookingID && b.bookingID.toString().includes(searchTerm || '')) ||
+            (b.userID && b.userID.toString().includes(searchTerm || '')) ||
             (b.serviceType && b.serviceType.toLowerCase().includes(searchLower));
 
         const matchesStatus = filterStatus === "all" || b.status === filterStatus;
-        const matchesService = filterService === "all" || b.service === filterService;
-        const matchesServiceType = filterServiceType === "all" || b.serviceType === filterServiceType;
-        const matchesPackageType = filterPackageType === "all" || b.packageType === filterPackageType;
-        const matchesNumberSample = filterNumberSample === "all" || b.numberSample.toString() === filterNumberSample;
+        const matchesService = filterService === "all" || (b.serviceName || b.service) === filterService;
+        const matchesServiceType = filterServiceType === "all" || (b.service?.serviceType || b.serviceType) === filterServiceType;
+        const matchesPackageType = filterPackageType === "all" || (b.service?.packageType || b.packageType) === filterPackageType;
+        const matchesNumberSample = filterNumberSample === "all" || (b.numberSample && b.numberSample.toString() === filterNumberSample);
         const matchesAppointmentDate = filterAppointmentDate === "" || b.appointmentDate === filterAppointmentDate;
 
         return matchesSearch && matchesStatus && matchesService &&
@@ -552,7 +251,7 @@ export default function Booking() {
             matchesNumberSample && matchesAppointmentDate;
     });
 
-    // Sorting logic - chỉ cho bookingDate và appointmentDate
+    // Logic sắp xếp - chỉ cho bookingDate và appointmentDate
     const sortedBookings = [...bookings].sort((a, b) => {
         if (!sortField) return 0;
 
@@ -576,7 +275,7 @@ export default function Booking() {
         return 0;
     });
 
-    // Handle sorting - chỉ cho bookingDate và appointmentDate
+    // Xử lý sắp xếp - chỉ cho bookingDate và appointmentDate
     const handleSort = (field) => {
         if (field !== "bookingDate" && field !== "appointmentDate") return;
 
@@ -588,7 +287,7 @@ export default function Booking() {
         }
     };
 
-    // Get sort icon - chỉ cho bookingDate và appointmentDate
+    // Lấy icon sắp xếp - chỉ cho bookingDate và appointmentDate
     const getSortIcon = (field) => {
         if (field !== "bookingDate" && field !== "appointmentDate") return null;
         if (sortField !== field) return <MdSort size={16} color="#999" />;
@@ -597,7 +296,7 @@ export default function Booking() {
             <MdSort size={16} color="#2563eb" />;
     };
 
-    // Reset filters and sorting
+    // Đặt lại bộ lọc và sắp xếp
     const resetFilters = () => {
         setSearchTerm("");
         setFilterStatus("all");
@@ -612,41 +311,40 @@ export default function Booking() {
 
     const filteredAndSortedBookings = sortedBookings.filter(b =>
         (filterStatus === "all" || b.status === filterStatus) &&
-        (filterService === "all" || b.service === filterService) &&
-        (filterServiceType === "all" || b.serviceType === filterServiceType) &&
-        (filterPackageType === "all" || b.packageType === filterPackageType) &&
+        (filterService === "all" || (b.serviceName || b.service) === filterService) &&
+        (filterServiceType === "all" || (b.service?.serviceType || b.serviceType) === filterServiceType) &&
+        (filterPackageType === "all" || (b.service?.packageType || b.packageType) === filterPackageType) &&
         (filterAppointmentDate === "" || b.appointmentDate === filterAppointmentDate) &&
         (
-            b.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            b.phoneNumber.includes(searchTerm) ||
-            b.service.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (b.serviceType && b.serviceType.toLowerCase().includes(searchTerm.toLowerCase()))
+            (b.customerName && b.customerName.toLowerCase().includes((searchTerm || '').toLowerCase())) ||
+            (b.phoneNumber && b.phoneNumber.includes(searchTerm || '')) ||
+            (b.serviceName && b.serviceName.toLowerCase().includes((searchTerm || '').toLowerCase())) ||
+            (b.serviceType && b.serviceType.toLowerCase().includes((searchTerm || '').toLowerCase()))
         )
     );
 
-    const handleConfirm = (bookingID) => {
-        if (!window.confirm("Bạn có chắc chắn muốn chuyển trạng thái đơn này?")) return;
-        setBookings(prev =>
-            prev.map(b =>
-                b.bookingID === bookingID
-                    ? { ...b, status: getNextStatus(b.status, b.serviceType) }
-                    : b
-            )
-        );
+    const updateBookingStatus = async (bookingID, newStatus) => {
+        await api.put(`/bookings/${bookingID}/status`, { status: newStatus });
     };
 
-    const handleReject = (bookingID) => {
+    const reloadBookings = async () => {
+        const res = await api.get("/bookings/staff/all");
+        setBookings(res.data);
+    };
+
+    const handleConfirm = async (bookingID) => {
+        if (!window.confirm("Bạn có chắc chắn muốn xác nhận đơn này?")) return;
+        await updateBookingStatus(bookingID, "Chờ lấy mẫu");
+        await reloadBookings();
+    };
+
+    const handleReject = async (bookingID) => {
         if (!window.confirm("Bạn có chắc chắn muốn chuyển trạng thái đơn này sang 'Không xác nhận'?")) return;
-        setBookings(prev =>
-            prev.map(b =>
-                b.bookingID === bookingID
-                    ? { ...b, status: "Không xác nhận" }
-                    : b
-            )
-        );
+        await updateBookingStatus(bookingID, "Không xác nhận");
+        await reloadBookings();
     };
 
-    const handleNextStep = (bookingID) => {
+    const handleNextStep = async (bookingID) => {
         const booking = bookings.find(b => b.bookingID === bookingID);
         if (booking.status === "Chờ lấy mẫu") {
             setCurrentBooking(booking);
@@ -654,13 +352,9 @@ export default function Booking() {
             setShowSampleModal(true);
         } else {
             if (!window.confirm("Bạn có chắc chắn muốn chuyển trạng thái đơn này?")) return;
-            setBookings(prev =>
-                prev.map(b =>
-                    b.bookingID === bookingID
-                        ? { ...b, status: getNextStatus(b.status, b.serviceType) }
-                        : b
-                )
-            );
+            const nextStatus = getNextStatus(booking.status, booking.serviceType);
+            await updateBookingStatus(bookingID, nextStatus);
+            await reloadBookings();
         }
     };
 
@@ -697,11 +391,11 @@ export default function Booking() {
     const handleEditAndResubmit = (booking) => {
         setEditBooking({
             ...booking,
-            isResubmit: true // Flag để biết đây là resubmit
+            isResubmit: true // Cờ để biết đây là gửi lại
         });
     };
 
-    // Cập nhật handleEditBooking để hỗ trợ resubmit
+    // Cập nhật handleEditBooking để hỗ trợ gửi lại
     const handleEditBooking = (booking) => {
         setEditBooking({
             ...booking,
@@ -710,8 +404,18 @@ export default function Booking() {
     };
 
     const handleViewUser = (userID) => {
-        const user = users.find(u => u.userID === userID);
-        setViewUser(user);
+        const booking = bookings.find(b => b.userID === userID);
+        if (booking) {
+            setViewUser({
+                userID: booking.userID,
+                customerName: booking.customerName,
+                phone: booking.phone,
+                email: booking.email,
+                address: booking.address,
+                gender: booking.gender,
+                dateOfBirth: booking.dateOfBirth,
+            });
+        }
     };
 
     const samples = [
@@ -721,18 +425,15 @@ export default function Booking() {
         // ... các mẫu khác
     ];
 
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "Chờ xác nhận": return "#f07903";
-            case "Chờ lấy mẫu": return "#2563eb";
-            case "Chờ kết quả": return "#059669";
-            case "Chờ giám định pháp lý": return "#a21caf";
-            case "Hoàn thành": return "#16a34a";
-            case "Không xác nhận": return "#dc2626";
-            case "Đã hủy": return "#6b7280";
-            default: return "#222";
-        }
-    };
+    useEffect(() => {
+        api.get("/bookings/staff/all")
+            .then(res => setBookings(res.data))
+            .catch(err => {
+                setBookings([]);
+                alert("Không thể tải danh sách booking!");
+            });
+    }, []);
+
     return (
         <div className="booking-container">
             <div className="booking-content">
@@ -916,16 +617,16 @@ export default function Booking() {
                                     {filteredAndSortedBookings.map(b => (
                                         <tr key={b.bookingID}>
                                             <td>{b.bookingID}</td>
-                                            <td>{b.userID}</td>
-                                            <td>{b.service}</td>
-                                            <td>{b.serviceType}</td>
-                                            <td>{b.packageType}</td>
+                                            <td>{b.user?.userID || b.userID}</td>
+                                            <td>{b.serviceName || ''}</td>
+                                            <td>{b.service?.serviceType || b.serviceType || ''}</td>
+                                            <td>{b.service?.packageType || b.packageType || ''}</td>
                                             <td>{b.numberSample}</td>
                                             <td>{b.bookingDate}</td>
-                                            <td>{b.appointmentDate || "-"}</td>
-                                            <td>{b.totalPrice?.toLocaleString() || "-"}</td>
+                                            <td>{b.appointmentDate}</td>
+                                            <td>{b.totalPrice?.toLocaleString() || b.totalPrice || ''}</td>
                                             <td>
-                                                <div className="status-action-row">
+                                                <div className="status-action-row status-action-row--pending">
                                                     <span
                                                         className={`status-badge status-badge--${getStatusClass(b.status)}`}
                                                         style={{ color: getStatusColor(b.status), borderColor: getStatusColor(b.status) }}
@@ -934,20 +635,20 @@ export default function Booking() {
                                                     </span>
                                                     {b.status === "Chờ xác nhận" ? (
                                                         <>
-                                                            <MdCheckCircle
-                                                                size={22}
-                                                                color="#22c55e"
-                                                                style={{ cursor: "pointer" }}
+                                                            <button
+                                                                className="status-btn status-btn--confirm"
                                                                 title="Xác nhận"
                                                                 onClick={() => handleConfirm(b.bookingID)}
-                                                            />
-                                                            <MdCancel
-                                                                size={22}
-                                                                color="#f87171"
-                                                                style={{ cursor: "pointer" }}
+                                                            >
+                                                                <MdCheckCircle size={20} />
+                                                            </button>
+                                                            <button
+                                                                className="status-btn status-btn--reject"
                                                                 title="Không xác nhận"
                                                                 onClick={() => handleReject(b.bookingID)}
-                                                            />
+                                                            >
+                                                                <MdCancel size={20} />
+                                                            </button>
                                                         </>
                                                     ) : b.status === "Không xác nhận" ? (
                                                         <MdEdit
@@ -1070,14 +771,14 @@ export default function Booking() {
                         <div className="modal-content">
                             <h3>Chi tiết đơn #{viewBooking.bookingID}</h3>
                             <p><b>Mã Đơn:</b> {viewBooking.bookingID}</p>
-                            <p><b>Mã KH:</b> {viewBooking.userID}</p>
-                            <p><b>Dịch vụ:</b> {viewBooking.service}</p>
-                            <p><b>Loại dịch vụ:</b> {viewBooking.serviceType}</p>
-                            <p><b>Gói dịch vụ:</b> {viewBooking.packageType}</p>
+                            <p><b>Mã KH:</b> {viewBooking.user?.userID || viewBooking.userID}</p>
+                            <p><b>Dịch vụ:</b> {viewBooking.serviceName || ''}</p>
+                            <p><b>Loại dịch vụ:</b> {viewBooking.service?.serviceType || ''}</p>
+                            <p><b>Gói dịch vụ:</b> {viewBooking.service?.packageType || ''}</p>
                             <p><b>Số mẫu:</b> {viewBooking.numberSample}</p>
                             <p><b>Ngày đặt:</b> {viewBooking.bookingDate}</p>
                             <p><b>Ngày hẹn:</b> {viewBooking.appointmentDate}</p>
-                            <p><b>Tổng tiền:</b> {viewBooking.totalPrice?.toLocaleString() || "-"}</p>
+                            <p><b>Tổng tiền:</b> {viewBooking.totalPrice?.toLocaleString() || ''}</p>
                             <p><b>Trạng thái:</b> {getStatusLabel(viewBooking.status)}</p>
                             <p><b>Ghi chú:</b> {viewBooking.note}</p>
                             <h4>Thông tin người tham gia:</h4>
@@ -1091,13 +792,6 @@ export default function Booking() {
                                         <th>Quan hệ</th>
                                         <th>Loại mẫu</th>
                                         <th>Phương pháp thu mẫu</th>
-                                        {viewBooking.serviceType === "Hành chính" && (
-                                            <>
-                                                <th>Mã định danh</th>
-                                                <th>Địa chỉ</th>
-                                                <th>Quan hệ với người đăng ký</th>
-                                            </>
-                                        )}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1106,17 +800,10 @@ export default function Booking() {
                                             <td>{p.participantID}</td>
                                             <td>{p.fullName}</td>
                                             <td>{p.gender}</td>
-                                            <td>{p.dob}</td>
-                                            <td>{p.relationship}</td>
+                                            <td>{p.dateOfBirth}</td>
+                                            <td>{p.relationshipToCustomer}</td>
                                             <td>{p.sampleType}</td>
                                             <td>{p.collectionMethod}</td>
-                                            {viewBooking.serviceType === "Hành chính" && (
-                                                <>
-                                                    <td>{p.personalId}</td>
-                                                    <td>{p.address}</td>
-                                                    <td>{p.relationToRegistrant}</td>
-                                                </>
-                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
@@ -1131,12 +818,12 @@ export default function Booking() {
                         <div className="modal-content">
                             <h3>Thông tin người đăng ký</h3>
                             <p><b>Mã KH:</b> {viewUser.userID}</p>
-                            <p><b>Họ tên:</b> {viewUser.fullName}</p>
-                            <p><b>Số điện thoại:</b> {viewUser.phoneNumber}</p>
+                            <p><b>Họ tên:</b> {viewUser.customerName}</p>
+                            <p><b>Số điện thoại:</b> {viewUser.phone}</p>
                             <p><b>Email:</b> {viewUser.email}</p>
                             <p><b>Địa chỉ:</b> {viewUser.address}</p>
                             <p><b>Giới tính:</b> {viewUser.gender}</p>
-                            <p><b>Năm sinh:</b> {viewUser.dob}</p>
+                            <p><b>Năm sinh:</b> {viewUser.dateOfBirth}</p>
                             <button className="confirm-btn" onClick={() => setViewUser(null)}>Đóng</button>
                         </div>
                     </div>
@@ -1184,8 +871,14 @@ export default function Booking() {
                             <div className="form-group">
                                 <label>Dịch vụ:</label>
                                 <select
-                                    value={editBooking.service}
-                                    onChange={e => setEditBooking({ ...editBooking, service: e.target.value })}
+                                    value={editBooking.service?.serviceName || editBooking.service || ''}
+                                    onChange={e => setEditBooking({ 
+                                        ...editBooking, 
+                                        service: { 
+                                            ...editBooking.service, 
+                                            serviceName: e.target.value 
+                                        } 
+                                    })}
                                 >
                                     {serviceOptions.map(s => (
                                         <option key={s} value={s}>{s}</option>
@@ -1195,8 +888,15 @@ export default function Booking() {
                             <div className="form-group">
                                 <label>Loại dịch vụ:</label>
                                 <select
-                                    value={editBooking.serviceType}
-                                    onChange={e => setEditBooking({ ...editBooking, serviceType: e.target.value })}
+                                    value={editBooking.service?.serviceType || editBooking.serviceType || ''}
+                                    onChange={e => setEditBooking({ 
+                                        ...editBooking, 
+                                        service: { 
+                                            ...editBooking.service, 
+                                            serviceType: e.target.value 
+                                        },
+                                        serviceType: e.target.value
+                                    })}
                                 >
                                     {serviceTypeOptions.map(s => (
                                         <option key={s} value={s}>{s}</option>
@@ -1206,8 +906,15 @@ export default function Booking() {
                             <div className="form-group">
                                 <label>Gói dịch vụ:</label>
                                 <select
-                                    value={editBooking.packageType}
-                                    onChange={e => setEditBooking({ ...editBooking, packageType: e.target.value })}
+                                    value={editBooking.service?.packageType || editBooking.packageType || ''}
+                                    onChange={e => setEditBooking({ 
+                                        ...editBooking, 
+                                        service: { 
+                                            ...editBooking.service, 
+                                            packageType: e.target.value 
+                                        },
+                                        packageType: e.target.value
+                                    })}
                                 >
                                     {packageTypeOptions.map(pt => (
                                         <option key={pt} value={pt}>{pt}</option>
