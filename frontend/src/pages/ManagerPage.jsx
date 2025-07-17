@@ -54,10 +54,10 @@ export default function ManagerPage() {
 
     const getHeaderContent = () => {
         switch (activeMenuItem) {
-            case "blogpost":
-                return {
-                    title: "Quản lý bài đăng",
-                };
+            // case "blogpost":
+            //     return {
+            //         title: "Quản lý bài đăng",
+            //     };
             case "banggia":
                 return {
                     title: "Quản lý giá dịch vụ",

@@ -117,4 +117,49 @@ export const serviceAPI = {
     getAllServices: () => api.get('/service/listService'),
 };
 
+// Sample API
+export const SampleAPI = {
+    // Get all samples
+    getAllSamples: () => api.get('/samples'),
+    
+    // Get sample by ID
+    getSampleById: (sampleID) => api.get(`/samples/${sampleID}`),
+    
+    // Get samples by booking ID
+    getSamplesByBookingId: (bookingID) => api.get(`/samples/booking/${bookingID}`),
+    
+    // Update sample
+    updateSample: (sampleID, sampleData) => api.put(`/samples/${sampleID}`, sampleData),
+    
+    // Delete sample
+    deleteSample: (sampleID) => api.delete(`/samples/${sampleID}`)
+};
+
+// Test Result API
+export const TestResultAPI = {
+    // Get all test results
+    getAllTestResults: () => api.get('/test-results'),
+    
+    // Get test result by ID
+    getTestResultById: (testResultID) => api.get(`/test-results/${testResultID}`),
+    
+    // Get test result by booking ID
+    getTestResultByBookingId: (bookingID) => api.get(`/test-results/booking/${bookingID}`),
+    
+    // Get test results by date range
+    getTestResultsByDateRange: (startDate, endDate) => 
+        api.get(`/test-results/date-range?startDate=${startDate}&endDate=${endDate}`),
+    
+    // Create new test result
+    createTestResult: (testResultData) => api.post('/test-results', testResultData),
+    
+    // Update test result
+    updateTestResult: (testResultID, testResultData) => 
+        api.put(`/test-results/${testResultID}`, testResultData),
+    
+    // Delete test result
+    deleteTestResult: (testResultID) => api.delete(`/test-results/${testResultID}`)
+};
+
+
 export default api; 
