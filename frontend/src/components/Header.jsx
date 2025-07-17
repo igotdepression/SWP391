@@ -58,7 +58,7 @@ export default function Header() {
                         </li>
                         <li>
                             <NavLink
-                                to="/info"
+                                to="/blogpost"
                                 className={({ isActive }) => isActive ? "active" : ""}
                             >
                                 THÔNG TIN
