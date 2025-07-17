@@ -7,7 +7,7 @@ import './Header.css'; // Đảm bảo import CSS
 
 export default function Header() {
     const { user, logout } = useAuth();
-    const { goToLogin, goToProfile, goToHistory, goToSignUp } = useNavigation();
+    const { goToLogin, goToProfile, goToHistory, goToFeedback, goToSignUp } = useNavigation();
     const navigate = useNavigate();
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -58,7 +58,7 @@ export default function Header() {
                         </li>
                         <li>
                             <NavLink
-                                to="/info"
+                                to="/blogpost"
                                 className={({ isActive }) => isActive ? "active" : ""}
                             >
                                 THÔNG TIN
@@ -113,6 +113,7 @@ export default function Header() {
                                     <div className="profile-dropdown">
                                         <div className="dropdown-item" onClick={goToProfile}>Thông tin cá nhân</div>
                                         <div className="dropdown-item" onClick={goToHistory}>Lịch sử xét nghiệm</div>
+                                        <div className="dropdown-item" onClick={goToFeedback}>Lịch sử phản hồi</div>
                                         <div className="dropdown-item" onClick={handleLogout}>Đăng xuất</div>
                                     </div>
                                 )}
