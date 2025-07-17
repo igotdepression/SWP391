@@ -23,10 +23,6 @@ export default function ManagerPage() {
     const navigate = useNavigate();
     const [activeMenuItem, setActiveMenuItem] = useState("blogpost");
 
-    const [orders, setOrders] = useState([
-        { id: "ORD001", customer: "Khách hàng X", date: "2023-01-15", status: "New" },
-        { id: "ORD002", customer: "Khách hàng Y", date: "2023-01-10", status: "Processing" },
-    ]);
     const [detailOrder, setDetailOrder] = useState(null);
 
     const [orderSearchTerm, setOrderSearchTerm] = useState("");
@@ -55,13 +51,6 @@ export default function ManagerPage() {
         console.log("Logged out");
         navigate('/login');
     };
-
-    // Đã xóa employeeFilterOptions vì không còn sử dụng
-    // const employeeFilterOptions = [
-    //     { value: "", label: "Tất cả vai trò" },
-    //     { value: "nhanvien", label: "Nhân viên" },
-    //     { value: "quanly", label: "Quản lý" },
-    // ];
 
     const getHeaderContent = () => {
         switch (activeMenuItem) {
@@ -101,7 +90,7 @@ export default function ManagerPage() {
     const renderMainContent = () => {
         switch (activeMenuItem) {
             case "blogpost":
-                return <BlogPost orders={orders} setDetailOrder={setDetailOrder} />;
+                return <BlogPost />;
             case "banggia":
                 return <ServicePrice />;
             case "payments":

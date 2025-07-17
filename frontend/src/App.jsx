@@ -14,6 +14,8 @@ import BookingPayment from './pages/BookingPayment';
 import About from './pages/About';
 import DoctorDetail from './pages/DoctorDetail';
 import ServicePage from './pages/ServicePage';
+import SendFeedback from './pages/SendFeedback';
+import BlogPost from './pages/BlogPost';
 
 // Import các trang service
 import FatherChild from './pages/Service/Father-child';
@@ -74,6 +76,8 @@ function App() {
           <Route path="/booking-create" element={<BookingCreate />} />
           <Route path="/booking-details" element={<BookingDetails />} />
           <Route path='/booking-payment' element={<BookingPayment />} />
+          <Route path='/blogpost' element={<BlogPost />} />
+          <Route path="/feedback" element={<SendFeedback />} />
 
           <Route path="/services" element={<ServicePage />} />
           {/* Các route cho các dịch vụ */}
