@@ -117,6 +117,7 @@ export const serviceAPI = {
     getAllServices: () => api.get('/service/listService'),
 };
 
+
 // Sample API
 export const SampleAPI = {
     // Get all samples
@@ -163,3 +164,4 @@ export const TestResultAPI = {
 
 
 export default api; 
+

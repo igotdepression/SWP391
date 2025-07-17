@@ -45,7 +45,7 @@ public class DetailResultService {
     }
     
     public List<DetailResultResponseDTO> getDetailResultsByPaternityIndex(BigDecimal minIndex) {
-        return detailResultRepository.findByPaternityIndexGreaterThan(minIndex).stream()
+        return detailResultRepository.findByPaternityIndexGreaterThanEqual(minIndex).stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -96,7 +96,7 @@ public class DetailResultService {
     }
     
     public Long countDetailResultsByTestResultId(Integer testResultID) {
-        return detailResultRepository.countByTestResultID(testResultID);
+        return detailResultRepository.countByTestResultTestResultID(testResultID);
     }
     
     private DetailResultResponseDTO mapToResponseDTO(DetailResult detailResult) {
