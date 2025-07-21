@@ -1,27 +1,56 @@
 // Staff/PersonalInfo.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Input } from '../../components/ui/ui';
 import './PersonalInfo.css';
+import { userAPI } from '../../services/api';
 
 export default function PersonalInfo() {
     const [isEditing, setIsEditing] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [passwordData, setPasswordData] = useState({
         oldPassword: '',
         newPassword: '',
         confirmPassword: ''
     });
     const [personalData, setPersonalData] = useState({
-        userID: 'MN01',
-        roleName: 'Quản lý',
-        fullName: 'Nguyễn Văn Anh',
-        phoneNumber: '0901234568',
-        email: 'anh.nguyen@example.com',
+        userId: '',
+        userID: '',
+        roleName: '',
+        fullName: '',
+        phoneNumber: '',
+        email: '',
         password: '********',
-        dateOfBirth: '1995-05-01',
-        gender: 'Nam',
-        address: '124 Đường ABC, Quận 1, TP.HCM',
+        dateOfBirth: '',
+        gender: '',
+        address: '',
     });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const res = await userAPI.getUserProfile();
+                setPersonalData({
+                    userId: res.data.userId || '',
+                    userID: res.data.userId ? `MN${String(res.data.userId).padStart(3, '0')}` : '',
+                    roleName: res.data.role || '',
+                    fullName: res.data.fullName || '',
+                    phoneNumber: res.data.phoneNumber || '',
+                    email: res.data.email || '',
+                    password: '********',
+                    dateOfBirth: res.data.dateOfBirth || '',
+                    gender: res.data.gender || '',
+                    address: res.data.address || '',
+                });
+            } catch (err) {
+                alert('Không thể tải thông tin cá nhân!');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProfile();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,9 +69,30 @@ export default function PersonalInfo() {
     };
 
     const handleSave = () => {
-        console.log('Saving personal data:', personalData);
-        alert('Thông tin cá nhân đã được cập nhật!');
-        setIsEditing(false);
+        setShowConfirmModal(true);
+    };
+
+    const handleConfirmSave = async () => {
+        try {
+            await userAPI.updateUserProfile({
+                fullName: personalData.fullName,
+                phoneNumber: personalData.phoneNumber,
+                email: personalData.email,
+                dateOfBirth: personalData.dateOfBirth,
+                gender: personalData.gender,
+                address: personalData.address,
+            });
+            alert('Thông tin cá nhân đã được cập nhật!');
+            setIsEditing(false);
+            setShowConfirmModal(false);
+        } catch (err) {
+            alert('Cập nhật thông tin thất bại!');
+            setShowConfirmModal(false);
+        }
+    };
+
+    const handleCancelConfirm = () => {
+        setShowConfirmModal(false);
     };
 
     const handlePasswordSave = () => {
@@ -54,7 +104,7 @@ export default function PersonalInfo() {
             alert('Mật khẩu mới phải có ít nhất 6 ký tự!');
             return;
         }
-        console.log('Changing password:', passwordData);
+        // TODO: Call API to change password
         alert('Mật khẩu đã được thay đổi thành công!');
         setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
         setShowPasswordModal(false);
@@ -64,6 +114,8 @@ export default function PersonalInfo() {
         setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
         setShowPasswordModal(false);
     };
+
+    if (loading) return <div>Đang tải thông tin cá nhân...</div>;
 
     return (
         <div className="personal-info-container">
@@ -128,7 +180,21 @@ export default function PersonalInfo() {
                     </div>
                     <div className="info-item">
                         <label>Giới tính:</label>
-                        <p>{personalData.gender || 'Chưa cập nhật'}</p>
+                        {isEditing ? (
+                            <select
+                                name="gender"
+                                value={personalData.gender}
+                                onChange={handleChange}
+                                className="uniform-input"
+                            >
+                                <option value="">Chọn giới tính</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        ) : (
+                            <p>{personalData.gender || 'Chưa cập nhật'}</p>
+                        )}
                     </div>
                     <div className="info-item full-width">
                         <label>Địa chỉ:</label>
@@ -172,6 +238,20 @@ export default function PersonalInfo() {
                     )}
                 </div>
             </Card>
+
+            {/* Modal xác nhận lưu thay đổi */}
+            {showConfirmModal && (
+                <div className="modal-overlay" onClick={handleCancelConfirm}>
+                    <div className="modal-content" style={{ maxWidth: 400, margin: 'auto', padding: 32 }} onClick={e => e.stopPropagation()}>
+                        <h3>Xác nhận lưu thay đổi</h3>
+                        <p>Bạn có chắc chắn muốn lưu thay đổi thông tin cá nhân?</p>
+                        <div style={{ display: 'flex', gap: 16, justifyContent: 'flex-end', marginTop: 24 }}>
+                            <Button onClick={handleConfirmSave}>Xác nhận</Button>
+                            <Button variant="outline" onClick={handleCancelConfirm}>Hủy</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Password Change Modal */}
             {showPasswordModal && (

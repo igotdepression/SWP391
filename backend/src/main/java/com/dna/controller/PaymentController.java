@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -30,7 +32,7 @@ public class PaymentController {
     @PostMapping("/create")
     public ResponseEntity<?> createPayment(@RequestBody PaymentRequestDTO paymentRequest) {
         // Kiểm tra booking tồn tại
-        Booking booking = bookingRepository.findById(paymentRequest.getBookingID())
+        Booking booking = bookingRepository.findById(Integer.valueOf(paymentRequest.getBookingID()))
                 .orElse(null);
         if (booking == null) {
             return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Booking không tồn tại!"));
@@ -39,7 +41,7 @@ public class PaymentController {
         // Tạo payment mới
         Payment payment = new Payment();
         payment.setBooking(booking);
-        payment.setAmount(BigDecimal.valueOf(paymentRequest.getAmount()));
+        payment.setAmount(paymentRequest.getAmount()); // BigDecimal
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         payment.setPaymentDate(LocalDateTime.now());
         payment.setStatus("PENDING");
@@ -52,7 +54,7 @@ public class PaymentController {
     @PostMapping("/vnpay/create")
     public ResponseEntity<?> createVNPayPayment(@RequestBody PaymentRequestDTO paymentRequest) {
         // Kiểm tra booking tồn tại
-        Booking booking = bookingRepository.findById(paymentRequest.getBookingID())
+        Booking booking = bookingRepository.findById(Integer.valueOf(paymentRequest.getBookingID()))
                 .orElse(null);
         if (booking == null) {
             return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Booking không tồn tại!"));
@@ -61,8 +63,8 @@ public class PaymentController {
         try {
             String orderInfo = "Thanh toan xet nghiem ADN - Booking " + paymentRequest.getBookingID();
             String paymentUrl = vnPayService.createPaymentUrl(
-                paymentRequest.getBookingID(), 
-                paymentRequest.getAmount().longValue(), 
+                Integer.valueOf(paymentRequest.getBookingID()),
+                paymentRequest.getAmount().longValue(),
                 orderInfo
             );
             
@@ -112,6 +114,15 @@ public class PaymentController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Lỗi xử lý thanh toán: " + e.getMessage()));
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PaymentRequestDTO>> getAllPayments() {
+        List<PaymentRequestDTO> payments = paymentRepository.findAll()
+            .stream()
+            .map(PaymentRequestDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(payments);
     }
 } 
 

@@ -20,9 +20,10 @@ public class ConsultantController {
     public ResponseEntity<?> requestConsultation(@Valid @RequestBody ConsultationRequest requestConsultation) {
         try {
             Consultant newConsultation = consultantService.requestConsultation(
-                    requestConsultation.getUserId(),
-                    requestConsultation.getConsultantDate().toLocalDate(),
-                    requestConsultation.getNotes()
+                requestConsultation.getName(),
+                requestConsultation.getPhone(),
+                requestConsultation.getType(),
+                requestConsultation.getNote()
             );
             return new ResponseEntity<>(newConsultation, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
@@ -38,6 +39,11 @@ public class ConsultantController {
         return consultantService.getConsultationById(id)
                 .map(consultation -> new ResponseEntity<>(consultation, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllConsultations() {
+        return ResponseEntity.ok(consultantService.getAllConsultations());
     }
 
     // Có thể thêm các endpoint khác như:

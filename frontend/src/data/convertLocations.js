@@ -1,4 +1,4 @@
-const fs = require('fs');
+  const fs = require('fs');
 const path = require('path');
 
 // Đọc file JSON hiện tại

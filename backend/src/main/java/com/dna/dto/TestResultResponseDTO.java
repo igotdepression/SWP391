@@ -17,7 +17,7 @@ public class TestResultResponseDTO {
     private String resultFile;
     private String updatedBy;
     private LocalDate updatedDate;
-    private String bookingStatus;
+    private String status;
     private List<DetailResultResponseDTO> detailResults;
 
     // Default constructor
@@ -28,7 +28,7 @@ public class TestResultResponseDTO {
     public TestResultResponseDTO(Integer testResultID, Integer bookingID, String customerName, 
                                 LocalDate resultDate, String createdBy, LocalDate createdDate,
                                 String resultConclution, String resultFile, String updatedBy,
-                                LocalDate updatedDate, String bookingStatus, List<DetailResultResponseDTO> detailResults) {
+                                LocalDate updatedDate, String status, List<DetailResultResponseDTO> detailResults) {
         this.testResultID = testResultID;
         this.bookingID = bookingID;
         this.customerName = customerName;
@@ -39,7 +39,7 @@ public class TestResultResponseDTO {
         this.resultFile = resultFile;
         this.updatedBy = updatedBy;
         this.updatedDate = updatedDate;
-        this.bookingStatus = bookingStatus;
+        this.status = status;
         this.detailResults = detailResults;
     }
 
@@ -124,12 +124,11 @@ public class TestResultResponseDTO {
         this.updatedDate = updatedDate;
     }
 
-    public String getBookingStatus() {
-        return bookingStatus;
+    public String getStatus() {
+        return status;
     }
-
-    public void setBookingStatus(String bookingStatus) {
-        this.bookingStatus = bookingStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public List<DetailResultResponseDTO> getDetailResults() {

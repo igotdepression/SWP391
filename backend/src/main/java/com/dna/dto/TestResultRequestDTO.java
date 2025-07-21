@@ -12,6 +12,7 @@ public class TestResultRequestDTO {
     private String resultConclution;
     private String resultFile;
     private String createdBy;
+    private String status;
     private List<DetailResultRequestDTO> detailResults;
 
     // Default constructor
@@ -20,12 +21,13 @@ public class TestResultRequestDTO {
 
     // Constructor with all parameters
     public TestResultRequestDTO(Integer bookingID, LocalDate resultDate, String resultConclution, 
-                               String resultFile, String createdBy, List<DetailResultRequestDTO> detailResults) {
+                               String resultFile, String createdBy, String status, List<DetailResultRequestDTO> detailResults) {
         this.bookingID = bookingID;
         this.resultDate = resultDate;
         this.resultConclution = resultConclution;
         this.resultFile = resultFile;
         this.createdBy = createdBy;
+        this.status = status;
         this.detailResults = detailResults;
     }
 
@@ -68,6 +70,13 @@ public class TestResultRequestDTO {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public List<DetailResultRequestDTO> getDetailResults() {

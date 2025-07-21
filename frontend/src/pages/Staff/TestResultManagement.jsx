@@ -1,533 +1,12 @@
 // Staff/TestResultManagement.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Input, Select } from '../../components/ui/ui';
 import './TestResultManagement.css';
+import { bookingAPI } from '../../services/api';
+import { testResultAPI } from '../../services/api';
+import { detailResultAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
-const beautifulStyles = `
-/* Test Result Management Beautiful CSS */
-.test-result-management-container {
-    padding: 20px;
-    background: #ffffff;
-    min-height: 100vh;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-/* Statistics Section */
-.statistics-section {
-    margin-bottom: 40px;
-}
-
-.page-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: #2d3748;
-    margin-bottom: 32px;
-    text-align: center;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.stats-container {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 32px 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    text-align: center;
-    position: relative;
-    min-width: 160px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border-left: 6px solid;
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-}
-
-.stat-card.stat-total {
-    border-left-color: #3b82f6;
-}
-
-.stat-card.stat-ready {
-    border-left-color: #10b981;
-}
-
-.stat-card.stat-normal {
-    border-left-color: #f59e0b;
-}
-
-.stat-card.stat-special {
-    border-left-color: #ef4444;
-}
-
-.stat-number {
-    font-size: 64px;
-    font-weight: 900;
-    margin-bottom: 8px;
-    line-height: 1;
-    font-family: 'Arial', sans-serif;
-}
-
-.stat-total .stat-number {
-    color: #3b82f6;
-}
-
-.stat-ready .stat-number {
-    color: #10b981;
-}
-
-.stat-normal .stat-number {
-    color: #f59e0b;
-}
-
-.stat-special .stat-number {
-    color: #ef4444;
-}
-
-.stat-label {
-    font-size: 12px;
-    color: #6b7280;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 8px;
-}
-
-/* Controls Section */
-.controls-section {
-    margin-bottom: 32px;
-}
-
-.section-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.controls-row {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 24px;
-}
-
-.status-filter {
-    min-width: 180px;
-    padding: 12px 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    background: white;
-    font-size: 14px;
-    font-weight: 500;
-    color: #6b7280;
-}
-
-.search-input-main {
-    width: 400px;
-    padding: 12px 20px;
-    border: 2px solid #3b82f6;
-    border-radius: 25px;
-    font-size: 14px;
-    background: white;
-    outline: none;
-}
-
-.search-input-main::placeholder {
-    color: #9ca3af;
-}
-
-.add-sample-btn {
-    background: #3b82f6;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.add-sample-btn:hover {
-    background: #2563eb;
-}
-
-/* Table Container */
-.table-container {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-    max-width: 1200px;
-}
-
-.samples-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-}
-
-.samples-table thead {
-    background: #f8fafc;
-}
-
-.samples-table th {
-    padding: 16px 12px;
-    text-align: left;
-    font-size: 12px;
-    font-weight: 600;
-    color: #374151;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.samples-table td {
-    padding: 16px 12px;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 14px;
-    color: #374151;
-    vertical-align: middle;
-}
-
-.samples-table tbody tr:hover {
-    background: #f9fafb;
-}
-
-.samples-table tbody tr:nth-child(even) {
-    background: #fcfcfd;
-}
-
-.samples-table tbody tr:nth-child(even):hover {
-    background: #f3f4f6;
-}
-
-.patient-id {
-    color: #3b82f6;
-    font-weight: 600;
-}
-
-.sample-type-badge, .status-badge {
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 500;
-    display: inline-block;
-    text-align: center;
-    min-width: 80px;
-}
-
-.sample-type-badge.sample-ready {
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
-
-.sample-type-badge.sample-normal {
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
-}
-
-.sample-type-badge.sample-special {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}
-
-.status-badge.status-ready {
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
-
-.status-badge.status-processing {
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
-}
-
-.status-badge.status-normal {
-    background: #dbeafe;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
-}
-
-.status-badge.status-special {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-edit, .btn-delete {
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1px solid;
-    text-transform: none;
-}
-
-.btn-edit {
-    background: #dbeafe;
-    color: #1d4ed8;
-    border-color: #bfdbfe;
-}
-
-.btn-edit:hover {
-    background: #3b82f6;
-    color: white;
-}
-
-.btn-delete {
-    background: #fee2e2;
-    color: #991b1b;
-    border-color: #fecaca;
-}
-
-.btn-delete:hover {
-    background: #ef4444;
-    color: white;
-}
-
-/* Modal Styles */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    backdrop-filter: blur(4px);
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.modal-content {
-    background: white;
-    border-radius: 24px;
-    width: 90%;
-    max-width: 900px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.25),
-        0 10px 25px rgba(0, 0, 0, 0.1);
-    animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-    from { 
-        opacity: 0;
-        transform: translateY(50px) scale(0.95);
-    }
-    to { 
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.modal-header {
-    padding: 32px;
-    border-bottom: 2px solid #f1f5f9;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(135deg, #f8fafc, #edf2f7);
-    border-radius: 24px 24px 0 0;
-}
-
-.modal-header h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #2d3748;
-    margin: 0;
-}
-
-.close-button {
-    background: #f7fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-    color: #718096;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.close-button:hover {
-    background: #e53e3e;
-    color: white;
-    border-color: #e53e3e;
-    transform: rotate(90deg);
-}
-
-.modal-body {
-    padding: 32px;
-}
-
-.result-info-section,
-.result-conclusion-section,
-.result-file-section,
-.detail-results-section {
-    margin-bottom: 40px;
-    padding: 24px;
-    background: #f8fafc;
-    border-radius: 16px;
-    border-left: 4px solid #4299e1;
-}
-
-.result-info-section h3,
-.result-conclusion-section h3,
-.result-file-section h3,
-.detail-results-section h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #2d3748;
-    margin-bottom: 20px;
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.info-item {
-    background: white;
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    border-left: 3px solid #e2e8f0;
-}
-
-.info-item label {
-    font-size: 12px;
-    font-weight: 700;
-    color: #718096;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-    display: block;
-}
-
-.info-item span, .info-item input {
-    font-size: 14px;
-    color: #2d3748;
-    font-weight: 500;
-}
-
-.conclusion-textarea {
-    width: 100%;
-    padding: 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 14px;
-    resize: vertical;
-    background: white;
-    transition: all 0.3s ease;
-}
-
-.detail-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-.detail-table th,
-.detail-table td {
-    padding: 16px;
-    text-align: left;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.detail-table th {
-    background: linear-gradient(135deg, #edf2f7, #e2e8f0);
-    font-weight: 700;
-    color: #2d3748;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.modal-footer {
-    padding: 32px;
-    border-top: 2px solid #f1f5f9;
-    display: flex;
-    gap: 16px;
-    justify-content: flex-end;
-    background: #f8fafc;
-    border-radius: 0 0 24px 24px;
-}
-
-.modal-footer button {
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .test-result-management-container {
-        padding: 16px;
-    }
-    
-    .stats-container {
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
-    
-    .controls-row {
-        flex-direction: column;
-        gap: 16px;
-    }
-    
-    .modal-content {
-        width: 95%;
-    }
-    
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
-}
-`;
 
 export default function TestResultManagement() {
     // Sample data based on SQL structure - Extended with sample status
@@ -663,12 +142,38 @@ export default function TestResultManagement() {
         }
     ]);
 
+    const [detailResultsFromApi, setDetailResultsFromApi] = useState([]);
+
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [selectedResult, setSelectedResult] = useState(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [editingResult, setEditingResult] = useState(null);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [newResult, setNewResult] = useState({
+        bookingID: '',
+        resultDate: '',
+        createdBy: '',
+        resultConclution: '',
+        resultFile: '',
+        customerName: '',
+        serviceName: '',
+        sampleStaffID: '',
+        patientID: '',
+        sampleMethod: '',
+        sampleReceiveDate: '',
+        sampleStatus: 'ready',
+        sampleType: 'Mẫu Chuẩn',
+    });
+    const [newDetailResults, setNewDetailResults] = useState([
+        { locusName: '', p1Allele1: '', p1Allele2: '', p2Allele1: '', p2Allele2: '', paternityIndex: '' }
+    ]);
+    const [bookingList, setBookingList] = useState([]);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [pendingAddResult, setPendingAddResult] = useState(false);
+
+    const { user } = useAuth();
 
     // Calculate statistics
     const totalSamples = testResults.length;
@@ -685,10 +190,17 @@ export default function TestResultManagement() {
         return matchesSearch && matchesStatus;
     });
 
-    const handleViewDetails = (result) => {
+    const handleViewDetails = async (result) => {
         setSelectedResult(result);
         setShowDetailModal(true);
         setEditMode(false);
+        // Lấy chi tiết kết quả từ API
+        try {
+            const res = await detailResultAPI.getDetailResultsByTestResultId(result.testResultID);
+            setDetailResultsFromApi(res.data || []);
+        } catch (err) {
+            setDetailResultsFromApi([]);
+        }
     };
 
     const handleEditResult = (result) => {
@@ -718,6 +230,11 @@ export default function TestResultManagement() {
     };
 
     const getDetailResultsForTest = (testResultID) => {
+        // Nếu đang xem chi tiết, ưu tiên lấy từ API
+        if (showDetailModal && selectedResult && selectedResult.testResultID === testResultID && detailResultsFromApi.length > 0) {
+            return detailResultsFromApi;
+        }
+        // Fallback: lấy từ local state (khi thêm mới)
         return detailResults.filter(detail => detail.testResultID === testResultID);
     };
 
@@ -760,31 +277,168 @@ export default function TestResultManagement() {
         }
     };
 
+    const handleOpenAddModal = async () => {
+        setShowAddModal(true);
+        setNewResult({
+            bookingID: '',
+            resultDate: '',
+            createdBy: user?.fullName || '',
+            resultConclution: '',
+            resultFile: '',
+            customerName: '',
+            serviceName: '',
+            sampleStaffID: '',
+            patientID: '',
+            sampleMethod: '',
+            sampleReceiveDate: '',
+            sampleStatus: 'ready',
+            sampleType: 'Mẫu Chuẩn',
+        });
+        setNewDetailResults([
+            { locusName: '', p1Allele1: '', p1Allele2: '', p2Allele1: '', p2Allele2: '', paternityIndex: '' }
+        ]);
+        // Gọi API lấy danh sách booking
+        try {
+            const res = await bookingAPI.getAllBookingsForStaff();
+            setBookingList(res.data || []);
+        } catch (err) {
+            setBookingList([]);
+        }
+    };
+    const handleCloseAddModal = () => setShowAddModal(false);
+
+    // Chỉ lấy các booking không có trạng thái đã hoàn thành
+    const unfinishedBookings = bookingList.filter(r => r.sampleStatus !== 'normal');
+    const bookingOptions = Array.from(new Set(unfinishedBookings.map(r => r.bookingID)));
+    const bookingMap = {};
+    unfinishedBookings.forEach(r => { bookingMap[r.bookingID] = r; });
+
+    const handleAddDetailRow = () => {
+        setNewDetailResults(prev => ([...prev, { locusName: '', p1Allele1: '', p1Allele2: '', p2Allele1: '', p2Allele2: '', paternityIndex: '' }]));
+    };
+    const handleRemoveDetailRow = (idx) => {
+        setNewDetailResults(prev => prev.filter((_, i) => i !== idx));
+    };
+    const handleDetailChange = (idx, field, value) => {
+        setNewDetailResults(prev => prev.map((row, i) => i === idx ? { ...row, [field]: value } : row));
+    };
+    const handleNewResultChange = (field, value) => {
+        setNewResult(prev => ({ ...prev, [field]: value }));
+    };
+    const handleNewFileChange = (e) => {
+        if (e.target.files[0]) {
+            setNewResult(prev => ({ ...prev, resultFile: e.target.files[0].name }));
+        }
+    };
+    const handleBookingSelect = (bookingID) => {
+        const info = bookingMap[bookingID] || {};
+        setNewResult(prev => ({
+            ...prev,
+            bookingID,
+            customerName: info.customerName || '',
+            serviceName: info.serviceName || '',
+            sampleStaffID: info.sampleStaffID || '',
+            patientID: info.patientID || '',
+            sampleMethod: info.sampleMethod || '',
+            sampleReceiveDate: info.sampleReceiveDate || '',
+            sampleStatus: info.sampleStatus || 'ready',
+            sampleType: info.sampleType || 'Mẫu Chuẩn',
+        }));
+    };
+    const handleAddResult = (e) => {
+        e.preventDefault();
+        setShowConfirmModal(true);
+        setPendingAddResult(true);
+    };
+    const handleConfirmAddResult = async () => {
+        // Chuẩn bị dữ liệu gửi về backend
+        const payload = {
+            bookingID: newResult.bookingID,
+            resultDate: newResult.resultDate,
+            resultConclution: newResult.resultConclution,
+            resultFile: newResult.resultFile,
+            createdBy: newResult.createdBy,
+            detailResults: newDetailResults.filter(row => row.locusName).map(row => ({
+                locusName: row.locusName,
+                p1Allele1: row.p1Allele1,
+                p1Allele2: row.p1Allele2,
+                p2Allele1: row.p2Allele1,
+                p2Allele2: row.p2Allele2,
+                paternityIndex: row.paternityIndex ? Number(row.paternityIndex) : null
+            }))
+        };
+        try {
+            await testResultAPI.createTestResult(payload);
+            // Sau khi thành công, có thể reload lại danh sách testResults từ backend nếu muốn
+            setShowAddModal(false);
+            setShowConfirmModal(false);
+            setPendingAddResult(false);
+            alert('Thêm kết quả thành công!');
+        } catch (err) {
+            alert('Lỗi khi thêm kết quả: ' + (err.message || 'Không xác định'));
+        }
+    };
+    const handleCancelAddResult = () => {
+        setShowConfirmModal(false);
+        setPendingAddResult(false);
+    };
+
+    // Tự động sinh kết luận khi nhập locus/allele
+    useEffect(() => {
+        // Chỉ áp dụng khi đang mở modal thêm mới
+        if (!showAddModal) return;
+        if (!newDetailResults || newDetailResults.length === 0) {
+            setNewResult(prev => ({ ...prev, resultConclution: '' }));
+            return;
+        }
+        const validIndexes = newDetailResults
+            .map(row => parseFloat(row.paternityIndex))
+            .filter(val => !isNaN(val));
+        if (validIndexes.length === 0) {
+            setNewResult(prev => ({ ...prev, resultConclution: 'Chưa đủ dữ liệu để kết luận.' }));
+        } else if (validIndexes.every(val => val > 1)) {
+            setNewResult(prev => ({ ...prev, resultConclution: 'Có quan hệ huyết thống (dương tính).' }));
+        } else if (validIndexes.some(val => val <= 1)) {
+            setNewResult(prev => ({ ...prev, resultConclution: 'Không đủ bằng chứng xác nhận quan hệ huyết thống (âm tính).' }));
+        }
+    }, [newDetailResults, showAddModal]);
+
+    useEffect(() => {
+        // Lấy danh sách test result từ backend khi vào trang
+        const fetchTestResults = async () => {
+            try {
+                const res = await testResultAPI.getAllTestResults();
+                setTestResults(res.data || []);
+            } catch (err) {
+                setTestResults([]);
+            }
+        };
+        fetchTestResults();
+    }, []);
+
     return (
-        <>
-            <style>{beautifulStyles}</style>
-            <div className="test-result-management-container">
+        <div className="test-result-management-container">
                 {/* Statistics Section */}
                 <div className="statistics-section">
                     <h1 className="page-title">Quản lý kết quả xét nghiệm</h1>
                     <div className="stats-container">
-                        <div className="stat-card stat-total">
-                            <div className="stat-number">{totalSamples}</div>
-                            <div className="stat-label">TỔNG MẪU</div>
+                            <div className="stat-card stat-total">
+                                <div className="stat-number">{totalSamples}</div>
+                                <div className="stat-label">TỔNG MẪU</div>
+                            </div>
+                            <div className="stat-card stat-ready">
+                                <div className="stat-number">{readySamples}</div>
+                                <div className="stat-label">MẪU CHUẨN</div>
+                            </div>
+                            <div className="stat-card stat-normal">
+                                <div className="stat-number">{normalSamples}</div>
+                                <div className="stat-label">MẪU THÔNG THƯỜNG</div>
+                            </div>
+                            <div className="stat-card stat-special">
+                                <div className="stat-number">{specialSamples}</div>
+                                <div className="stat-label">MẪU ĐẶC BIỆT</div>
+                            </div>
                         </div>
-                        <div className="stat-card stat-ready">
-                            <div className="stat-number">{readySamples}</div>
-                            <div className="stat-label">MẪU CHUẨN</div>
-                        </div>
-                        <div className="stat-card stat-normal">
-                            <div className="stat-number">{normalSamples}</div>
-                            <div className="stat-label">MẪU THÔNG THƯỜNG</div>
-                        </div>
-                        <div className="stat-card stat-special">
-                            <div className="stat-number">{specialSamples}</div>
-                            <div className="stat-label">MẪU ĐẶC BIỆT</div>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Search and Filter Section */}
@@ -809,7 +463,7 @@ export default function TestResultManagement() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="search-input-main"
                         />
-                        <Button className="add-sample-btn">+ Thêm mẫu mới</Button>
+                        <Button className="add-sample-btn" onClick={handleOpenAddModal}>+ Thêm kết quả</Button>
                     </div>
                 </div>
 
@@ -819,15 +473,14 @@ export default function TestResultManagement() {
                         <table className="samples-table">
                             <thead>
                                 <tr>
-                                    <th>MÃ MẪU</th>
-                                    <th>MÃ BOOKING</th>
-                                    <th>MÃ NHÂN VIÊN</th>
-                                    <th>MÃ BỆNH NHÂN</th>
-                                    <th>PHƯƠNG THỨC LẤY MẪU</th>
-                                    <th>LOẠI MẪU</th>
-                                    <th>NGÀY NHẬN MẪU</th>
-                                    <th>TRẠNG THÁI</th>
-                                    <th>HÀNH ĐỘNG</th>
+                                    <th>ID Kết quả</th>
+                                    <th>Mã Booking</th>
+                                    <th>Ngày kết quả</th>
+                                    <th>Người tạo</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Kết luận</th>
+                                    <th>File kết quả</th>
+                                    <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -835,35 +488,23 @@ export default function TestResultManagement() {
                                     <tr key={result.testResultID}>
                                         <td>{result.testResultID}</td>
                                         <td>{result.bookingID}</td>
-                                        <td>{result.sampleStaffID}</td>
-                                        <td className="patient-id">{result.patientID}</td>
-                                        <td>{result.sampleMethod}</td>
+                                        <td>{result.resultDate ? formatDate(result.resultDate) : 'Chưa có'}</td>
+                                        <td>{result.createdBy || 'Chưa có'}</td>
+                                        <td>{result.createdDate ? formatDateTime(result.createdDate) : 'Chưa có'}</td>
+                                        <td>{result.resultConclution || 'Chưa có'}</td>
                                         <td>
-                                            <span className={`sample-type-badge ${getSampleTypeClass(result.sampleType)}`}>
-                                                {result.sampleType}
-                                            </span>
-                                        </td>
-                                        <td>{result.sampleReceiveDate}</td>
-                                        <td>
-                                            <span className={`status-badge ${getStatusClass(result.sampleStatus)}`}>
-                                                {getStatusText(result.sampleStatus)}
-                                            </span>
+                                            {result.resultFile ? (
+                                                <a href={`http://localhost:8080/uploads/results/${result.resultFile}`} target="_blank" rel="noopener noreferrer">
+                                                    {result.resultFile}
+                                                </a>
+                                            ) : (
+                                                <span>Chưa có</span>
+                                            )}
                                         </td>
                                         <td className="action-buttons">
-                                            <Button 
-                                                size="sm" 
-                                                className="btn-edit"
-                                                onClick={() => handleViewDetails(result)}
-                                            >
-                                                SỬA
-                                            </Button>
-                                            <Button 
-                                                size="sm" 
-                                                className="btn-delete"
-                                                variant="outline"
-                                            >
-                                                XÓA
-                                            </Button>
+                                            <button className="btn-view" title="Xem" onClick={() => handleViewDetails(result)}>
+                                                <i className="fa fa-eye" aria-hidden="true"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -932,14 +573,6 @@ export default function TestResultManagement() {
                                                 <label>Ngày tạo:</label>
                                                 <span>{formatDateTime(selectedResult.createdDate)}</span>
                                             </div>
-                                            <div className="info-item">
-                                                <label>Người cập nhật:</label>
-                                                <span>{selectedResult.updatedBy || 'Chưa có'}</span>
-                                            </div>
-                                            <div className="info-item">
-                                                <label>Ngày cập nhật:</label>
-                                                <span>{formatDateTime(selectedResult.updatedDate)}</span>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -972,7 +605,7 @@ export default function TestResultManagement() {
                                             />
                                         ) : (
                                             selectedResult.resultFile ? (
-                                                <a href={`/path/to/results/${selectedResult.resultFile}`} target="_blank" rel="noopener noreferrer">
+                                                <a href={`http://localhost:8080/uploads/results/${selectedResult.resultFile}`} target="_blank" rel="noopener noreferrer">
                                                     {selectedResult.resultFile}
                                                 </a>
                                             ) : (
@@ -1035,7 +668,154 @@ export default function TestResultManagement() {
                     </div>
                 </div>
             )}
+
+            {/* Add Result Modal */}
+            {showAddModal && (
+                <div className="modal-overlay" onClick={handleCloseAddModal}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Thêm kết quả xét nghiệm mới</h2>
+                            <button className="close-button" onClick={handleCloseAddModal}>×</button>
+                        </div>
+                        <form className="add-result-form" onSubmit={handleAddResult}>
+                            <div className="form-group">
+                                <label>Chọn Booking ID:</label>
+                                <select
+                                    value={newResult.bookingID}
+                                    onChange={e => handleBookingSelect(e.target.value)}
+                                    required
+                                >
+                                    <option value="">-- Chọn Booking --</option>
+                                    {bookingOptions.map(id => (
+                                        <option key={id} value={id}>{id}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Tên khách hàng:</label>
+                                <Input value={newResult.customerName} disabled />
+                            </div>
+                            <div className="form-group">
+                                <label>Dịch vụ:</label>
+                                <Input value={newResult.serviceName} disabled />
+                            </div>
+                            <div className="form-group">
+                                <label>Ngày kết quả:</label>
+                                <Input type="date" value={newResult.resultDate} onChange={e => handleNewResultChange('resultDate', e.target.value)} />
+                            </div>
+                            <div className="form-group">
+                                <label>Người tạo:</label>
+                                <Input value={newResult.createdBy} disabled />
+                            </div>
+                            <div className="form-group">
+                                <label>Kết luận:</label>
+                                <textarea
+                                    value={newResult.resultConclution}
+                                    readOnly
+                                    rows="3"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>File kết quả (PDF, tùy chọn):</label>
+                                <Input type="file" accept=".pdf" onChange={handleNewFileChange} />
+                                {newResult.resultFile && <span className="file-name">{newResult.resultFile}</span>}
+                            </div>
+                            <div className="form-group">
+                                <label>Chi tiết locus/allele:</label>
+                                <table className="detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Locus</th>
+                                            <th>P1 Allele 1</th>
+                                            <th>P1 Allele 2</th>
+                                            <th>P2 Allele 1</th>
+                                            <th>P2 Allele 2</th>
+                                            <th>Paternity Index</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {newDetailResults.map((row, idx) => (
+                                            <tr key={idx}>
+                                                <td><Input value={row.locusName} onChange={e => handleDetailChange(idx, 'locusName', e.target.value)} required /></td>
+                                                <td><Input value={row.p1Allele1} onChange={e => handleDetailChange(idx, 'p1Allele1', e.target.value)} /></td>
+                                                <td><Input value={row.p1Allele2} onChange={e => handleDetailChange(idx, 'p1Allele2', e.target.value)} /></td>
+                                                <td><Input value={row.p2Allele1} onChange={e => handleDetailChange(idx, 'p2Allele1', e.target.value)} /></td>
+                                                <td><Input value={row.p2Allele2} onChange={e => handleDetailChange(idx, 'p2Allele2', e.target.value)} /></td>
+                                                <td><Input type="number" step="0.01" value={row.paternityIndex} onChange={e => handleDetailChange(idx, 'paternityIndex', e.target.value)} /></td>
+                                                <td>
+                                                    {newDetailResults.length > 1 && (
+                                                        <button type="button" className="btn-remove-row" onClick={() => handleRemoveDetailRow(idx)}>-</button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                <Button type="button" onClick={handleAddDetailRow} className="btn-add-row">+ Thêm locus</Button>
+                            </div>
+                            <div className="modal-footer">
+                                <Button type="submit" variant="primary">Thêm kết quả</Button>
+                                <Button type="button" variant="outline" onClick={handleCloseAddModal}>Hủy</Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Confirm Add Result Modal */}
+            {showConfirmModal && (
+                <div className="modal-overlay" onClick={handleCancelAddResult}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Xác nhận thêm kết quả</h2>
+                        </div>
+                        <div className="modal-body">
+                            <h3>Thông tin chung</h3>
+                            <div className="info-grid">
+                                <div className="info-item"><label>Booking ID:</label> <span>{newResult.bookingID}</span></div>
+                                <div className="info-item"><label>Tên khách hàng:</label> <span>{newResult.customerName}</span></div>
+                                <div className="info-item"><label>Dịch vụ:</label> <span>{newResult.serviceName}</span></div>
+                                <div className="info-item"><label>Ngày kết quả:</label> <span>{newResult.resultDate}</span></div>
+                                <div className="info-item"><label>Người tạo:</label> <span>{newResult.createdBy}</span></div>
+                                <div className="info-item"><label>File kết quả:</label> <span>{newResult.resultFile || 'Chưa có'}</span></div>
+                            </div>
+                            <h3>Kết luận</h3>
+                            <p>{newResult.resultConclution}</p>
+                            <h3>Chi tiết locus/allele</h3>
+                            <table className="detail-table">
+                                <thead>
+                                    <tr>
+                                        <th>Locus</th>
+                                        <th>P1 Allele 1</th>
+                                        <th>P1 Allele 2</th>
+                                        <th>P2 Allele 1</th>
+                                        <th>P2 Allele 2</th>
+                                        <th>Paternity Index</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {newDetailResults.filter(row => row.locusName).map((row, idx) => (
+                                        <tr key={idx}>
+                                            <td>{row.locusName}</td>
+                                            <td>{row.p1Allele1}</td>
+                                            <td>{row.p1Allele2}</td>
+                                            <td>{row.p2Allele1}</td>
+                                            <td>{row.p2Allele2}</td>
+                                            <td>{row.paternityIndex}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="modal-footer">
+                            <Button variant="primary" onClick={handleConfirmAddResult}>Xác nhận</Button>
+                            <Button variant="outline" onClick={handleCancelAddResult}>Hủy</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-        </>
     );
 }

@@ -7,6 +7,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getAvatarColor, getInitials } from '../utils/avatarUtils';
 import { useNavigation } from '../hooks/useNavigation';
+import api from '../services/api';
+import dayjs from 'dayjs';
 
 const labSlides = [
   { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRemWZjv5ir6K4K2RMsjfA5-KCMN5rUDgBVkA&s', icon: '/img/icon-lab-blue.png' },
@@ -133,28 +135,28 @@ function HomePage() {
   const handleConsultationSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      alert('Đăng ký tư vấn thành công! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
-
-      // Reset form
-      setConsultationForm({
-        name: '',
-        phone: '',
-        email: '',
-        serviceType: '',
-        message: '',
-        preferredTime: ''
-      });
+        await api.post('/consultations/request', {
+            name: consultationForm.name,
+            phone: consultationForm.phone,
+            type: consultationForm.serviceType,
+            note: consultationForm.message
+        });
+        alert('Đăng ký tư vấn thành công! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
+        setConsultationForm({
+            name: '',
+            phone: '',
+            email: '',
+            serviceType: '',
+            message: '',
+            preferredTime: ''
+        });
     } catch (error) {
-      alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+        alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
     } finally {
-      setIsSubmitting(false);
+        setIsSubmitting(false);
     }
-  };
+};
 
   const handleScrollToConsultation = () => {
     const consultationSection = document.getElementById('consultation');

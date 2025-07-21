@@ -50,7 +50,7 @@ export default function HeaderStaff() { // <--- Component name is HeaderStaff
                 <input type="text" placeholder="Tìm kiếm..." className="staff-header-search-input" />
                 {user ? (
                     <div className="staff-header-user-profile-area" onClick={handleProfileClick}>
-                        <span className="staff-header-user-info">Chào, {user.fullName || user.email}</span>
+                        <span className="staff-header-user-info">{user.fullName || user.email}</span>
                         <div className="staff-header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName) }}>
                             {getInitials(user.fullName)}
                         </div>

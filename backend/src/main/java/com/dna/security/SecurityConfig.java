@@ -67,7 +67,8 @@ public class SecurityConfig {
                     "/swagger-resources/**",
                     "/webjars/**",
                     "/api/service",
-                    "/error"
+                    "/error",
+                    "/uploads/results/**" // Cho phép truy cập file kết quả
                 ).permitAll()
                 // THÊM DÒNG NÀY ĐỂ CẤP QUYỀN CHO ENDPOINT CỦA STAFF
                 .requestMatchers("/api/staff/**").hasRole("STAFF") // Hoặc .hasAnyRole("STAFF", "ADMIN") nếu có vai trò ADMIN

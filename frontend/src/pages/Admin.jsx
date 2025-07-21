@@ -1,87 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Edit, Eye, Key, Trash2, Plus, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-import AddUserModal from './Admin/AddUserModal';
-import EditUserModal from './Admin/EditUserModal';
-import ViewUserModal from './Admin/ViewUserModal';
-import DeleteModal from './Admin/DeleteModal';
-
-const initialUsers = [
-  {
-    id: 1,
-    username: 'admin01',
-    fullName: 'Nguyễn Văn An',
-    email: 'admin@company.com',
-    role: 'Admin',
-    status: 'HOẠT ĐỘNG',
-    dateCreated: '15/01/2024'
-  },
-  {
-    id: 2,
-    username: 'manager01',
-    fullName: 'Trần Thị Bình',
-    email: 'manager@company.com',
-    role: 'Manager',
-    status: 'HOẠT ĐỘNG',
-    dateCreated: '16/01/2024'
-  },
-  {
-    id: 3,
-    username: 'staff01',
-    fullName: 'Lê Văn Cường',
-    email: 'staff@company.com',
-    role: 'Staff',
-    status: 'BỊ KHÓA',
-    dateCreated: '17/01/2024'
-  },
-  {
-    id: 4,
-    username: 'customer01',
-    fullName: 'Phạm Thị Dung',
-    email: 'customer@company.com',
-    role: 'Customer',
-    status: 'CHỜ KÍCH HOẠT',
-    dateCreated: '18/01/2024'
-  },
-  {
-    id: 5,
-    username: 'staff02',
-    fullName: 'Hoàng Văn Em',
-    email: 'staff2@company.com',
-    role: 'Staff',
-    status: 'HOẠT ĐỘNG',
-    dateCreated: '19/01/2024'
-  }
-];
+import { userAPI } from '../services/api';
+import vietnamLocations from '../data/vietnamLocations.json';
 
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState('Admin');
-  const [statusFilter, setStatusFilter] = useState('Tất cả trạng thái');
+  const [roleFilter, setRoleFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewUser, setViewUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch users from API
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await userAPI.getAllUsers();
+      setUsers(response.data);
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      setError(err.message || 'Không thể tải danh sách người dùng');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load users on component mount
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const stats = {
     total: users.length,
-    active: users.filter(u => u.status === 'HOẠT ĐỘNG').length,
-    blocked: users.filter(u => u.status === 'BỊ KHÓA').length,
-    pending: users.filter(u => u.status === 'CHỜ KÍCH HOẠT').length
+    active: users.filter(u => u.status === 'Active' || u.status === 'HOẠT ĐỘNG').length,
+    blocked: users.filter(u => u.status === 'Inactive' || u.status === 'BỊ KHÓA').length,
+    pending: users.filter(u => u.status === 'Pending' || u.status === 'CHỜ KÍCH HOẠT').length
   };
 
   // Lọc users
   const filteredUsers = users.filter(user => {
     const matchSearch =
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchRole = roleFilter === 'Tất cả vai trò' || user.role === roleFilter;
-    const matchStatus = statusFilter === 'Tất cả trạng thái' || user.status === statusFilter;
+      (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (user.fullName && user.fullName.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchRole = !roleFilter || user.role === roleFilter;
+    const matchStatus = !statusFilter || user.status === statusFilter;
     return matchSearch && matchRole && matchStatus;
   });
 
@@ -91,10 +62,19 @@ const UserManagement = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    setUsers(users.filter(u => u.id !== selectedUser.id));
-    setShowDeleteModal(false);
-    setSelectedUser(null);
+  const confirmDelete = async () => {
+    try {
+      // Call API to deactivate user (soft delete - chỉ cập nhật status)
+      await userAPI.deactivateUser(selectedUser.id);
+      // Refresh user list
+      await fetchUsers();
+      setShowDeleteModal(false);
+      setSelectedUser(null);
+      alert(`Đã khóa người dùng ${selectedUser.fullName} thành công!`);
+    } catch (err) {
+      console.error('Error deactivating user:', err);
+      alert('Không thể khóa người dùng: ' + err.message);
+    }
   };
 
   const handleEdit = (user) => {
@@ -111,15 +91,109 @@ const UserManagement = () => {
     alert(`Đã reset mật khẩu cho ${user.fullName}`);
   };
 
+  const handleActivateUser = async (user) => {
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm(`Bạn có chắc chắn muốn mở khóa người dùng ${user.fullName}?`)) {
+      try {
+        await userAPI.activateUser(user.id);
+        await fetchUsers(); // Refresh the list
+        alert(`Đã mở khóa người dùng ${user.fullName} thành công!`);
+      } catch (err) {
+        console.error('Error activating user:', err);
+        alert('Không thể mở khóa người dùng: ' + err.message);
+      }
+    }
+  };
+
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('vi-VN');
+    } catch (error) {
+      return 'N/A';
+    }
+  };
+
+  // Helper function to get role display name
+  const getRoleDisplayName = (role) => {
+    const roleMap = {
+      'ADMIN': 'Admin',
+      'MANAGER': 'Manager', 
+      'STAFF': 'Staff',
+      'CUSTOMER': 'Customer'
+    };
+    return roleMap[role] || role;
+  };
+
+  // Helper function to get status display name
+  const getStatusDisplayName = (status) => {
+    const statusMap = {
+      'Active': 'HOẠT ĐỘNG',
+      'Inactive': 'BỊ KHÓA',
+      'Pending': 'CHỜ KÍCH HOẠT',
+      'HOẠT ĐỘNG': 'HOẠT ĐỘNG',
+      'BỊ KHÓA': 'BỊ KHÓA',
+      'CHỜ KÍCH HOẠT': 'CHỜ KÍCH HOẠT'
+    };
+    return statusMap[status] || status;
+  };
+
   // Modal Sửa
   const EditUserModal = () => {
     const [formData, setFormData] = useState(editUser || {});
+    const [submitting, setSubmitting] = useState(false);
+    
+    // State cho chọn địa chỉ
+    const [selectedProvince, setSelectedProvince] = useState('');
+    const [selectedDistrict, setSelectedDistrict] = useState('');
+    const [selectedCommune, setSelectedCommune] = useState('');
+    const [addressDetail, setAddressDetail] = useState('');
+
+    // Lấy danh sách tỉnh/thành phố
+    const provinces = vietnamLocations.provinces || [];
+
+    // Lấy danh sách quận/huyện dựa trên tỉnh được chọn
+    const districts = selectedProvince 
+      ? provinces.find(p => p.code === selectedProvince)?.districts || []
+      : [];
+
+    // Lấy danh sách xã/phường dựa trên quận/huyện được chọn
+    const communes = selectedDistrict
+      ? districts.find(d => d.code === selectedDistrict)?.communes || []
+      : [];
+
+    // Cập nhật địa chỉ đầy đủ khi có thay đổi
+    useEffect(() => {
+      const provinceName = provinces.find(p => p.code === selectedProvince)?.name || '';
+      const districtName = districts.find(d => d.code === selectedDistrict)?.name || '';
+      const communeName = communes.find(c => c.code === selectedCommune)?.name || '';
+      
+      const fullAddress = [addressDetail, communeName, districtName, provinceName]
+        .filter(part => part.trim())
+        .join(', ');
+      
+      setFormData(prev => ({ ...prev, address: fullAddress }));
+    }, [selectedProvince, selectedDistrict, selectedCommune, addressDetail]);
+
     if (!showEditModal || !editUser) return null;
-    const handleSubmit = () => {
-      setUsers(users.map(u => u.id === editUser.id ? { ...u, ...formData } : u));
-      setShowEditModal(false);
-      setEditUser(null);
+
+    const handleSubmit = async () => {
+      try {
+        setSubmitting(true);
+        await userAPI.updateUser(editUser.id, formData);
+        await fetchUsers(); // Refresh the list
+        setShowEditModal(false);
+        setEditUser(null);
+      } catch (err) {
+        console.error('Error updating user:', err);
+        alert('Không thể cập nhật người dùng: ' + err.message);
+      } finally {
+        setSubmitting(false);
+      }
     };
+
     return (
       <div className="modal-overlay">
         <div className="modal-content">
@@ -131,25 +205,25 @@ const UserManagement = () => {
             <div className="form-section">
               <h4>Thông Tin Tài Khoản</h4>
               <div className="form-group">
-                <label>Tên đăng nhập *</label>
-                <input type="text" value={formData.username} onChange={e => setFormData({ ...formData, username: e.target.value })} required />
+                <label>Email *</label>
+                <input type="email" value={formData.email || ''} onChange={e => setFormData({ ...formData, email: e.target.value })} required />
               </div>
               <div className="form-row">
                 <div className="form-group">
                   <label>Vai trò *</label>
-                  <select value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })}>
-                    <option value="Admin">Admin</option>
-                    <option value="Manager">Manager</option>
-                    <option value="Staff">Staff</option>
-                    <option value="Customer">Customer</option>
+                  <select value={formData.role || ''} onChange={e => setFormData({ ...formData, role: e.target.value })}>
+                    <option value="ADMIN">Admin</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="STAFF">Staff</option>
+                    <option value="CUSTOMER">Customer</option>
                   </select>
                 </div>
                 <div className="form-group">
                   <label>Trạng thái *</label>
-                  <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}>
-                    <option value="HOẠT ĐỘNG">Hoạt động</option>
-                    <option value="BỊ KHÓA">Bị khóa</option>
-                    <option value="CHỜ KÍCH HOẠT">Chờ kích hoạt</option>
+                  <select value={formData.status || ''} onChange={e => setFormData({ ...formData, status: e.target.value })}>
+                    <option value="Active">Hoạt động</option>
+                    <option value="Inactive">Bị khóa</option>
+                    <option value="Pending">Chờ kích hoạt</option>
                   </select>
                 </div>
               </div>
@@ -158,21 +232,99 @@ const UserManagement = () => {
               <h4>Thông Tin Cá Nhân</h4>
               <div className="form-group">
                 <label>Họ và Tên *</label>
-                <input type="text" value={formData.fullName} onChange={e => setFormData({ ...formData, fullName: e.target.value })} required />
+                <input type="text" value={formData.fullName || ''} onChange={e => setFormData({ ...formData, fullName: e.target.value })} required />
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Email *</label>
-                  <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required />
+                  <label>Số điện thoại</label>
+                  <input type="tel" value={formData.phoneNumber || ''} onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })} />
                 </div>
               </div>
             </div>
+            <div className="form-section">
+              <h4>Thông Tin Địa Chỉ</h4>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Tỉnh/Thành phố *</label>
+                  <select
+                    value={selectedProvince}
+                    onChange={(e) => {
+                      setSelectedProvince(e.target.value);
+                      setSelectedDistrict('');
+                      setSelectedCommune('');
+                    }}
+                    required
+                  >
+                    <option value="">Chọn tỉnh/thành phố</option>
+                    {provinces.map(province => (
+                      <option key={province.code} value={province.code}>
+                        {province.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Quận/Huyện *</label>
+                  <select
+                    value={selectedDistrict}
+                    onChange={(e) => {
+                      setSelectedDistrict(e.target.value);
+                      setSelectedCommune('');
+                    }}
+                    disabled={!selectedProvince}
+                    required
+                  >
+                    <option value="">Chọn quận/huyện</option>
+                    {districts.map(district => (
+                      <option key={district.code} value={district.code}>
+                        {district.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Xã/Phường</label>
+                  <select
+                    value={selectedCommune}
+                    onChange={(e) => setSelectedCommune(e.target.value)}
+                    disabled={!selectedDistrict}
+                  >
+                    <option value="">Chọn xã/phường</option>
+                    {communes.map(commune => (
+                      <option key={commune.code} value={commune.code}>
+                        {commune.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Địa chỉ chi tiết</label>
+                  <input
+                    type="text"
+                    placeholder="Số nhà, tên đường, khu phố..."
+                    value={addressDetail}
+                    onChange={(e) => setAddressDetail(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Địa chỉ đầy đủ</label>
+                <input
+                  type="text"
+                  value={formData.address}
+                  readOnly
+                  style={{ backgroundColor: '#f9fafb', color: '#6b7280' }}
+                />
+              </div>
+            </div>
             <div className="form-actions">
-              <button type="button" className="btn-cancel" onClick={() => setShowEditModal(false)}>
+              <button type="button" className="btn-cancel" onClick={() => setShowEditModal(false)} disabled={submitting}>
                 Hủy
               </button>
-              <button type="button" className="btn-save" onClick={handleSubmit}>
-                Lưu
+              <button type="button" className="btn-save" onClick={handleSubmit} disabled={submitting}>
+                {submitting ? 'Đang lưu...' : 'Lưu'}
               </button>
             </div>
           </div>
@@ -195,17 +347,17 @@ const UserManagement = () => {
             <div className="form-section">
               <h4>Thông Tin Tài Khoản</h4>
               <div className="form-group">
-                <label>Tên đăng nhập</label>
-                <input type="text" value={viewUser.username} readOnly />
+                <label>Email</label>
+                <input type="text" value={viewUser.email || ''} readOnly />
               </div>
               <div className="form-row">
                 <div className="form-group">
                   <label>Vai trò</label>
-                  <input type="text" value={viewUser.role} readOnly />
+                  <input type="text" value={getRoleDisplayName(viewUser.role)} readOnly />
                 </div>
                 <div className="form-group">
                   <label>Trạng thái</label>
-                  <input type="text" value={viewUser.status} readOnly />
+                  <input type="text" value={getStatusDisplayName(viewUser.status)} readOnly />
                 </div>
               </div>
             </div>
@@ -213,14 +365,23 @@ const UserManagement = () => {
               <h4>Thông Tin Cá Nhân</h4>
               <div className="form-group">
                 <label>Họ và Tên</label>
-                <input type="text" value={viewUser.fullName} readOnly />
+                <input type="text" value={viewUser.fullName || ''} readOnly />
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Email</label>
-                  <input type="email" value={viewUser.email} readOnly />
+                  <label>Số điện thoại</label>
+                  <input type="text" value={viewUser.phoneNumber || 'N/A'} readOnly />
+                </div>
+                <div className="form-group">
+                  <label>Địa chỉ</label>
+                  <input type="text" value={viewUser.address || 'N/A'} readOnly />
                 </div>
               </div>
+            </div>
+            <div className="form-actions">
+              <button type="button" className="btn-cancel" onClick={() => setShowViewModal(false)}>
+                Đóng
+              </button>
             </div>
           </div>
         </div>
@@ -228,33 +389,97 @@ const UserManagement = () => {
     );
   };
 
-  // Modal Thêm giữ nguyên, chỉ sửa setUsers khi tạo mới
+  // Modal Thêm
   const AddUserModal = () => {
     const [formData, setFormData] = useState({
-      username: '',
+      email: '',
       password: '',
       confirmPassword: '',
       fullName: '',
-      email: '',
-      phone: '',
-      role: 'Staff',
-      status: 'HOẠT ĐỘNG'
+      phoneNumber: '',
+      address: '',
+      role: 'STAFF',
+      status: 'Active'
     });
+    const [submitting, setSubmitting] = useState(false);
+    
+    // State cho chọn địa chỉ
+    const [selectedProvince, setSelectedProvince] = useState('');
+    const [selectedDistrict, setSelectedDistrict] = useState('');
+    const [selectedCommune, setSelectedCommune] = useState('');
+    const [addressDetail, setAddressDetail] = useState('');
 
-    const handleSubmit = () => {
-      setUsers([
-        ...users,
-        {
-          id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
-          username: formData.username,
-          fullName: formData.fullName,
-          email: formData.email,
-          role: formData.role,
-          status: formData.status,
-          dateCreated: new Date().toLocaleDateString('vi-VN')
-        }
-      ]);
-      setShowAddModal(false);
+    // Lấy danh sách tỉnh/thành phố
+    const provinces = vietnamLocations.provinces || [];
+
+    // Lấy danh sách quận/huyện dựa trên tỉnh được chọn
+    const districts = selectedProvince 
+      ? provinces.find(p => p.code === selectedProvince)?.districts || []
+      : [];
+
+    // Lấy danh sách xã/phường dựa trên quận/huyện được chọn
+    const communes = selectedDistrict
+      ? districts.find(d => d.code === selectedDistrict)?.communes || []
+      : [];
+
+    // Cập nhật địa chỉ đầy đủ khi có thay đổi
+    useEffect(() => {
+      const provinceName = provinces.find(p => p.code === selectedProvince)?.name || '';
+      const districtName = districts.find(d => d.code === selectedDistrict)?.name || '';
+      const communeName = communes.find(c => c.code === selectedCommune)?.name || '';
+      
+      const fullAddress = [addressDetail, communeName, districtName, provinceName]
+        .filter(part => part.trim())
+        .join(', ');
+      
+      setFormData(prev => ({ ...prev, address: fullAddress }));
+    }, [selectedProvince, selectedDistrict, selectedCommune, addressDetail]);
+
+    const handleSubmit = async () => {
+      // Validation
+      if (!formData.email || !formData.password || !formData.confirmPassword || !formData.fullName) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        alert('Mật khẩu xác nhận không khớp!');
+        return;
+      }
+
+      if (!selectedProvince || !selectedDistrict) {
+        alert('Vui lòng chọn tỉnh/thành phố và quận/huyện!');
+        return;
+      }
+
+      try {
+        setSubmitting(true);
+        console.log('Sending user data:', formData); // Debug log
+        await userAPI.createUser(formData);
+        await fetchUsers(); // Refresh the list
+        setShowAddModal(false);
+        // Reset form
+        setFormData({
+          email: '',
+          password: '',
+          confirmPassword: '',
+          fullName: '',
+          phoneNumber: '',
+          address: '',
+          role: 'STAFF',
+          status: 'Active'
+        });
+        setSelectedProvince('');
+        setSelectedDistrict('');
+        setSelectedCommune('');
+        setAddressDetail('');
+        alert('Tạo người dùng thành công!');
+      } catch (err) {
+        console.error('Error creating user:', err);
+        alert('Không thể tạo người dùng: ' + err.message);
+      } finally {
+        setSubmitting(false);
+      }
     };
 
     if (!showAddModal) return null;
@@ -270,11 +495,11 @@ const UserManagement = () => {
             <div className="form-section">
               <h4>Thông Tin Tài Khoản</h4>
               <div className="form-group">
-                <label>Tên đăng nhập *</label>
+                <label>Email *</label>
                 <input
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) => setFormData({...formData, username: e.target.value})}
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
                   required
                 />
               </div>
@@ -305,10 +530,9 @@ const UserManagement = () => {
                     value={formData.role}
                     onChange={(e) => setFormData({...formData, role: e.target.value})}
                   >
-                    <option value="Admin">Admin</option>
-                    <option value="Manager">Manager</option>
-                    <option value="Staff">Staff</option>
-                    <option value="Customer">Customer</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="STAFF">Staff</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -317,9 +541,9 @@ const UserManagement = () => {
                     value={formData.status}
                     onChange={(e) => setFormData({...formData, status: e.target.value})}
                   >
-                    <option value="HOẠT ĐỘNG">Hoạt động</option>
-                    <option value="BỊ KHÓA">Bị khóa</option>
-                    <option value="CHỜ KÍCH HOẠT">Chờ kích hoạt</option>
+                    <option value="Active">Hoạt động</option>
+                    <option value="Inactive">Bị khóa</option>
+                    <option value="Pending">Chờ kích hoạt</option>
                   </select>
                 </div>
               </div>
@@ -335,32 +559,101 @@ const UserManagement = () => {
                   required
                 />
               </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Email *</label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    required
-                  />
-                </div>
+                          <div className="form-row">
                 <div className="form-group">
                   <label>Số điện thoại</label>
                   <input
                     type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
                   />
                 </div>
               </div>
             </div>
+            <div className="form-section">
+              <h4>Thông Tin Địa Chỉ</h4>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Tỉnh/Thành phố *</label>
+                  <select
+                    value={selectedProvince}
+                    onChange={(e) => {
+                      setSelectedProvince(e.target.value);
+                      setSelectedDistrict('');
+                      setSelectedCommune('');
+                    }}
+                    required
+                  >
+                    <option value="">Chọn tỉnh/thành phố</option>
+                    {provinces.map(province => (
+                      <option key={province.code} value={province.code}>
+                        {province.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Quận/Huyện *</label>
+                  <select
+                    value={selectedDistrict}
+                    onChange={(e) => {
+                      setSelectedDistrict(e.target.value);
+                      setSelectedCommune('');
+                    }}
+                    disabled={!selectedProvince}
+                    required
+                  >
+                    <option value="">Chọn quận/huyện</option>
+                    {districts.map(district => (
+                      <option key={district.code} value={district.code}>
+                        {district.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Xã/Phường</label>
+                  <select
+                    value={selectedCommune}
+                    onChange={(e) => setSelectedCommune(e.target.value)}
+                    disabled={!selectedDistrict}
+                  >
+                    <option value="">Chọn xã/phường</option>
+                    {communes.map(commune => (
+                      <option key={commune.code} value={commune.code}>
+                        {commune.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Địa chỉ chi tiết</label>
+                  <input
+                    type="text"
+                    placeholder="Số nhà, tên đường, khu phố..."
+                    value={addressDetail}
+                    onChange={(e) => setAddressDetail(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Địa chỉ đầy đủ</label>
+                <input
+                  type="text"
+                  value={formData.address}
+                  readOnly
+                  style={{ backgroundColor: '#f9fafb', color: '#6b7280' }}
+                />
+              </div>
+            </div>
             <div className="form-actions">
-              <button type="button" className="btn-cancel" onClick={() => setShowAddModal(false)}>
+              <button type="button" className="btn-cancel" onClick={() => setShowAddModal(false)} disabled={submitting}>
                 Hủy
               </button>
-              <button type="button" className="btn-save" onClick={handleSubmit}>
-                Tạo Mới
+              <button type="button" className="btn-save" onClick={handleSubmit} disabled={submitting}>
+                {submitting ? 'Đang tạo...' : 'Tạo Mới'}
               </button>
             </div>
           </div>
@@ -375,18 +668,19 @@ const UserManagement = () => {
       <div className="modal-overlay">
         <div className="modal-content delete-modal">
           <div className="modal-header">
-            <h3>Xác nhận xóa</h3>
+            <h3>Xác nhận khóa người dùng</h3>
           </div>
           <div className="modal-body">
-            <p>Bạn có chắc chắn muốn xóa người dùng <strong>{selectedUser.fullName}</strong>?</p>
-            <p>Hành động này không thể hoàn tác.</p>
+            <p>Bạn có chắc chắn muốn khóa người dùng <strong>{selectedUser.fullName}</strong>?</p>
+            <p>Người dùng sẽ không thể đăng nhập vào hệ thống cho đến khi được mở khóa.</p>
+            <p><em>Lưu ý: Dữ liệu người dùng vẫn được giữ nguyên trong hệ thống.</em></p>
           </div>
           <div className="form-actions">
             <button className="btn-cancel" onClick={() => setShowDeleteModal(false)}>
               Hủy
             </button>
             <button className="btn-delete" onClick={confirmDelete}>
-              Xóa
+              Khóa người dùng
             </button>
           </div>
         </div>
@@ -394,9 +688,52 @@ const UserManagement = () => {
     );
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="admin-container">
+        <div className="header">
+          <h1>
+            <div className="header-icon">🛡️</div>
+            Quản Lý Người Dùng
+          </h1>
+          <p>Hệ thống quản lý tài khoản và phân quyền người dùng</p>
+        </div>
+        <div className="main-content">
+          <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <div>Đang tải danh sách người dùng...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="admin-container">
+        <div className="header">
+          <h1>
+            <div className="header-icon">🛡️</div>
+            Quản Lý Người Dùng
+          </h1>
+          <p>Hệ thống quản lý tài khoản và phân quyền người dùng</p>
+        </div>
+        <div className="main-content">
+          <div style={{ textAlign: 'center', padding: '2rem', color: 'red' }}>
+            <div>Lỗi: {error}</div>
+            <button onClick={fetchUsers} style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}>
+              Thử lại
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-container">
-      <style jsx>{`
+      <style>{`
         .admin-container {
           min-height: 100vh;
           width: 100vw;
@@ -595,7 +932,7 @@ const UserManagement = () => {
           background: #374151;
           color: white;
           display: grid;
-          grid-template-columns: 80px 1fr 1fr 1fr 120px 140px 120px 180px;
+          grid-template-columns: 80px 1fr 1fr 1fr 120px 140px 1fr 180px;
           padding: 1rem;
           font-weight: 600;
           text-transform: uppercase;
@@ -605,7 +942,7 @@ const UserManagement = () => {
 
         .table-row {
           display: grid;
-          grid-template-columns: 80px 1fr 1fr 1fr 120px 140px 120px 180px;
+          grid-template-columns: 80px 1fr 1fr 1fr 120px 140px 1fr 180px;
           padding: 1rem;
           border-bottom: 1px solid #e5e7eb;
           align-items: center;
@@ -719,6 +1056,15 @@ const UserManagement = () => {
 
         .action-btn.delete:hover {
           background: #fecaca;
+        }
+
+        .action-btn.activate {
+          background: #d1fae5;
+          color: #065f46;
+        }
+
+        .action-btn.activate:hover {
+          background: #a7f3d0;
         }
 
         .pagination {
@@ -911,7 +1257,7 @@ const UserManagement = () => {
         @media (max-width: 1200px) {
           .table-header,
           .table-row {
-            grid-template-columns: 60px 120px 150px 200px 100px 120px 100px 150px;
+            grid-template-columns: 60px 120px 150px 200px 100px 120px 150px 150px;
           }
         }
 
@@ -988,11 +1334,10 @@ const UserManagement = () => {
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
             >
-              <option value="Tất cả vai trò">Tất cả vai trò</option>
-              <option value="Admin">Admin</option>
-              <option value="Manager">Manager</option>
-              <option value="Staff">Staff</option>
-              <option value="Customer">Customer</option>
+              <option value="">Tất cả vai trò</option>
+              <option value="ADMIN">Admin</option>
+              <option value="MANAGER">Manager</option>
+              <option value="STAFF">Staff</option>
             </select>
             
             <select
@@ -1000,7 +1345,7 @@ const UserManagement = () => {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              <option value="Tất cả trạng thái">Tất cả trạng thái</option>
+              <option value="">Tất cả trạng thái</option>
               <option value="HOẠT ĐỘNG">Hoạt động</option>
               <option value="BỊ KHÓA">Bị khóa</option>
               <option value="CHỜ KÍCH HOẠT">Chờ kích hoạt</option>
@@ -1011,36 +1356,41 @@ const UserManagement = () => {
         <div className="users-table">
           <div className="table-header">
             <div>STT</div>
-            <div>TÊN ĐĂNG NHẬP</div>
-            <div>HỌ VÀ TÊN</div>
             <div>EMAIL</div>
+            <div>HỌ VÀ TÊN</div>
+            <div>SỐ ĐIỆN THOẠI</div>
             <div>VAI TRÒ</div>
             <div>TRẠNG THÁI</div>
-            <div>NGÀY TẠO</div>
+            <div>ĐỊA CHỈ</div>
             <div>HÀNH ĐỘNG</div>
           </div>
           
-          {filteredUsers.map((user, index) => (
-            <div key={user.id} className="table-row">
-              <div>{index + 1}</div>
-              <div>{user.username}</div>
-              <div>{user.fullName}</div>
-              <div>{user.email}</div>
-              <div>
-                <span className={`role-badge ${user.role.toLowerCase()}`}>
-                  {user.role}
-                </span>
-              </div>
-              <div>
-                <span className={`status-badge ${
-                  user.status === 'HOẠT ĐỘNG' ? 'active' : 
-                  user.status === 'BỊ KHÓA' ? 'blocked' : 'pending'
-                }`}>
-                  {user.status}
-                </span>
-              </div>
-              <div>{user.dateCreated}</div>
-              <div className="actions">
+          {filteredUsers.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+              Không tìm thấy người dùng nào
+            </div>
+          ) : (
+            filteredUsers.map((user, index) => (
+              <div key={user.id} className="table-row">
+                <div>{index + 1}</div>
+                <div>{user.email || 'N/A'}</div>
+                <div>{user.fullName || 'N/A'}</div>
+                <div>{user.phoneNumber || 'N/A'}</div>
+                <div>
+                  <span className={`role-badge ${(user.role || '').toLowerCase()}`}>
+                    {getRoleDisplayName(user.role)}
+                  </span>
+                </div>
+                <div>
+                  <span className={`status-badge ${
+                    user.status === 'Active' || user.status === 'HOẠT ĐỘNG' ? 'active' : 
+                    user.status === 'Inactive' || user.status === 'BỊ KHÓA' ? 'blocked' : 'pending'
+                  }`}>
+                    {getStatusDisplayName(user.status)}
+                  </span>
+                </div>
+                <div>{user.address || 'N/A'}</div>
+                              <div className="actions">
                 <button className="action-btn edit" title="Sửa" onClick={() => handleEdit(user)}>
                   <Edit size={16} />
                 </button>
@@ -1050,12 +1400,19 @@ const UserManagement = () => {
                 <button className="action-btn reset" title="Reset mật khẩu" onClick={() => handleResetPassword(user)}>
                   <Key size={16} />
                 </button>
-                <button className="action-btn delete" title="Xóa" onClick={() => handleDelete(user)}>
-                  <Trash2 size={16} />
-                </button>
+                {user.status === 'BỊ KHÓA' || user.status === 'Inactive' ? (
+                  <button className="action-btn activate" title="Mở khóa người dùng" onClick={() => handleActivateUser(user)}>
+                    <Key size={16} />
+                  </button>
+                ) : (
+                  <button className="action-btn delete" title="Khóa người dùng" onClick={() => handleDelete(user)}>
+                    <Trash2 size={16} />
+                  </button>
+                )}
               </div>
-            </div>
-          ))}
+              </div>
+            ))
+          )}
         </div>
 
         <div className="pagination">
@@ -1079,54 +1436,12 @@ const UserManagement = () => {
         </div>
       </div>
 
-      <AddUserModal
-        show={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onAddUser={(newUser) => {
-          setUsers([
-            ...users,
-            {
-              id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
-              ...newUser,
-              dateCreated: new Date().toLocaleDateString('vi-VN')
-            }
-          ]);
-        }}
-      />
-      <EditUserModal
-        show={showEditModal}
-        onClose={() => {
-          setShowEditModal(false);
-          setEditUser(null);
-        }}
-        user={editUser}
-        onEditUser={(updatedUser) => {
-          setUsers(users.map(u => u.id === updatedUser.id ? { ...u, ...updatedUser } : u));
-        }}
-      />
-      <ViewUserModal
-        show={showViewModal}
-        onClose={() => {
-          setShowViewModal(false);
-          setViewUser(null);
-        }}
-        user={viewUser}
-      />
-      <DeleteModal
-        show={showDeleteModal}
-        onClose={() => {
-          setShowDeleteModal(false);
-          setSelectedUser(null);
-        }}
-        user={selectedUser}
-        onDelete={() => {
-          setUsers(users.map(u =>
-            u.id === selectedUser.id ? { ...u, status: 'BỊ KHÓA' } : u
-          ));
-          setShowDeleteModal(false);
-          setSelectedUser(null);
-        }}
-      />
+      {/* Render modals */}
+      {showAddModal && <AddUserModal />}
+      {showEditModal && <EditUserModal />}
+      {showViewModal && <ViewUserModal />}
+      {showDeleteModal && <DeleteModal />}
+
     </div>
   );
 };
