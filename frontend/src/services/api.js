@@ -105,6 +105,18 @@ export const userAPI = {
     updateUserProfile: (profileData) => {
         return api.put('/users/profile', profileData);
     },
+    createUser: (userData) => {
+        return api.post('/users', userData);
+    },
+    updateUser: (id, userData) => {
+        return api.put(`/users/${id}`, userData);
+    },
+    deactivateUser: (id) => {
+        return api.put(`/users/${id}/deactivate`);
+    },
+    activateUser: (id) => {
+        return api.put(`/users/${id}/activate`);
+    },
 };
 
 // Test API
@@ -115,53 +127,47 @@ export const testAPI = {
 // Service API
 export const serviceAPI = {
     getAllServices: () => api.get('/service/listService'),
+    addService: (service) => api.post('/service/addService', service),
+    updateService: (id, service) => api.put(`/service/updateService/${id}`, service),
+    deleteService: (id) => api.delete(`/service/deleteService/${id}`),
 };
 
-
-// Sample API
-export const SampleAPI = {
-    // Get all samples
-    getAllSamples: () => api.get('/samples'),
-    
-    // Get sample by ID
-    getSampleById: (sampleID) => api.get(`/samples/${sampleID}`),
-    
-    // Get samples by booking ID
-    getSamplesByBookingId: (bookingID) => api.get(`/samples/booking/${bookingID}`),
-    
-    // Update sample
-    updateSample: (sampleID, sampleData) => api.put(`/samples/${sampleID}`, sampleData),
-    
-    // Delete sample
-    deleteSample: (sampleID) => api.delete(`/samples/${sampleID}`)
+export const sampleAPT = {
+    getAllSample: () => api.get('/samples'),
 };
 
-// Test Result API
-export const TestResultAPI = {
-    // Get all test results
+// Booking API
+export const bookingAPI = {
+    getAllBookingsForStaff: () => api.get('/bookings/staff/all'),
+    getBookingsByUserId: (userId) => api.get(`/bookings/user/${userId}`),
+    getBookingDetails: (bookingId) => api.get(`/bookings/${bookingId}`),
+};
+
+export const testResultAPI = {
+    createTestResult: (data) => api.post('/test-results', data),
     getAllTestResults: () => api.get('/test-results'),
-    
-    // Get test result by ID
-    getTestResultById: (testResultID) => api.get(`/test-results/${testResultID}`),
-    
-    // Get test result by booking ID
-    getTestResultByBookingId: (bookingID) => api.get(`/test-results/booking/${bookingID}`),
-    
-    // Get test results by date range
-    getTestResultsByDateRange: (startDate, endDate) => 
-        api.get(`/test-results/date-range?startDate=${startDate}&endDate=${endDate}`),
-    
-    // Create new test result
-    createTestResult: (testResultData) => api.post('/test-results', testResultData),
-    
-    // Update test result
-    updateTestResult: (testResultID, testResultData) => 
-        api.put(`/test-results/${testResultID}`, testResultData),
-    
-    // Delete test result
-    deleteTestResult: (testResultID) => api.delete(`/test-results/${testResultID}`)
+    getTestResultById: (id) => api.get(`/test-results/${id}`),
+    updateTestResult: (id, data) => api.put(`/test-results/${id}`, data),
+    deleteTestResult: (id) => api.delete(`/test-results/${id}`),
+    // Lấy trạng thái kết quả xét nghiệm (nếu backend có endpoint riêng)
+    getTestResultStatusById: (id) => api.get(`/test-results/${id}`),
+    // Thêm hàm gửi kết quả thực sự
+    sendTestResult: (id) => api.post(`/test-results/${id}/send`),
 };
 
+export const detailResultAPI = {
+    getDetailResultsByTestResultId: (testResultID) => api.get(`/detail-results/test-result/${testResultID}`),
+};
+
+export const surchargeAPI = {
+    getAll: () => api.get('/surcharges'),
+    add: (surcharge) => api.post('/surcharges', surcharge),
+    update: (id, surcharge) => api.put(`/surcharges/${id}`, surcharge),
+    delete: (id) => api.delete(`/surcharges/${id}`),
+};
+
+export const participantAPI = {
+    getParticipantsByBookingId: (bookingId) => api.get(`/participants/booking/${bookingId}`),
+};
 
 export default api; 
-

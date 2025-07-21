@@ -226,12 +226,12 @@ export default function StaffPage() {
                     {user && ( // Chỉ hiển thị nếu có thông tin user
                         <div className="manager-profile-info"> {/* Giữ nguyên classname này */}
                             <div className="header-user-profile-area">
-                                <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.name || 'Staff') }}>
-                                    {getInitials(user.name || 'Staff')}
+                                <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName || 'Staff') }}>
+                                    {getInitials(user.fullName || 'Staff')}
                                 </div>
                                 <div className="header-user-info">
-                                    <div>Chào, {user.name || 'Staff'}!</div>
-                                    <div className="user-id">ID: {user.id || 'ST001'}</div>
+                                    <div>{user.fullName || 'Staff'}</div>
+                                    <div className="user-id">ID: {user.id }</div>
                                 </div>
                             </div>
                         </div>

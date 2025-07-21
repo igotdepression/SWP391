@@ -136,4 +136,4 @@ public class SampleService {
         responseDTO.setBookingStatus(sample.getBooking().getStatus());
         return responseDTO;
     }
-}
+} 

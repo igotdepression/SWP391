@@ -54,9 +54,16 @@ public class ServiceAPI {
 
     @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/deleteService/{id}")
-    public ResponseEntity<String> deleteService(@PathVariable Integer id, @RequestBody ServiceEntity services){
+    public ResponseEntity<String> deleteService(@PathVariable Integer id) {
         serviceManagementService.deleteService(id);
-        return ResponseEntity.ok("Deleted");
+        return ResponseEntity.ok("Deleted (soft)");
+    }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @DeleteMapping("/surcharges/{id}")
+    public ResponseEntity<String> deleteSurcharge(@PathVariable Integer id) {
+        surchargeService.delete(id);
+        return ResponseEntity.ok("Surcharge deleted (soft)");
     }
 
     @GetMapping("/sample-types")

@@ -1,94 +1,44 @@
 // Staff/Sample.jsx
 import React, { useState, useEffect } from 'react';
 import './Sample.css';
-import { SampleAPI } from '../../services/api';
+import { sampleAPT } from '../../services/api'; // Đảm bảo import đúng
 
 export default function Sample() {
     // Statistics state
     const [stats, setStats] = useState({
-        totalSamples: 0,
-        standardSamples: 0,
-        normalSamples: 0,
-        specialSamples: 0
+        totalSamples: 5,
+        standardSamples: 2,
+        normalSamples: 2,
+        specialSamples: 1
     });
-
-    // Sample data state
+    
+    const participantDetails = {};
     const [samples, setSamples] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-    // Load samples on component mount
     useEffect(() => {
-        loadSamples();
-    }, []);
-
-    const loadSamples = async () => {
-        try {
-            setLoading(true);
-            const response = await SampleAPI.getAllSamples();
-            const samplesData = response.data;
-            setSamples(samplesData);
-            
-            // Calculate statistics
-            const totalSamples = samplesData.length;
-            const standardSamples = samplesData.filter(s => s.sampleType === 'Mẫu chuẩn').length;
-            const normalSamples = samplesData.filter(s => s.sampleType === 'Mẫu thông thường').length;
-            const specialSamples = samplesData.filter(s => s.sampleType === 'Mẫu đặc biệt').length;
-            
-            setStats({
-                totalSamples,
-                standardSamples,
-                normalSamples,
-                specialSamples
-            });
-            
-            setError(null);
-        } catch (err) {
-            console.error('Error loading samples:', err);
-            setError('Không thể tải danh sách mẫu xét nghiệm');
-            // Fallback to empty array
-            setSamples([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const ViewSample = async (sampleID) => {
-        try {
-            const response = await SampleAPI.getSampleById(sampleID);
-            const sample = response.data;
-            if (sample) {
-                setViewSample({
-                    sampleID: sample.sampleID,
-                    bookingID: sample.bookingID,
-                    participantID: sample.participantID,
-                    userID: sample.userID,
-                    customerName: sample.customerName,
-                    staffName: sample.staffName,
-                    sampleType: sample.sampleType,
-                    status: sample.status,
-                    sampleCode: sample.sampleCode,
-                    typeOfCollection: sample.typeOfCollection,
-                    collectionDate: sample.collectionDate,
-                    receivedDate: sample.receivedDate,
-                    notes: sample.notes,
-                    bookingStatus: sample.bookingStatus,
-                });
+        const fetchSamples = async () => {
+            try {
+                const res = await sampleAPT.getAllSample();
+                setSamples(res.data);
+            } catch (err) {
+                alert('Không thể tải danh sách mẫu!');
+                setSamples([]);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error('Error viewing sample:', error);
-            alert('Không thể xem chi tiết mẫu xét nghiệm');
-        }
-    };
-
-    // State variables
+        };
+        fetchSamples();
+    }, []);
+    
+    // Participant details data (matching SQL structure)
+    
     const [searchTerm, setSearchTerm] = useState('');
     const [showAddForm, setShowAddForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
     const [showParticipantDetail, setShowParticipantDetail] = useState(false);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const [editingSample, setEditingSample] = useState(null);
-    const [viewSample, setViewSample] = useState(null);
     const [newSample, setNewSample] = useState({ 
         bookingID: '', 
         participantID: '', 
@@ -96,70 +46,17 @@ export default function Sample() {
         sampleType: '', 
         receivedDate: '' 
     });
-
-    // Participant details data (this would come from another API in real implementation)
-    const [participantDetails] = useState({
-        // '301': {
-        //     participantID: 301,
-        //     questionableRelationship: 'Con ruột',
-        //     fullName: 'Nguyễn Văn Nam',
-        //     dateOfBirth: '1995-03-15',
-        //     gender: 'Nam',
-        //     collectionMethod: 'Tại cơ sở',
-        //     relationshipToCustomer: 'Con trai',
-        //     identityNumber: '123456789012',
-        //     address: '123 Đường ABC, Quận 1, TP.HCM'
-        // },
-        // '302': {
-        //     participantID: 302,
-        //     questionableRelationship: 'Vợ/chồng',
-        //     fullName: 'Trần Thị Linh',
-        //     dateOfBirth: '1990-08-20',
-        //     gender: 'Nữ',
-        //     collectionMethod: 'Tại nhà',
-        //     relationshipToCustomer: 'Vợ',
-        //     identityNumber: '987654321098',
-        //     address: '456 Đường XYZ, Quận 3, TP.HCM'
-        // },
-        // '303': {
-        //     participantID: 303,
-        //     questionableRelationship: 'Anh/chị em ruột',
-        //     fullName: 'Lê Văn Hùng',
-        //     dateOfBirth: '1988-12-10',
-        //     gender: 'Nam',
-        //     collectionMethod: 'Tự lấy mẫu',
-        //     relationshipToCustomer: 'Anh trai',
-        //     identityNumber: '456789123456',
-        //     address: '789 Đường DEF, Quận 7, TP.HCM'
-        // },
-        // '304': {
-        //     participantID: 304,
-        //     questionableRelationship: 'Con ruột',
-        //     fullName: 'Phạm Thị Mai',
-        //     dateOfBirth: '2000-05-25',
-        //     gender: 'Nữ',
-        //     collectionMethod: 'Tại cơ sở',
-        //     relationshipToCustomer: 'Con gái',
-        //     identityNumber: '789123456789',
-        //     address: '321 Đường GHI, Quận 5, TP.HCM'
-        // },
-        // '305': {
-        //     participantID: 305,
-        //     questionableRelationship: 'Cha/mẹ',
-        //     fullName: 'Võ Văn Tuấn',
-        //     dateOfBirth: '1960-11-08',
-        //     gender: 'Nam',
-        //     collectionMethod: 'Tại nhà',
-        //     relationshipToCustomer: 'Cha',
-        //     identityNumber: '654321987654',
-        //     address: '654 Đường JKL, Quận 10, TP.HCM'
-        // }
-    });
+    const [selectedSample, setSelectedSample] = useState(null);
+    const [showDetailModal, setShowDetailModal] = useState(false);
 
     const filteredSamples = samples.filter(sample => {
-        const matchesSearch = sample.participantID.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              sample.sampleID.toString().includes(searchTerm.toLowerCase()) ||
-                              sample.bookingID.toString().includes(searchTerm.toLowerCase());
+        const participantIdStr = sample.participantID ? String(sample.participantID) : '';
+        const sampleIdStr = sample.sampleID ? String(sample.sampleID) : '';
+        const bookingIdStr = sample.bookingID ? String(sample.bookingID) : '';
+        const matchesSearch =
+            participantIdStr.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            sampleIdStr.includes(searchTerm) ||
+            bookingIdStr.includes(searchTerm);
         return matchesSearch;
     });
 
@@ -168,12 +65,7 @@ export default function Sample() {
         setNewSample(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleAddSample = async () => {
-        // Note: Based on SampleController, there's no POST endpoint to create new samples
-        // This functionality might need to be implemented in the backend
-        alert('Chức năng thêm mẫu mới chưa được triển khai trong API. Vui lòng liên hệ quản trị viên.');
-        
-        // For now, keep the old functionality for demonstration
+    const handleAddSample = () => {
         if (newSample.bookingID && newSample.participantID && newSample.typeOfCollection && newSample.sampleType) {
             const newSampleData = {
                 ...newSample,
@@ -195,7 +87,7 @@ export default function Sample() {
                 specialSamples: newSample.sampleType === 'Mẫu đặc biệt' ? prev.specialSamples + 1 : prev.specialSamples,
             }));
             
-            alert('Mẫu xét nghiệm mới đã được thêm! (Chỉ ở local, chưa lưu vào database)');
+            alert('Mẫu xét nghiệm mới đã được thêm!');
         } else {
             alert('Vui lòng điền đầy đủ thông tin mẫu xét nghiệm.');
         }
@@ -222,77 +114,50 @@ export default function Sample() {
         setShowAddForm(false);
     };
 
-    const handleUpdateSample = async () => {
+    const handleUpdateSample = () => {
         if (newSample.typeOfCollection && newSample.sampleType) {
-            try {
-                const updateData = {
-                    typeOfCollection: newSample.typeOfCollection,
-                    sampleType: newSample.sampleType,
-                    receivedDate: newSample.receivedDate || editingSample.receivedDate
-                };
-                
-                await SampleAPI.updateSample(editingSample.sampleID, updateData);
-                
-                // Update local state
-                setSamples(prevSamples =>
-                    prevSamples.map(sample =>
-                        sample.sampleID === editingSample.sampleID 
-                            ? { 
-                                ...sample, 
-                                typeOfCollection: newSample.typeOfCollection,
-                                sampleType: newSample.sampleType,
-                                receivedDate: newSample.receivedDate || sample.receivedDate
-                              }
-                            : sample
-                    )
-                );
-                
-                // Reset form
-                setNewSample({ bookingID: '', participantID: '', typeOfCollection: '', sampleType: '', receivedDate: '' });
-                setShowEditForm(false);
-                setEditingSample(null);
-                
-                alert('Mẫu xét nghiệm đã được cập nhật!');
-                
-                // Reload data to ensure consistency
-                await loadSamples();
-            } catch (error) {
-                console.error('Error updating sample:', error);
-                alert('Có lỗi xảy ra khi cập nhật mẫu xét nghiệm. Vui lòng thử lại.');
-            }
+            setSamples(prevSamples =>
+                prevSamples.map(sample =>
+                    sample.sampleID === editingSample.sampleID 
+                        ? { 
+                            ...sample, 
+                            // Chỉ cập nhật các trường được phép sửa
+                            typeOfCollection: newSample.typeOfCollection,
+                            sampleType: newSample.sampleType,
+                            receivedDate: newSample.receivedDate || sample.receivedDate
+                          }
+                        : sample
+                )
+            );
+            
+            // Reset form
+            setNewSample({ bookingID: '', participantID: '', typeOfCollection: '', sampleType: '', receivedDate: '' });
+            setShowEditForm(false);
+            setEditingSample(null);
+            
+            alert('Mẫu xét nghiệm đã được cập nhật!');
         } else {
             alert('Vui lòng điền đầy đủ thông tin có thể sửa đổi.');
         }
     };
 
-    const handleDeleteSample = async (sampleID) => {
+    const handleDeleteSample = (sampleID) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa mẫu xét nghiệm này?')) {
-            try {
-                await SampleAPI.deleteSample(sampleID);
-                
-                // Update local state
-                const sampleToDelete = samples.find(sample => sample.sampleID === sampleID);
-                setSamples(prevSamples => prevSamples.filter(sample => sample.sampleID !== sampleID));
-                
-                // Update stats
-                if (sampleToDelete) {
-                    setStats(prev => ({
-                        ...prev,
-                        totalSamples: prev.totalSamples - 1,
-                        standardSamples: sampleToDelete.sampleType === 'Mẫu chuẩn' ? prev.standardSamples - 1 : prev.standardSamples,
-                        normalSamples: sampleToDelete.sampleType === 'Mẫu thông thường' ? prev.normalSamples - 1 : prev.normalSamples,
-                        specialSamples: sampleToDelete.sampleType === 'Mẫu đặc biệt' ? prev.specialSamples - 1 : prev.specialSamples,
-                    }));
-                }
-                
-                alert('Mẫu xét nghiệm đã được xóa!');
-                
-                // Reload data to ensure consistency
-                await loadSamples();
-            } catch (error) {
-                console.error('Error deleting sample:', error);
-                alert('Có lỗi xảy ra khi xóa mẫu xét nghiệm. Vui lòng thử lại.');
+            const sampleToDelete = samples.find(sample => sample.sampleID === sampleID);
+            setSamples(prevSamples => prevSamples.filter(sample => sample.sampleID !== sampleID));
+            
+            // Update stats
+            if (sampleToDelete) {
+                setStats(prev => ({
+                    ...prev,
+                    totalSamples: prev.totalSamples - 1,
+                    standardSamples: sampleToDelete.sampleType === 'Mẫu chuẩn' ? prev.standardSamples - 1 : prev.standardSamples,
+                    normalSamples: sampleToDelete.sampleType === 'Mẫu thông thường' ? prev.normalSamples - 1 : prev.normalSamples,
+                    specialSamples: sampleToDelete.sampleType === 'Mẫu đặc biệt' ? prev.specialSamples - 1 : prev.specialSamples,
+                }));
             }
+            
+            alert('Mẫu xét nghiệm đã được xóa!');
         }
     };
 
@@ -595,6 +460,24 @@ export default function Sample() {
                     </div>
                 )}
 
+                {/* Sample Detail Modal */}
+                {showDetailModal && selectedSample && (
+                    <div className="modal-overlay" onClick={() => setShowDetailModal(false)}>
+                        <div className="modal-content" style={{ maxWidth: 500, margin: 'auto', padding: 32 }} onClick={e => e.stopPropagation()}>
+                            <h3>Chi tiết mẫu #{selectedSample.sampleID}</h3>
+                            <ul style={{ textAlign: 'left', lineHeight: 1.8 }}>
+                                <li><b>Mã Booking:</b> {selectedSample.bookingID}</li>
+                                <li><b>Mã nhân viên:</b> {selectedSample.userID}</li>
+                                <li><b>Mã bệnh nhân:</b> {selectedSample.participantID}</li>
+                                <li><b>Phương thức lấy mẫu:</b> {selectedSample.typeOfCollection}</li>
+                                <li><b>Loại mẫu:</b> {selectedSample.sampleType}</li>
+                                <li><b>Ngày nhận mẫu:</b> {selectedSample.receivedDate}</li>
+                            </ul>
+                            <button className="btn-view" style={{ marginTop: 16 }} onClick={() => setShowDetailModal(false)}>Đóng</button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Sample List Card */}
                 <div className="sample-list-card">
                     <h3>Danh sách mẫu xét nghiệm</h3>
@@ -623,20 +506,7 @@ export default function Sample() {
 
                     {/* Table */}
                     {loading ? (
-                        <div style={{textAlign: 'center', padding: '40px', color: '#6b7280'}}>
-                            Đang tải danh sách mẫu xét nghiệm...
-                        </div>
-                    ) : error ? (
-                        <div style={{textAlign: 'center', padding: '40px', color: '#ef4444'}}>
-                            {error}
-                            <br />
-                            <button 
-                                onClick={loadSamples}
-                                style={{marginTop: '10px', padding: '8px 16px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}
-                            >
-                                Thử lại
-                            </button>
-                        </div>
+                        <p>Đang tải dữ liệu...</p>
                     ) : filteredSamples.length > 0 ? (
                         <div className="table-responsive">
                             <table className="data-table">
@@ -669,29 +539,58 @@ export default function Sample() {
                                                     {sample.participantID}
                                                 </button>
                                             </td>
-                                            <td>{sample.typeOfCollection}</td>
                                             <td>
-                                                <span className={`status-badge ${getSampleTypeClass(sample.sampleType)}`}>
+                                                <span
+                                                    className={
+                                                        "sample-method-badge " +
+                                                        (sample.typeOfCollection === "Tại cơ sở"
+                                                            ? "center"
+                                                            : sample.typeOfCollection === "Tại nhà"
+                                                            ? "home"
+                                                            : sample.typeOfCollection === "Tự lấy mẫu"
+                                                            ? "self"
+                                                            : "")
+                                                    }
+                                                >
+                                                    {sample.typeOfCollection}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    className={
+                                                        "sample-type-badge " +
+                                                        (sample.sampleType === "Mẫu đặc biệt"
+                                                            ? "special"
+                                                            : sample.sampleType === "Mẫu thông thường"
+                                                            ? "normal"
+                                                            : sample.sampleType === "Mẫu chuẩn"
+                                                            ? "standard"
+                                                            : "")
+                                                    }
+                                                >
                                                     {sample.sampleType}
                                                 </span>
                                             </td>
                                             <td>{sample.receivedDate}</td>
                                             <td className="sample-actions">
-                                        <button 
-                                            className="action-btn edit"
-                                            onClick={() => handleEditSample(sample)}
-                                            title="Sửa thông tin"
-                                        >
-                                            Sửa
-                                        </button>
-                                        <button 
-                                            className="action-btn delete"
-                                            onClick={() => handleDeleteSample(sample.sampleID)}
-                                            title="Xóa mẫu"
-                                        >
-                                            Xóa
-                                        </button>
-                                    </td>
+  <button 
+    className="btn-edit" 
+    onClick={() => handleEditSample(sample)}
+    title="Sửa thông tin"
+  >
+    <i className="fa fa-pen" aria-hidden="true"></i>
+  </button>
+  <button 
+    className="btn-view" 
+    onClick={() => {
+      setSelectedSample(sample);
+      setShowDetailModal(true);
+    }}
+    title="Xem chi tiết"
+  >
+    <i className="fa fa-eye" aria-hidden="true"></i>
+  </button>
+</td>
                                         </tr>
                                     ))}
                                 </tbody>

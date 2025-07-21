@@ -6,11 +6,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class ConsultationRequest {
-    @NotNull(message = "User ID cannot be null")
-    private Integer userId;
-
-    @NotNull(message = "Consultant date cannot be null")
-    private LocalDateTime consultantDate;
-
-    private String notes; // Notes có thể là null
+    private String name;
+    private String phone;
+    private String type;
+    private String note;
 }

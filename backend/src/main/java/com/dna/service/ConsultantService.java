@@ -19,27 +19,24 @@ public class ConsultantService {
     @Autowired
     private UserRepository userRepository; // Để tìm User theo ID
 
-    public Consultant requestConsultation(Integer userId, LocalDate consultantDate, String notes) {
-        // 1. Kiểm tra userId có tồn tại không
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("User with ID " + userId + " not found.");
-        }
-        User user = userOptional.get();
-
-        // 2. Tạo đối tượng Consultant
+    public Consultant requestConsultation(String name, String phone, String type, String note) {
         Consultant consultation = new Consultant();
-        consultation.setStaff(user);
-        consultation.setConsultantDate(consultantDate);
-        consultation.setNotes(notes);
-        consultation.setStatus("Pending"); // Trạng thái mặc định
-
-        // 3. Lưu vào cơ sở dữ liệu
+        consultation.setName(name);
+        consultation.setPhone(phone);
+        consultation.setType(type);
+        consultation.setContent(note); // mapping note vào content
+        consultation.setStatus("đang chờ xử lý"); // Trạng thái mặc định
+        consultation.setCreatedDate(java.time.LocalDate.now());
+        consultation.setConsultantDate(java.time.LocalDate.now()); // Luôn set ngày hiện tại
         return consultantRepository.save(consultation);
     }
 
     // Các phương thức khác: lấy danh sách tư vấn, cập nhật trạng thái, ...
     public Optional<Consultant> getConsultationById(Integer id) {
         return consultantRepository.findById(id);
+    }
+
+    public java.util.List<Consultant> getAllConsultations() {
+        return consultantRepository.findAll();
     }
 }

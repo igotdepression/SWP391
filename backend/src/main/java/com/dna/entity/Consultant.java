@@ -1,5 +1,6 @@
 package com.dna.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @Table(name = "Consultant")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Consultant {
 
     @Id
@@ -22,7 +24,7 @@ public class Consultant {
     private Integer consultantID;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "userID", nullable = true) // Cho phép null
     private User staff;
 
     @Column(name = "name", nullable = false, length = 100)
@@ -37,7 +39,7 @@ public class Consultant {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "consultantDate", nullable = false)
+    @Column(name = "consultantDate", nullable = true) // Cho phép null
     private LocalDate consultantDate;
 
     @Column(name = "notes", length = 255)

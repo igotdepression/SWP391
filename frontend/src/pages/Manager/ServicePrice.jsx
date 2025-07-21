@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button } from '../../components/ui/ui';
 import './ServicePrice.css';
+import { serviceAPI } from '../../services/api';
+import { surchargeAPI } from '../../services/api';
 
 const fakeServices = [
     {
@@ -59,6 +61,7 @@ export default function ServicePrice() {
     const [surcharges, setSurcharges] = useState([]);
     const [activeTab, setActiveTab] = useState('services');
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [editingService, setEditingService] = useState(null);
@@ -66,13 +69,34 @@ export default function ServicePrice() {
     const [showAddServiceForm, setShowAddServiceForm] = useState(false);
     const [showAddSurchargeForm, setShowAddSurchargeForm] = useState(false);
 
+    // Lấy danh sách dịch vụ từ API khi load trang
     useEffect(() => {
-        setTimeout(() => {
-            setServices(fakeServices);
-            setSurcharges(fakeSurcharges);
-            setLoading(false);
-        }, 300);
+        async function fetchServices() {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await serviceAPI.getAllServices();
+                setServices(res.data);
+            } catch (err) {
+                setError('Không thể tải danh sách dịch vụ');
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchServices();
     }, []);
+
+    // Lấy danh sách phụ phí khi vào tab 'surcharges'
+    useEffect(() => {
+        if (activeTab === 'surcharges') {
+            setLoading(true);
+            setError(null);
+            surchargeAPI.getAll()
+                .then(res => setSurcharges(res.data))
+                .catch(() => setError('Không thể tải danh sách phụ phí'))
+                .finally(() => setLoading(false));
+        }
+    }, [activeTab]);
 
     // Lọc services
     const filteredServices = services.filter(service => {
@@ -92,16 +116,52 @@ export default function ServicePrice() {
         setEditingService(service);
     };
 
-    const handleSaveService = (updatedService) => {
-        setServices(services.map(s => 
-            s.serviceID === updatedService.serviceID ? updatedService : s
-        ));
-        setEditingService(null);
+    // Thêm dịch vụ mới
+    const handleAddService = async (newService) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await serviceAPI.addService(newService);
+            const res = await serviceAPI.getAllServices();
+            setServices(res.data);
+            setShowAddServiceForm(false);
+        } catch (err) {
+            setError('Không thể thêm dịch vụ mới');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleDeleteService = (serviceID) => {
+    const handleSaveService = async (updatedService) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await serviceAPI.updateService(updatedService.serviceID, updatedService);
+            const res = await serviceAPI.getAllServices();
+            setServices(res.data);
+            setEditingService(null);
+        } catch (err) {
+            setError('Không thể cập nhật dịch vụ');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteService = async (serviceID) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')) {
-            setServices(services.filter(s => s.serviceID !== serviceID));
+            setLoading(true);
+            setError(null);
+            try {
+                // Xóa mềm: cập nhật status thành 'Ngừng hoạt động'
+                const service = services.find(s => s.serviceID === serviceID);
+                await serviceAPI.updateService(serviceID, { ...service, status: 'Ngừng hoạt động' });
+                const res = await serviceAPI.getAllServices();
+                setServices(res.data);
+            } catch (err) {
+                setError('Không thể xóa dịch vụ');
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -109,16 +169,54 @@ export default function ServicePrice() {
         setEditingSurcharge(surcharge);
     };
 
-    const handleSaveSurcharge = (updatedSurcharge) => {
-        setSurcharges(surcharges.map(s => 
-            s.surchargeID === updatedSurcharge.surchargeID ? updatedSurcharge : s
-        ));
-        setEditingSurcharge(null);
+    // Thêm phụ phí mới
+    const handleAddSurcharge = async (newSurcharge) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await surchargeAPI.add(newSurcharge);
+            const res = await surchargeAPI.getAll();
+            setSurcharges(res.data);
+            setShowAddSurchargeForm(false);
+        } catch (err) {
+            setError('Không thể thêm phụ phí mới');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleDeleteSurcharge = (surchargeID) => {
+    // Sửa phụ phí
+    const handleSaveSurcharge = async (updatedSurcharge) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await surchargeAPI.update(updatedSurcharge.surchargeID, updatedSurcharge);
+            const res = await surchargeAPI.getAll();
+            setSurcharges(res.data);
+            setEditingSurcharge(null);
+        } catch (err) {
+            setError('Không thể cập nhật phụ phí');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Xóa phụ phí
+    const handleDeleteSurcharge = async (surchargeID) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa phụ phí này?')) {
-            setSurcharges(surcharges.filter(s => s.surchargeID !== surchargeID));
+            setLoading(true);
+            setError(null);
+            try {
+                // Xóa mềm: cập nhật status thành 'Ngừng hoạt động'
+                const surcharge = surcharges.find(s => s.surchargeID === surchargeID);
+                await surchargeAPI.update(surchargeID, { ...surcharge, status: 'Ngừng hoạt động' });
+                const res = await surchargeAPI.getAll();
+                setSurcharges(res.data);
+            } catch (err) {
+                setError('Không thể xóa phụ phí');
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -266,7 +364,6 @@ export default function ServicePrice() {
                                                                 title="Chỉnh sửa"
                                                             >
                                                                 <span className="btn-icon">✏️</span>
-                                                                <span className="btn-text">Sửa</span>
                                                             </button>
                                                             <button 
                                                                 onClick={() => handleDeleteService(service.serviceID)}
@@ -274,7 +371,6 @@ export default function ServicePrice() {
                                                                 title="Xóa"
                                                             >
                                                                 <span className="btn-icon">🗑️</span>
-                                                                <span className="btn-text">Xóa</span>
                                                             </button>
                                                         </div>
                                                     </td>
@@ -376,21 +472,23 @@ export default function ServicePrice() {
                                             </td>
                                             <td className="note-cell">{surcharge.note}</td>
                                             <td className="actions-cell">
-                                                <Button 
+                                                <button 
                                                     size="sm" 
                                                     onClick={() => handleEditSurcharge(surcharge)}
-                                                    className="edit-btn"
+                                                    className="action-btn edit-btn"
+                                                    title="Chỉnh sửa"
                                                 >
-                                                    Sửa
-                                                </Button>
-                                                <Button 
+                                                    <span className="btn-icon">✏️</span>
+                                                </button>
+                                                <button 
                                                     size="sm" 
                                                     variant="danger" 
                                                     onClick={() => handleDeleteSurcharge(surcharge.surchargeID)}
-                                                    className="delete-btn"
+                                                    className="action-btn delete-btn"
+                                                    title="Xóa"
                                                 >
-                                                    Xóa
-                                                </Button>
+                                                    <span className="btn-icon">🗑️</span>
+                                                </button>
                                             </td>
                                         </tr>
                                     ))
@@ -419,10 +517,7 @@ export default function ServicePrice() {
             {/* Modal thêm mới service */}
             {showAddServiceForm && (
                 <AddServiceModal 
-                    onSave={(newService) => {
-                        setServices([...services, { ...newService, serviceID: Date.now() }]);
-                        setShowAddServiceForm(false);
-                    }}
+                    onSave={handleAddService}
                     onCancel={() => setShowAddServiceForm(false)}
                 />
             )}
@@ -439,10 +534,7 @@ export default function ServicePrice() {
             {/* Modal thêm mới surcharge */}
             {showAddSurchargeForm && (
                 <AddSurchargeModal 
-                    onSave={(newSurcharge) => {
-                        setSurcharges([...surcharges, { ...newSurcharge, surchargeID: Date.now() }]);
-                        setShowAddSurchargeForm(false);
-                    }}
+                    onSave={handleAddSurcharge}
                     onCancel={() => setShowAddSurchargeForm(false)}
                 />
             )}
@@ -610,6 +702,17 @@ const AddServiceModal = ({ onSave, onCancel }) => {
                             onChange={(e) => setFormData({...formData, extraSampleFee: e.target.value})}
                             placeholder="Để trống nếu không có"
                         />
+                    </div>
+                    <div className="form-group">
+                        <label>Trạng thái:</label>
+                        <select
+                            value={formData.status}
+                            onChange={(e) => setFormData({...formData, status: e.target.value})}
+                            required
+                        >
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Ngừng hoạt động">Ngừng hoạt động</option>
+                        </select>
                     </div>
                     <div className="form-actions">
                         <Button type="submit">Thêm</Button>

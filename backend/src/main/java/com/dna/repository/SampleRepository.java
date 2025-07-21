@@ -40,4 +40,5 @@ public interface SampleRepository extends JpaRepository<Sample, Integer> {
     // Đếm số sample theo booking ID
     Long countByBookingBookingID(Integer bookingID);
 
+    List<Sample> findByBooking_BookingID(Integer bookingID);
 }
