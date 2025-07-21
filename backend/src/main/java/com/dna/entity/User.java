@@ -63,5 +63,6 @@ public class User {
     private List<BlogPost> blogPosts;
 
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Consultant> consultants;
 } 

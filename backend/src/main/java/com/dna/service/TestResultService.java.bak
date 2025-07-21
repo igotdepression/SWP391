@@ -105,7 +105,6 @@ public class TestResultService {
         existingTestResult.setResultDate(requestDTO.getResultDate());
         existingTestResult.setResultConclution(requestDTO.getResultConclution());
         existingTestResult.setResultFile(requestDTO.getResultFile());
-        existingTestResult.setStatus(requestDTO.getStatus());
         existingTestResult.setUpdatedBy(requestDTO.getCreatedBy()); // Use same user for update
         existingTestResult.setUpdatedDate(LocalDate.now());
         
@@ -159,15 +158,11 @@ public class TestResultService {
         responseDTO.setCreatedBy(testResult.getCreatedBy());
         responseDTO.setCreatedDate(testResult.getCreatedDate());
         responseDTO.setResultConclution(testResult.getResultConclution());
-        // Nếu resultFile không null và không bắt đầu bằng /uploads/, tự động nối thêm
-        String file = testResult.getResultFile();
-        if (file != null && !file.isEmpty() && !file.startsWith("/uploads/")) {
-            file = "/uploads/" + file;
-        }
-        responseDTO.setResultFile(file);
+        responseDTO.setResultFile(testResult.getResultFile());
         responseDTO.setUpdatedBy(testResult.getUpdatedBy());
         responseDTO.setUpdatedDate(testResult.getUpdatedDate());
-        responseDTO.setStatus(testResult.getStatus());
+        responseDTO.setBookingStatus(testResult.getBooking().getStatus());
+        
         // Map detail results
         if (testResult.getDetailResults() != null) {
             List<DetailResultResponseDTO> detailDTOs = testResult.getDetailResults().stream()
@@ -175,6 +170,7 @@ public class TestResultService {
                     .collect(Collectors.toList());
             responseDTO.setDetailResults(detailDTOs);
         }
+        
         return responseDTO;
     }
     
@@ -190,4 +186,4 @@ public class TestResultService {
         responseDTO.setPaternityIndex(detailResult.getPaternityIndex());
         return responseDTO;
     }
-} 
+}

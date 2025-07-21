@@ -3,109 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Input } from '../../components/ui/ui';
 import { Eye, CreditCard, DollarSign, TrendingUp, CheckCircle, Clock, XCircle } from 'lucide-react';
 import './Payment.css';
-
-const fakePayments = [
-    {
-        paymentID: 1,
-        bookingID: 'BK001',
-        paymentDate: '2024-06-15',
-        amount: 5000000,
-        paymentMethod: 'VNPay',
-        status: 'Hoàn thành',
-        customerName: 'Nguyễn Văn A',
-        email: 'a@example.com'
-    },
-    {
-        paymentID: 2,
-        bookingID: 'BK002',
-        paymentDate: '2024-06-14',
-        amount: 7500000,
-        paymentMethod: 'Momo',
-        status: 'Chờ xác nhận',
-        customerName: 'Trần Thị B',
-        email: 'b@example.com'
-    },
-    {
-        paymentID: 3,
-        bookingID: 'BK003',
-        paymentDate: '2024-06-13',
-        amount: 3200000,
-        paymentMethod: 'Banking',
-        status: 'Thất bại',
-        customerName: 'Lê Văn C',
-        email: 'c@example.com'
-    },
-    {
-        paymentID: 4,
-        bookingID: 'BK004',
-        paymentDate: '2024-06-12',
-        amount: 8900000,
-        paymentMethod: 'VNPay',
-        status: 'Hoàn tiền',
-        customerName: 'Phạm Thị D',
-        email: 'd@example.com'
-    },
-    {
-        paymentID: 5,
-        bookingID: 'BK005',
-        paymentDate: '2024-06-11',
-        amount: 4200000,
-        paymentMethod: 'Momo',
-        status: 'Hoàn thành',
-        customerName: 'Hoàng Văn E',
-        email: 'e@example.com'
-    },
-    {
-        paymentID: 6,
-        bookingID: 'BK006',
-        paymentDate: '2024-06-10',
-        amount: 6800000,
-        paymentMethod: 'VNPay',
-        status: 'Hoàn thành',
-        customerName: 'Vũ Thị F',
-        email: 'f@example.com'
-    },
-    {
-        paymentID: 7,
-        bookingID: 'BK007',
-        paymentDate: '2024-06-09',
-        amount: 2500000,
-        paymentMethod: 'Banking',
-        status: 'Chờ xác nhận',
-        customerName: 'Ngô Minh G',
-        email: 'g@example.com'
-    },
-    {
-        paymentID: 8,
-        bookingID: 'BK008',
-        paymentDate: '2024-06-08',
-        amount: 9200000,
-        paymentMethod: 'VNPay',
-        status: 'Hoàn thành',
-        customerName: 'Đặng Thị H',
-        email: 'h@example.com'
-    },
-    {
-        paymentID: 9,
-        bookingID: 'BK009',
-        paymentDate: '2024-06-07',
-        amount: 1800000,
-        paymentMethod: 'Momo',
-        status: 'Thất bại',
-        customerName: 'Bùi Văn I',
-        email: 'i@example.com'
-    },
-    {
-        paymentID: 10,
-        bookingID: 'BK010',
-        paymentDate: '2024-06-06',
-        amount: 5500000,
-        paymentMethod: 'Banking',
-        status: 'Hoàn thành',
-        customerName: 'Lý Thị K',
-        email: 'k@example.com'
-    }
-];
+import api from '../../services/api';
+import RevenueChart from './RevenueChart';
 
 function formatCurrency(amount) {
     return new Intl.NumberFormat('vi-VN', {
@@ -116,6 +15,8 @@ function formatCurrency(amount) {
 
 export default function Payment() {
     const [payments, setPayments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchBookingID, setSearchBookingID] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [filterMethod, setFilterMethod] = useState('all');
@@ -125,10 +26,20 @@ export default function Payment() {
     const [pendingAction, setPendingAction] = useState(null);
 
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setPayments(fakePayments);
-        }, 500);
+        const fetchPayments = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await api.get('/payments');
+                setPayments(res.data);
+            } catch (err) {
+                setError('Không thể tải danh sách thanh toán!');
+                setPayments([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPayments();
     }, []);
 
     // Filtered payments
@@ -246,37 +157,10 @@ export default function Payment() {
     return (
         <div className="payment-management-container">
             <Card className="payment-card">
+                {loading && <div className="loading-spinner">Đang tải dữ liệu thanh toán...</div>}
+                {error && <div className="error-message">{error}</div>}
                 {/* Revenue Chart */}
-                <div className="revenue-chart-container">
-                    <h4>📊 Biểu đồ Doanh thu (7 ngày gần nhất)</h4>
-                    <div className="revenue-chart">
-                        <div className="chart-y-axis">
-                            <span>{formatCurrency(maxRevenue)}</span>
-                            <span>{formatCurrency(maxRevenue * 0.75)}</span>
-                            <span>{formatCurrency(maxRevenue * 0.5)}</span>
-                            <span>{formatCurrency(maxRevenue * 0.25)}</span>
-                            <span>0</span>
-                        </div>
-                        <div className="chart-bars">
-                            {chartData.map(([date, revenue]) => (
-                                <div key={date} className="chart-bar-container">
-                                    <div
-                                        className="chart-bar"
-                                        style={{
-                                            height: `${(revenue / maxRevenue) * 100}%`,
-                                            minHeight: revenue > 0 ? '0' : '8px'
-                                        }}
-                                        title={`${date}: ${formatCurrency(revenue)}`}
-                                    ></div>
-                                    <span className="chart-date">{date}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="chart-total">
-                        <strong>💰 Tổng doanh thu: {formatCurrency(totalRevenue)}</strong>
-                    </div>
-                </div>
+                <RevenueChart payments={payments} loading={loading} error={error} />
 
                 {/* Statistics - horizontal layout */}
                 <div className="payment-stats">

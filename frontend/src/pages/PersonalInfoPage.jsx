@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './PersonalInfoPage.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { getAvatarColor, getInitials } from '../utils/avatarUtils';
+import locations from '../data/vietnamLocations.json';
+import { userAPI, bookingAPI, participantAPI, testResultAPI } from '../services/api';
 
 const sampleList = [
   {
@@ -43,7 +47,7 @@ const appointmentList = [
       { id: 1, name: 'Trần Thị B', gender: 'Nữ', birthYear: 1985, relation: 'Mẹ nghi vấn', sampleType: 'Máu', method: 'Tại trung tâm' },
       { id: 2, name: 'Trần Văn D', gender: 'Nam', birthYear: 2012, relation: 'Con', sampleType: 'Tóc', method: 'Tại nhà' },
     ],
-    statusStep: 1, // 0: Đã đặt, 1: Chờ lấy mẫu, 2: Đang xét nghiệm, 3: Đã có kết quả
+    statusStep: 1,
   },
   {
     id: 'ORD20250702',
@@ -104,7 +108,7 @@ const paymentList = [
 ];
 
 const PersonalInfoPage = () => {
-  const [activeMenuItem, setActiveMenuItem] = useState('basic-info');
+  const [activeMenuItem, setActiveMenuItem] = useState('personal-info');
   const [toggleStates, setToggleStates] = useState({
     twoFactor: true,
     shareResults: true
@@ -113,7 +117,38 @@ const PersonalInfoPage = () => {
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const [profile, setProfile] = useState(null);
+  // Địa chỉ động
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedCommune, setSelectedCommune] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingProfileData, setPendingProfileData] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [showTestResultModal, setShowTestResultModal] = useState(false);
+  const [testResult, setTestResult] = useState(null);
+
+  // Lấy danh sách tỉnh
+  const provinces = locations.provinces;
+  // Lấy danh sách quận/huyện theo tỉnh
+  const districts = selectedProvince && provinces.find(p => p.code === selectedProvince)?.districts ? provinces.find(p => p.code === selectedProvince).districts : [];
+  // Lấy danh sách xã/phường theo quận/huyện
+  const communes = selectedDistrict && districts.find(d => d.code === selectedDistrict)?.communes ? districts.find(d => d.code === selectedDistrict).communes : [];
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await userAPI.getUserProfile();
+        setProfile(res.data);
+      } catch (err) {
+        console.error('Lỗi lấy thông tin cá nhân:', err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     if (showAppointmentModal) {
@@ -124,36 +159,52 @@ const PersonalInfoPage = () => {
     return () => { document.body.style.overflow = ''; };
   }, [showAppointmentModal]);
 
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const userId = user?.userID || localStorage.getItem('userID');
+        if (!userId) return;
+        const res = await bookingAPI.getBookingsByUserId(userId);
+        setBookings(res.data);
+        console.log('Bookings:', res.data); // Log dữ liệu lấy từ API
+      } catch (err) {
+        setBookings([]);
+        console.log('Bookings API error:', err);
+      }
+    };
+    fetchBookings();
+  }, [user]);
+
   const handleMenuItemClick = (menuId) => {
     setActiveMenuItem(menuId);
   };
 
   const handleEditClick = () => {
-    alert('Chức năng chỉnh sửa sẽ được triển khai trong phiên bản tiếp theo!');
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
   };
 
   const handleDownloadClick = (file) => {
     alert(`Đang tải xuống file: ${file || 'PDF kết quả xét nghiệm'}...`);
   };
 
-  const handleViewClick = (id) => {
-    // For appointments, show modal
-    const found = appointmentList.find(a => a.id === id);
-    if (found) {
-      setSelectedAppointment(found);
+  const handleViewClick = async (bookingID) => {
+    // Lấy chi tiết booking từ API
+    try {
+      const res = await bookingAPI.getBookingDetails(bookingID);
+      setSelectedAppointment(res.data); // res.data đã có participants
       setShowAppointmentModal(true);
-    } else {
-      alert(`Xem chi tiết cho mã: ${id}`);
+    } catch (err) {
+      alert('Không lấy được chi tiết đơn hàng!');
     }
   };
 
   const handleCloseModal = () => {
     setShowAppointmentModal(false);
     setSelectedAppointment(null);
-  };
-
-  const handleChatClick = () => {
-    alert('Chức năng chat hỗ trợ sẽ được mở ra!');
   };
 
   const handleToggleSwitch = (toggleName) => {
@@ -165,7 +216,8 @@ const PersonalInfoPage = () => {
 
   const handleLogout = () => {
     if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-      alert('Đã đăng xuất thành công!');
+      logout();
+      navigate('/login');
     }
   };
 
@@ -176,353 +228,152 @@ const PersonalInfoPage = () => {
       setShowPaymentModal(true);
     }
   };
+
   const handleClosePaymentModal = () => {
     setShowPaymentModal(false);
     setSelectedPayment(null);
   };
 
+  const handleSaveProfile = (e) => {
+    e.preventDefault();
+    const form = e.target.form || document.querySelector('.modal-content form');
+    let address = '';
+    const provinceObj = provinces.find(p => p.code === selectedProvince);
+    const districtObj = selectedProvince && districts.find(d => d.code === selectedDistrict);
+    const communeObj = selectedDistrict && communes.find(c => c.code === selectedCommune);
+    if (provinceObj && districtObj && communeObj) {
+      address = `${communeObj.name}, ${districtObj.name}, ${provinceObj.name}`;
+    }
+    const profileData = {
+      fullName: form.fullName?.value || '',
+      phoneNumber: form.phoneNumber?.value || '',
+      email: form.email?.value || '',
+      dateOfBirth: form.dateOfBirth?.value || '',
+      gender: form.gender?.value || '',
+      address: address || form.address?.value || '',
+    };
+    setPendingProfileData(profileData);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmSave = async () => {
+    if (!pendingProfileData) return;
+    try {
+      await userAPI.updateUserProfile(pendingProfileData);
+      alert('Cập nhật thành công!');
+      setShowEditModal(false);
+      setShowConfirmModal(false);
+      setPendingProfileData(null);
+      // Reload lại profile sau khi cập nhật
+      const res = await userAPI.getUserProfile();
+      setProfile(res.data);
+    } catch (err) {
+      alert(err.message || 'Cập nhật thất bại!');
+      setShowConfirmModal(false);
+      setPendingProfileData(null);
+    }
+  };
+
+  const handleCancelConfirm = () => {
+    setShowConfirmModal(false);
+    setPendingProfileData(null);
+  };
+
+  const handleViewTestResult = async (bookingID) => {
+    try {
+      const res = await testResultAPI.getTestResultByBookingId(bookingID);
+      setTestResult(res.data);
+      setShowTestResultModal(true);
+    } catch (err) {
+      alert('Không lấy được kết quả xét nghiệm!');
+    }
+  };
+
   // Render content based on active menu item
   const renderContent = () => {
     switch (activeMenuItem) {
-      case 'basic-info':
+      case 'personal-info':
         return (
           <div className="card">
             <div className="card-header">
               <h4 className="card-title">
                 <span className="card-title-icon">👤</span>
-                Thông tin cơ bản
+                Thông tin cá nhân
               </h4>
-              <button className="card-edit-btn" onClick={handleEditClick}>Chỉnh sửa</button>
+              <button className="edit-btn-yellow" onClick={handleEditClick}>
+                <span role="img" aria-label="edit">📝</span> Chỉnh sửa
+              </button>
             </div>
             <div className="card-body">
-              <div className="info-row">
-                <span className="info-label">Họ và tên:</span>
-                <span className="info-value">Nguyễn Văn An</span>
+              <div style={{marginBottom: 24}}>
+                <h5 style={{color: 'var(--primary-dark-blue)', marginBottom: 12}}>Thông tin cơ bản</h5>
+                <div className="info-row"><span className="info-label">Họ và tên:</span><span className="info-value">{profile?.fullName || ''}</span></div>
+                <div className="info-row"><span className="info-label">Số điện thoại:</span><span className="info-value">{profile?.phoneNumber || ''}</span></div>
+                <div className="info-row"><span className="info-label">Email:</span><span className="info-value">{profile?.email || ''}</span></div>
+                <div className="info-row"><span className="info-label">Ngày sinh:</span><span className="info-value">{profile?.dateOfBirth || ''}</span></div>
+                <div className="info-row"><span className="info-label">Giới tính:</span><span className="info-value">{profile?.gender || ''}</span></div>
+                <div className="info-row"><span className="info-label">Địa chỉ:</span><span className="info-value">{profile?.address || ''}</span></div>
               </div>
-              <div className="info-row">
-                <span className="info-label">Giới tính:</span>
-                <span className="info-value">Nam</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Ngày sinh:</span>
-                <span className="info-value">15/03/1985</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">CMND/CCCD:</span>
-                <span className="info-value">123456789</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Quốc tịch:</span>
-                <span className="info-value">Việt Nam</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Nghề nghiệp:</span>
-                <span className="info-value">Kỹ sư</span>
-                </div>
-            </div>
-        </div>
-        );
-
-      case 'contact':
-        return (
-          <div className="card">
-            <div className="card-header">
-              <h4 className="card-title">
-                <span className="card-title-icon">📞</span>
-                        Thông tin liên hệ
-                    </h4>
-              <button className="card-edit-btn" onClick={handleEditClick}>Chỉnh sửa</button>
-                </div>
-            <div className="card-body">
-              <div className="info-row">
-                <span className="info-label">Số điện thoại:</span>
-                <span className="info-value">0987 654 321</span>
-                    </div>
-              <div className="info-row">
-                <span className="info-label">Email:</span>
-                <span className="info-value">nguyenvana@email.com</span>
-                    </div>
-              <div className="info-row">
-                <span className="info-label">Địa chỉ thường trú:</span>
-                <span className="info-value">123 Lê Lợi, Quận 1, TP.HCM</span>
-                    </div>
-              <div className="info-row">
-                <span className="info-label">Địa chỉ nhận kết quả:</span>
-                <span className="info-value">456 Nguyễn Huệ, Quận 1, TP.HCM</span>
-                    </div>
-                </div>
-            </div>
-        );
-
-      case 'samples':
-        return (
-          <div className="card">
-            <div className="card-header">
-              <h4 className="card-title">
-                <span className="card-title-icon">🧪</span>
-                Danh sách mẫu xét nghiệm
-                    </h4>
-                </div>
-            <div className="card-body">
-              <div className="table-responsive">
-                <table className="info-table">
-                  <thead>
-                    <tr>
-                      <th>Mã mẫu</th>
-                      <th>Loại mẫu</th>
-                      <th>Ngày thu mẫu</th>
-                      <th>Người thu mẫu</th>
-                      <th>Hình thức</th>
-                      <th>Hành động</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sampleList.map((s) => (
-                      <tr key={s.id}>
-                        <td>{s.id}</td>
-                        <td>{s.type}</td>
-                        <td>{s.date}</td>
-                        <td>{s.collector}</td>
-                        <td>{s.method}</td>
-                        <td>
-                          <button className="download-btn" onClick={() => handleViewClick(s.id)}>Xem</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                    </div>
-                </div>
-            </div>
-        );
-
-      case 'appointments':
-        return (
-          <div className="card">
-            <div className="card-header">
-              <h4 className="card-title">
-                <span className="card-title-icon">📅</span>
-                Danh sách lịch hẹn & đơn hàng
-                    </h4>
-                </div>
-            <div className="card-body">
-              <div className="table-responsive">
-                <table className="info-table">
-                  <thead>
-                    <tr>
-                      <th>Mã đơn hàng</th>
-                      <th>Loại xét nghiệm</th>
-                      <th>Thời gian hẹn</th>
-                      <th>Tình trạng</th>
-                      <th>Hành động</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {appointmentList.map((a) => (
-                      <tr key={a.id}>
-                        <td>{a.id}</td>
-                        <td>{a.testType}</td>
-                        <td>{a.time}</td>
-                        <td>
-                          <span className={
-                            a.status === 'Đã hoàn thành' ? 'status-badge status-success' : 'status-badge status-info'
-                          }>{a.status}</span>
-                        </td>
-                        <td>
-                          <button className="download-btn" onClick={() => handleViewClick(a.id)}>Xem</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              {/* Modal chi tiết đơn hàng */}
-              {showAppointmentModal && selectedAppointment && (
-                <div className="modal-overlay" onClick={handleCloseModal}>
-                  <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 700}}>
-                    <h2 style={{textAlign: 'center', color: 'var(--primary-blue)', marginBottom: 12}}>Chi tiết đơn #{selectedAppointment.id.replace(/\D/g, '')}</h2>
-                    <hr />
-                    <div style={{marginBottom: 18}}>
-                      <div><b>Mã Đơn:</b> {selectedAppointment.id}</div>
-                      <div><b>Mã KH:</b> 102</div>
-                      <div><b>Dịch vụ:</b> {selectedAppointment.serviceType}</div>
-                      <div><b>Loại dịch vụ:</b> {selectedAppointment.serviceCategory}</div>
-                      <div><b>Gói dịch vụ:</b> {selectedAppointment.servicePackage}</div>
-                      <div><b>Số mẫu:</b> {selectedAppointment.numSamples}</div>
-                      <div><b>Ngày đặt:</b> {selectedAppointment.bookingDate}</div>
-                      <div><b>Ngày hẹn:</b> {selectedAppointment.appointmentDate}</div>
-                      <div><b>Tổng tiền:</b> {selectedAppointment.totalPrice}</div>
-                      <div><b>Trạng thái:</b> {selectedAppointment.status}</div>
-                      <div><b>Ghi chú:</b> {selectedAppointment.note || 'Không có.'}</div>
-                    </div>
-                    {/* Thanh trạng thái ngang */}
-                    <div className="customer-progress-bar-wrapper">
-                      <div className="customer-progress-bar">
-                        {['Đã đặt', 'Chờ lấy mẫu', 'Đang xét nghiệm', 'Đã có kết quả'].map((label, idx) => (
-                          <div key={label} className="customer-progress-bar-step">
-                            <div className="customer-progress-bar-circle"
-                              style={{
-                                background: idx <= selectedAppointment.statusStep ? 'var(--primary-blue)' : '#eaf0fa',
-                                color: idx <= selectedAppointment.statusStep ? '#fff' : '#888',
-                                border: idx === selectedAppointment.statusStep ? '2px solid var(--primary-green)' : '2px solid #eaf0fa',
-                              }}
-                            >{idx+1}</div>
-                            {idx < 3 && (
-                              <div className="customer-progress-bar-line"
-                                style={{background: idx < selectedAppointment.statusStep ? 'var(--primary-blue)' : '#eaf0fa'}}></div>
-                            )}
-                            <div className="customer-progress-bar-label" style={{color: idx <= selectedAppointment.statusStep ? 'var(--primary-blue)' : '#888'}}>{label}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    {/* Bảng người tham gia */}
-                    <div style={{marginTop: 18}}>
-                      <b>Thông tin người tham gia:</b>
-                      <div className="table-responsive" style={{marginTop: 8}}>
-                        <table className="info-table">
-                          <thead>
-                            <tr>
-                              <th>ID</th>
-                              <th>HỌ TÊN</th>
-                              <th>GIỚI TÍNH</th>
-                              <th>NĂM SINH</th>
-                              <th>QUAN HỆ</th>
-                              <th>LOẠI MẪU</th>
-                              <th>PHƯƠNG PHÁP THU MẪU</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {selectedAppointment.participants.map((p) => (
-                              <tr key={p.id}>
-                                <td>{p.id}</td>
-                                <td>{p.name}</td>
-                                <td>{p.gender}</td>
-                                <td>{p.birthYear}</td>
-                                <td>{p.relation}</td>
-                                <td>{p.sampleType}</td>
-                                <td>{p.method}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                    <div style={{textAlign: 'center', marginTop: 24}}>
-                      <button className="download-btn" style={{minWidth: 120}} onClick={handleCloseModal}>Đóng</button>
-                        </div>
-                    </div>
-                </div>
-              )}
             </div>
           </div>
         );
 
-      case 'results':
+      case 'orders':
         return (
           <div className="card">
             <div className="card-header">
               <h4 className="card-title">
-                <span className="card-title-icon">📄</span>
-                Danh sách kết quả xét nghiệm
-                    </h4>
-                </div>
-            <div className="card-body">
-              <div className="table-responsive">
-                <table className="info-table">
-                  <thead>
-                    <tr>
-                      <th>Ngày trả kết quả</th>
-                      <th>Kết luận</th>
-                      <th>File kết quả</th>
-                      <th>Hành động</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {resultList.map((r, idx) => (
-                      <tr key={idx}>
-                        <td>{r.date}</td>
-                        <td>{r.conclusion}</td>
-                        <td>{r.file}</td>
-                        <td>
-                          <button className="download-btn" onClick={() => handleDownloadClick(r.file)}>Tải về</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                    </div>
-                </div>
+                <span className="card-title-icon">📋</span>
+                Danh sách đơn hàng & dịch vụ
+              </h4>
             </div>
-        );
-
-      case 'payment':
-        return (
-          <div className="card">
-            <div className="card-header">
-              <h4 className="card-title">
-                <span className="card-title-icon">💳</span>
-                Danh sách thanh toán
-                    </h4>
-                </div>
             <div className="card-body">
               <div className="table-responsive">
                 <table className="info-table">
                   <thead>
                     <tr>
-                      <th>Mã đơn hàng</th>
-                      <th>Phí xét nghiệm</th>
-                      <th>Hình thức</th>
-                      <th>Tình trạng</th>
-                      <th>Ngày thanh toán</th>
+                      <th>Mã đặt lịch</th>
+                      <th>Loại dịch vụ</th>
+                      <th>Gói</th>
+                      <th>Ngày hẹn</th>
+                      <th>Khách hàng</th>
+                      <th>Trạng thái</th>
+                      <th>Giá</th>
                       <th>Hành động</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {paymentList.map((p) => (
-                      <tr key={p.id}>
-                        <td>{p.id}</td>
-                        <td>{p.fee}</td>
-                        <td>{p.method}</td>
-                        <td>
-                          <span className={
-                            p.status === 'Đã thanh toán' ? 'status-badge status-success' : 'status-badge status-info'
-                          }>{p.status}</span>
-                        </td>
-                        <td>{p.date}</td>
-                        <td>
-                          <button className="download-btn" onClick={() => handleViewPayment(p.id)}>Xem</button>
-                        </td>
-                      </tr>
-                    ))}
+                    {bookings.length === 0 ? (
+                      <tr><td colSpan={8} style={{textAlign:'center', color: 'red'}}>Không có đơn hàng nào hoặc không lấy được dữ liệu từ API</td></tr>
+                    ) : (
+                      bookings.map(item => (
+                        <tr key={item.bookingID}>
+                          <td>{item.bookingID}</td>
+                          <td>{item.serviceName}</td>
+                          <td>{item.packageType}</td>
+                          <td>{item.appointmentDate ? new Date(item.appointmentDate).toLocaleDateString('vi-VN') : '-'}</td>
+                          <td>{item.customerName}</td>
+                          <td>
+                            <span className={
+                              item.status === 'Hoàn thành' ? 'status-badge status-success' : 'status-badge status-info'
+                            }>{item.status}</span>
+                          </td>
+                          <td>{item.totalPrice ? item.totalPrice.toLocaleString('vi-VN') + 'đ' : '-'}</td>
+                          <td>
+                            <button className="download-btn" onClick={() => handleViewClick(item.bookingID)}>Xem</button>
+                            {item.resultFileUrl && (
+                              <a className="download-btn" href={item.resultFileUrl} target="_blank" rel="noopener noreferrer">Tải kết quả</a>
+                            )}
+                            {item.status && item.status.trim() === 'Hoàn thành' && (
+                              <button className="download-btn" style={{marginLeft: 8}} onClick={() => handleViewTestResult(item.bookingID)}>Xem kết quả</button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
-                    </div>
-              {/* Modal chi tiết thanh toán */}
-              {showPaymentModal && selectedPayment && (
-                <div className="modal-overlay" onClick={handleClosePaymentModal}>
-                  <div className="modal-content" onClick={e => e.stopPropagation()}>
-                    <h3>Chi tiết thanh toán</h3>
-                    <div className="info-row"><span className="info-label">Mã đơn hàng:</span><span className="info-value">{selectedPayment.id}</span></div>
-                    <div className="info-row"><span className="info-label">Phí xét nghiệm:</span><span className="info-value">{selectedPayment.fee}</span></div>
-                    <div className="info-row"><span className="info-label">Hình thức thanh toán:</span><span className="info-value">{selectedPayment.method}</span></div>
-                    <div className="info-row"><span className="info-label">Tình trạng:</span><span className="info-value">{selectedPayment.status}</span></div>
-                    <div className="info-row"><span className="info-label">Ngày thanh toán:</span><span className="info-value">{selectedPayment.date}</span></div>
-                    <div style={{textAlign: 'right', marginTop: 20}}>
-                      {selectedPayment.status === 'Chưa thanh toán' && (
-                        <button className="download-btn" style={{background: 'var(--primary-green)', marginRight: 8}}
-                          onClick={() => {
-                            setShowPaymentModal(false);
-                            const bookingData = appointmentList.find(a => a.id === selectedPayment.id) || { bookingID: selectedPayment.id };
-                            navigate('/booking-payment', { state: { bookingData } });
-                          }}
-                        >Thanh toán ngay</button>
-                      )}
-                      <button className="download-btn" onClick={handleClosePaymentModal}>Đóng</button>
-                    </div>
-                    </div>
-                </div>
-              )}
+              </div>
             </div>
           </div>
         );
@@ -533,9 +384,9 @@ const PersonalInfoPage = () => {
             <div className="card-header">
               <h4 className="card-title">
                 <span className="card-title-icon">🔐</span>
-                        Bảo mật & quyền riêng tư
-                    </h4>
-                </div>
+                Bảo mật & quyền riêng tư
+              </h4>
+            </div>
             <div className="card-body">
               <div className="security-item">
                 <span className="security-icon">✅</span>
@@ -544,12 +395,12 @@ const PersonalInfoPage = () => {
                   className={`toggle-switch ${toggleStates.twoFactor ? 'active' : ''}`}
                   onClick={() => handleToggleSwitch('twoFactor')}
                 ></div>
-                    </div>
+              </div>
               <div className="security-item">
                 <span className="security-icon">🔒</span>
                 <span className="security-text">Thay đổi mật khẩu</span>
                 <button className="card-edit-btn" onClick={handleEditClick}>Thay đổi</button>
-                    </div>
+              </div>
               <div className="security-item">
                 <span className="security-icon">🧾</span>
                 <span className="security-text">Cho phép chia sẻ kết quả với người khác</span>
@@ -557,35 +408,9 @@ const PersonalInfoPage = () => {
                   className={`toggle-switch ${toggleStates.shareResults ? 'active' : ''}`}
                   onClick={() => handleToggleSwitch('shareResults')}
                 ></div>
-                    </div>
-                </div>
+              </div>
             </div>
-        );
-
-      case 'notes':
-        return (
-          <div className="card">
-            <div className="card-header">
-              <h4 className="card-title">
-                <span className="card-title-icon">📝</span>
-                        Yêu cầu đặc biệt / Ghi chú
-                    </h4>
-              <button className="card-edit-btn" onClick={handleEditClick}>Chỉnh sửa</button>
-            </div>
-            <div className="card-body">
-              <div className="info-row">
-                <span className="info-label">Ghi chú của khách hàng:</span>
-                <span className="info-value">"Vui lòng không gọi điện vào giờ làm việc"</span>
-                </div>
-              <div className="info-row">
-                <span className="info-label">Yêu cầu hỗ trợ gần nhất:</span>
-                <span className="info-value">"Tôi muốn nhận kết quả qua Zalo"</span>
-                    </div>
-              <div style={{ marginTop: '15px' }}>
-                <textarea className="notes-textarea" placeholder="Thêm ghi chú mới..."></textarea>
-                    </div>
-                    </div>
-                </div>
+          </div>
         );
 
       default:
@@ -610,86 +435,38 @@ const PersonalInfoPage = () => {
       {/* Sidebar */}
       <div className="sidebar">
         <div className="profile-summary">
-          <button className="edit-btn" onClick={handleEditClick}>✏️ Chỉnh sửa</button>
-          <div className="avatar">NVA</div>
-          <div className="profile-name">Nguyễn Văn An</div>
+          <div className="avatar" style={{ background: getAvatarColor(user?.fullName) }}>
+            {getInitials(user?.fullName) || 'N/A'}
+          </div>
+          <div className="profile-name">{user?.fullName || 'Chưa đăng nhập'}</div>
           <div className="profile-info">
-            <div>Nam • 15/03/1985</div>
-            <div>CMND: 123456789</div>
+            <div>{user?.email || ''}</div>
+          </div>
         </div>
-    </div>
 
         <ul className="menu">
           <li>
             <a 
               href="#" 
-              className={activeMenuItem === 'basic-info' ? 'active' : ''}
+              className={activeMenuItem === 'personal-info' ? 'active' : ''}
               onClick={(e) => {
                 e.preventDefault();
-                handleMenuItemClick('basic-info');
+                handleMenuItemClick('personal-info');
               }}
             >
-              <span className="menu-icon">📄</span> Thông tin cơ bản
+              <span className="menu-icon">👤</span> Thông tin cá nhân
             </a>
           </li>
           <li>
             <a 
               href="#" 
-              className={activeMenuItem === 'contact' ? 'active' : ''}
+              className={activeMenuItem === 'orders' ? 'active' : ''}
               onClick={(e) => {
                 e.preventDefault();
-                handleMenuItemClick('contact');
+                handleMenuItemClick('orders');
               }}
             >
-              <span className="menu-icon">📞</span> Thông tin liên hệ
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              className={activeMenuItem === 'samples' ? 'active' : ''}
-              onClick={(e) => {
-                e.preventDefault();
-                handleMenuItemClick('samples');
-              }}
-            >
-              <span className="menu-icon">🧪</span> Mẫu xét nghiệm
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              className={activeMenuItem === 'appointments' ? 'active' : ''}
-              onClick={(e) => {
-                e.preventDefault();
-                handleMenuItemClick('appointments');
-              }}
-            >
-              <span className="menu-icon">📅</span> Lịch hẹn & đơn hàng
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              className={activeMenuItem === 'payment' ? 'active' : ''}
-              onClick={(e) => {
-                e.preventDefault();
-                handleMenuItemClick('payment');
-              }}
-            >
-              <span className="menu-icon">💳</span> Thanh toán
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#" 
-              className={activeMenuItem === 'results' ? 'active' : ''}
-              onClick={(e) => {
-                e.preventDefault();
-                handleMenuItemClick('results');
-              }}
-            >
-              <span className="menu-icon">📄</span> Kết quả xét nghiệm
+              <span className="menu-icon">📋</span> Đơn hàng & Dịch vụ
             </a>
           </li>
           <li>
@@ -709,36 +486,151 @@ const PersonalInfoPage = () => {
               href="#" 
               className={activeMenuItem === 'notes' ? 'active' : ''}
               onClick={(e) => {
-                    e.preventDefault();
+                e.preventDefault();
                 handleMenuItemClick('notes');
               }}
             >
               <span className="menu-icon">📝</span> Ghi chú
             </a>
           </li>
-          <li>
-            <a 
-              href="#" 
-              className="logout"
-              onClick={(e) => {
-                e.preventDefault();
-                handleLogout();
-              }}
-            >
-              <span className="menu-icon">🔚</span> Đăng xuất
-            </a>
-          </li>
         </ul>
+        <button className="logout-btn" onClick={handleLogout} style={{marginTop: 'auto'}}>Đăng xuất</button>
       </div>
-
       {/* Main Content */}
       <div className="main-content">
-        <div className="main-content-scrollable">
-          <div className="dashboard-content">
-            {renderContent()}
+        {renderContent()}
+      </div>
+      {/* Modal chỉnh sửa thông tin cá nhân */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={handleCloseEditModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 700}}>
+            <h3>Chỉnh sửa thông tin cá nhân</h3>
+            <form>
+              <div className="info-row">
+                <span className="info-label">Họ và tên:</span>
+                <input name="fullName" type="text" defaultValue={profile?.fullName || ''} style={{flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ccc'}} />
+              </div>
+              <div className="info-row">
+                <span className="info-label">Số điện thoại:</span>
+                <input name="phoneNumber" type="text" defaultValue={profile?.phoneNumber || ''} style={{flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ccc'}} />
+              </div>
+              <div className="info-row">
+                <span className="info-label">Email:</span>
+                <input name="email" type="email" defaultValue={profile?.email || ''} style={{flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ccc'}} />
+              </div>
+              <div className="info-row">
+                <span className="info-label">Ngày sinh:</span>
+                <input name="dateOfBirth" type="date" defaultValue={profile?.dateOfBirth || ''} style={{flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ccc'}} />
+              </div>
+              <div className="info-row">
+                <span className="info-label">Giới tính:</span>
+                <select name="gender" defaultValue={profile?.gender || ''} style={{flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ccc'}}>
+                  <option value="">Chọn giới tính</option>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Địa chỉ:</span>
+                <div style={{flex: 1, display: 'flex', gap: 8}}>
+                  <select value={selectedProvince} onChange={e => {setSelectedProvince(e.target.value); setSelectedDistrict(''); setSelectedCommune('');}} style={{flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ccc'}}>
+                    <option value="">Chọn tỉnh/thành</option>
+                    {provinces.map(p => <option value={p.code} key={p.code}>{p.name}</option>)}
+                  </select>
+                  <select value={selectedDistrict} onChange={e => {setSelectedDistrict(e.target.value); setSelectedCommune('');}} disabled={!selectedProvince} style={{flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ccc'}}>
+                    <option value="">Chọn quận/huyện</option>
+                    {districts.map(d => <option value={d.code} key={d.code}>{d.name}</option>)}
+                  </select>
+                  <select value={selectedCommune} onChange={e => setSelectedCommune(e.target.value)} disabled={!selectedDistrict} style={{flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ccc'}}>
+                    <option value="">Chọn xã/phường</option>
+                    {communes.map(c => <option value={c.code} key={c.code}>{c.name}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div style={{textAlign: 'right', marginTop: 24}}>
+                <button type="button" className="download-btn" onClick={handleCloseEditModal} style={{marginRight: 8}}>Đóng</button>
+                <button type="button" className="edit-btn-yellow" onClick={handleSaveProfile}>Lưu</button>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
+      )}
+      {showConfirmModal && (
+        <div className="modal-overlay" onClick={handleCancelConfirm}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 400, textAlign: 'center'}}>
+            <h3>Xác nhận cập nhật</h3>
+            <p>Bạn có chắc chắn muốn lưu thay đổi thông tin cá nhân?</p>
+            <div style={{marginTop: 24, display: 'flex', justifyContent: 'center', gap: 16}}>
+              <button className="download-btn" onClick={handleCancelConfirm}>Hủy</button>
+              <button className="edit-btn-yellow" onClick={handleConfirmSave}>Xác nhận</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showAppointmentModal && selectedAppointment && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 600}}>
+            <h3>Chi tiết đơn hàng</h3>
+            <div style={{marginBottom: 16}}>
+              <div><b>Mã đặt lịch:</b> {selectedAppointment.bookingID}</div>
+              <div><b>Khách hàng:</b> {selectedAppointment.customerName}</div>
+              <div><b>Dịch vụ:</b> {selectedAppointment.serviceName}</div>
+              <div><b>Gói:</b> {selectedAppointment.packageType}</div>
+              <div><b>Ngày hẹn:</b> {selectedAppointment.appointmentDate ? new Date(selectedAppointment.appointmentDate).toLocaleDateString('vi-VN') : '-'}</div>
+              <div><b>Trạng thái:</b> {selectedAppointment.status}</div>
+              <div><b>Giá:</b> {selectedAppointment.totalPrice ? selectedAppointment.totalPrice.toLocaleString('vi-VN') + 'đ' : '-'}</div>
+              <div><b>Địa chỉ:</b> {selectedAppointment.address}</div>
+              <div><b>Số mẫu:</b> {selectedAppointment.numberSample}</div>
+            </div>
+            {/* Hiển thị danh sách participant */}
+            {selectedAppointment.participants && selectedAppointment.participants.length > 0 && (
+              <div style={{marginBottom: 16}}>
+                <b>Danh sách người tham gia:</b>
+                <table className="info-table" style={{marginTop: 8}}>
+                  <thead>
+                    <tr>
+                      <th>Họ tên</th>
+                      <th>Giới tính</th>
+                      <th>Ngày sinh</th>
+                      <th>Quan hệ</th>
+                      <th>Loại mẫu</th>
+                      <th>Cách lấy mẫu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedAppointment.participants.map((p, idx) => (
+                      <tr key={p.participantID || idx}>
+                        <td>{p.fullName}</td>
+                        <td>{p.gender}</td>
+                        <td>{p.dateOfBirth}</td>
+                        <td>{p.relationshipToCustomer}</td>
+                        <td>{p.sampleType || '-'}</td>
+                        <td>{p.collectionMethod || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <button className="download-btn" onClick={handleCloseModal}>Đóng</button>
+          </div>
+        </div>
+      )}
+      {showTestResultModal && testResult && (
+        <div className="modal-overlay" onClick={() => setShowTestResultModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 600}}>
+            <h3>Kết quả xét nghiệm</h3>
+            <div style={{marginBottom: 16}}>
+              <div><b>Mã kết quả:</b> {testResult.testResultID}</div>
+              <div><b>Kết luận:</b> {testResult.resultConclution || testResult.resultConclusion || '-'}</div>
+              <div><b>Ngày có kết quả:</b> {testResult.resultDate ? new Date(testResult.resultDate).toLocaleDateString('vi-VN') : '-'}</div>
+              <div><b>File kết quả:</b> {testResult.resultFile ? <a href={testResult.resultFile} target="_blank" rel="noopener noreferrer">Tải file</a> : '-'}</div>
+            </div>
+            <button className="download-btn" onClick={() => setShowTestResultModal(false)}>Đóng</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

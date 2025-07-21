@@ -10,7 +10,9 @@ import { FaTachometerAlt, FaNewspaper, FaDollarSign, FaCreditCard, FaStar, FaVia
 
 // Import các component con
 // Đã xóa import StaffManagement từ đây
-import BlogPost from './Manager/BlogPost';
+// Đã comment các phần liên quan đến quản lý bài đăng (blogpost)
+
+// import BlogPost from './Manager/BlogPost';
 import ServicePrice from './Manager/ServicePrice';
 import Payment from './Manager/Payment';
 import Feedback from './Manager/Feedback';
@@ -28,20 +30,20 @@ export default function ManagerPage() {
     const [orderSearchTerm, setOrderSearchTerm] = useState("");
 
     const sidebarMenuItems = [
-        { key: "blogpost", label: "Quản lý bài đăng", icon: <FaNewspaper /> }, // Icon cho Bài đăng
-        { key: "banggia", label: "Quản lý giá dịch vụ", icon: <FaDollarSign /> }, // Icon cho Giá dịch vụ
-        { key: "payments", label: "Quản lý thanh toán", icon: <FaCreditCard /> }, // Icon cho Thanh toán
-        { key: "feedback", label: "Quản lý Phản hồi & Đánh giá", icon: <FaStar /> }, // Icon cho Phản hồi & Đánh giá
-        { key: "testResults", label: "Quản lý kết quả xét nghiệm", icon: <FaVial /> }, // Icon cho Kết quả xét nghiệm
-        { key: "personalInfo", label: "Thông tin cá nhân", icon: <FaUserAlt /> }, // Icon cho Thông tin cá nhân
+        // { key: "blogpost", label: "Quản lý bài đăng", icon: <FaNewspaper /> },
+        { key: "banggia", label: "Quản lý giá dịch vụ", icon: <FaDollarSign /> },
+        { key: "payments", label: "Quản lý thanh toán", icon: <FaCreditCard /> },
+        { key: "feedback", label: "Quản lý Phản hồi & Đánh giá", icon: <FaStar /> },
+        { key: "testResults", label: "Quản lý kết quả xét nghiệm", icon: <FaVial /> },
+        { key: "personalInfo", label: "Thông tin cá nhân", icon: <FaUserAlt /> },
     ];
 
     const getActiveMenuLabel = () => {
         const activeItem = sidebarMenuItems.find(item => item.key === activeMenuItem);
         if (activeItem) {
-            if (activeItem.key === "blogpost") {
-                return "Quản lý bài đăng";
-            }
+            // if (activeItem.key === "blogpost") {
+            //     return "Quản lý bài đăng";
+            // }
             return activeItem.label;
         }
         return "Trang quản lý";
@@ -89,8 +91,8 @@ export default function ManagerPage() {
 
     const renderMainContent = () => {
         switch (activeMenuItem) {
-            case "blogpost":
-                return <BlogPost />;
+            // case "blogpost":
+            //     return <BlogPost />;
             case "banggia":
                 return <ServicePrice />;
             case "payments":
@@ -176,12 +178,12 @@ export default function ManagerPage() {
                         <div className="manager-profile-info">
                             {/* Phần Avatar */}
                             <div className="header-user-profile-area">
-                                <div className="header-profile-icon-placeholder">
-                                    CN
+                                <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName) }}>
+                                    {getInitials(user.fullName)}
                                 </div>
                                 <div className="header-user-info">
-                                    <div>Chào, Staff!</div>
-                                    <div className="user-id">ID: ST001</div>
+                                    <div>{user.fullName || user.email}</div>
+                                    <div className="user-id">ID: {user.id}</div>
                                 </div>
                             </div>
                         </div>

@@ -15,6 +15,5 @@ public class UserDTO {
     private String address;
     private LocalDate dateOfBirth;
     private String gender;
-
-    
+    private String password; // Thêm field password cho việc tạo user mới
 }

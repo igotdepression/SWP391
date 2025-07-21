@@ -47,6 +47,9 @@ public class TestResult {
     @Column(name = "updatedDate")
     private LocalDate updatedDate;
 
+    @Column(name = "status")
+    private String status;
+
     @OneToMany(mappedBy = "testResult", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetailResult> detailResults;
 } 

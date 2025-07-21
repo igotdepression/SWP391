@@ -5,6 +5,9 @@ import com.dna.dto.BookingRequestDTO;
 import com.dna.dto.BookingResponseDTO;
 import com.dna.security.CustomUserDetails; 
 import com.dna.service.BookingService;
+import com.dna.repository.SampleRepository;
+import com.dna.dto.SampleResponseDTO;
+import com.dna.entity.Sample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -24,6 +28,9 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private SampleRepository sampleRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingRequestDTO request) {
@@ -46,7 +53,7 @@ public class BookingController {
     }
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BookingResponseDTO>> getBookingsByUserId(@PathVariable Integer userId) {
         List<BookingResponseDTO> bookings = bookingService.getBookingsByUserId(userId);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
@@ -101,6 +108,23 @@ public class BookingController {
     public ResponseEntity<List<BookingResponseDTO>> getAllBookingsForStaff() {
         List<BookingResponseDTO> bookings = bookingService.getAllBookingsForStaff();
         return ResponseEntity.ok(bookings);
+    }
+
+    @GetMapping("/{bookingID}/samples")
+    public ResponseEntity<List<SampleResponseDTO>> getSamplesByBooking(@PathVariable Integer bookingID) {
+        List<Sample> samples = sampleRepository.findByBooking_BookingID(bookingID);
+        List<SampleResponseDTO> dtos = samples.stream().map(sample -> {
+            SampleResponseDTO dto = new SampleResponseDTO();
+            dto.setSampleID(sample.getSampleID());
+            dto.setBookingID(sample.getBooking() != null ? sample.getBooking().getBookingID() : null);
+            dto.setParticipantID(sample.getParticipant() != null ? sample.getParticipant().getParticipantID() : null);
+            dto.setUserID(sample.getStaff() != null ? sample.getStaff().getUserID() : null);
+            dto.setSampleType(sample.getSampleType());
+            dto.setTypeOfCollection(sample.getTypeOfCollection());
+            dto.setReceivedDate(sample.getReceivedDate());
+            return dto;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @PutMapping("/{id}/status")

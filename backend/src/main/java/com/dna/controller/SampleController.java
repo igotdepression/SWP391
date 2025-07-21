@@ -1,6 +1,7 @@
 package com.dna.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dna.dto.SampleRequestDTO;
 import com.dna.dto.SampleResponseDTO;
 import com.dna.service.SampleService;
+import com.dna.entity.Sample;
+import com.dna.repository.SampleRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +30,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
 @RequestMapping("/api/samples")
@@ -37,6 +41,9 @@ import lombok.RequiredArgsConstructor;
 public class SampleController {
     
     private final SampleService sampleService;
+    // Đảm bảo SampleRepository được inject
+    @Autowired
+    private SampleRepository sampleRepository;
     
     @GetMapping
     @PreAuthorize("hasRole('STAFF') or hasRole('MANAGER') or hasRole('ADMIN')")
@@ -76,6 +83,24 @@ public class SampleController {
             @Parameter(description = "Booking ID") @PathVariable Integer bookingID) {
         List<SampleResponseDTO> samples = sampleService.getSamplesByBookingId(bookingID);
         return ResponseEntity.ok(samples);
+    }
+
+    @GetMapping("/api/bookings/{bookingID}/samples")
+    public ResponseEntity<List<SampleResponseDTO>> getSamplesByBooking(@PathVariable Integer bookingID) {
+        List<Sample> samples = sampleRepository.findByBooking_BookingID(bookingID);
+        List<SampleResponseDTO> dtos = samples.stream().map(sample -> {
+            SampleResponseDTO dto = new SampleResponseDTO();
+            dto.setSampleID(sample.getSampleID());
+            dto.setBookingID(sample.getBooking() != null ? sample.getBooking().getBookingID() : null);
+            dto.setParticipantID(sample.getParticipant() != null ? sample.getParticipant().getParticipantID() : null);
+            dto.setUserID(sample.getStaff() != null ? sample.getStaff().getUserID() : null);
+            dto.setSampleType(sample.getSampleType());
+            dto.setTypeOfCollection(sample.getTypeOfCollection());
+            dto.setReceivedDate(sample.getReceivedDate());
+            // Các trường còn lại để null hoặc bỏ qua
+            return dto;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
     
     @PostMapping

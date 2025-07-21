@@ -4,6 +4,7 @@ import "./Booking.css";
 import { MdCheckCircle, MdCancel, MdArrowForward, MdVisibility, MdEdit, MdPerson, MdSort, MdSortByAlpha } from "react-icons/md";
 import { ThermometerIcon } from "lucide-react";
 import api from "../../services/api";
+import { userAPI } from '../../services/api';
 
 const getNextStatus = (current, serviceType) => {
     if (
@@ -21,118 +22,9 @@ const getNextStatus = (current, serviceType) => {
     return current;
 };
 
-const users = [
-    {
-        userID: 101,
-        fullName: "Nguyễn Văn A",
-        phoneNumber: "0901234567",
-        email: "nguyenvana@gmail.com",
-        address: "123 Đường A, Quận 1, TP.HCM",
-        gender: "Nam",
-        dob: 1980
-    },
-    {
-        userID: 102,
-        fullName: "Trần Thị B",
-        phoneNumber: "0912345678",
-        email: "tranthib@gmail.com",
-        address: "456 Đường B, Quận 2, TP.HCM",
-        gender: "Nữ",
-        dob: 1985
-    },
-    {
-        userID: 103,
-        fullName: "Lê Văn C",
-        phoneNumber: "0987654321",
-        email: "levanc@gmail.com",
-        address: "789 Đường C, Quận 3, TP.HCM",
-        gender: "Nam",
-        dob: 1990
-    },
-    {
-        userID: 104,
-        fullName: "Phạm Thị D",
-        phoneNumber: "0978123456",
-        email: "phamthid@gmail.com",
-        address: "321 Đường D, Quận 4, TP.HCM",
-        gender: "Nữ",
-        dob: 1988
-    },
-    {
-        userID: 105,
-        fullName: "Ngô Minh E",
-        phoneNumber: "0911222333",
-        email: "gominhe@gmail.com",
-        address: "654 Đường E, Quận 5, TP.HCM",
-        gender: "Nam",
-        dob: 1985
-    },
-    {
-        userID: 106,
-        fullName: "Đặng Thị F",
-        phoneNumber: "0909988776",
-        email: "dangthif@gmail.com",
-        address: "987 Đường F, Quận 6, TP.HCM",
-        gender: "Nữ",
-        dob: 1992
-    },
-    {
-        userID: 107,
-        fullName: "Vũ Văn G",
-        phoneNumber: "0933445566",
-        email: "vuvang@gmail.com",
-        address: "159 Đường G, Quận 7, TP.HCM",
-        gender: "Nam",
-        dob: 1983
-    },
-    {
-        userID: 108,
-        fullName: "Trịnh Thị H",
-        phoneNumber: "0922334455",
-        email: "tranthih@gmail.com",
-        address: "753 Đường H, Quận 8, TP.HCM",
-        gender: "Nữ",
-        dob: 1995
-    },
-    {
-        userID: 109,
-        fullName: "Bùi Văn I",
-        phoneNumber: "0911555777",
-        email: "buivani@gmail.com",
-        address: "852 Đường I, Quận 9, TP.HCM",
-        gender: "Nam",
-        dob: 1980
-    },
-    {
-        userID: 110,
-        fullName: "Phan Thị K",
-        phoneNumber: "0901122334",
-        email: "phanthik@gmail.com",
-        address: "369 Đường K, Quận 10, TP.HCM",
-        gender: "Nữ",
-        dob: 1990
-    },
-    {
-        userID: 111,
-        fullName: "Lê Thị E",
-        phoneNumber: "0912345670",
-        email: "lethie@gmail.com",
-        address: "159 Đường E, Quận 11, TP.HCM",
-        gender: "Nữ",
-        dob: 1998
-    },
-    {
-        userID: 112,
-        fullName: "Phạm Văn G",
-        phoneNumber: "0903344556",
-        email: "phamvanng@gmail.com",
-        address: "753 Đường G, Quận 12, TP.HCM",
-        gender: "Nam",
-        dob: 2000
-    }
-];
-
+// Xóa mảng users cứng, thay bằng state và lấy từ API
 export default function Booking() {
+    const [users, setUsers] = useState([]);
     const [bookings, setBookings] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
@@ -152,6 +44,7 @@ export default function Booking() {
     const [viewBooking, setViewBooking] = useState(null);
     const [viewUser, setViewUser] = useState(null);
     const [editBooking, setEditBooking] = useState(null);
+    const [sampleList, setSampleList] = useState([]);
 
     const STATUS_MAP = {
         "Chờ xác nhận": { label: "Chờ xác nhận", className: "cho-xac-nhan" },
@@ -418,12 +311,14 @@ export default function Booking() {
         }
     };
 
-    const samples = [
-        { id: "S001", name: "Mẫu máu 1" },
-        { id: "S002", name: "Mẫu máu 2" },
-        { id: "S003", name: "Mẫu tóc 1" },
-        // ... các mẫu khác
-    ];
+    useEffect(() => {
+        userAPI.getAllUsers()
+            .then(res => setUsers(res.data))
+            .catch(err => {
+                setUsers([]);
+                alert("Không thể tải danh sách user!");
+            });
+    }, []);
 
     useEffect(() => {
         api.get("/bookings/staff/all")
@@ -433,6 +328,14 @@ export default function Booking() {
                 alert("Không thể tải danh sách booking!");
             });
     }, []);
+
+    useEffect(() => {
+        if (showSampleModal && currentBooking) {
+            api.get(`/bookings/${currentBooking.bookingID}/samples`)
+                .then(res => setSampleList(res.data))
+                .catch(() => setSampleList([]));
+        }
+    }, [showSampleModal, currentBooking]);
 
     return (
         <div className="booking-container">
@@ -729,7 +632,7 @@ export default function Booking() {
                 {/* Modal nhập thông tin mẫu */}
                 {showSampleModal && (
                     <div className="modal-overlay">
-                        <div className="modal-content">
+                        <div className="modal-content" style={{maxWidth: 900}}>
                             <h3>Nhập thông tin mẫu ({currentBooking?.numberSample} mẫu)</h3>
                             {sampleInfos.map((info, idx) => (
                                 <div key={idx} className="sample-input-row">
@@ -740,9 +643,9 @@ export default function Booking() {
                                         required
                                     >
                                         <option value="">-- Chọn ID mẫu --</option>
-                                        {samples.map(sample => (
-                                            <option key={sample.id} value={sample.id}>
-                                                {sample.id} - {sample.name}
+                                        {sampleList.map(sample => (
+                                            <option key={sample.sampleID} value={sample.sampleID}>
+                                                {sample.sampleID} - {sample.sampleType}
                                             </option>
                                         ))}
                                     </select>
@@ -756,7 +659,7 @@ export default function Booking() {
                 {/* Modal xem chi tiết đơn */}
                 {viewBooking && (
                     <div className="modal-overlay">
-                        <div className="modal-content">
+                        <div className="modal-content" style={{maxWidth: 900}}>
                             <h3>Chi tiết đơn #{viewBooking.bookingID}</h3>
                             <p><b>Mã Đơn:</b> {viewBooking.bookingID}</p>
                             <p><b>Mã KH:</b> {viewBooking.user?.userID || viewBooking.userID}</p>
@@ -803,7 +706,7 @@ export default function Booking() {
                 {/* Modal xem thông tin người dùng */}
                 {viewUser && (
                     <div className="modal-overlay">
-                        <div className="modal-content">
+                        <div className="modal-content" style={{maxWidth: 900}}>
                             <h3>Thông tin người đăng ký</h3>
                             <p><b>Mã KH:</b> {viewUser.userID}</p>
                             <p><b>Họ tên:</b> {viewUser.customerName}</p>
@@ -819,7 +722,7 @@ export default function Booking() {
                 {/* Modal chỉnh sửa thông tin đơn */}
                 {editBooking && (
                     <div className="modal-overlay">
-                        <div className="modal-content">
+                        <div className="modal-content" style={{maxWidth: 900}}>
                             <h3>
                                 {editBooking.status === "Không xác nhận"
                                     ? `Chỉnh sửa đơn bị từ chối #${editBooking.bookingID}`

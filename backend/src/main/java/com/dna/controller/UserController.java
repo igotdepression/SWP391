@@ -46,7 +46,6 @@ public class UserController {
         return ResponseEntity.ok(createdUser);    
     }
     
-    @PreAuthorize("hasRole('ADMIN')")  
     @PutMapping("/{id}")   
     public ResponseEntity<UserDTO> updateUser(@PathVariable Integer id, @RequestBody UserDTO userDTO) {   
         // Chỉ cho phép update hồ sơ cho STAFF hoặc MANAGER, không cho phép update customer   
@@ -62,15 +61,22 @@ public class UserController {
         UserDTO deactivatedUser = userService.deactivateUser(id);   
         return deactivatedUser != null ? ResponseEntity.ok(deactivatedUser) : ResponseEntity.notFound().build();    
     }
+    
+    @PreAuthorize("hasRole('ADMIN')")     
+    @PutMapping("/{id}/activate")     
+    public ResponseEntity<UserDTO> activateUser(@PathVariable Integer id) {   
+        // Mở khóa người dùng - cập nhật status thành hoạt động
+        UserDTO activatedUser = userService.activateUser(id);   
+        return activatedUser != null ? ResponseEntity.ok(activatedUser) : ResponseEntity.notFound().build();    
+    }
 
-    @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("customer/profile/{id}")
     public ResponseEntity<UserDTO> updateProfileCustomer(@PathVariable Integer id, @RequestBody UserDTO userDTO){
         UserDTO updateToCustomer = userService.updateToCustomer(id, userDTO);
         return ResponseEntity.ok(updateToCustomer);
     }
 
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'STAFF', 'MANAGER')")
     @PutMapping("/profile")
     public ResponseEntity<UserDTO> updateCustomerProfile(Authentication authentication, @RequestBody UserDTO userDTO) {
         String email = authentication.getName();
