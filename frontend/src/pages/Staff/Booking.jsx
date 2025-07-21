@@ -763,12 +763,12 @@ export default function Booking() {
                                 <label>Dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.serviceName || editBooking.service || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            serviceName: e.target.value 
-                                        } 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            serviceName: e.target.value
+                                        }
                                     })}
                                 >
                                     {serviceOptions.map(s => (
@@ -780,11 +780,11 @@ export default function Booking() {
                                 <label>Loại dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.serviceType || editBooking.serviceType || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            serviceType: e.target.value 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            serviceType: e.target.value
                                         },
                                         serviceType: e.target.value
                                     })}
@@ -798,11 +798,11 @@ export default function Booking() {
                                 <label>Gói dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.packageType || editBooking.packageType || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            packageType: e.target.value 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            packageType: e.target.value
                                         },
                                         packageType: e.target.value
                                     })}
