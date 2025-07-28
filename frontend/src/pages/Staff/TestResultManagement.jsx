@@ -327,7 +327,11 @@ export default function TestResultManagement() {
     };
     const handleNewFileChange = (e) => {
         if (e.target.files[0]) {
-            setNewResult(prev => ({ ...prev, resultFile: e.target.files[0].name }));
+            setNewResult(prev => ({ 
+                ...prev, 
+                resultFile: e.target.files[0].name,
+                resultFileUrl: null // Sẽ được set sau khi upload lên S3
+            }));
         }
     };
     const handleBookingSelect = (bookingID) => {
@@ -351,25 +355,50 @@ export default function TestResultManagement() {
         setPendingAddResult(true);
     };
     const handleConfirmAddResult = async () => {
-        // Chuẩn bị dữ liệu gửi về backend
-        const payload = {
-            bookingID: newResult.bookingID,
-            resultDate: newResult.resultDate,
-            resultConclution: newResult.resultConclution,
-            resultFile: newResult.resultFile,
-            createdBy: newResult.createdBy,
-            detailResults: newDetailResults.filter(row => row.locusName).map(row => ({
-                locusName: row.locusName,
-                p1Allele1: row.p1Allele1,
-                p1Allele2: row.p1Allele2,
-                p2Allele1: row.p2Allele1,
-                p2Allele2: row.p2Allele2,
-                paternityIndex: row.paternityIndex ? Number(row.paternityIndex) : null
-            }))
-        };
         try {
+            // Nếu có file được chọn, upload lên S3 trước
+            let resultFileUrl = null;
+            const fileInput = document.querySelector('input[type="file"]');
+            if (fileInput && fileInput.files[0]) {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                
+                // Upload file lên S3 thông qua backend
+                const uploadResponse = await fetch('http://localhost:8080/api/files/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: formData
+                });
+                
+                if (uploadResponse.ok) {
+                    const uploadResult = await uploadResponse.json();
+                    resultFileUrl = uploadResult.url;
+                } else {
+                    throw new Error('Upload file thất bại');
+                }
+            }
+
+            // Chuẩn bị dữ liệu gửi về backend
+            const payload = {
+                bookingID: newResult.bookingID,
+                resultDate: newResult.resultDate,
+                resultConclution: newResult.resultConclution,
+                resultFile: newResult.resultFile,
+                resultFileUrl: resultFileUrl, // URL từ S3
+                createdBy: newResult.createdBy,
+                detailResults: newDetailResults.filter(row => row.locusName).map(row => ({
+                    locusName: row.locusName,
+                    p1Allele1: row.p1Allele1,
+                    p1Allele2: row.p1Allele2,
+                    p2Allele1: row.p2Allele1,
+                    p2Allele2: row.p2Allele2,
+                    paternityIndex: row.paternityIndex ? Number(row.paternityIndex) : null
+                }))
+            };
+            
             await testResultAPI.createTestResult(payload);
-            // Sau khi thành công, có thể reload lại danh sách testResults từ backend nếu muốn
             setShowAddModal(false);
             setShowConfirmModal(false);
             setPendingAddResult(false);
@@ -493,7 +522,11 @@ export default function TestResultManagement() {
                                         <td>{result.createdDate ? formatDateTime(result.createdDate) : 'Chưa có'}</td>
                                         <td>{result.resultConclution || 'Chưa có'}</td>
                                         <td>
-                                            {result.resultFile ? (
+                                            {result.resultFileUrl ? (
+                                                <a href={result.resultFileUrl} target="_blank" rel="noopener noreferrer">
+                                                    {result.resultFile || 'Xem file kết quả'}
+                                                </a>
+                                            ) : result.resultFile ? (
                                                 <a href={`http://localhost:8080/uploads/results/${result.resultFile}`} target="_blank" rel="noopener noreferrer">
                                                     {result.resultFile}
                                                 </a>
@@ -604,7 +637,11 @@ export default function TestResultManagement() {
                                                 }}
                                             />
                                         ) : (
-                                            selectedResult.resultFile ? (
+                                            selectedResult.resultFileUrl ? (
+                                                <a href={selectedResult.resultFileUrl} target="_blank" rel="noopener noreferrer">
+                                                    {selectedResult.resultFile || 'Xem file kết quả'}
+                                                </a>
+                                            ) : selectedResult.resultFile ? (
                                                 <a href={`http://localhost:8080/uploads/results/${selectedResult.resultFile}`} target="_blank" rel="noopener noreferrer">
                                                     {selectedResult.resultFile}
                                                 </a>
