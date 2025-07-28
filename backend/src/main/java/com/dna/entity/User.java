@@ -65,4 +65,10 @@ public class User {
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Consultant> consultants;
+
+    @Column(name = "avatarUrl")
+    private String avatarUrl;
+
+    @Column(name = "idCardUrl")
+    private String idCardUrl;
 } 
