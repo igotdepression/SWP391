@@ -7,8 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/users")
@@ -82,6 +86,38 @@ public class UserController {
         String email = authentication.getName();
         UserDTO updated = userService.updateCustomerProfileByEmail(email, userDTO);
         return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
+    }
+
+    // Upload avatar cho user
+    @PostMapping("/{id}/avatar")
+    public ResponseEntity<Map<String, String>> uploadAvatar(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
+        try {
+            String fileUrl = userService.uploadAvatar(id, file);
+            Map<String, String> response = new HashMap<>();
+            response.put("url", fileUrl);
+            response.put("message", "Avatar uploaded successfully");
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Failed to upload avatar: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    // Upload ID card cho user
+    @PostMapping("/{id}/idcard")
+    public ResponseEntity<Map<String, String>> uploadIdCard(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
+        try {
+            String fileUrl = userService.uploadIdCard(id, file);
+            Map<String, String> response = new HashMap<>();
+            response.put("url", fileUrl);
+            response.put("message", "ID card uploaded successfully");
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Failed to upload ID card: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }
 
