@@ -106,9 +106,23 @@ export default function Header() {
                         ) : (
                             <div className="header-user-profile-area" onClick={handleProfileClick}>
                                 <span className="adn-header-user-name">Chào, {user.fullName || user.email}</span> {/* Sử dụng class mới */}
-                                <div className="adn-header-user-avatar" style={{ backgroundColor: getAvatarColor(user.fullName) }}> {/* Sử dụng class mới */}
-                                    {getInitials(user.fullName)}
-                                </div>
+                                {user.avatarUrl ? (
+                                    <img 
+                                        src={user.avatarUrl} 
+                                        alt="Avatar" 
+                                        className="adn-header-user-avatar"
+                                        style={{
+                                            width: '40px',
+                                            height: '40px',
+                                            borderRadius: '50%',
+                                            objectFit: 'cover'
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="adn-header-user-avatar" style={{ backgroundColor: getAvatarColor(user.fullName) }}> {/* Sử dụng class mới */}
+                                        {getInitials(user.fullName)}
+                                    </div>
+                                )}
                                 {showDropdown && (
                                     <div className="profile-dropdown">
                                         <div className="dropdown-item" onClick={goToProfile}>Thông tin cá nhân</div>

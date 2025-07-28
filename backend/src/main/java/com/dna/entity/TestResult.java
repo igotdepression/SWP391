@@ -38,8 +38,11 @@ public class TestResult {
     @Column(name = "resultConclution", columnDefinition = "TEXT")
     private String resultConclution;
 
-    @Column(name = "resultFile", length = 255)
+    @Column(name = "resultFile", length = 500)
     private String resultFile;
+
+    @Column(name = "resultFileUrl", length = 500)
+    private String resultFileUrl;
 
     @Column(name = "updatedBy")
     private String updatedBy;

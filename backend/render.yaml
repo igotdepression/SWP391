@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: bloodline-backend
+    env: java
+    buildCommand: ./mvnw clean install -DskipTests
+    startCommand: java -jar target/dna-testing-service-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+    envVars:
+      - key: DATABASE_URL
+        value: jdbc:sqlserver://dnatestingservice.cd8asiyc4ffp.ap-southeast-2.rds.amazonaws.com:1433;databaseName=DNATestingService;encrypt=true;trustServerCertificate=true
+      - key: DATABASE_USERNAME
+        value: sa
+      - key: DATABASE_PASSWORD
+        value: 1234567890
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 8080
+      - key: AWS_ACCESS_KEY_ID
+        value: AKIARUOBQEWWL6FKBB7X
+      - key: AWS_SECRET_ACCESS_KEY
+        value: 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
+      - key: AWS_S3_REGION
+        value: ap-southeast-2
+      - key: AWS_S3_BUCKET_NAME
+        value: bloodline-dna-files 

@@ -8,6 +8,8 @@ import com.dna.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
     
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
@@ -124,6 +127,8 @@ public class UserService {
         dto.setAddress(user.getAddress());
         dto.setGender(user.getGender());
         dto.setDateOfBirth(user.getDateOfBirth());
+        dto.setAvatarUrl(user.getAvatarUrl());
+        dto.setIdCardUrl(user.getIdCardUrl());
         return dto;
     }
 
@@ -161,5 +166,29 @@ public class UserService {
     // Helper method để lấy role theo tên
     private Role getRoleByName(String roleName) {
         return roleRepository.findByRoleName(roleName).orElse(null);
+    }
+
+    // Upload avatar cho user
+    public String uploadAvatar(Integer userId, MultipartFile file) throws IOException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        String fileUrl = s3Service.uploadFile(file);
+        user.setAvatarUrl(fileUrl);
+        userRepository.save(user);
+        
+        return fileUrl;
+    }
+
+    // Upload ID card cho user
+    public String uploadIdCard(Integer userId, MultipartFile file) throws IOException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        String fileUrl = s3Service.uploadFile(file);
+        user.setIdCardUrl(fileUrl);
+        userRepository.save(user);
+        
+        return fileUrl;
     }
 }

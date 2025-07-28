@@ -111,6 +111,13 @@
     <artifactId>spring-boot-configuration-processor</artifactId>
     <optional>true</optional>
 </dependency>
+
+<!-- AWS S3 Dependencies -->
+<dependency>
+    <groupId>com.amazonaws</groupId>
+    <artifactId>aws-java-sdk-s3</artifactId>
+    <version>1.12.261</version>
+</dependency>
 </dependencies>
 
 <build>
