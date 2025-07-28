@@ -70,6 +70,7 @@ public class TestResultService {
                 .createdDate(LocalDate.now())
                 .resultConclution(requestDTO.getResultConclution())
                 .resultFile(requestDTO.getResultFile())
+                .resultFileUrl(requestDTO.getResultFileUrl())
                 .build();
         
         TestResult savedTestResult = testResultRepository.save(testResult);
@@ -105,6 +106,7 @@ public class TestResultService {
         existingTestResult.setResultDate(requestDTO.getResultDate());
         existingTestResult.setResultConclution(requestDTO.getResultConclution());
         existingTestResult.setResultFile(requestDTO.getResultFile());
+        existingTestResult.setResultFileUrl(requestDTO.getResultFileUrl());
         existingTestResult.setStatus(requestDTO.getStatus());
         existingTestResult.setUpdatedBy(requestDTO.getCreatedBy()); // Use same user for update
         existingTestResult.setUpdatedDate(LocalDate.now());
@@ -165,6 +167,7 @@ public class TestResultService {
             file = "/uploads/" + file;
         }
         responseDTO.setResultFile(file);
+        responseDTO.setResultFileUrl(testResult.getResultFileUrl());
         responseDTO.setUpdatedBy(testResult.getUpdatedBy());
         responseDTO.setUpdatedDate(testResult.getUpdatedDate());
         responseDTO.setStatus(testResult.getStatus());

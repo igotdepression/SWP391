@@ -318,11 +318,65 @@ const PersonalInfoPage = () => {
 
   const handleViewTestResult = async (bookingID) => {
     try {
+      console.log('=== Fetching test result ===');
+      console.log('Booking ID:', bookingID);
+      console.log('User token:', localStorage.getItem('token'));
+      console.log('User role:', user?.role);
+      
       const res = await testResultAPI.getTestResultByBookingId(bookingID);
-      setTestResult(res.data);
-      setShowTestResultModal(true);
+      console.log('Test result response:', res);
+      console.log('Test result data:', res.data);
+      
+      if (res.data) {
+        setTestResult(res.data);
+        setShowTestResultModal(true);
+      } else {
+        alert('Không có dữ liệu kết quả!');
+      }
     } catch (err) {
-      alert('Không lấy được kết quả xét nghiệm!');
+      console.error('=== Error fetching test result ===');
+      console.error('Error:', err);
+      console.error('Error response:', err.response);
+      console.error('Error status:', err.response?.status);
+      console.error('Error data:', err.response?.data);
+      console.error('Error message:', err.message);
+      
+      let errorMessage = 'Không lấy được kết quả xét nghiệm!';
+      if (err.response?.status === 404) {
+        errorMessage = 'Không tìm thấy kết quả xét nghiệm cho booking này!';
+      } else if (err.response?.status === 403) {
+        errorMessage = 'Không có quyền truy cập kết quả xét nghiệm!';
+      } else if (err.response?.data) {
+        errorMessage = 'Lỗi: ' + err.response.data;
+      }
+      
+      alert(errorMessage);
+    }
+  };
+
+  const handleDownloadFile = async (fileUrl, fileName) => {
+    try {
+      console.log('Downloading file from:', fileUrl);
+      
+      const response = await fetch(fileUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName || 'test-result.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      console.log('File downloaded successfully');
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      alert('Không thể tải xuống file! Lỗi: ' + error.message);
     }
   };
 
@@ -458,9 +512,6 @@ const PersonalInfoPage = () => {
                           <td>{item.totalPrice ? item.totalPrice.toLocaleString('vi-VN') + 'đ' : '-'}</td>
                           <td>
                             <button className="download-btn" onClick={() => handleViewClick(item.bookingID)}>Xem</button>
-                            {item.resultFileUrl && (
-                              <a className="download-btn" href={item.resultFileUrl} target="_blank" rel="noopener noreferrer">Tải kết quả</a>
-                            )}
                             {item.status && item.status.trim() === 'Hoàn thành' && (
                               <button className="download-btn" style={{marginLeft: 8}} onClick={() => handleViewTestResult(item.bookingID)}>Xem kết quả</button>
                             )}
@@ -753,15 +804,114 @@ const PersonalInfoPage = () => {
       
       {showTestResultModal && testResult && (
         <div className="modal-overlay" onClick={() => setShowTestResultModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 600}}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 800}}>
             <h3>Kết quả xét nghiệm</h3>
             <div style={{marginBottom: 16}}>
               <div><b>Mã kết quả:</b> {testResult.testResultID}</div>
               <div><b>Kết luận:</b> {testResult.resultConclution || testResult.resultConclusion || '-'}</div>
               <div><b>Ngày có kết quả:</b> {testResult.resultDate ? new Date(testResult.resultDate).toLocaleDateString('vi-VN') : '-'}</div>
-              <div><b>File kết quả:</b> {testResult.resultFile ? <a href={testResult.resultFile} target="_blank" rel="noopener noreferrer">Tải file</a> : '-'}</div>
+              <div><b>Người tạo:</b> {testResult.createdBy || '-'}</div>
+              <div><b>Ngày tạo:</b> {testResult.createdDate ? new Date(testResult.createdDate).toLocaleDateString('vi-VN') : '-'}</div>
+              
+              {/* File kết quả từ S3 */}
+              <div style={{marginTop: 16}}>
+                <b>File kết quả:</b>
+                {testResult.resultFileUrl ? (
+                  <div style={{marginTop: 8}}>
+                    <a 
+                      href={testResult.resultFileUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-block',
+                        padding: '8px 16px',
+                        backgroundColor: '#007bff',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderRadius: '4px',
+                        marginRight: '8px'
+                      }}
+                    >
+                      📄 Xem file kết quả
+                    </a>
+                                         <button 
+                       onClick={() => handleDownloadFile(testResult.resultFileUrl, testResult.resultFile)}
+                       style={{
+                         display: 'inline-block',
+                         padding: '8px 16px',
+                         backgroundColor: '#28a745',
+                         color: 'white',
+                         textDecoration: 'none',
+                         borderRadius: '4px',
+                         border: 'none',
+                         cursor: 'pointer'
+                       }}
+                     >
+                       ⬇️ Tải xuống file
+                     </button>
+                  </div>
+                ) : testResult.resultFile ? (
+                  <div style={{marginTop: 8}}>
+                    <span style={{color: '#666'}}>File: {testResult.resultFile}</span>
+                    <a 
+                      href={`http://localhost:8080/uploads/results/${testResult.resultFile}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-block',
+                        padding: '8px 16px',
+                        backgroundColor: '#007bff',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderRadius: '4px',
+                        marginLeft: '8px'
+                      }}
+                    >
+                      📄 Xem file
+                    </a>
+                  </div>
+                ) : (
+                  <span style={{color: '#999'}}>Chưa có file kết quả</span>
+                )}
+              </div>
             </div>
-            <button className="download-btn" onClick={() => setShowTestResultModal(false)}>Đóng</button>
+            
+            {/* Hiển thị chi tiết kết quả nếu có */}
+            {testResult.detailResults && testResult.detailResults.length > 0 && (
+              <div style={{marginTop: 20}}>
+                <b>Chi tiết kết quả:</b>
+                <div style={{maxHeight: '300px', overflowY: 'auto', marginTop: 8}}>
+                  <table className="info-table" style={{fontSize: '12px'}}>
+                    <thead>
+                      <tr>
+                        <th>Locus</th>
+                        <th>P1 Allele 1</th>
+                        <th>P1 Allele 2</th>
+                        <th>P2 Allele 1</th>
+                        <th>P2 Allele 2</th>
+                        <th>Paternity Index</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {testResult.detailResults.map((detail, idx) => (
+                        <tr key={idx}>
+                          <td>{detail.locusName}</td>
+                          <td>{detail.p1Allele1}</td>
+                          <td>{detail.p1Allele2}</td>
+                          <td>{detail.p2Allele1}</td>
+                          <td>{detail.p2Allele2}</td>
+                          <td>{detail.paternityIndex}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+            
+            <div style={{textAlign: 'right', marginTop: 20}}>
+              <button className="download-btn" onClick={() => setShowTestResultModal(false)}>Đóng</button>
+            </div>
           </div>
         </div>
       )}
