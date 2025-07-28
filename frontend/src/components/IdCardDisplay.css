@@ -1,0 +1,113 @@
+.id-card-display {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+    margin: 10px 0;
+}
+
+.id-card-display h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.id-card-container {
+    text-align: center;
+}
+
+.id-card-image {
+    max-width: 300px;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 2px solid #007bff;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.id-card-image:hover {
+    transform: scale(1.05);
+}
+
+.id-card-label {
+    margin: 10px 0 0 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.id-card-placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.placeholder-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.id-card-placeholder p {
+    margin: 10px 0;
+    color: #666;
+}
+
+.upload-id-card-btn {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.upload-id-card-btn:hover {
+    background: #0056b3;
+}
+
+/* Modal styles */
+.image-modal {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.full-size-image {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+} 

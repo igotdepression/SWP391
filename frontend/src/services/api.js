@@ -117,6 +117,24 @@ export const userAPI = {
     activateUser: (id) => {
         return api.put(`/users/${id}/activate`);
     },
+    uploadAvatar: (userId, file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return api.post(`/users/${userId}/avatar`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    },
+    uploadIdCard: (userId, file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return api.post(`/users/${userId}/idcard`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    },
 };
 
 // Test API

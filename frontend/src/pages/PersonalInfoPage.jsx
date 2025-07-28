@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import { getAvatarColor, getInitials } from '../utils/avatarUtils';
 import locations from '../data/vietnamLocations.json';
 import { userAPI, bookingAPI, participantAPI, testResultAPI } from '../services/api';
+import ImageUpload from '../components/ImageUpload';
+import IdCardDisplay from '../components/IdCardDisplay';
 
 const sampleList = [
   {
@@ -130,6 +132,8 @@ const PersonalInfoPage = () => {
   const [bookings, setBookings] = useState([]);
   const [showTestResultModal, setShowTestResultModal] = useState(false);
   const [testResult, setTestResult] = useState(null);
+  const [showImageUpload, setShowImageUpload] = useState(false);
+  const [showIdCardUpload, setShowIdCardUpload] = useState(false);
 
   // Lấy danh sách tỉnh
   const provinces = locations.provinces;
@@ -279,6 +283,39 @@ const PersonalInfoPage = () => {
     setPendingProfileData(null);
   };
 
+  const handleImageUploadSuccess = (imageUrl) => {
+    // Cập nhật profile với ảnh mới
+    setProfile(prev => ({
+      ...prev,
+      avatarUrl: imageUrl
+    }));
+    setShowImageUpload(false);
+  };
+
+  const handleOpenImageUpload = () => {
+    setShowImageUpload(true);
+  };
+
+  const handleCloseImageUpload = () => {
+    setShowImageUpload(false);
+  };
+
+  const handleIdCardUploadSuccess = (imageUrl) => {
+    setProfile(prev => ({
+      ...prev,
+      idCardUrl: imageUrl
+    }));
+    setShowIdCardUpload(false);
+  };
+
+  const handleOpenIdCardUpload = () => {
+    setShowIdCardUpload(true);
+  };
+
+  const handleCloseIdCardUpload = () => {
+    setShowIdCardUpload(false);
+  };
+
   const handleViewTestResult = async (bookingID) => {
     try {
       const res = await testResultAPI.getTestResultByBookingId(bookingID);
@@ -307,12 +344,72 @@ const PersonalInfoPage = () => {
             <div className="card-body">
               <div style={{marginBottom: 24}}>
                 <h5 style={{color: 'var(--primary-dark-blue)', marginBottom: 12}}>Thông tin cơ bản</h5>
+                
+                {/* Avatar Section */}
+                <div style={{marginBottom: 20}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: 15}}>
+                    {profile?.avatarUrl ? (
+                      <img 
+                        src={profile.avatarUrl} 
+                        alt="Avatar" 
+                        style={{
+                          width: 80,
+                          height: 80,
+                          borderRadius: '50%',
+                          border: '3px solid #007bff'
+                        }}
+                      />
+                    ) : (
+                      <div 
+                        style={{
+                          width: 80,
+                          height: 80,
+                          borderRadius: '50%',
+                          backgroundColor: getAvatarColor(profile?.fullName || ''),
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontSize: '24px',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {getInitials(profile?.fullName || '')}
+                      </div>
+                    )}
+                    <div>
+                      <button 
+                        onClick={handleOpenImageUpload}
+                        style={{
+                          padding: '8px 16px',
+                          backgroundColor: '#007bff',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '14px'
+                        }}
+                      >
+                        {profile?.avatarUrl ? 'Thay đổi ảnh' : 'Thêm ảnh đại diện'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="info-row"><span className="info-label">Họ và tên:</span><span className="info-value">{profile?.fullName || ''}</span></div>
                 <div className="info-row"><span className="info-label">Số điện thoại:</span><span className="info-value">{profile?.phoneNumber || ''}</span></div>
                 <div className="info-row"><span className="info-label">Email:</span><span className="info-value">{profile?.email || ''}</span></div>
                 <div className="info-row"><span className="info-label">Ngày sinh:</span><span className="info-value">{profile?.dateOfBirth || ''}</span></div>
                 <div className="info-row"><span className="info-label">Giới tính:</span><span className="info-value">{profile?.gender || ''}</span></div>
                 <div className="info-row"><span className="info-label">Địa chỉ:</span><span className="info-value">{profile?.address || ''}</span></div>
+              </div>
+
+              {/* ID Card Section */}
+              <div style={{marginTop: 30}}>
+                <IdCardDisplay 
+                  idCardUrl={profile?.idCardUrl}
+                  onUploadClick={handleOpenIdCardUpload}
+                />
               </div>
             </div>
           </div>
@@ -617,6 +714,43 @@ const PersonalInfoPage = () => {
           </div>
         </div>
       )}
+      
+      {/* Image Upload Modal */}
+      {showImageUpload && (
+        <div className="modal-overlay" onClick={handleCloseImageUpload}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 500}}>
+            <h3>Upload Ảnh Đại Diện</h3>
+            <ImageUpload 
+              userId={profile?.id}
+              type="avatar"
+              onUploadSuccess={handleImageUploadSuccess}
+              currentImageUrl={profile?.avatarUrl}
+            />
+            <div style={{textAlign: 'right', marginTop: 20}}>
+              <button className="download-btn" onClick={handleCloseImageUpload}>Đóng</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ID Card Upload Modal */}
+      {showIdCardUpload && (
+        <div className="modal-overlay" onClick={handleCloseIdCardUpload}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 500}}>
+            <h3>Upload Ảnh CMND/CCCD</h3>
+            <ImageUpload 
+              userId={profile?.id}
+              type="idcard"
+              onUploadSuccess={handleIdCardUploadSuccess}
+              currentImageUrl={profile?.idCardUrl}
+            />
+            <div style={{textAlign: 'right', marginTop: 20}}>
+              <button className="download-btn" onClick={handleCloseIdCardUpload}>Đóng</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {showTestResultModal && testResult && (
         <div className="modal-overlay" onClick={() => setShowTestResultModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: 600}}>
