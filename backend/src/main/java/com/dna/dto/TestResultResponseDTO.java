@@ -15,6 +15,7 @@ public class TestResultResponseDTO {
     private LocalDate createdDate;
     private String resultConclution;
     private String resultFile;
+    private String resultFileUrl;
     private String updatedBy;
     private LocalDate updatedDate;
     private String status;
@@ -27,7 +28,7 @@ public class TestResultResponseDTO {
     // Constructor with all parameters
     public TestResultResponseDTO(Integer testResultID, Integer bookingID, String customerName, 
                                 LocalDate resultDate, String createdBy, LocalDate createdDate,
-                                String resultConclution, String resultFile, String updatedBy,
+                                String resultConclution, String resultFile, String resultFileUrl, String updatedBy,
                                 LocalDate updatedDate, String status, List<DetailResultResponseDTO> detailResults) {
         this.testResultID = testResultID;
         this.bookingID = bookingID;
@@ -37,6 +38,7 @@ public class TestResultResponseDTO {
         this.createdDate = createdDate;
         this.resultConclution = resultConclution;
         this.resultFile = resultFile;
+        this.resultFileUrl = resultFileUrl;
         this.updatedBy = updatedBy;
         this.updatedDate = updatedDate;
         this.status = status;
@@ -106,6 +108,14 @@ public class TestResultResponseDTO {
 
     public void setResultFile(String resultFile) {
         this.resultFile = resultFile;
+    }
+
+    public String getResultFileUrl() {
+        return resultFileUrl;
+    }
+
+    public void setResultFileUrl(String resultFileUrl) {
+        this.resultFileUrl = resultFileUrl;
     }
 
     public String getUpdatedBy() {

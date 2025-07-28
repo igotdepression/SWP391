@@ -44,15 +44,33 @@ public class S3Service {
     }
 
     public String uploadFile(MultipartFile file) throws IOException {
-        String fileName = generateFileName(file.getOriginalFilename());
-        File convertedFile = convertMultiPartToFile(file);
-        
-        // Set ACL to public-read so files can be accessed publicly
-        getS3Client().putObject(new PutObjectRequest(bucketName, fileName, convertedFile)
-                .withCannedAcl(com.amazonaws.services.s3.model.CannedAccessControlList.PublicRead));
-        convertedFile.delete();
-        
-        return getS3Client().getUrl(bucketName, fileName).toString();
+        try {
+            System.out.println("S3Service: Starting upload...");
+            System.out.println("S3Service: Access Key: " + accessKeyId);
+            System.out.println("S3Service: Region: " + region);
+            System.out.println("S3Service: Bucket: " + bucketName);
+            
+            String fileName = generateFileName(file.getOriginalFilename());
+            System.out.println("S3Service: Generated filename: " + fileName);
+            
+            File convertedFile = convertMultiPartToFile(file);
+            System.out.println("S3Service: File converted to: " + convertedFile.getAbsolutePath());
+            
+                    // Upload file without ACL (bucket has ACL disabled)
+        getS3Client().putObject(new PutObjectRequest(bucketName, fileName, convertedFile));
+            
+            System.out.println("S3Service: File uploaded to S3");
+            convertedFile.delete();
+            
+            String fileUrl = getS3Client().getUrl(bucketName, fileName).toString();
+            System.out.println("S3Service: File URL: " + fileUrl);
+            
+            return fileUrl;
+        } catch (Exception e) {
+            System.err.println("S3Service: Error uploading file: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public void deleteFile(String fileName) {

@@ -70,6 +70,7 @@ public class SecurityConfig {
                     "/error",
                     "/uploads/results/**" // Cho phép truy cập file kết quả
                 ).permitAll()
+                .requestMatchers("/api/files/**").hasAnyRole("STAFF", "MANAGER", "ADMIN") // Cho phép upload file cho staff
                 // THÊM DÒNG NÀY ĐỂ CẤP QUYỀN CHO ENDPOINT CỦA STAFF
                 .requestMatchers("/api/staff/**").hasRole("STAFF") // Hoặc .hasAnyRole("STAFF", "ADMIN") nếu có vai trò ADMIN
                 .anyRequest().authenticated() // Mọi request khác phải được xác thực (đã có token)
