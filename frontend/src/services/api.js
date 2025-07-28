@@ -165,6 +165,7 @@ export const testResultAPI = {
     createTestResult: (data) => api.post('/test-results', data),
     getAllTestResults: () => api.get('/test-results'),
     getTestResultById: (id) => api.get(`/test-results/${id}`),
+    getTestResultByBookingId: (bookingId) => api.get(`/test-results/booking/${bookingId}`),
     updateTestResult: (id, data) => api.put(`/test-results/${id}`, data),
     deleteTestResult: (id) => api.delete(`/test-results/${id}`),
     // Lấy trạng thái kết quả xét nghiệm (nếu backend có endpoint riêng)
