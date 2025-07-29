@@ -162,7 +162,7 @@ export default function StaffPage() {
     };
 
     return (
-        <div className="manager-page-container"> {/* Giữ nguyên classname này */}
+        <div className="staff-page-container">
             {/* Sidebar */}
             <aside className="sidebar">
                 <div className="sidebar-header">
@@ -193,45 +193,21 @@ export default function StaffPage() {
 
             {/* Main Content */}
             <main className="main-content">
-                {/* Main Header - Chứa tiêu đề trang và thông tin staff */}
+                {/* Main Header - Chứa tiêu đề trang và thông tin manager */}
                 <div className="main-header">
                     <h1>{headerConfig.title}</h1>
-                    <div className="header-actions">
-                        {headerConfig.showSearch && (
-                            <Input
-                                type="text"
-                                placeholder="Tìm kiếm..."
-                                className="search-input"
-                                onChange={(e) => headerConfig.onSearchChange && headerConfig.onSearchChange(e.target.value)}
-                            />
-                        )}
-                        {headerConfig.showFilter && headerConfig.filterOptions && (
-                            <Select
-                                className="filter-select"
-                                onChange={(e) => headerConfig.onFilterChange && headerConfig.onFilterChange(e.target.value)}
-                            >
-                                {headerConfig.filterOptions.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
-                                ))}
-                            </Select>
-                        )}
-                        {headerConfig.showAddNew && (
-                            <Button className="action-button" onClick={headerConfig.onAddNewClick}>
-                                {headerConfig.addNewText || "Thêm mới"}
-                            </Button>
-                        )}
-                    </div>
 
-                    {/* Phần thông tin staff ở góc phải */}
+                    {/* Phần thông tin manager mới ở góc phải */}
                     {user && ( // Chỉ hiển thị nếu có thông tin user
-                        <div className="manager-profile-info"> {/* Giữ nguyên classname này */}
+                        <div className="manager-profile-info">
+                            {/* Phần Avatar */}
                             <div className="header-user-profile-area">
-                                <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName || 'Staff') }}>
-                                    {getInitials(user.fullName || 'Staff')}
+                                <div className="header-profile-icon-placeholder">
+                                    CN
                                 </div>
                                 <div className="header-user-info">
-                                    <div>{user.fullName || 'Staff'}</div>
-                                    <div className="user-id">ID: {user.id }</div>
+                                    <div>Chào, Staff!</div>
+                                    <div className="user-id">ID: ST001</div>
                                 </div>
                             </div>
                         </div>
@@ -245,5 +221,6 @@ export default function StaffPage() {
                     </div>
                 </div>
             </main>
-        </div>);
+        </div>
+    );
 }

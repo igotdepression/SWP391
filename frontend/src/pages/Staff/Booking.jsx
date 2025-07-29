@@ -344,8 +344,8 @@ export default function Booking() {
                     <div className="booking-header-row">
                         <h2 className="booking-title">Danh sách Đặt lịch</h2>
                         {/* Phần thống kê tổng quan */}
-                        <div className="consultation-stats-row">
-                            <div className="stat-card stat-card--total">
+                        <div className="booking-stats-row">
+                            <div className="booking-stat-card total">
                                 <div className="stat-icon">
                                     <MdVisibility size={24} />
                                 </div>
@@ -353,7 +353,7 @@ export default function Booking() {
                                 <span className="stat-value">{bookings.length}</span>
                             </div>
 
-                            <div className="stat-card stat-card--pending">
+                            <div className="booking-stat-card pending">
                                 <div className="stat-icon">
                                     <MdCheckCircle size={24} />
                                 </div>
@@ -363,7 +363,7 @@ export default function Booking() {
                                 </span>
                             </div>
 
-                            <div className="stat-card stat-card--processing">
+                            <div className="booking-stat-card processing">
                                 <div className="stat-icon">
                                     <MdArrowForward size={24} />
                                 </div>
@@ -375,7 +375,7 @@ export default function Booking() {
                                 </span>
                             </div>
 
-                            <div className="stat-card stat-card--completed">
+                            <div className="booking-stat-card completed">
                                 <div className="stat-icon">
                                     <MdCheckCircle size={24} />
                                 </div>
@@ -385,7 +385,7 @@ export default function Booking() {
                                 </span>
                             </div>
 
-                            <div className="stat-card stat-card--cancelled">
+                            <div className="booking-stat-card cancelled">
                                 <div className="stat-icon">
                                     <MdCancel size={24} />
                                 </div>

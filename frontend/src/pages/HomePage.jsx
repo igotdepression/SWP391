@@ -425,20 +425,20 @@ function HomePage() {
           </section>
 
           {/* Consultation Form Section - moved to end of page */}
-          <section className="adn-section consultation-section" id="consultation">
+          <section className="adn-section homepage-consultation-section" id="consultation">
             <div className="adn-section-title-group" >
               <span className="adn-section-icon">+</span>
               <span className="adn-section-title" >ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</span>
             </div>
 
-            <div className="consultation-container">
-              <div className="consultation-intro">
+            <div className="homepage-consultation-container">
+              <div className="homepage-consultation-intro">
                 <h3>Nhận tư vấn chuyên sâu từ các chuyên gia</h3>
                 <p>Để lại thông tin của bạn, chúng tôi sẽ liên hệ tư vấn miễn phí về dịch vụ xét nghiệm ADN phù hợp nhất.</p>
               </div>
 
-              <div className="consultation-form-wrapper">
-                <form className="consultation-form" onSubmit={handleConsultationSubmit}>
+              <div className="homepage-consultation-form-wrapper">
+                <form className="homepage-consultation-form" onSubmit={handleConsultationSubmit}>
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="name">Họ và tên *</label>

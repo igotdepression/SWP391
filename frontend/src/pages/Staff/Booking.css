@@ -1,4 +1,4 @@
-/* consultation.css */
+/* booking.css */
 
 /* Container & Card */
 .booking-container {
@@ -32,23 +32,40 @@
 }
 /* Thống kê dạng card trắng, border gradient, bóng, số lớn bên trái, nội dung bên phải */
 /* Thống kê dạng card trắng, border gradient, bóng, số lớn bên trái, nội dung bên phải */
-.consultation-stats-row {
+.booking-header-row {
     display: flex;
-    gap: 18px;
-    margin: 0 0 18px 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.booking-title {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #2563eb;
+    white-space: nowrap;
+}
+.booking-stats-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-bottom: 25px;
     flex-wrap: nowrap; /* Không xuống dòng khi đủ 5 thẻ */
     justify-content: space-between;
-    width: 100%;
     max-width: 100%;
 }
 
-.stat-card {
+.booking-stat-card {
     display: flex;
     flex-direction: row;
     align-items: center;
     background: #fff;
     border-radius: 50px; /* Bo tròn góc lớn, không bị tròn như hình tròn */
-    padding: 18px 24px 16px 18px;
+    padding: 16px 20px;
     min-width: 0;
     flex: 1 1 0;
     box-shadow: 0 4px 18px 0 rgba(80,112,255,0.13);
@@ -65,14 +82,14 @@
     gap: 16px; /* Thêm khoảng cách giữa các phần tử */
 }
 
-.stat-card .stat-icon {
+.booking-stat-card .stat-icon {
     width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    margin: 0 12px 0 0;
+    margin: 0 5px 0 0;
     font-size: 1.7em;
     background: #e0edfd; /* Màu nền mặc định xanh dương nhạt */
     color: #2563eb;      /* Màu icon mặc định xanh dương đậm */
@@ -81,48 +98,49 @@
 }
 
 /* Màu icon riêng cho từng loại */
-.stat-card.total .stat-icon {
+.booking-stat-card.total .stat-icon {
     background: #e5e7eb;
     color: #64748b;
 }
-.stat-card.new .stat-icon {
+.booking-stat-card.new .stat-icon {
     background: #e0edfd;
     color: #2563eb;
 }
-.stat-card.in-progress .stat-icon {
+.booking-stat-card.in-progress .stat-icon {
     background: #fff4e0;
     color: #ff9800;
 }
-.stat-card.completed .stat-icon {
+.booking-stat-card.completed .stat-icon {
     background: #e6f9f0;
     color: #22c55e;
 }
-.stat-card.cancelled .stat-icon {
+.booking-stat-card.cancelled .stat-icon {
     background: #ffeaea;
     color: #ef4444;
 }
 
-.stat-card .stat-label {
+.booking-stat-card .stat-label {
     font-size: 1.08em;
     color: #475569;
     font-weight: 500;
-    margin: 0 10px 0 0;
+    margin: 0;
     white-space: nowrap;
 }
 
-.stat-card .stat-value {
+.booking-stat-card .stat-value {
     font-size: 2.1em;
     font-weight: 800;
     color: #2563eb;
-    margin: 0 0 0 auto;
+    margin-right: 10px;
     min-width: 40px;
-    text-align: right;
+    text-align: left;
+    white-space: nowrap;
     line-height: 1;
     flex-shrink: 0;
 }
 
 /* Đặt lại .stat-info để nằm ngang */
-.stat-card .stat-info {
+.booking-stat-card .stat-info {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -326,12 +344,12 @@
 .modal-close-x:hover {
     color: #ef4444;
 }
-.consultation-detail-info > div {
+.booking-detail-info > div {
     margin-bottom: 8px;
     font-size: 1.08em;
 }
 
-.consultation-content-text {
+.booking-content-text {
     margin-top: 0;
     font-style: italic;
     background: none;
@@ -665,13 +683,24 @@
     max-width: 100%;
 }
 
-.stat-card {
+.booking-stats-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-bottom: 25px;
+    flex-wrap: nowrap; /* Không xuống dòng khi đủ 5 thẻ */
+    justify-content: space-between;
+    max-width: 100%;
+}
+
+.booking-stat-card {
     display: flex;
     flex-direction: row;
     align-items: center;
     background: #fff;
     border-radius: 50px; /* Bo tròn góc lớn, không bị tròn như hình tròn */
-    padding: 18px 24px 16px 18px;
+    padding: 16px 20px;
     min-width: 0;
     flex: 1 1 0;
     box-shadow: 0 4px 18px 0 rgba(80,112,255,0.13);
@@ -688,37 +717,71 @@
     gap: 16px; /* Thêm khoảng cách giữa các phần tử */
 }
 
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
-
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+.booking-stat-card .stat-icon {
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    border-radius: 50%;
+    margin: 0 5px 0 0;
+    font-size: 1.7em;
+    background: #e0edfd; /* Màu nền mặc định xanh dương nhạt */
+    color: #2563eb;      /* Màu icon mặc định xanh dương đậm */
+    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.10);
+    flex-shrink: 0;
 }
 
-.stat-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+/* Màu icon riêng cho từng loại */
+.booking-stat-card.total .stat-icon {
+    background: #e5e7eb;
+    color: #64748b;
+}
+.booking-stat-card.pending .stat-icon {
+    background: #e0edfd;
+    color: #2563eb;
+}
+.booking-stat-card.processing .stat-icon {
+    background: #fff4e0;
+    color: #ff9800;
+}
+.booking-stat-card.completed .stat-icon {
+    background: #e6f9f0;
+    color: #22c55e;
+}
+.booking-stat-card.cancelled .stat-icon {
+    background: #ffeaea;
+    color: #ef4444;
 }
 
-.stat-label {
-    font-size: 14px;
-    color: #6b7280;
+.booking-stat-card .stat-label {
+    font-size: 1.08em;
+    color: #475569;
     font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
 }
 
-.stat-value {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1f2937;
+.booking-stat-card .stat-value {
+    font-size: 2.1em;
+    font-weight: 800;
+    color: #2563eb;
+    margin-right: 10px;
+    min-width: 40px;
+    text-align: left;
+    white-space: nowrap;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Đặt lại .stat-info để nằm ngang */
+.booking-stat-card .stat-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    gap: 0;
 }
 
 /* Stat Card Variants */

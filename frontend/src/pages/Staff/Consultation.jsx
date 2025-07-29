@@ -265,9 +265,9 @@ export default function Consultation() {
     };
 
     return (
-        <div className="consultation-container">
+        <div className="consultation--container">
             <div className="consultation-content">
-                <Card className="consultation-list-card">
+                <Card className="consultation-header-card">
                     <div className="consultation-header-row">
                         <h2 className="consultation-title">Danh sách Yêu cầu</h2>
                         <div className="consultation-controls">
@@ -292,27 +292,27 @@ export default function Consultation() {
                         </div>
                         {/* Thêm phần thống kê tổng quan ở đây */}
                         <div className="consultation-stats-row">
-                            <div className="stat-card total">
+                            <div className="consultation-stat-card total">
                                 <span className="stat-icon"><i className="fas fa-list"></i></span>
                                 <span className="stat-label">Tổng đơn</span>
                                 <span className="stat-value">{consultations.length}</span>
                             </div>
-                            <div className="stat-card new">
+                            <div className="consultation-stat-card new">
                                 <span className="stat-icon"><i className="fas fa-star"></i></span>
                                 <span className="stat-label">Đơn mới</span>
                                 <span className="stat-value">{consultations.filter(c => c.status === 'new').length}</span>
                             </div>
-                            <div className="stat-card in-progress">
+                            <div className="consultation-stat-card in-progress">
                                 <span className="stat-icon"><i className="fas fa-spinner"></i></span>
                                 <span className="stat-label">Đang xử lý</span>
                                 <span className="stat-value">{consultations.filter(c => c.status === 'in-progress').length}</span>
                             </div>
-                            <div className="stat-card completed">
+                            <div className="consultation-stat-card completed">
                                 <span className="stat-icon"><i className="fas fa-check-circle"></i></span>
                                 <span className="stat-label">Hoàn thành</span>
                                 <span className="stat-value">{consultations.filter(c => c.status === 'completed').length}</span>
                             </div>
-                            <div className="stat-card cancelled">
+                            <div className="consultation-stat-card cancelled">
                                 <span className="stat-icon"><i className="fas fa-times-circle"></i></span>
                                 <span className="stat-label">Đã hủy</span>
                                 <span className="stat-value">{consultations.filter(c => c.status === 'cancelled').length}</span>

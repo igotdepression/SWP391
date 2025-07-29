@@ -450,21 +450,21 @@ export default function TestResultManagement() {
                 {/* Statistics Section */}
                 <div className="statistics-section">
                     <h1 className="page-title">Quản lý kết quả xét nghiệm</h1>
-                    <div className="stats-container">
-                            <div className="stat-card stat-total">
-                                <div className="stat-number">{totalSamples}</div>
+                    <div className="testResult-stats-row">
+                            <div className="testResult-stat-card total">
+                                <div className="stat-value">{totalSamples}</div>
                                 <div className="stat-label">TỔNG MẪU</div>
                             </div>
-                            <div className="stat-card stat-ready">
-                                <div className="stat-number">{readySamples}</div>
+                            <div className="testResult-stat-card standard">
+                                <div className="stat-value">{readySamples}</div>
                                 <div className="stat-label">MẪU CHUẨN</div>
                             </div>
-                            <div className="stat-card stat-normal">
-                                <div className="stat-number">{normalSamples}</div>
+                            <div className="testResult-stat-card normal">
+                                <div className="stat-value">{normalSamples}</div>
                                 <div className="stat-label">MẪU THÔNG THƯỜNG</div>
                             </div>
-                            <div className="stat-card stat-special">
-                                <div className="stat-number">{specialSamples}</div>
+                            <div className="testResult-stat-card special">
+                                <div className="stat-value">{specialSamples}</div>
                                 <div className="stat-label">MẪU ĐẶC BIỆT</div>
                             </div>
                         </div>

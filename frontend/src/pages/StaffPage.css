@@ -33,7 +33,7 @@ body {
     color: var(--dark-text);
 }
 
-.manager-page-container { /* Changed from .layout-container to match ManagerPage.jsx */
+.staff-page-container { /* Changed from .layout-container to match ManagerPage.jsx */
     display: flex;
     min-height: 100vh;
 }
@@ -167,6 +167,9 @@ body {
 .sidebar-footer .logout-button:hover {
     background-color: #c82333;
 }
+
+
+/* Main content area */
 
 
 /* Main content area */
