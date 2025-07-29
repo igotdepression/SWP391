@@ -523,170 +523,278 @@
 .sample-actions {
     display: flex;
     gap: 8px;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    padding: 8px !important;
 }
 
-.action-btn {
-    background: none;
-    border: none;
-    padding: 8px 12px;
+.btn-edit,
+.btn-view {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 14px;
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 20px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    outline: none;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.action-btn:hover {
-    transform: translateY(-1px);
+/* Edit button styling */
+.btn-edit {
+    background: linear-gradient(135deg, #e0edff 0%, #f0f9ff 100%);
+    border-color: #2563eb;
+    color: #2563eb;
 }
 
-.action-btn.edit {
-    color: #007bff;
-    border: 1px solid #007bff;
+.btn-edit:hover {
+    background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+    border-color: #1d4ed8;
+    color: #1d4ed8;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
 }
 
-.action-btn.edit:hover {
-    background-color: #007bff;
+.btn-edit:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* View button styling */
+.btn-view {
+    background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+    border-color: #22c55e;
+    color: #22c55e;
+}
+
+.btn-view:hover {
+    background: linear-gradient(135deg, #bbf7d0 0%, #ecfdf5 100%);
+    border-color: #16a34a;
+    color: #16a34a;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.25);
+}
+
+.btn-view:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Icon styling */
+.btn-edit i,
+.btn-view i {
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-edit:hover i,
+.btn-view:hover i {
+    transform: scale(1.1);
+}
+
+/* Ripple effect */
+.btn-edit::before,
+.btn-view::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.btn-edit:active::before,
+.btn-view:active::before {
+    width: 100%;
+    height: 100%;
+}
+
+/* Tooltip styling */
+.btn-edit,
+.btn-view {
+    position: relative;
+}
+
+.btn-edit::after,
+.btn-view::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
     color: white;
-}
-
-.action-btn.delete {
-    color: #dc3545;
-    border: 1px solid #dc3545;
-}
-
-.action-btn.delete:hover {
-    background-color: #dc3545;
-    color: white;
-}
-
-/* Participant Detail Modal */
-.participant-detail-modal {
-    max-width: 800px;
-    width: 95%;
-}
-
-.participant-detail-content {
-    margin-top: 20px;
-}
-
-.participant-detail-section {
-    margin-bottom: 30px;
-    padding: 20px;
-    background-color: #f8fafc;
-    border-radius: 8px;
-    border-left: 4px solid #3b82f6;
-}
-
-.participant-detail-section h4 {
-    color: #1f2937;
-    font-size: 1.2em;
-    font-weight: 600;
-    margin-bottom: 15px;
-    margin-top: 0;
-}
-
-.participant-detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
-}
-
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.detail-item.full-width {
-    grid-column: 1 / -1;
-}
-
-.detail-item label {
-    font-weight: 600;
-    color: #374151;
-    font-size: 14px;
-}
-
-.detail-item span {
-    padding: 8px 12px;
-    background-color: #ffffff;
+    padding: 6px 12px;
     border-radius: 6px;
-    border: 1px solid #e5e7eb;
-    color: #1f2937;
-    font-size: 14px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 10;
+    pointer-events: none;
+    margin-bottom: 8px;
 }
 
-/* Update participant-link to work as button */
+.btn-edit:hover::after,
+.btn-view:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
 
+/* Responsive design */
 @media (max-width: 768px) {
-    .sample-controls {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .search-input {
-        min-width: 100%;
-    }
-    .filter-select {
-        min-width: 100%;
-    }
-    .sample-stats-cards {
-        flex-direction: column;
-    }
-    .sample-stat-card {
-        min-width: 100%;
-    }
-    .data-table {
-        font-size: 0.8em;
-        min-width: 600px;
-    }
-    .data-table th, .data-table td {
-        padding: 8px 10px;
-    }
-    .add-sample-form {
-        grid-template-columns: 1fr;
+    .sample-actions {
+        gap: 6px;
     }
     
-    /* Participant detail modal responsive */
-    .participant-detail-modal {
-        width: 98%;
-        max-width: none;
+    .btn-edit,
+    .btn-view {
+        width: 32px;
+        height: 32px;
     }
     
-    .participant-detail-grid {
-        grid-template-columns: 1fr;
+    .btn-edit i,
+    .btn-view i {
+        font-size: 14px;
     }
     
-    .participant-detail-section {
-        padding: 15px;
-        margin-bottom: 20px;
+    /* Hide tooltips on mobile */
+    .btn-edit::after,
+    .btn-view::after {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .sample-actions {
+        gap: 4px;
     }
     
-    .participant-detail-section h4 {
-        font-size: 1.1em;
+    .btn-edit,
+    .btn-view {
+        width: 28px;
+        height: 28px;
     }
     
-    /* Modal responsive */
-    .modal-content {
-        width: 95%;
-        padding: 25px;
-        max-height: 95vh;
+    .btn-edit i,
+    .btn-view i {
+        font-size: 12px;
     }
-    
-    .modal-content h3 {
-        font-size: 1.5em;
+}
+
+/* Accessibility improvements */
+.btn-edit:focus,
+.btn-view:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* Disabled state */
+.btn-edit:disabled,
+.btn-view:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn-edit:disabled:hover,
+.btn-view:disabled:hover {
+    transform: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Loading state */
+.btn-edit.loading,
+.btn-view.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn-edit.loading i,
+.btn-view.loading i {
+    opacity: 0.3;
+}
+
+.btn-edit.loading::after,
+.btn-view.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Table row hover effect */
+.data-table tbody tr:hover .sample-actions .btn-edit,
+.data-table tbody tr:hover .sample-actions .btn-view {
+    opacity: 1;
+    visibility: visible;
+}
+
+.data-table tbody tr .sample-actions .btn-edit,
+.data-table tbody tr .sample-actions .btn-view {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+/* Additional enhancements */
+.btn-edit:hover {
+    background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+    box-shadow: 
+        0 4px 15px rgba(37, 99, 235, 0.25),
+        0 0 0 1px rgba(37, 99, 235, 0.1);
+}
+
+.btn-view:hover {
+    background: linear-gradient(135deg, #bbf7d0 0%, #ecfdf5 100%);
+    box-shadow: 
+        0 4px 15px rgba(34, 197, 94, 0.25),
+        0 0 0 1px rgba(34, 197, 94, 0.1);
+}
+
+/* Button group styling */
+.sample-actions {
+    border-radius: 8px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+/* Animation for button appearance */
+@keyframes buttonFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
     }
-    
-    /* Tooltip responsive */
-    .participant-link::after {
-        font-size: 11px;
-        padding: 4px 8px;
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
+}
+
+.btn-edit,
+.btn-view {
+    animation: buttonFadeIn 0.2s ease-out;
 }

@@ -399,14 +399,13 @@ export default function Booking() {
                         </div>
 
                         {/* Phần tìm kiếm và bộ lọc */}
-                        <div className="booking-controls" style={{ flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+                        <div className="booking-controls">
                             <input
                                 type="text"
                                 placeholder="Tìm kiếm theo mã đơn, mã KH, tên khách hàng, SĐT, dịch vụ..."
                                 value={searchTerm}
                                 onChange={e => setSearchTerm(e.target.value)}
                                 className="search-input"
-                                style={{ minWidth: 300 }}
                             />
 
                             <select
@@ -456,14 +455,6 @@ export default function Booking() {
                             <button
                                 onClick={resetFilters}
                                 className="reset-filters-btn"
-                                style={{
-                                    padding: "8px 16px",
-                                    backgroundColor: "#f3f4f6",
-                                    border: "1px solid #d1d5db",
-                                    borderRadius: "6px",
-                                    cursor: "pointer",
-                                    fontSize: "14px"
-                                }}
                             >
                                 Đặt lại bộ lọc
                             </button>
@@ -632,7 +623,7 @@ export default function Booking() {
                 {/* Modal nhập thông tin mẫu */}
                 {showSampleModal && (
                     <div className="modal-overlay">
-                        <div className="modal-content" style={{maxWidth: 900}}>
+                        <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>Nhập thông tin mẫu ({currentBooking?.numberSample} mẫu)</h3>
                             {sampleInfos.map((info, idx) => (
                                 <div key={idx} className="sample-input-row">
@@ -659,7 +650,7 @@ export default function Booking() {
                 {/* Modal xem chi tiết đơn */}
                 {viewBooking && (
                     <div className="modal-overlay">
-                        <div className="modal-content" style={{maxWidth: 900}}>
+                        <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>Chi tiết đơn #{viewBooking.bookingID}</h3>
                             <p><b>Mã Đơn:</b> {viewBooking.bookingID}</p>
                             <p><b>Mã KH:</b> {viewBooking.user?.userID || viewBooking.userID}</p>
@@ -706,7 +697,7 @@ export default function Booking() {
                 {/* Modal xem thông tin người dùng */}
                 {viewUser && (
                     <div className="modal-overlay">
-                        <div className="modal-content" style={{maxWidth: 900}}>
+                        <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>Thông tin người đăng ký</h3>
                             <p><b>Mã KH:</b> {viewUser.userID}</p>
                             <p><b>Họ tên:</b> {viewUser.customerName}</p>
@@ -722,7 +713,7 @@ export default function Booking() {
                 {/* Modal chỉnh sửa thông tin đơn */}
                 {editBooking && (
                     <div className="modal-overlay">
-                        <div className="modal-content" style={{maxWidth: 900}}>
+                        <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>
                                 {editBooking.status === "Không xác nhận"
                                     ? `Chỉnh sửa đơn bị từ chối #${editBooking.bookingID}`
