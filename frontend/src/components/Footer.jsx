@@ -1,7 +1,15 @@
 import React from 'react';
 import './Footer.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const Footer = () => {
+  const navigate = useNavigate();
+  // Hàm xử lý khi người dùng click vào loại xét nghiệm ADN
+  const handleAdnTypeClick = (route) => {
+    navigate(route);
+  };
+
   return (
     <footer className="footer">
       <div className="footer-content">
@@ -39,7 +47,7 @@ const Footer = () => {
             </div>
             <div className="contact-item">
               <i className="fas fa-clock"></i>
-              <span>Thứ 2 - Thứ 6: 8:00 - 17:00<br/>Thứ 7: 8:00 - 12:00</span>
+              <span>Thứ 2 - Thứ 6: 8:00 - 17:00<br />Thứ 7: 8:00 - 12:00</span>
             </div>
           </div>
         </div>
@@ -48,19 +56,24 @@ const Footer = () => {
         <div className="footer-section service-section">
           <h3>DỊCH VỤ</h3>
           <ul>
-            <li><a href="#paternity">Xét nghiệm ADN cha con</a></li>
-            <li><a href="#maternity">Xét nghiệm ADN mẹ con</a></li>
-            <li><a href="#grandparents">Xét nghiệm ADN ông bà cháu</a></li>
-            <li><a href="#siblings">Xét nghiệm ADN anh em</a></li>
-            <li><a href="#consultation">Tư vấn miễn phí</a></li>
-          </ul>
-          
-          <h3 className="quick-links">HỖ TRỢ</h3>
-          <ul>
-            <li><a href="#booking">Đặt lịch hẹn</a></li>
-            <li><a href="#pricing">Bảng giá dịch vụ</a></li>
-            <li><a href="#guide">Hướng dẫn lấy mẫu</a></li>
-            <li><a href="#faq">Câu hỏi thường gặp</a></li>
+            <li>
+              <a onClick={() => handleAdnTypeClick("/services/father-child")}>Xét nghiệm ADN cha con</a>
+            </li>
+            <li>
+              <a onClick={() => handleAdnTypeClick("/services/mother-child")}>Xét nghiệm ADN mẹ con</a>
+            </li>
+            <li>
+              <a onClick={() => handleAdnTypeClick("/services/grandfather-grandchild")}>Xét nghiệm ADN ông cháu</a>
+            </li>
+            <li>
+              <a onClick={() => handleAdnTypeClick("/services/grandmother-grandchild")}>Xét nghiệm ADN bà cháu</a>
+            </li>
+            <li>
+              <a onClick={() => handleAdnTypeClick("/services/siblings")}>Xét nghiệm ADN anh em</a>
+            </li>
+            <li>
+              <a onClick={() => handleAdnTypeClick("/services/pretanal")}>Xét nghiệm ADN thai nhi</a>
+            </li>
           </ul>
         </div>
 
@@ -75,16 +88,14 @@ const Footer = () => {
               <i className="fab fa-facebook-f"></i>
             </a>
           </div>
-          
-          <h3 className="quick-links">CHÍNH SÁCH</h3>
+          <h3 className="quick-links">HỖ TRỢ</h3>
           <ul>
-            <li><a href="#privacy">Chính sách bảo mật</a></li>
-            <li><a href="#terms">Điều khoản sử dụng</a></li>
-            <li><a href="#security">Bảo mật thông tin</a></li>
+            <li><a href="#booking" onClick={() => handleAdnTypeClick("/booking")}>Đặt lịch hẹn</a></li>
+            <li><a href="#consultation" onClick={() => handleAdnTypeClick("/consultation")}>Đăng ký tư vấn</a></li>
           </ul>
         </div>
       </div>
-      
+
       <div className="footer-bottom">
         <div className="footer-bottom-content">
           <p>© 2025 Bản quyền DNA CHAIN - All rights reserved.</p>
