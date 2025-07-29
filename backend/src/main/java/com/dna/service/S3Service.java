@@ -42,9 +42,12 @@ public class S3Service {
                 System.out.println("S3Service: Bucket: " + bucketName);
                 
                 BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+                
+                // Sử dụng cấu hình đơn giản hơn
                 s3Client = AmazonS3ClientBuilder.standard()
                         .withRegion(region)
                         .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                        .withPathStyleAccessEnabled(true) // Thêm path style access
                         .build();
                 
                 // Kiểm tra kết nối
@@ -128,6 +131,92 @@ public class S3Service {
         } catch (Exception e) {
             System.err.println("S3Service: Kiểm tra kết nối thất bại: " + e.getMessage());
             return false;
+        }
+    }
+
+    // Kiểm tra credentials chi tiết
+    public void validateCredentials() {
+        System.out.println("=== S3Service: Kiểm tra thông tin credentials ===");
+        System.out.println("Access Key ID: " + accessKeyId);
+        System.out.println("Secret Access Key (10 ký tự đầu): " + (secretAccessKey != null ? secretAccessKey.substring(0, Math.min(10, secretAccessKey.length())) + "..." : "null"));
+        System.out.println("Region: " + region);
+        System.out.println("Bucket Name: " + bucketName);
+        System.out.println("Secret Key Length: " + (secretAccessKey != null ? secretAccessKey.length() : "null"));
+        System.out.println("Access Key Length: " + (accessKeyId != null ? accessKeyId.length() : "null"));
+        System.out.println("================================================");
+    }
+
+    // Test upload một file nhỏ
+    public String testUpload() {
+        try {
+            System.out.println("S3Service: Bắt đầu test upload...");
+            
+            // Tạo một file test nhỏ
+            String testContent = "Test upload from Bloodline DNA System";
+            String testFileName = "test-upload-" + System.currentTimeMillis() + ".txt";
+            
+            // Upload trực tiếp
+            getS3Client().putObject(bucketName, testFileName, testContent);
+            
+            String fileUrl = getS3Client().getUrl(bucketName, testFileName).toString();
+            System.out.println("S3Service: Test upload thành công: " + fileUrl);
+            
+            return fileUrl;
+        } catch (Exception e) {
+            System.err.println("S3Service: Test upload thất bại: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Cập nhật bucket policy để cho phép upload
+    public boolean updateBucketPolicy() {
+        try {
+            System.out.println("S3Service: Đang cập nhật bucket policy...");
+            
+            String policy = "{\n" +
+                    "    \"Version\": \"2012-10-17\",\n" +
+                    "    \"Statement\": [\n" +
+                    "        {\n" +
+                    "            \"Sid\": \"PublicReadGetObject\",\n" +
+                    "            \"Effect\": \"Allow\",\n" +
+                    "            \"Principal\": \"*\",\n" +
+                    "            \"Action\": \"s3:GetObject\",\n" +
+                    "            \"Resource\": \"arn:aws:s3:::" + bucketName + "/*\"\n" +
+                    "        },\n" +
+                    "        {\n" +
+                    "            \"Sid\": \"AllowUpload\",\n" +
+                    "            \"Effect\": \"Allow\",\n" +
+                    "            \"Principal\": {\n" +
+                    "                \"AWS\": \"arn:aws:iam::*:user/*\"\n" +
+                    "            },\n" +
+                    "            \"Action\": [\n" +
+                    "                \"s3:PutObject\",\n" +
+                    "                \"s3:PutObjectAcl\"\n" +
+                    "            ],\n" +
+                    "            \"Resource\": \"arn:aws:s3:::" + bucketName + "/*\"\n" +
+                    "        }\n" +
+                    "    ]\n" +
+                    "}";
+            
+            getS3Client().setBucketPolicy(bucketName, policy);
+            System.out.println("S3Service: Đã cập nhật bucket policy thành công");
+            return true;
+        } catch (Exception e) {
+            System.err.println("S3Service: Không thể cập nhật bucket policy: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Kiểm tra bucket policy hiện tại
+    public String getCurrentBucketPolicy() {
+        try {
+            com.amazonaws.services.s3.model.BucketPolicy bucketPolicy = getS3Client().getBucketPolicy(bucketName);
+            return bucketPolicy.getPolicyText();
+        } catch (Exception e) {
+            System.err.println("S3Service: Không thể đọc bucket policy: " + e.getMessage());
+            return null;
         }
     }
 

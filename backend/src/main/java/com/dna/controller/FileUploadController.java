@@ -73,6 +73,9 @@ public class FileUploadController {
     @GetMapping("/test-s3")
     public ResponseEntity<Map<String, String>> testS3Connection() {
         try {
+            // Hiển thị thông tin credentials trước
+            s3Service.validateCredentials();
+            
             boolean isConnected = s3Service.testConnection();
             Map<String, String> response = new HashMap<>();
             if (isConnected) {
@@ -87,6 +90,70 @@ public class FileUploadController {
             Map<String, String> response = new HashMap<>();
             response.put("status", "error");
             response.put("message", "Kiểm tra kết nối S3 thất bại: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/test-upload")
+    public ResponseEntity<Map<String, String>> testUpload() {
+        try {
+            String uploadUrl = s3Service.testUpload();
+            Map<String, String> response = new HashMap<>();
+            if (uploadUrl != null) {
+                response.put("status", "success");
+                response.put("message", "Test upload thành công");
+                response.put("url", uploadUrl);
+            } else {
+                response.put("status", "error");
+                response.put("message", "Test upload thất bại");
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Test upload thất bại: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/bucket-policy")
+    public ResponseEntity<Map<String, String>> getBucketPolicy() {
+        try {
+            String policy = s3Service.getCurrentBucketPolicy();
+            Map<String, String> response = new HashMap<>();
+            if (policy != null) {
+                response.put("status", "success");
+                response.put("policy", policy);
+            } else {
+                response.put("status", "error");
+                response.put("message", "Không thể đọc bucket policy");
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Lỗi đọc bucket policy: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PostMapping("/update-bucket-policy")
+    public ResponseEntity<Map<String, String>> updateBucketPolicy() {
+        try {
+            boolean success = s3Service.updateBucketPolicy();
+            Map<String, String> response = new HashMap<>();
+            if (success) {
+                response.put("status", "success");
+                response.put("message", "Đã cập nhật bucket policy thành công");
+            } else {
+                response.put("status", "error");
+                response.put("message", "Không thể cập nhật bucket policy");
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Lỗi cập nhật bucket policy: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
