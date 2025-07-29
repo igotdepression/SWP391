@@ -70,11 +70,12 @@ const ServicePage = () => {
     }
   ];
 
-  // Handler functions
+  // Hàm xử lý khi người dùng click vào dịch vụ
   const handleServiceClick = (route) => {
     navigate(route);
   };
 
+  // Hàm xử lý khi người dùng click vào loại xét nghiệm ADN
   const handleAdnTypeClick = (route) => {
     navigate(route);
   };
@@ -98,6 +99,7 @@ const ServicePage = () => {
         <div className="container">
           <h2 className="section-title">Các dịch vụ xét nghiệm ADN</h2>
 
+          {/* Dịch vụ */}
           <div className="services-grid">
             {services.map(service => (
               <div key={service.id} className="service-card">
