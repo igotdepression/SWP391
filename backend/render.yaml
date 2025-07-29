@@ -2,7 +2,7 @@ services:
   - type: web
     name: bloodline-backend
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: backend/Dockerfile  # <== ĐÃ SỬA LẠI ĐƯỜNG DẪN
     envVars:
       - key: DATABASE_URL
         value: jdbc:sqlserver://dnatestingservice.cd8asiyc4ffp.ap-southeast-2.rds.amazonaws.com:1433;databaseName=DNATestingService;encrypt=true;trustServerCertificate=true
