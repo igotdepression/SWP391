@@ -2,17 +2,17 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-# Install Maven
+# Cài Maven
 RUN apt-get update && apt-get install -y maven
 
-# Copy the current directory (backend) contents
+# Copy toàn bộ project
 COPY . .
 
-# Build the application
+# Build bằng Maven
 RUN mvn clean install -DskipTests
 
-# Expose the port used by Spring Boot
+# Expose port
 EXPOSE 8080
 
-# Run the application
+# Chạy Spring Boot
 CMD ["java", "-jar", "target/dna-testing-service-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod"]

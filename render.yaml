@@ -2,12 +2,12 @@ services:
   - type: web
     name: bloodline-backend
     runtime: docker
-    dockerfilePath: ./backend/Dockerfile
+    dockerfilePath: ./backend/Dockerfile  # Đã đúng
     envVars:
       - key: DATABASE_URL
         value: jdbc:sqlserver://dnatestingservice.cd8asiyc4ffp.ap-southeast-2.rds.amazonaws.com:1433;databaseName=DNATestingService;encrypt=true;trustServerCertificate=true
       - key: DATABASE_USERNAME
-        value: sa
+        value: admin
       - key: DATABASE_PASSWORD
         value: 1234567890
       - key: JWT_SECRET
@@ -21,4 +21,4 @@ services:
       - key: AWS_S3_REGION
         value: ap-southeast-2
       - key: AWS_S3_BUCKET_NAME
-        value: bloodline-dna-files 
+        value: bloodline-dna-files
