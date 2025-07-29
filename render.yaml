@@ -1,7 +1,7 @@
 services:
   - type: web
     name: bloodline-backend
-    env: java
+    runtime: java
     buildCommand: ./mvnw clean install -DskipTests
     startCommand: java -jar target/dna-testing-service-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
     envVars:
