@@ -17,7 +17,7 @@ services:
       - key: AWS_ACCESS_KEY_ID
         value: AKIARUOBQEWWL6FKBB7X
       - key: AWS_SECRET_ACCESS_KEY
-        value: bx1vNUVN6p1ikPCKdfS1UrHXxTBt2+EFhAUjp@Al
+        value: bx1vNUVN6p1ikPCKdfSlUrHXxTBt2+EFhAUjp0Al
       - key: AWS_S3_REGION
         value: ap-southeast-2
       - key: AWS_S3_BUCKET_NAME

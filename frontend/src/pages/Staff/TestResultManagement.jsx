@@ -449,22 +449,22 @@ export default function TestResultManagement() {
         <div className="test-result-management-container">
                 {/* Statistics Section */}
                 <div className="statistics-section">
-                    <h1 className="page-title">Quản lý kết quả xét nghiệm</h1>
-                    <div className="stats-container">
-                            <div className="stat-card stat-total">
-                                <div className="stat-number">{totalSamples}</div>
+                    <h3 className="section-title">Danh sách kết quả xét nghiệm</h3>
+                    <div className="testResult-stats-row">
+                            <div className="testResult-stat-card total">
+                                <div className="stat-value">{totalSamples}</div>
                                 <div className="stat-label">TỔNG MẪU</div>
                             </div>
-                            <div className="stat-card stat-ready">
-                                <div className="stat-number">{readySamples}</div>
+                            <div className="testResult-stat-card standard">
+                                <div className="stat-value">{readySamples}</div>
                                 <div className="stat-label">MẪU CHUẨN</div>
                             </div>
-                            <div className="stat-card stat-normal">
-                                <div className="stat-number">{normalSamples}</div>
+                            <div className="testResult-stat-card normal">
+                                <div className="stat-value">{normalSamples}</div>
                                 <div className="stat-label">MẪU THÔNG THƯỜNG</div>
                             </div>
-                            <div className="stat-card stat-special">
-                                <div className="stat-number">{specialSamples}</div>
+                            <div className="testResult-stat-card special">
+                                <div className="stat-value">{specialSamples}</div>
                                 <div className="stat-label">MẪU ĐẶC BIỆT</div>
                             </div>
                         </div>
@@ -472,7 +472,7 @@ export default function TestResultManagement() {
 
                 {/* Search and Filter Section */}
                 <div className="controls-section">
-                    <h2 className="section-title">Danh sách kết quả xét nghiệm</h2>
+                    
                     <div className="controls-row">
                         <Select
                             value={filterStatus}
@@ -492,7 +492,7 @@ export default function TestResultManagement() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="search-input-main"
                         />
-                        <Button className="add-sample-btn" onClick={handleOpenAddModal}>+ Thêm kết quả</Button>
+                        <Button className="add-testResult-btn" onClick={handleOpenAddModal}>+ Thêm kết quả</Button>
                     </div>
                 </div>
 

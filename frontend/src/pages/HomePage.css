@@ -846,30 +846,30 @@ body {
 }
 
 /* Consultation Section */
-.consultation-section {
+.homepage-consultation-section {
   background: #ffffff;
   margin-top: 60px;
 }
 
-.consultation-container {
+.homepage-consultation-container {
   max-width: 100%;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-.consultation-intro {
+.homepage-consultation-intro {
   text-align: center;
   margin: 50px 0;
 }
 
-.consultation-intro h3 {
+.homepage-consultation-intro h3 {
   font-size: 2.2em;
   color: #1976d2;
   margin-bottom: 15px;
   font-weight: 700;
 }
 
-.consultation-intro p {
+.homepage-consultation-intro p {
   font-size: 1.1em;
   color: #666;
   max-width: 600px;
@@ -877,7 +877,7 @@ body {
   line-height: 1.6;
 }
 
-.consultation-form-wrapper {
+.homepage-consultation-form-wrapper {
   background: white;
   border-radius: 20px;
   padding: 40px;
@@ -885,7 +885,7 @@ body {
   border: 1px solid rgba(25, 118, 210, 0.2);
 }
 
-.consultation-form {
+.homepage-consultation-form {
   margin: 0 auto;
 }
 

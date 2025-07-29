@@ -37,15 +37,15 @@ export default function BookingCreate() {
     // Hàm mapping quan hệ nghi vấn cho từng loại dịch vụ - mỗi dịch vụ có relationship options khác nhau
     const getRelationshipOptions = () => {
         switch (serviceName) {
-            case 'Xét nghiệm cha con':
+            case 'Xét nghiệm cha con':
                 return ['Cha', 'Con']; // Chỉ có 2 vai trò: cha và con
-            case 'Xét nghiệm mẹ con':
+            case 'Xét nghiệm mẹ con':
                 return ['Mẹ', 'Con']; // Chỉ có 2 vai trò: mẹ và con
-            case 'Xét nghiệm ông cháu':
+            case 'Xét nghiệm ông cháu':
                 return ['Ông', 'Cháu']; // Relationship giữa ông và cháu
-            case 'Xét nghiệm bà cháu':
+            case 'Xét nghiệm bà cháu':
                 return ['Bà', 'Cháu']; // Relationship giữa bà và cháu
-            case 'Xét nghiệm anh em ruột':
+            case 'Xét nghiệm anh em ruột':
                 return ['Anh', 'Em', 'Mẹ (tùy chọn)']; // Có thể có mẹ để tăng độ chính xác
             case 'Thai nhi (không xâm lấn)':
                 return ['Thai nhi (Mẫu từ mẹ)', 'Cha nghi vấn']; // Đặc biệt: mẫu từ máu mẹ + DNA cha nghi vấn
@@ -122,7 +122,7 @@ export default function BookingCreate() {
         // Copy logic getRelationshipOptions vào trong useEffect để tránh vòng lặp dependency
         const getRelationshipOptions = () => {
             switch (serviceName) {
-                case 'Xét nghiệm cha con':
+                case 'Xét nghiệm cha con':
                     return ['Cha', 'Con'];
                 case 'Xét nghiệm mẹ con':
                     return ['Mẹ', 'Con'];

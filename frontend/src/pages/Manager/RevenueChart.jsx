@@ -28,7 +28,6 @@ export default function RevenueChart({ payments, loading, error }) {
     return (
         <div className="revenue-chart-container">
             <h4>📊 Biểu đồ Doanh thu (7 ngày gần nhất)</h4>
-            {loading && <div className="loading-spinner">Đang tải dữ liệu thanh toán...</div>}
             {error && <div className="error-message">{error}</div>}
             {!loading && !error && (
                 <>

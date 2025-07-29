@@ -21,35 +21,35 @@ public class FileUploadController {
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            System.out.println("=== FileUploadController: Starting upload ===");
-            System.out.println("File name: " + file.getOriginalFilename());
-            System.out.println("File size: " + file.getSize());
-            System.out.println("File content type: " + file.getContentType());
-            System.out.println("File is empty: " + file.isEmpty());
+            System.out.println("=== FileUploadController: Bắt đầu upload ===");
+            System.out.println("Tên file: " + file.getOriginalFilename());
+            System.out.println("Kích thước file: " + file.getSize());
+            System.out.println("Loại file: " + file.getContentType());
+            System.out.println("File có rỗng không: " + file.isEmpty());
             
             if (file.isEmpty()) {
                 Map<String, String> response = new HashMap<>();
-                response.put("error", "File is empty");
+                response.put("error", "File rỗng");
                 return ResponseEntity.badRequest().body(response);
             }
             
             String fileUrl = s3Service.uploadFile(file);
             
-            System.out.println("File uploaded successfully: " + fileUrl);
+            System.out.println("Upload file thành công: " + fileUrl);
             
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
-            response.put("message", "File uploaded successfully");
+            response.put("message", "Upload file thành công");
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            System.err.println("=== FileUploadController: Error uploading file ===");
-            System.err.println("Error message: " + e.getMessage());
-            System.err.println("Error type: " + e.getClass().getSimpleName());
+            System.err.println("=== FileUploadController: Lỗi upload file ===");
+            System.err.println("Thông báo lỗi: " + e.getMessage());
+            System.err.println("Loại lỗi: " + e.getClass().getSimpleName());
             e.printStackTrace();
             
             Map<String, String> response = new HashMap<>();
-            response.put("error", "Failed to upload file: " + e.getMessage());
+            response.put("error", "Không thể upload file: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -60,12 +60,33 @@ public class FileUploadController {
             s3Service.deleteFile(fileName);
             
             Map<String, String> response = new HashMap<>();
-            response.put("message", "File deleted successfully");
+            response.put("message", "Xóa file thành công");
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
-            response.put("error", "Failed to delete file: " + e.getMessage());
+            response.put("error", "Không thể xóa file: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/test-s3")
+    public ResponseEntity<Map<String, String>> testS3Connection() {
+        try {
+            boolean isConnected = s3Service.testConnection();
+            Map<String, String> response = new HashMap<>();
+            if (isConnected) {
+                response.put("status", "success");
+                response.put("message", "Kết nối S3 thành công");
+            } else {
+                response.put("status", "error");
+                response.put("message", "Kết nối S3 thất bại");
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Kiểm tra kết nối S3 thất bại: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
