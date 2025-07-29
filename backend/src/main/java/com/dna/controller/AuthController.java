@@ -57,7 +57,7 @@ public class AuthController { // Định nghĩa class AuthController
         User user = userRepository.findByEmail(loginRequest.getEmail()) // Tìm user theo email
                 .orElseThrow(() -> new RuntimeException("User not found")); // Nếu không tìm thấy thì ném lỗi
 
-        return ResponseEntity.ok(new LoginResponse(jwt, user.getEmail(), user.getFullName(), user.getRole().getRoleName(), user.getUserID())); // Trả về response chứa JWT và thông tin user
+        return ResponseEntity.ok(new LoginResponse(jwt, user.getEmail(), user.getFullName(), user.getRole().getRoleName(), user.getUserID(), user.getAvatarUrl())); // Trả về response chứa JWT và thông tin user
     }
 
     @PostMapping("/register") // Định nghĩa endpoint POST /register

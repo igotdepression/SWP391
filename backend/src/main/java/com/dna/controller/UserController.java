@@ -104,6 +104,16 @@ public class UserController {
         }
     }
 
+    // Get avatar for user (fallback endpoint)
+    @GetMapping("/{id}/avatar")
+    public ResponseEntity<UserDTO> getUserAvatar(@PathVariable Integer id) {
+        UserDTO user = userService.getUserById(id);
+        if (user != null && user.getAvatarUrl() != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     // Upload ID card cho user
     @PostMapping("/{id}/idcard")
     public ResponseEntity<Map<String, String>> uploadIdCard(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {

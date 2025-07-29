@@ -9,6 +9,7 @@ public class LoginResponse {
     private String fullName;
     private String role;
     private Integer userId;
+    private String avatarUrl;
     
     // Constructors
     public LoginResponse() {
@@ -24,6 +25,15 @@ public class LoginResponse {
         this.fullName = fullName;
         this.role = role;
         this.userId = userId;
+    }
+
+    public LoginResponse(String token, String email, String fullName, String role, Integer userId, String avatarUrl) {
+        this.token = token;
+        this.email = email;
+        this.fullName = fullName;
+        this.role = role;
+        this.userId = userId;
+        this.avatarUrl = avatarUrl;
     }
     
     // Getters and Setters
