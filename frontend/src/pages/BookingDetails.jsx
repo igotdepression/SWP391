@@ -78,7 +78,6 @@ export default function BookingDetails() {
             { label: 'Loại dịch vụ', value: bookingData.serviceName || 'Chưa điền' },
             { label: 'Số lượng mẫu', value: bookingData.numSamples || 'Chưa điền' },
             { label: 'Loại xét nghiệm', value: bookingData.serviceType || 'Chưa điền' },
-            { label: 'Loại mẫu', value: bookingData.typeSample || 'Chưa điền' },
             { label: 'Ngày hẹn', value: bookingData.appointmentDate || 'Chưa điền' },
             { label: 'Thời gian trả kết quả', value: bookingData.resultTime || 'Chưa điền' },
             { label: 'Ghi chú', value: bookingData.notes || 'Không có' },
@@ -211,7 +210,7 @@ export default function BookingDetails() {
                         {bookingData.participants && bookingData.participants.length > 0 ? (
                             bookingData.participants.map((p, index) => (
                                 <div key={index} className="participant-detail-block">
-                                    <h4>Người tham gia {index + 1}: {p.relationship || 'Chưa xác định'}</h4>
+                                    <h4>Người tham gia {index + 1}: {p.relationship}</h4>
                                     <div className="detail-row">
                                         <strong>Họ và tên:</strong> <span>{p.fullName || 'Chưa điền'}</span>
                                     </div>

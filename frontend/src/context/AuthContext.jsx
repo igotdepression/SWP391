@@ -27,11 +27,11 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const response = await authAPI.login(email, password);
-            const { token, email: userEmail, fullName, role, userId } = response.data;
+            const { token, email: userEmail, fullName, role, userId, avatarUrl } = response.data;
             
             // Save auth data
             localStorage.setItem('token', token);
-            const userData = { email: userEmail, fullName, role, userID: userId };
+            const userData = { email: userEmail, fullName, role, userID: userId, avatarUrl };
             localStorage.setItem('user', JSON.stringify(userData));
             localStorage.setItem('userID', userId); // Lưu userID riêng biệt
             

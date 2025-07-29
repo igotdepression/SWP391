@@ -95,13 +95,23 @@ public class UserController {
             String fileUrl = userService.uploadAvatar(id, file);
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
-            response.put("message", "Avatar uploaded successfully");
+            response.put("message", "Upload avatar thành công");
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             Map<String, String> response = new HashMap<>();
-            response.put("error", "Failed to upload avatar: " + e.getMessage());
+            response.put("error", "Không thể upload avatar: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    // Get avatar for user (fallback endpoint)
+    @GetMapping("/{id}/avatar")
+    public ResponseEntity<UserDTO> getUserAvatar(@PathVariable Integer id) {
+        UserDTO user = userService.getUserById(id);
+        if (user != null && user.getAvatarUrl() != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     // Upload ID card cho user
@@ -111,11 +121,11 @@ public class UserController {
             String fileUrl = userService.uploadIdCard(id, file);
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
-            response.put("message", "ID card uploaded successfully");
+            response.put("message", "Upload CMND/CCCD thành công");
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             Map<String, String> response = new HashMap<>();
-            response.put("error", "Failed to upload ID card: " + e.getMessage());
+            response.put("error", "Không thể upload CMND/CCCD: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }

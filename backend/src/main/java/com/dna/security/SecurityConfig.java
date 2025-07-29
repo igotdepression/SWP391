@@ -74,6 +74,7 @@ public class SecurityConfig {
                     "/api/bookings/create",
                     "/api/feedbacks/**",
                     "/error",
+                    "/uploads/**", // Cho phép truy cập tất cả file uploads
                     "/uploads/results/**" // Cho phép truy cập file kết quả
                 ).permitAll()
                 .requestMatchers("/api/files/**").hasAnyRole("STAFF", "MANAGER", "ADMIN") // Cho phép upload file cho staff
@@ -100,7 +101,9 @@ public class SecurityConfig {
             "http://dna-chain.bloodline:3000",
             "http://dna-chain.bloodline:8080",
             "https://dna-chain-wed-fpt-89yn.vercel.app",
-            "https://dna-chain-wed-fpt-89yn.vercel.app/"
+            "https://dna-chain-wed-fpt-89yn.vercel.app/",
+            "https://dna-chain-bloodline.vercel.app",
+            "https://dna-chain-bloodline.vercel.app/"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList(
