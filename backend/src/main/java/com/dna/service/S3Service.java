@@ -43,11 +43,10 @@ public class S3Service {
                 
                 BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
                 
-                // Sử dụng cấu hình đơn giản hơn
+                // Sử dụng cấu hình chuẩn với region ap-southeast-2
                 s3Client = AmazonS3ClientBuilder.standard()
-                        .withRegion(region)
+                        .withRegion("ap-southeast-2") // Đảm bảo đúng region Sydney
                         .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-                        .withPathStyleAccessEnabled(true) // Thêm path style access
                         .build();
                 
                 // Kiểm tra kết nối
@@ -64,53 +63,60 @@ public class S3Service {
 
     public String uploadFile(MultipartFile file) throws IOException {
         try {
-            System.out.println("S3Service: Bắt đầu upload...");
+            System.out.println("=== S3Service: Bắt đầu upload ===");
             System.out.println("S3Service: Access Key: " + accessKeyId);
             System.out.println("S3Service: Secret Key (10 ký tự đầu): " + (secretAccessKey != null ? secretAccessKey.substring(0, Math.min(10, secretAccessKey.length())) + "..." : "null"));
             System.out.println("S3Service: Khu vực: " + region);
             System.out.println("S3Service: Bucket: " + bucketName);
+            System.out.println("S3Service: Tên file gốc: " + file.getOriginalFilename());
+            System.out.println("S3Service: Kích thước file: " + file.getSize());
+            System.out.println("S3Service: Content Type: " + file.getContentType());
             
             String fileName = generateFileName(file.getOriginalFilename());
             System.out.println("S3Service: Tên file được tạo: " + fileName);
             
             File convertedFile = convertMultiPartToFile(file);
             System.out.println("S3Service: File đã chuyển đổi thành: " + convertedFile.getAbsolutePath());
+            System.out.println("S3Service: File tồn tại: " + convertedFile.exists());
+            System.out.println("S3Service: Kích thước file sau chuyển đổi: " + convertedFile.length());
             
-            // Upload file không có ACL (bucket đã tắt ACL)
-            getS3Client().putObject(new PutObjectRequest(bucketName, fileName, convertedFile));
+            // Test connection trước khi upload
+            System.out.println("S3Service: Kiểm tra kết nối S3...");
+            getS3Client().listBuckets();
+            System.out.println("S3Service: Kết nối S3 OK");
+            
+            // Upload file với logging chi tiết
+            System.out.println("S3Service: Bắt đầu upload lên S3...");
+            System.out.println("S3Service: Bucket: " + bucketName);
+            System.out.println("S3Service: Key: " + fileName);
+            
+            PutObjectRequest putRequest = new PutObjectRequest(bucketName, fileName, convertedFile);
+            getS3Client().putObject(putRequest);
             
             System.out.println("S3Service: File đã upload lên S3 thành công");
             convertedFile.delete();
             
             String fileUrl = getS3Client().getUrl(bucketName, fileName).toString();
             System.out.println("S3Service: URL file: " + fileUrl);
+            System.out.println("=== S3Service: Upload hoàn tất ===");
             
             return fileUrl;
         } catch (Exception e) {
-            System.err.println("S3Service: Lỗi upload file lên S3: " + e.getMessage());
-            System.err.println("S3Service: Chuyển sang lưu trữ cục bộ...");
+            System.err.println("=== S3Service: Lỗi upload file ===");
+            System.err.println("S3Service: Loại lỗi: " + e.getClass().getSimpleName());
+            System.err.println("S3Service: Message: " + e.getMessage());
+            System.err.println("S3Service: Stack trace:");
+            e.printStackTrace();
             
-            // Chuyển sang lưu trữ cục bộ
-            try {
-                String fileName = generateFileName(file.getOriginalFilename());
-                String uploadDir = "uploads";
-                File uploadDirectory = new File(uploadDir);
-                if (!uploadDirectory.exists()) {
-                    uploadDirectory.mkdirs();
-                }
-                
-                File localFile = new File(uploadDirectory, fileName);
-                try (FileOutputStream fos = new FileOutputStream(localFile)) {
-                    fos.write(file.getBytes());
-                }
-                
-                String fileUrl = "/uploads/" + fileName;
-                System.out.println("S3Service: File đã lưu cục bộ: " + fileUrl);
-                return fileUrl;
-            } catch (Exception localError) {
-                System.err.println("S3Service: Lưu trữ cục bộ cũng thất bại: " + localError.getMessage());
-                throw new IOException("Không thể upload file cả lên S3 và cục bộ", e);
+            // Thêm thông tin debug
+            if (e.getMessage() != null && e.getMessage().contains("SignatureDoesNotMatch")) {
+                System.err.println("S3Service: Đây là lỗi SignatureDoesNotMatch - kiểm tra:");
+                System.err.println("1. Region có đúng ap-southeast-2 không");
+                System.err.println("2. Access Key và Secret Key có đúng không");
+                System.err.println("3. Thời gian hệ thống có đồng bộ không");
             }
+            
+            throw new IOException("Không thể upload file lên S3: " + e.getMessage(), e);
         }
     }
 

@@ -70,26 +70,36 @@ public class FileUploadController {
         }
     }
 
-    @GetMapping("/test-s3")
-    public ResponseEntity<Map<String, String>> testS3Connection() {
+    @PostMapping("/test-s3-connection")
+    public ResponseEntity<Map<String, Object>> testS3Connection() {
         try {
-            // Hiển thị thông tin credentials trước
+            System.out.println("=== Testing S3 Connection ===");
+            
+            // Validate credentials first
             s3Service.validateCredentials();
             
+            // Test connection
             boolean isConnected = s3Service.testConnection();
-            Map<String, String> response = new HashMap<>();
-            if (isConnected) {
-                response.put("status", "success");
-                response.put("message", "Kết nối S3 thành công");
-            } else {
-                response.put("status", "error");
-                response.put("message", "Kết nối S3 thất bại");
-            }
+            
+            // Test upload
+            String uploadUrl = s3Service.testUpload();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("connection", isConnected);
+            response.put("testUpload", uploadUrl != null ? uploadUrl : "failed");
+            response.put("message", "S3 connection test completed");
+            
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
+            System.err.println("S3 Connection Test Failed: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> response = new HashMap<>();
             response.put("status", "error");
-            response.put("message", "Kiểm tra kết nối S3 thất bại: " + e.getMessage());
+            response.put("message", "S3 connection test failed: " + e.getMessage());
+            response.put("error", e.getClass().getSimpleName());
+            
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -112,6 +122,32 @@ public class FileUploadController {
             Map<String, String> response = new HashMap<>();
             response.put("status", "error");
             response.put("message", "Test upload thất bại: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/test-s3-simple")
+    public ResponseEntity<Map<String, Object>> testS3Simple() {
+        try {
+            System.out.println("=== Simple S3 Test ===");
+            
+            // Test basic connection
+            boolean isConnected = s3Service.testConnection();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("connected", isConnected);
+            response.put("region", "ap-southeast-2");
+            response.put("bucket", "bloodline-dna-files");
+            response.put("timestamp", System.currentTimeMillis());
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+            response.put("errorType", e.getClass().getSimpleName());
+            
             return ResponseEntity.badRequest().body(response);
         }
     }
