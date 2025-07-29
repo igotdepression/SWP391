@@ -58,6 +58,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/",
+                    "/health",
                     "/api/auth/**",
                     "/api/public/**",
                     "/swagger-ui.html",
@@ -66,7 +68,11 @@ public class SecurityConfig {
                     "/api-docs/**",
                     "/swagger-resources/**",
                     "/webjars/**",
-                    "/api/service",
+                    "/api/service/**",
+                    "/api/surcharges/**",
+                    "/api/consultations/**",
+                    "/api/bookings/create",
+                    "/api/feedbacks/**",
                     "/error",
                     "/uploads/results/**" // Cho phép truy cập file kết quả
                 ).permitAll()
@@ -92,7 +98,9 @@ public class SecurityConfig {
             "http://127.0.0.1:3001",
             "http://127.0.0.1:8080",
             "http://dna-chain.bloodline:3000",
-            "http://dna-chain.bloodline:8080"
+            "http://dna-chain.bloodline:8080",
+            "https://dna-chain-wed-fpt-89yn.vercel.app",
+            "https://dna-chain-wed-fpt-89yn.vercel.app/"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList(
