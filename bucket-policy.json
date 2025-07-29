@@ -6,7 +6,7 @@
             "Effect": "Allow",
             "Principal": "*",
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::bloodline-dna-files/*"
+            "Resource": "arn:aws:s3:::bloodline-dna-files-v2/*"
         },
         {
             "Sid": "AllowUpload",
@@ -18,7 +18,7 @@
                 "s3:PutObject",
                 "s3:PutObjectAcl"
             ],
-            "Resource": "arn:aws:s3:::bloodline-dna-files/*"
+            "Resource": "arn:aws:s3:::bloodline-dna-files-v2/*"
         }
     ]
 } 
