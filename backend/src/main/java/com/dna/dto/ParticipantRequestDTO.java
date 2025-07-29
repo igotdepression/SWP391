@@ -19,6 +19,8 @@ public class ParticipantRequestDTO {
 
     private String relationshipToCustomer;
 
+    private String questionalbleRelationship;
+
     private String identityNumber;
 
     private String phoneNumber;

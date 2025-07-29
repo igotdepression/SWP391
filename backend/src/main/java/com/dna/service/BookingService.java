@@ -72,6 +72,10 @@ public class BookingService {
             p.setDateOfBirth(dto.getDateOfBirth());
             p.setGender(dto.getGender());
             p.setRelationshipToCustomer(dto.getRelationshipToCustomer());
+            // Set questionalbleRelationship - use the dedicated field if provided, otherwise use relationshipToCustomer
+            String questionalbleRelationship = dto.getQuestionalbleRelationship() != null ? 
+                dto.getQuestionalbleRelationship() : dto.getRelationshipToCustomer();
+            p.setQuestionalbleRelationship(questionalbleRelationship);
             p.setIdentityNumber(dto.getIdentityNumber());
             p.setAddress(dto.getAddress());
             p.setCollectionMethod(dto.getTypeOfCollection());
