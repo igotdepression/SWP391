@@ -137,8 +137,8 @@ public class FileUploadController {
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("connected", isConnected);
-            response.put("region", "us-east-1");
-            response.put("bucket", "bloodline-dna-files");
+            response.put("region", "ap-southeast-2");
+            response.put("bucket", "bloodline-dna-files-v3");
             response.put("timestamp", System.currentTimeMillis());
             
             return ResponseEntity.ok(response);
@@ -286,8 +286,8 @@ public class FileUploadController {
             response.put("s3Connected", s3Connected);
             response.put("credentialsValid", credentialsValid);
             response.put("bucketAccessible", bucketAccessible);
-            response.put("region", "us-east-1");
-            response.put("bucket", "bloodline-dna-files");
+            response.put("region", "ap-southeast-2");
+            response.put("bucket", "bloodline-dna-files-v3");
             response.put("message", "Avatar upload configuration test completed");
             
             return ResponseEntity.ok(response);

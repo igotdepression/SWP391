@@ -37,11 +37,26 @@ public class S3Service {
     private AmazonS3 getS3Client() {
         if (s3Client == null) {
             try {
-                System.out.println("S3Service: Đang tạo S3 client...");
-                System.out.println("S3Service: Độ dài Access Key: " + (accessKeyId != null ? accessKeyId.length() : "null"));
-                System.out.println("S3Service: Độ dài Secret Key: " + (secretAccessKey != null ? secretAccessKey.length() : "null"));
-                System.out.println("S3Service: Khu vực: " + region);
-                System.out.println("S3Service: Bucket: " + bucketName);
+                System.out.println("=== S3Service: Tạo S3 client ===");
+                System.out.println("S3Service: Access Key ID: " + accessKeyId);
+                System.out.println("S3Service: Secret Key Length: " + (secretAccessKey != null ? secretAccessKey.length() : "null"));
+                System.out.println("S3Service: Region: " + region);
+                System.out.println("S3Service: Bucket Name: " + bucketName);
+                
+                // Kiểm tra credentials trước
+                if (accessKeyId == null || secretAccessKey == null) {
+                    throw new RuntimeException("AWS credentials are null");
+                }
+                
+                // Validate Access Key format (should be 20 characters)
+                if (accessKeyId.length() != 20) {
+                    System.err.println("WARNING: Access Key ID length is " + accessKeyId.length() + ", expected 20");
+                }
+                
+                // Validate Secret Key format (should be 40 characters)
+                if (secretAccessKey.length() != 40) {
+                    System.err.println("WARNING: Secret Access Key length is " + secretAccessKey.length() + ", expected 40");
+                }
                 
                 BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
                 
@@ -51,8 +66,6 @@ public class S3Service {
                         .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                         .build();
                 
-                // Kiểm tra kết nối
-                s3Client.listBuckets();
                 System.out.println("S3Service: Tạo S3 client thành công");
             } catch (Exception e) {
                 System.err.println("S3Service: Lỗi tạo S3 client: " + e.getMessage());
