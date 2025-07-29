@@ -1,23 +1,26 @@
 # S3 Permissions Fix Guide
 
-## Problem
-The error shows that the IAM user `bloodline-s3-group` has an explicit deny for `s3:ListAllMyBuckets` action, which was causing the S3 connection test to fail.
+## Current Issue
+The AWS IAM user `bloodline-s3-group` has an explicit deny for `s3:ListBucket` action, which is preventing the application from accessing the S3 bucket `bloodline-dna-files-v3`.
 
-## Root Cause
-The `testConnection()` method in `S3Service.java` was calling `listBuckets()` which requires the `s3:ListAllMyBuckets` permission. However, your IAM user has an explicit deny for this action.
+## Error Details
+```
+User: arn:aws:iam::112611829164:user/bloodline-s3-group is not authorized to perform: s3:ListBucket on resource: "arn:aws:s3:::bloodline-dna-files-v3" with an explicit deny in an identity-based policy
+```
 
-## Solution Applied
+## Solution Steps
 
-### 1. Code Changes Made
-- Modified `S3Service.java` to use `listObjects(bucketName)` instead of `listBuckets()`
-- This change affects the following methods:
-  - `testConnection()`
-  - `testCredentials()`
-  - `testS3Operations()`
-  - `testRegions()`
+### 1. Remove Explicit Deny from IAM User
+1. Go to AWS IAM Console
+2. Navigate to Users → bloodline-s3-group
+3. Check for any policies with "Deny" effect for S3 actions
+4. Remove or modify any explicit deny statements for:
+   - `s3:ListBucket`
+   - `s3:ListObjects`
+   - `s3:*` (if it denies all S3 actions)
 
-### 2. IAM Policy Fix
-Use the following IAM policy for your `bloodline-s3-group` user:
+### 2. Apply Updated IAM Policy
+Use the updated `iam-policy-fix.json` file which includes all necessary permissions:
 
 ```json
 {
@@ -33,7 +36,8 @@ Use the following IAM policy for your `bloodline-s3-group` user:
                 "s3:ListBucket",
                 "s3:GetObjectVersion",
                 "s3:PutObjectAcl",
-                "s3:GetObjectAcl"
+                "s3:GetObjectAcl",
+                "s3:ListObjects"
             ],
             "Resource": [
                 "arn:aws:s3:::bloodline-dna-files-v3",
@@ -44,43 +48,99 @@ Use the following IAM policy for your `bloodline-s3-group` user:
 }
 ```
 
-## Steps to Apply the Fix
+### 3. Update Bucket Policy
+Apply the updated `bucket-policy.json` to the S3 bucket:
 
-### 1. Update IAM Policy
-1. Go to AWS IAM Console
-2. Find the user `bloodline-s3-group`
-3. Remove any existing policies that have explicit denies for `s3:ListAllMyBuckets`
-4. Attach the new policy above or create a new policy with the JSON content
-
-### 2. Test the Fix
-After applying the IAM policy changes, test the upload functionality again. The error should be resolved.
-
-## Alternative Solution (if IAM changes are not possible)
-If you cannot modify the IAM policy, the code changes already made should resolve the issue by avoiding the `listBuckets()` call entirely.
-
-## Verification
-To verify the fix is working:
-1. Try uploading an avatar again
-2. Check the logs for "S3Service: Kiểm tra kết nối thành công"
-3. The upload should complete successfully
-
-## Expected Log Output After Fix
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::bloodline-dna-files-v3/*"
+        },
+        {
+            "Sid": "AllowUpload",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::112611829164:user/bloodline-s3-group"
+            },
+            "Action": [
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::bloodline-dna-files-v3",
+                "arn:aws:s3:::bloodline-dna-files-v3/*"
+            ]
+        }
+    ]
+}
 ```
-=== UserService: Bắt đầu upload avatar ===
-User ID: 1
-User found: Minh Khanh
-File name: z6499966260933_8cd47fbbd01275001b5bd63b4d72b9c5.jpg
-File size: 450674
-UserService: Testing S3 connection...
-=== S3Service: Tạo S3 client ===
-S3Service: Access Key ID: AKIARUOBQEWWN7ZYJ2UL
-S3Service: Secret Key Length: 40
-S3Service: Region: ap-southeast-2
-S3Service: Bucket Name: bloodline-dna-files-v3
-S3Service: Tạo S3 client thành công
-S3Service: Kiểm tra kết nối thành công
-UserService: S3 connection test result: true
-UserService: File uploaded to S3: https://bloodline-dna-files-v3.s3.ap-southeast-2.amazonaws.com/...
-UserService: Avatar URL saved to database
-=== UserService: Upload avatar thành công ===
-``` 
+
+### 4. AWS CLI Commands
+
+#### Apply IAM Policy:
+```bash
+aws iam put-user-policy --user-name bloodline-s3-group --policy-name BloodlineDNAS3Access --policy-document file://iam-policy-fix.json
+```
+
+#### Apply Bucket Policy:
+```bash
+aws s3api put-bucket-policy --bucket bloodline-dna-files-v3 --policy file://bucket-policy.json
+```
+
+### 5. Verify Permissions
+Test the connection using the S3Service test methods:
+
+```java
+// Test connection
+boolean connectionTest = s3Service.testConnection();
+
+// Test credentials
+boolean credentialsTest = s3Service.testCredentials();
+
+// Test S3 operations
+boolean operationsTest = s3Service.testS3Operations();
+```
+
+### 6. Common Issues to Check
+
+1. **Explicit Deny**: Look for any policies attached to the user that have "Deny" effect
+2. **Resource Mismatch**: Ensure the bucket name in policies matches exactly
+3. **Principal ARN**: Verify the IAM user ARN is correct
+4. **Region**: Ensure the S3 client is using the correct region
+
+### 7. Debugging Steps
+
+1. Check IAM user policies:
+   ```bash
+   aws iam list-user-policies --user-name bloodline-s3-group
+   aws iam list-attached-user-policies --user-name bloodline-s3-group
+   ```
+
+2. Check bucket policy:
+   ```bash
+   aws s3api get-bucket-policy --bucket bloodline-dna-files-v3
+   ```
+
+3. Test S3 access:
+   ```bash
+   aws s3 ls s3://bloodline-dna-files-v3/
+   ```
+
+### 8. Alternative Solution
+If the explicit deny cannot be removed, create a new IAM user with proper permissions and update the application credentials.
+
+## Expected Result
+After applying these fixes, the S3Service should be able to:
+- List bucket contents (`s3:ListBucket`)
+- Upload files (`s3:PutObject`)
+- Download files (`s3:GetObject`)
+- Delete files (`s3:DeleteObject`)
+
+The application should no longer throw "AccessDenied" errors when trying to upload avatars or other files. 

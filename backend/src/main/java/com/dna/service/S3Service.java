@@ -111,7 +111,7 @@ public class S3Service {
             
             // Test connection trước khi upload
             System.out.println("S3Service: Kiểm tra kết nối S3...");
-            getS3Client().listBuckets();
+            getS3Client().listObjects(bucketName);
             System.out.println("S3Service: Kết nối S3 OK");
             
             // Upload file với logging chi tiết

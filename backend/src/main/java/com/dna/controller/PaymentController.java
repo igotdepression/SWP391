@@ -31,45 +31,71 @@ public class PaymentController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createPayment(@RequestBody PaymentRequestDTO paymentRequest) {
-        // Kiểm tra booking tồn tại
-        Booking booking = bookingRepository.findById(Integer.valueOf(paymentRequest.getBookingID()))
-                .orElse(null);
-        if (booking == null) {
-            return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Booking không tồn tại!"));
+        try {
+            // Validate required fields
+            if (paymentRequest.getBookingID() == null || paymentRequest.getAmount() == null || paymentRequest.getPaymentMethod() == null) {
+                return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Thiếu thông tin bắt buộc: bookingID, amount, hoặc paymentMethod"));
+            }
+
+            // Kiểm tra booking tồn tại
+            Booking booking = bookingRepository.findById(Integer.valueOf(paymentRequest.getBookingID()))
+                    .orElse(null);
+            if (booking == null) {
+                return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Booking không tồn tại!"));
+            }
+
+            // Tạo payment mới
+            Payment payment = new Payment();
+            payment.setBooking(booking);
+            payment.setAmount(paymentRequest.getAmount()); // BigDecimal
+            payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+            payment.setPaymentDate(LocalDateTime.now());
+            payment.setStatus("PENDING");
+
+            paymentRepository.save(payment);
+
+            return ResponseEntity.ok(java.util.Collections.singletonMap("message", "Thanh toán đã được ghi nhận!"));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "BookingID không hợp lệ: " + e.getMessage()));
+        } catch (Exception e) {
+            System.err.println("Error creating payment: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Lỗi tạo thanh toán: " + e.getMessage()));
         }
-
-        // Tạo payment mới
-        Payment payment = new Payment();
-        payment.setBooking(booking);
-        payment.setAmount(paymentRequest.getAmount()); // BigDecimal
-        payment.setPaymentMethod(paymentRequest.getPaymentMethod());
-        payment.setPaymentDate(LocalDateTime.now());
-        payment.setStatus("PENDING");
-
-        paymentRepository.save(payment);
-
-        return ResponseEntity.ok(java.util.Collections.singletonMap("message", "Thanh toán đã được ghi nhận!"));
     }
 
     @PostMapping("/vnpay/create")
     public ResponseEntity<?> createVNPayPayment(@RequestBody PaymentRequestDTO paymentRequest) {
-        // Kiểm tra booking tồn tại
-        Booking booking = bookingRepository.findById(Integer.valueOf(paymentRequest.getBookingID()))
-                .orElse(null);
-        if (booking == null) {
-            return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Booking không tồn tại!"));
-        }
-
         try {
-            String orderInfo = "Thanh toan xet nghiem ADN - Booking " + paymentRequest.getBookingID();
-            String paymentUrl = vnPayService.createPaymentUrl(
-                Integer.valueOf(paymentRequest.getBookingID()),
-                paymentRequest.getAmount().longValue(),
-                orderInfo
-            );
-            
-            return ResponseEntity.ok(java.util.Collections.singletonMap("paymentUrl", paymentUrl));
+            // Validate required fields
+            if (paymentRequest.getBookingID() == null || paymentRequest.getAmount() == null || paymentRequest.getPaymentMethod() == null) {
+                return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Thiếu thông tin bắt buộc: bookingID, amount, hoặc paymentMethod"));
+            }
+
+            // Kiểm tra booking tồn tại
+            Booking booking = bookingRepository.findById(Integer.valueOf(paymentRequest.getBookingID()))
+                    .orElse(null);
+            if (booking == null) {
+                return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Booking không tồn tại!"));
+            }
+
+            try {
+                String orderInfo = "Thanh toan xet nghiem ADN - Booking " + paymentRequest.getBookingID();
+                String paymentUrl = vnPayService.createPaymentUrl(
+                    Integer.valueOf(paymentRequest.getBookingID()),
+                    paymentRequest.getAmount().longValue(),
+                    orderInfo
+                );
+                
+                return ResponseEntity.ok(java.util.Collections.singletonMap("paymentUrl", paymentUrl));
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Lỗi tạo thanh toán VNPAY: " + e.getMessage()));
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "BookingID không hợp lệ: " + e.getMessage()));
         } catch (Exception e) {
+            System.err.println("Error creating VNPay payment: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", "Lỗi tạo thanh toán VNPAY: " + e.getMessage()));
         }
     }
