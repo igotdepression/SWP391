@@ -2,18 +2,17 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
-COPY backend/mvnw .
+# Install Maven
+RUN apt-get update && apt-get install -y maven
+
+# Copy pom.xml
 COPY backend/pom.xml .
 
 # Copy source code
 COPY backend/src ./src
 
-# Make mvnw executable
-RUN chmod +x mvnw
-
 # Build the application
-RUN ./mvnw clean install -DskipTests
+RUN mvn clean install -DskipTests
 
 # Expose port
 EXPOSE 8080
