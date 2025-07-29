@@ -1,9 +1,7 @@
 services:
   - type: web
     name: bloodline-backend
-    env: java
-    buildCommand: ./mvnw clean install -DskipTests
-    startCommand: java -jar target/dna-testing-service-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+    runtime: docker
     envVars:
       - key: DATABASE_URL
         value: jdbc:sqlserver://dnatestingservice.cd8asiyc4ffp.ap-southeast-2.rds.amazonaws.com:1433;databaseName=DNATestingService;encrypt=true;trustServerCertificate=true
@@ -18,8 +16,8 @@ services:
       - key: AWS_ACCESS_KEY_ID
         value: AKIARUOBQEWWL6FKBB7X
       - key: AWS_SECRET_ACCESS_KEY
-        value: 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
+        value: bx1vNUVN6p1ikPCKdfS1UrHXxTBt2+EFhAUjp@Al
       - key: AWS_S3_REGION
         value: ap-southeast-2
       - key: AWS_S3_BUCKET_NAME
-        value: bloodline-dna-files 
+        value: bloodline-dna-files
