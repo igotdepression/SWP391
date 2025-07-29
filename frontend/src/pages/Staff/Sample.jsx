@@ -574,7 +574,7 @@ export default function Sample() {
                                             <td>{sample.receivedDate}</td>
                                             <td className="sample-actions">
                                                 <button
-                                                    className="btn-edit"
+                                                    className="sample-btn-edit"
                                                     onClick={() => handleEditSample(sample)}
                                                     title="Sửa thông tin"
                                                 >

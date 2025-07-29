@@ -528,7 +528,7 @@
     padding: 8px !important;
 }
 
-.btn-edit,
+.sample-btn-edit,
 .btn-view {
     width: 36px;
     height: 36px;
@@ -548,13 +548,13 @@
 }
 
 /* Edit button styling */
-.btn-edit {
+.sample-btn-edit {
     background: linear-gradient(135deg, #e0edff 0%, #f0f9ff 100%);
     border-color: #2563eb;
     color: #2563eb;
 }
 
-.btn-edit:hover {
+.sample-btn-edit:hover {
     background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
     border-color: #1d4ed8;
     color: #1d4ed8;
@@ -562,7 +562,7 @@
     box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
 }
 
-.btn-edit:active {
+.sample-btn-edit:active {
     transform: translateY(0) scale(0.98);
 }
 
@@ -586,19 +586,19 @@
 }
 
 /* Icon styling */
-.btn-edit i,
+.sample-btn-edit i,
 .btn-view i {
     font-size: 16px;
     transition: all 0.3s ease;
 }
 
-.btn-edit:hover i,
+.sample-btn-edit:hover i,
 .btn-view:hover i {
     transform: scale(1.1);
 }
 
 /* Ripple effect */
-.btn-edit::before,
+.sample-btn-edit::before,
 .btn-view::before {
     content: '';
     position: absolute;
@@ -612,19 +612,19 @@
     transition: width 0.3s ease, height 0.3s ease;
 }
 
-.btn-edit:active::before,
+.sample-btn-edit:active::before,
 .btn-view:active::before {
     width: 100%;
     height: 100%;
 }
 
 /* Tooltip styling */
-.btn-edit,
+.sample-btn-edit,
 .btn-view {
     position: relative;
 }
 
-.btn-edit::after,
+.sample-btn-edit::after,
 .btn-view::after {
     content: attr(title);
     position: absolute;
@@ -645,7 +645,7 @@
     margin-bottom: 8px;
 }
 
-.btn-edit:hover::after,
+.sample-btn-edit:hover::after,
 .btn-view:hover::after {
     opacity: 1;
     visibility: visible;
@@ -657,19 +657,19 @@
         gap: 6px;
     }
     
-    .btn-edit,
+    .sample-btn-edit,
     .btn-view {
         width: 32px;
         height: 32px;
     }
     
-    .btn-edit i,
+    .sample-btn-edit i,
     .btn-view i {
         font-size: 14px;
     }
     
     /* Hide tooltips on mobile */
-    .btn-edit::after,
+    .sample-btn-edit::after,
     .btn-view::after {
         display: none;
     }
@@ -680,52 +680,52 @@
         gap: 4px;
     }
     
-    .btn-edit,
+    .sample-btn-edit,
     .btn-view {
         width: 28px;
         height: 28px;
     }
     
-    .btn-edit i,
+    .sample-btn-edit i,
     .btn-view i {
         font-size: 12px;
     }
 }
 
 /* Accessibility improvements */
-.btn-edit:focus,
+.sample-btn-edit:focus,
 .btn-view:focus {
     outline: 2px solid currentColor;
     outline-offset: 2px;
 }
 
 /* Disabled state */
-.btn-edit:disabled,
+.sample-btn-edit:disabled,
 .btn-view:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none !important;
 }
 
-.btn-edit:disabled:hover,
+.sample-btn-edit:disabled:hover,
 .btn-view:disabled:hover {
     transform: none !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Loading state */
-.btn-edit.loading,
+.sample-btn-edit.loading,
 .btn-view.loading {
     position: relative;
     pointer-events: none;
 }
 
-.btn-edit.loading i,
+.sample-btn-edit.loading i,
 .btn-view.loading i {
     opacity: 0.3;
 }
 
-.btn-edit.loading::after,
+.sample-btn-edit.loading::after,
 .btn-view.loading::after {
     content: '';
     position: absolute;
@@ -747,20 +747,20 @@
 }
 
 /* Table row hover effect */
-.data-table tbody tr:hover .sample-actions .btn-edit,
+.data-table tbody tr:hover .sample-actions .sample-btn-edit,
 .data-table tbody tr:hover .sample-actions .btn-view {
     opacity: 1;
     visibility: visible;
 }
 
-.data-table tbody tr .sample-actions .btn-edit,
+.data-table tbody tr .sample-actions .sample-btn-edit,
 .data-table tbody tr .sample-actions .btn-view {
     opacity: 0.8;
     transition: opacity 0.3s ease;
 }
 
 /* Additional enhancements */
-.btn-edit:hover {
+.sample-btn-edit:hover {
     background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
     box-shadow: 
         0 4px 15px rgba(37, 99, 235, 0.25),
@@ -794,7 +794,7 @@
     }
 }
 
-.btn-edit,
+.sample-btn-edit,
 .btn-view {
     animation: buttonFadeIn 0.2s ease-out;
 }
