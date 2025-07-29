@@ -201,7 +201,7 @@ export default function Sample() {
             <div className="sample-content">
                 {/* Statistics Header */}
                 <div className="sample-stats-header">
-                    <h2>Quản lý Mẫu Xét nghiệm</h2>
+                    <h3>Danh sách mẫu xét nghiệm</h3>
                     <div className="sample-stats-row">
                         <div className="sample-stat-card total">
                             <div className="stat-value">{stats.totalSamples}</div>
@@ -480,7 +480,7 @@ export default function Sample() {
 
                 {/* Sample List Card */}
                 <div className="sample-list-card">
-                    <h3>Danh sách mẫu xét nghiệm</h3>
+                    
 
                     {/* Search and Filter Controls */}
                     <div className="sample-controls">

@@ -449,7 +449,7 @@ export default function TestResultManagement() {
         <div className="test-result-management-container">
                 {/* Statistics Section */}
                 <div className="statistics-section">
-                    <h1 className="page-title">Quản lý kết quả xét nghiệm</h1>
+                    <h3 className="section-title">Danh sách kết quả xét nghiệm</h3>
                     <div className="testResult-stats-row">
                             <div className="testResult-stat-card total">
                                 <div className="stat-value">{totalSamples}</div>
@@ -472,7 +472,7 @@ export default function TestResultManagement() {
 
                 {/* Search and Filter Section */}
                 <div className="controls-section">
-                    <h2 className="section-title">Danh sách kết quả xét nghiệm</h2>
+                    
                     <div className="controls-row">
                         <Select
                             value={filterStatus}
@@ -492,7 +492,7 @@ export default function TestResultManagement() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="search-input-main"
                         />
-                        <Button className="add-sample-btn" onClick={handleOpenAddModal}>+ Thêm kết quả</Button>
+                        <Button className="add-testResult-btn" onClick={handleOpenAddModal}>+ Thêm kết quả</Button>
                     </div>
                 </div>
 
