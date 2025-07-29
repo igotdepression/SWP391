@@ -266,4 +266,38 @@ public class FileUploadController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    @GetMapping("/test-avatar-upload")
+    public ResponseEntity<Map<String, Object>> testAvatarUpload() {
+        try {
+            System.out.println("=== Testing Avatar Upload Configuration ===");
+            
+            // Test S3 connection
+            boolean s3Connected = s3Service.testConnection();
+            
+            // Test credentials
+            boolean credentialsValid = s3Service.testCredentials();
+            
+            // Test bucket access
+            boolean bucketAccessible = s3Service.testS3Operations();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("s3Connected", s3Connected);
+            response.put("credentialsValid", credentialsValid);
+            response.put("bucketAccessible", bucketAccessible);
+            response.put("region", "us-east-1");
+            response.put("bucket", "bloodline-dna-files");
+            response.put("message", "Avatar upload configuration test completed");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Avatar upload configuration test failed: " + e.getMessage());
+            response.put("errorType", e.getClass().getSimpleName());
+            
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 } 

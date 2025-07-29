@@ -92,12 +92,30 @@ public class UserController {
     @PostMapping("/{id}/avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
         try {
+            System.out.println("=== UserController: Bắt đầu upload avatar ===");
+            System.out.println("User ID: " + id);
+            System.out.println("File name: " + file.getOriginalFilename());
+            System.out.println("File size: " + file.getSize());
+            System.out.println("File content type: " + file.getContentType());
+            
+            if (file.isEmpty()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("error", "File rỗng");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
             String fileUrl = userService.uploadAvatar(id, file);
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
             response.put("message", "Upload avatar thành công");
+            System.out.println("=== UserController: Upload avatar thành công ===");
             return ResponseEntity.ok(response);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.err.println("=== UserController: Lỗi upload avatar ===");
+            System.err.println("Error type: " + e.getClass().getSimpleName());
+            System.err.println("Error message: " + e.getMessage());
+            e.printStackTrace();
+            
             Map<String, String> response = new HashMap<>();
             response.put("error", "Không thể upload avatar: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
