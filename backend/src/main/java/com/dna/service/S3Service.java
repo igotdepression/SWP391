@@ -160,7 +160,8 @@ public class S3Service {
     // Kiểm tra kết nối S3
     public boolean testConnection() {
         try {
-            getS3Client().listBuckets();
+            // Instead of listing all buckets, test access to the specific bucket
+            getS3Client().listObjects(bucketName);
             System.out.println("S3Service: Kiểm tra kết nối thành công");
             return true;
         } catch (Exception e) {
@@ -196,7 +197,8 @@ public class S3Service {
                         .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                         .build();
                 
-                testClient.listBuckets();
+                // Test bucket-specific access instead of listing all buckets
+                testClient.listObjects(bucketName);
                 results.put(testRegion, true);
                 System.out.println("S3Service: Region " + testRegion + " - SUCCESS");
             } catch (Exception e) {
@@ -212,7 +214,7 @@ public class S3Service {
     public boolean testCredentials() {
         try {
             System.out.println("S3Service: Testing credentials...");
-            getS3Client().listBuckets();
+            getS3Client().listObjects(bucketName);
             System.out.println("S3Service: Credentials are valid");
             return true;
         } catch (Exception e) {
@@ -226,8 +228,7 @@ public class S3Service {
         try {
             System.out.println("S3Service: Testing S3 operations...");
             
-            // Test basic operations
-            getS3Client().listBuckets();
+            // Test basic operations - only test bucket-specific operations
             getS3Client().listObjects(bucketName);
             
             System.out.println("S3Service: S3 operations test successful");
