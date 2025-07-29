@@ -8,6 +8,12 @@ const Footer = () => {
   // Hàm xử lý khi người dùng click vào loại xét nghiệm ADN
   const handleAdnTypeClick = (route) => {
     navigate(route);
+    setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
   };
 
   return (

@@ -119,17 +119,26 @@ function HomePage() {
   // Hàm xử lý khi người dùng click vào dịch vụ
   const handleServiceClick = (route) => {
     navigate(route);
+    setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
   };
 
-  const handleRestrictedAction = (actionType) => {
+  const handleRestrictedAction = (route) => {
     if (!user || user.role === 'GUEST') {
       alert('Bạn chưa đăng nhập. Vui lòng đăng nhập để sử dụng chức năng này.');
     } else {
-      if (actionType === 'register') {
-        goToBookingCreate();
-      } else if (actionType === 'advice') {
-        goToContact();
-      }
+      navigate(route);
+      // Đảm bảo scroll đến đầu trang sau khi navigate
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
     }
   };
 
