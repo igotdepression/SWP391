@@ -4,79 +4,28 @@ import { Card, Button } from '../../components/ui/ui';
 import './ServicePrice.css';
 import { serviceAPI } from '../../services/api';
 import { surchargeAPI } from '../../services/api';
-
-const fakeServices = [
-    {
-        serviceID: 1,
-        serviceName: 'Xét nghiệm ADN cha con',
-        serviceType: 'Dân sự',
-        packageType: 'Tiêu chuẩn',
-        price: 2500000,
-        status: 'Hoạt động',
-        extraSampleFee: 500000
-    },
-    {
-        serviceID: 2,
-        serviceName: 'Xét nghiệm ADN mẹ con',
-        serviceType: 'Dân sự',
-        packageType: 'Lấy nhanh',
-        price: 2300000,
-        status: 'Hoạt động',
-        extraSampleFee: 300000
-    },
-    {
-        serviceID: 3,
-        serviceName: 'Xét nghiệm ADN anh em ruột',
-        serviceType: 'Hành chính',
-        packageType: 'Tiêu chuẩn',
-        price: 2800000,
-        status: 'Ngừng hoạt động',
-        extraSampleFee: 600000
-    }
-];
-
-const fakeSurcharges = [
-    {
-        surchargeID: 1,
-        sampleType: 'Mẫu tóc',
-        surcharge: 200000,
-        note: 'Phí bổ sung cho mẫu tóc có chất lượng kém'
-    },
-    {
-        surchargeID: 2,
-        sampleType: 'Mẫu móng tay',
-        surcharge: 300000,
-        note: 'Phí bổ sung cho mẫu móng tay'
-    },
-    {
-        surchargeID: 3,
-        sampleType: 'Mẫu nước bọt',
-        surcharge: 150000,
-        note: 'Phí bổ sung cho mẫu nước bọt chất lượng thấp'
-    }
-];
+import { Eye, EyeOff, Edit } from 'lucide-react';
 
 export default function ServicePrice() {
     const [services, setServices] = useState([]);
-    const [surcharges, setSurcharges] = useState([]);
     const [activeTab, setActiveTab] = useState('services');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [editingService, setEditingService] = useState(null);
-    const [editingSurcharge, setEditingSurcharge] = useState(null);
     const [showAddServiceForm, setShowAddServiceForm] = useState(false);
-    const [showAddSurchargeForm, setShowAddSurchargeForm] = useState(false);
 
-    // Lấy danh sách dịch vụ từ API khi load trang
+    // Lấy danh sách dịch vụ từ API khi load trang (chỉ hiển thị những dịch vụ đang hoạt động)
     useEffect(() => {
         async function fetchServices() {
             setLoading(true);
             setError(null);
             try {
                 const res = await serviceAPI.getAllServices();
-                setServices(res.data);
+                // Lọc chỉ hiển thị dịch vụ đang hoạt động
+                const activeServices = res.data.filter(service => service.status !== 'Đã ẩn');
+                setServices(activeServices);
             } catch (err) {
                 setError('Không thể tải danh sách dịch vụ');
             } finally {
@@ -86,30 +35,13 @@ export default function ServicePrice() {
         fetchServices();
     }, []);
 
-    // Lấy danh sách phụ phí khi vào tab 'surcharges'
-    useEffect(() => {
-        if (activeTab === 'surcharges') {
-            setLoading(true);
-            setError(null);
-            surchargeAPI.getAll()
-                .then(res => setSurcharges(res.data))
-                .catch(() => setError('Không thể tải danh sách phụ phí'))
-                .finally(() => setLoading(false));
-        }
-    }, [activeTab]);
-
     // Lọc services
     const filteredServices = services.filter(service => {
         const matchesSearch = service.serviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                             service.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                             service.packageType.toLowerCase().includes(searchTerm.toLowerCase());
+            service.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            service.packageType.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === 'all' || service.status === statusFilter;
         return matchesSearch && matchesStatus;
-    });
-
-    // Lọc surcharges
-    const filteredSurcharges = surcharges.filter(surcharge => {
-        return surcharge.sampleType.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
     const handleEditService = (service) => {
@@ -147,8 +79,9 @@ export default function ServicePrice() {
         }
     };
 
+    // Ẩn/hiện dịch vụ thay vì xóa
     const handleDeleteService = async (serviceID) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')) {
+        if (window.confirm('Bạn có chắc chắn muốn ẩn dịch vụ này?')) {
             setLoading(true);
             setError(null);
             try {
@@ -158,356 +91,196 @@ export default function ServicePrice() {
                 const res = await serviceAPI.getAllServices();
                 setServices(res.data);
             } catch (err) {
-                setError('Không thể xóa dịch vụ');
+                setError('Không thể ẩn dịch vụ');
             } finally {
                 setLoading(false);
             }
         }
     };
 
-    const handleEditSurcharge = (surcharge) => {
-        setEditingSurcharge(surcharge);
-    };
 
-    // Thêm phụ phí mới
-    const handleAddSurcharge = async (newSurcharge) => {
-        setLoading(true);
-        setError(null);
-        try {
-            await surchargeAPI.add(newSurcharge);
-            const res = await surchargeAPI.getAll();
-            setSurcharges(res.data);
-            setShowAddSurchargeForm(false);
-        } catch (err) {
-            setError('Không thể thêm phụ phí mới');
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    // Sửa phụ phí
-    const handleSaveSurcharge = async (updatedSurcharge) => {
-        setLoading(true);
-        setError(null);
-        try {
-            await surchargeAPI.update(updatedSurcharge.surchargeID, updatedSurcharge);
-            const res = await surchargeAPI.getAll();
-            setSurcharges(res.data);
-            setEditingSurcharge(null);
-        } catch (err) {
-            setError('Không thể cập nhật phụ phí');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Xóa phụ phí
-    const handleDeleteSurcharge = async (surchargeID) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa phụ phí này?')) {
-            setLoading(true);
-            setError(null);
-            try {
-                // Xóa mềm: cập nhật status thành 'Ngừng hoạt động'
-                const surcharge = surcharges.find(s => s.surchargeID === surchargeID);
-                await surchargeAPI.update(surchargeID, { ...surcharge, status: 'Ngừng hoạt động' });
-                const res = await surchargeAPI.getAll();
-                setSurcharges(res.data);
-            } catch (err) {
-                setError('Không thể xóa phụ phí');
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
-
-    if (loading) {
-        return <div className="loading">Đang tải...</div>;
-    }
 
     return (
         <div className="service-price-container">
             {/* Header chính */}
             <div className="main-header">
-                <h1 className="page-title">Quản lý giá dịch vụ</h1>
-                <p className="page-subtitle">Quản lý thông tin và giá của các dịch vụ xét nghiệm ADN</p>
+                <h1 className="page-title">Xem bảng giá dịch vụ </h1>
             </div>
 
-            {/* Tabs */}
-            <div className="tabs-container">
-                <button 
-                    className={`tab ${activeTab === 'services' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('services')}
-                >
-                    <span className="tab-icon">⚕️</span>
-                    Quản lý Dịch vụ
-                </button>
-                <button 
-                    className={`tab ${activeTab === 'surcharges' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('surcharges')}
-                >
-                    <span className="tab-icon">💰</span>
-                    Quản lý Phụ phí
-                </button>
-            </div>
+            <div className="content-section">
+                <Card className="info-card">
 
-            {activeTab === 'services' && (
-                <div className="content-section">
-                    <Card className="info-card">
-                        <div className="card-header">
-                            <div className="header-content">
-                                <h2 className="section-title">
-                                    <span className="title-icon">🧬</span>
-                                    Danh sách Dịch vụ
-                                </h2>
-                                <p className="section-subtitle">Quản lý thông tin và giá của các dịch vụ xét nghiệm ADN</p>
-                            </div>
-                        </div>
-
-                        {/* Bộ lọc và tìm kiếm */}
-                        <div className="filter-section">
-                            <div className="search-container">
-                                <div className="search-box">
-                                    <span className="search-icon">🔍</span>
-                                    <input
-                                        type="text"
-                                        placeholder="Tìm kiếm dịch vụ..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="search-input"
-                                    />
+                    {/* Nội dung tab Quản lý Dịch vụ */}
+                    {activeTab === 'services' && (
+                        <div className="stats-section-container">
+                            {/* Thống kê */}
+                            <div className="stats-section">
+                                <div className="stats-grid">
+                                    <div className="stat-card total">
+                                        <div className="stat-icon">📊</div>
+                                        <div className="stat-content">
+                                            <div className="stat-label">Tổng dịch vụ</div>
+                                            <div className="stat-value">{services.length}</div>
+                                        </div>
+                                    </div>
+                                    <div className="stat-card active">
+                                        <div className="stat-icon">✅</div>
+                                        <div className="stat-content">
+                                            <div className="stat-label">Đang hoạt động</div>
+                                            <div className="stat-value">{services.filter(s => s.status === 'Hoạt động').length}</div>
+                                        </div>
+                                    </div>
+                                    <div className="stat-card inactive">
+                                        <div className="stat-icon">⏸️</div>
+                                        <div className="stat-content">
+                                            <div className="stat-label">Ngừng hoạt động</div>
+                                            <div className="stat-value">{services.filter(s => s.status === 'Ngừng hoạt động').length}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="filter-controls">
-                                <div className="filter-group">
-                                    <label className="filter-label">Trạng thái:</label>
-                                    <select 
-                                        value={statusFilter}
-                                        onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="status-filter"
+
+                            {/* Bộ lọc và tìm kiếm cho dịch vụ */}
+                            <div className="filter-section">
+                                <div className="search-container">
+                                    <div className="search-box">
+                                        <input
+                                            type="text"
+                                            placeholder="Tìm kiếm dịch vụ..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="search-input"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="filter-controls">
+                                    <div className="filter-group">
+                                        <select
+                                            value={statusFilter}
+                                            onChange={(e) => setStatusFilter(e.target.value)}
+                                            className="status-filter"
+                                        >
+                                            <option value="all">Tất cả trạng thái</option>
+                                            <option value="Hoạt động">Hoạt động</option>
+                                            <option value="Ngừng hoạt động">Ngừng hoạt động</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="action-buttons">
+                                    <Button
+                                        onClick={() => setShowAddServiceForm(true)}
+                                        className="add-button primary"
                                     >
-                                        <option value="all">Tất cả trạng thái</option>
-                                        <option value="Hoạt động">Hoạt động</option>
-                                        <option value="Ngừng hoạt động">Ngừng hoạt động</option>
-                                    </select>
+                                        <span className="btn-icon">➕</span>
+                                        Thêm Dịch vụ Mới
+                                    </Button>
                                 </div>
-                                <Button 
-                                    onClick={() => setShowAddServiceForm(true)}
-                                    className="add-button primary"
-                                >
-                                    <span className="btn-icon">➕</span>
-                                    Thêm Dịch vụ Mới
-                                </Button>
                             </div>
-                        </div>
 
-                        {/* Bảng dịch vụ */}
-                        <div className="table-container">
-                            <div className="table-responsive">
-                                <table className="services-table">
-                                    <thead>
-                                        <tr>
-                                            <th className="th-id">ID</th>
-                                            <th className="th-name">Tên Dịch vụ</th>
-                                            <th className="th-type">Loại dịch vụ</th>
-                                            <th className="th-package">Gói dịch vụ</th>
-                                            <th className="th-price">Giá (VNĐ)</th>
-                                            <th className="th-extra">Phí mẫu thứ 3 (VNĐ)</th>
-                                            <th className="th-status">Trạng thái</th>
-                                            <th className="th-actions">Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredServices.length > 0 ? (
-                                            filteredServices.map(service => (
-                                                <tr key={service.serviceID} className="service-row">
-                                                    <td className="td-id">{service.serviceID}</td>
-                                                    <td className="td-name">
-                                                        <div className="service-name">
-                                                            <span className="name-text">{service.serviceName}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="td-type">
-                                                        <span className="service-type">{service.serviceType}</span>
-                                                    </td>
-                                                    <td className="td-package">
-                                                        <span className="package-type">{service.packageType}</span>
-                                                    </td>
-                                                    <td className="td-price">
-                                                        <div className="price-display">
-                                                            <span className="price-amount">{service.price.toLocaleString('vi-VN')}</span>
-                                                            <span className="price-currency">VNĐ</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="td-extra">
-                                                        <div className="price-display">
-                                                            {service.extraSampleFee ? (
-                                                                <>
-                                                                    <span className="price-amount">{service.extraSampleFee.toLocaleString('vi-VN')}</span>
-                                                                    <span className="price-currency">VNĐ</span>
-                                                                </>
-                                                            ) : (
-                                                                <span className="no-fee">Không có</span>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="td-status">
-                                                        <span className={`status-badge ${service.status === 'Hoạt động' ? 'status-active' : 'status-inactive'}`}>
-                                                            <span className="status-dot"></span>
-                                                            {service.status}
-                                                        </span>
-                                                    </td>
-                                                    <td className="td-actions">
-                                                        <div className="action-buttons">
-                                                            <button 
-                                                                onClick={() => handleEditService(service)}
-                                                                className="action-btn edit-btn"
-                                                                title="Chỉnh sửa"
-                                                            >
-                                                                <span className="btn-icon">✏️</span>
-                                                            </button>
-                                                            <button 
-                                                                onClick={() => handleDeleteService(service.serviceID)}
-                                                                className="action-btn delete-btn"
-                                                                title="Xóa"
-                                                            >
-                                                                <span className="btn-icon">🗑️</span>
-                                                            </button>
+                            {/* Bảng dịch vụ */}
+                            <div className="table-container">
+                                <div className="table-responsive">
+                                    <table className="services-table">
+                                        <thead>
+                                            <tr>
+                                                <th className="th-id">ID</th>
+                                                <th className="th-name">Tên Dịch vụ</th>
+                                                <th className="th-type">Loại dịch vụ</th>
+                                                <th className="th-package">Gói dịch vụ</th>
+                                                <th className="th-price">Giá (VNĐ)</th>
+                                                <th className="th-extra">Phí mẫu thứ 3 (VNĐ)</th>
+                                                <th className="th-status">Trạng thái</th>
+                                                <th className="th-actions">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredServices.length > 0 ? (
+                                                filteredServices.map(service => (
+                                                    <tr key={service.serviceID} className="service-row">
+                                                        <td className="td-id">{service.serviceID}</td>
+                                                        <td className="td-name">
+                                                            <div className="service-name">
+                                                                <span className="name-text">{service.serviceName}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="td-type">
+                                                            <span className="service-type">{service.serviceType}</span>
+                                                        </td>
+                                                        <td className="td-package">
+                                                            <span className="package-type">{service.packageType}</span>
+                                                        </td>
+                                                        <td className="td-price">
+                                                            <div className="price-display">
+                                                                <span className="price-amount">{service.price.toLocaleString('vi-VN')}</span>
+                                                                <span className="price-currency">VNĐ</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="td-extra">
+                                                            <div className="price-display">
+                                                                {service.extraSampleFee ? (
+                                                                    <>
+                                                                        <span className="price-amount">{service.extraSampleFee.toLocaleString('vi-VN')}</span>
+                                                                        <span className="price-currency">VNĐ</span>
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="no-fee">Không có</span>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td className="td-status">
+                                                            <span className={`status-badge ${service.status === 'Hoạt động' ? 'status-active' : 'status-inactive'}`}>
+                                                                <span className="status-dot"></span>
+                                                                {service.status}
+                                                            </span>
+                                                        </td>
+                                                        <td className="td-actions">
+                                                            <div className="actions-cell">
+                                                                <button
+                                                                    onClick={() => handleEditService(service)}
+                                                                    className="action-btn edit-btn"
+                                                                    title="Chỉnh sửa"
+                                                                >
+                                                                    <Edit size={16} />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleDeleteService(service.serviceID)}
+                                                                    className="action-btn delete-btn"
+                                                                    title="Ẩn dịch vụ"
+                                                                >
+                                                                    {service.status === 'Hoạt động' ? (
+                                                                        <Eye size={16} />
+                                                                    ) : (
+                                                                        <EyeOff size={16} />
+                                                                    )}
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="8" className="no-data">
+                                                        <div className="empty-state">
+                                                            <span className="empty-icon">📊</span>
+                                                            <span className="empty-text">Không tìm thấy dịch vụ nào</span>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan="8" className="no-data">
-                                                    <div className="empty-state">
-                                                        <span className="empty-icon">📊</span>
-                                                        <span className="empty-text">Không tìm thấy dịch vụ nào</span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        {/* Thống kê */}
-                        <div className="stats-section">
-                            <div className="stats-grid">
-                                <div className="stat-card total">
-                                    <div className="stat-icon">📊</div>
-                                    <div className="stat-content">
-                                        <div className="stat-label">Tổng dịch vụ</div>
-                                        <div className="stat-value">{services.length}</div>
-                                    </div>
-                                </div>
-                                <div className="stat-card active">
-                                    <div className="stat-icon">✅</div>
-                                    <div className="stat-content">
-                                        <div className="stat-label">Đang hoạt động</div>
-                                        <div className="stat-value">{services.filter(s => s.status === 'Hoạt động').length}</div>
-                                    </div>
-                                </div>
-                                <div className="stat-card inactive">
-                                    <div className="stat-icon">⏸️</div>
-                                    <div className="stat-content">
-                                        <div className="stat-label">Ngừng hoạt động</div>
-                                        <div className="stat-value">{services.filter(s => s.status === 'Ngừng hoạt động').length}</div>
-                                    </div>
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                    </Card>
-                </div>
-            )}
+                    )}
 
-            {activeTab === 'surcharges' && (
-                <Card className="info-card">
-                    <div className="header-section">
-                        <h2>Quản lý Phụ phí</h2>
-                        <p>Quản lý phụ phí theo loại mẫu xét nghiệm</p>
-                    </div>
-
-                    {/* Bộ lọc và tìm kiếm */}
-                    <div className="filter-section">
-                        <div className="search-box">
-                            <input
-                                type="text"
-                                placeholder="Tìm kiếm loại mẫu..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="search-input"
-                            />
-                        </div>
-                        <div className="filter-controls">
-                            <Button 
-                                onClick={() => setShowAddSurchargeForm(true)}
-                                className="add-button"
-                            >
-                                + Thêm Phụ phí Mới
-                            </Button>
-                        </div>
-                    </div>
-
-                    {/* Bảng phụ phí */}
-                    <div className="table-responsive">
-                        <table className="services-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Loại mẫu</th>
-                                    <th>Phụ phí (VNĐ)</th>
-                                    <th>Ghi chú</th>
-                                    <th>Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredSurcharges.length > 0 ? (
-                                    filteredSurcharges.map(surcharge => (
-                                        <tr key={surcharge.surchargeID}>
-                                            <td>{surcharge.surchargeID}</td>
-                                            <td>{surcharge.sampleType}</td>
-                                            <td className="price-cell">
-                                                {surcharge.surcharge ? surcharge.surcharge.toLocaleString('vi-VN') + ' VNĐ' : 'Miễn phí'}
-                                            </td>
-                                            <td className="note-cell">{surcharge.note}</td>
-                                            <td className="actions-cell">
-                                                <button 
-                                                    size="sm" 
-                                                    onClick={() => handleEditSurcharge(surcharge)}
-                                                    className="action-btn edit-btn"
-                                                    title="Chỉnh sửa"
-                                                >
-                                                    <span className="btn-icon">✏️</span>
-                                                </button>
-                                                <button 
-                                                    size="sm" 
-                                                    variant="danger" 
-                                                    onClick={() => handleDeleteSurcharge(surcharge.surchargeID)}
-                                                    className="action-btn delete-btn"
-                                                    title="Xóa"
-                                                >
-                                                    <span className="btn-icon">🗑️</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="5" className="no-data">
-                                            Không tìm thấy phụ phí nào
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
                 </Card>
-            )}
+            </div>
 
             {/* Modal chỉnh sửa service */}
             {editingService && (
-                <EditServiceModal 
+                <EditServiceModal
                     service={editingService}
                     onSave={handleSaveService}
                     onCancel={() => setEditingService(null)}
@@ -516,26 +289,9 @@ export default function ServicePrice() {
 
             {/* Modal thêm mới service */}
             {showAddServiceForm && (
-                <AddServiceModal 
+                <AddServiceModal
                     onSave={handleAddService}
                     onCancel={() => setShowAddServiceForm(false)}
-                />
-            )}
-
-            {/* Modal chỉnh sửa surcharge */}
-            {editingSurcharge && (
-                <EditSurchargeModal 
-                    surcharge={editingSurcharge}
-                    onSave={handleSaveSurcharge}
-                    onCancel={() => setEditingSurcharge(null)}
-                />
-            )}
-
-            {/* Modal thêm mới surcharge */}
-            {showAddSurchargeForm && (
-                <AddSurchargeModal 
-                    onSave={handleAddSurcharge}
-                    onCancel={() => setShowAddSurchargeForm(false)}
                 />
             )}
         </div>
@@ -565,7 +321,7 @@ const EditServiceModal = ({ service, onSave, onCancel }) => {
                         <input
                             type="text"
                             value={formData.serviceName}
-                            onChange={(e) => setFormData({...formData, serviceName: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, serviceName: e.target.value })}
                             required
                         />
                     </div>
@@ -573,7 +329,7 @@ const EditServiceModal = ({ service, onSave, onCancel }) => {
                         <label>Loại dịch vụ:</label>
                         <select
                             value={formData.serviceType}
-                            onChange={(e) => setFormData({...formData, serviceType: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })}
                             required
                         >
                             <option value="Dân sự">Dân sự</option>
@@ -584,7 +340,7 @@ const EditServiceModal = ({ service, onSave, onCancel }) => {
                         <label>Gói dịch vụ:</label>
                         <select
                             value={formData.packageType}
-                            onChange={(e) => setFormData({...formData, packageType: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, packageType: e.target.value })}
                             required
                         >
                             <option value="Tiêu chuẩn">Tiêu chuẩn</option>
@@ -596,7 +352,7 @@ const EditServiceModal = ({ service, onSave, onCancel }) => {
                         <input
                             type="number"
                             value={formData.price}
-                            onChange={(e) => setFormData({...formData, price: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             required
                         />
                     </div>
@@ -605,14 +361,14 @@ const EditServiceModal = ({ service, onSave, onCancel }) => {
                         <input
                             type="number"
                             value={formData.extraSampleFee || ''}
-                            onChange={(e) => setFormData({...formData, extraSampleFee: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, extraSampleFee: e.target.value })}
                         />
                     </div>
                     <div className="form-group">
                         <label>Trạng thái:</label>
                         <select
                             value={formData.status}
-                            onChange={(e) => setFormData({...formData, status: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                             required
                         >
                             <option value="Hoạt động">Hoạt động</option>
@@ -659,7 +415,7 @@ const AddServiceModal = ({ onSave, onCancel }) => {
                         <input
                             type="text"
                             value={formData.serviceName}
-                            onChange={(e) => setFormData({...formData, serviceName: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, serviceName: e.target.value })}
                             required
                         />
                     </div>
@@ -667,7 +423,7 @@ const AddServiceModal = ({ onSave, onCancel }) => {
                         <label>Loại dịch vụ:</label>
                         <select
                             value={formData.serviceType}
-                            onChange={(e) => setFormData({...formData, serviceType: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })}
                             required
                         >
                             <option value="Dân sự">Dân sự</option>
@@ -678,7 +434,7 @@ const AddServiceModal = ({ onSave, onCancel }) => {
                         <label>Gói dịch vụ:</label>
                         <select
                             value={formData.packageType}
-                            onChange={(e) => setFormData({...formData, packageType: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, packageType: e.target.value })}
                             required
                         >
                             <option value="Tiêu chuẩn">Tiêu chuẩn</option>
@@ -690,7 +446,7 @@ const AddServiceModal = ({ onSave, onCancel }) => {
                         <input
                             type="number"
                             value={formData.price}
-                            onChange={(e) => setFormData({...formData, price: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             required
                         />
                     </div>
@@ -699,7 +455,7 @@ const AddServiceModal = ({ onSave, onCancel }) => {
                         <input
                             type="number"
                             value={formData.extraSampleFee}
-                            onChange={(e) => setFormData({...formData, extraSampleFee: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, extraSampleFee: e.target.value })}
                             placeholder="Để trống nếu không có"
                         />
                     </div>
@@ -707,7 +463,7 @@ const AddServiceModal = ({ onSave, onCancel }) => {
                         <label>Trạng thái:</label>
                         <select
                             value={formData.status}
-                            onChange={(e) => setFormData({...formData, status: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                             required
                         >
                             <option value="Hoạt động">Hoạt động</option>
@@ -746,7 +502,7 @@ const EditSurchargeModal = ({ surcharge, onSave, onCancel }) => {
                         <input
                             type="text"
                             value={formData.sampleType}
-                            onChange={(e) => setFormData({...formData, sampleType: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, sampleType: e.target.value })}
                             required
                         />
                     </div>
@@ -755,7 +511,7 @@ const EditSurchargeModal = ({ surcharge, onSave, onCancel }) => {
                         <input
                             type="number"
                             value={formData.surcharge || ''}
-                            onChange={(e) => setFormData({...formData, surcharge: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, surcharge: e.target.value })}
                             placeholder="Để trống nếu miễn phí"
                         />
                     </div>
@@ -763,7 +519,7 @@ const EditSurchargeModal = ({ surcharge, onSave, onCancel }) => {
                         <label>Ghi chú:</label>
                         <textarea
                             value={formData.note}
-                            onChange={(e) => setFormData({...formData, note: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, note: e.target.value })}
                             rows="3"
                         />
                     </div>
@@ -803,7 +559,7 @@ const AddSurchargeModal = ({ onSave, onCancel }) => {
                         <input
                             type="text"
                             value={formData.sampleType}
-                            onChange={(e) => setFormData({...formData, sampleType: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, sampleType: e.target.value })}
                             required
                             placeholder="Ví dụ: Mẫu tóc, Mẫu móng tay..."
                         />
@@ -813,7 +569,7 @@ const AddSurchargeModal = ({ onSave, onCancel }) => {
                         <input
                             type="number"
                             value={formData.surcharge}
-                            onChange={(e) => setFormData({...formData, surcharge: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, surcharge: e.target.value })}
                             placeholder="Để trống nếu miễn phí"
                         />
                     </div>
@@ -821,7 +577,7 @@ const AddSurchargeModal = ({ onSave, onCancel }) => {
                         <label>Ghi chú:</label>
                         <textarea
                             value={formData.note}
-                            onChange={(e) => setFormData({...formData, note: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, note: e.target.value })}
                             rows="3"
                             placeholder="Mô tả về phụ phí này..."
                         />

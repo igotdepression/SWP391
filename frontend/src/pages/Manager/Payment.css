@@ -418,95 +418,105 @@
 }
 
 /* Statistics với layout mới */
-.payment-stats {
+.payment-stats-row {
     display: flex;
-    gap: 24px;
-    margin-bottom: 32px;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-bottom: 25px;
+    flex-wrap: nowrap; /* Không xuống dòng khi đủ 5 thẻ */
     justify-content: space-between;
-    width: 100%;
+    max-width: 100%;
 }
 
-.stat-item {
+.payment-stat-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    background: #fff;
+    border-radius: 50px; /* Bo tròn góc lớn, không bị tròn như hình tròn */
+    padding: 16px 20px;
+    min-width: 0;
+    flex: 1 1 0;
+    box-shadow: 0 4px 18px 0 rgba(80,112,255,0.13);
+    font-weight: 600;
+    font-size: 1em;
+    position: relative;
+    border: 3px solid transparent;
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(120deg, #3b82f6, #22c55e) border-box;
+    transition: box-shadow 0.2s;
+    max-width: 20%;
+    margin: 0;
+    gap: 16px; /* Thêm khoảng cách giữa các phần tử */
+}
+
+.payment-stat-card .stat-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px 20px;
-    background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(34, 197, 94) 100%);
-    border-radius: 20px;
-    border: 3px solid rgba(37, 99, 235, 0.2);
+    border-radius: 50%;
+    margin: 0 5px 0 0;
+    font-size: 1.7em;
+    background: #e0edfd; /* Màu nền mặc định xanh dương nhạt */
+    color: #2563eb;      /* Màu icon mặc định xanh dương đậm */
+    box-shadow: 0 2px 8px 0 rgba(59,130,246,0.10);
+    flex-shrink: 0;
+}
+
+/* Màu icon riêng cho từng loại */
+.payment-stat-card.total .stat-icon {
+    background: #e5e7eb;
+    color: #64748b;
+}
+.payment-stat-card.new .stat-icon {
+    background: #e0edfd;
+    color: #2563eb;
+}
+.payment-stat-card.in-progress .stat-icon {
+    background: #fff4e0;
+    color: #ff9800;
+}
+.payment-stat-card.completed .stat-icon {
+    background: #e6f9f0;
+    color: #22c55e;
+}
+.payment-stat-card.cancelled .stat-icon {
+    background: #ffeaea;
+    color: #ef4444;
+}
+
+.payment-stat-card .stat-label {
+    font-size: 1.08em;
+    color: #475569;
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.payment-stat-card .stat-value {
+    font-size: 2.1em;
+    font-weight: 800;
+    color: #2563eb;
+    margin-right: 10px;
+    min-width: 40px;
+    text-align: left;
+    white-space: nowrap;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Đặt lại .stat-info để nằm ngang */
+.payment-stat-card .stat-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     flex: 1;
     min-width: 0;
-    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.25);
-    transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.stat-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.6s ease;
-}
-
-.stat-item:hover::before {
-    left: 100%;
-}
-
-.stat-content {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
-    justify-content: flex-start; /* Icon bên trái */
-    z-index: 1;
-    position: relative;
-}
-
-.stat-icon {
-    color: white;
-    flex-shrink: 0;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.stat-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Label ở giữa */
-    gap: 4px;
-    flex: 1;
-}
-
-.stat-label {
-    font-size: 0.8em;
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    white-space: nowrap;
-    line-height: 1.2;
-    text-align: center;
-}
-
-.stat-number {
-    font-size: 1.8em;
-    font-weight: 800;
-    color: white;
-    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    white-space: nowrap;
-    line-height: 1.1;
-    text-align: center;
-}
-
-.stat-item:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 12px 40px rgba(37, 99, 235, 0.35);
+    gap: 0;
 }
 
 /* Action buttons - Enhanced design */
@@ -638,7 +648,7 @@
 }
 
 .payment-table th:nth-child(2), 
-.payment-table td:nth-child(2) { /* Booking ID */
+.payment-table td:nth-child(2) { /* payment ID */
     text-align: left;
     vertical-align: middle;
     width: 10%;
@@ -801,7 +811,7 @@
 }
 
 .payment-table th:nth-child(2), 
-.payment-table td:nth-child(2) { /* Booking ID */
+.payment-table td:nth-child(2) { /* payment ID */
     width: 8%;
     text-align: left;
 }
