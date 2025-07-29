@@ -19,6 +19,6 @@ services:
       - key: AWS_SECRET_ACCESS_KEY
         value: bx1vNUVN6p1ikPCKdfSlUrHXxTBt2+EFhAUjp0Al
       - key: AWS_S3_REGION
-        value: ap-southeast-2
+        value: us-east-1
       - key: AWS_S3_BUCKET_NAME
         value: bloodline-dna-files

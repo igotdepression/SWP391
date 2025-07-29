@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -43,9 +45,9 @@ public class S3Service {
                 
                 BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
                 
-                // Sử dụng cấu hình chuẩn với region ap-southeast-2
+                // Sử dụng region từ cấu hình
                 s3Client = AmazonS3ClientBuilder.standard()
-                        .withRegion("ap-southeast-2") // Đảm bảo đúng region Sydney
+                        .withRegion(region) // Sử dụng region từ application.properties
                         .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                         .build();
                 
@@ -54,7 +56,21 @@ public class S3Service {
                 System.out.println("S3Service: Tạo S3 client thành công");
             } catch (Exception e) {
                 System.err.println("S3Service: Lỗi tạo S3 client: " + e.getMessage());
+                System.err.println("S3Service: Region được sử dụng: " + region);
+                System.err.println("S3Service: Access Key ID: " + accessKeyId);
+                System.err.println("S3Service: Bucket Name: " + bucketName);
                 e.printStackTrace();
+                
+                // Thêm thông tin debug cho lỗi region
+                if (e.getMessage() != null && e.getMessage().contains("Region not supported")) {
+                    System.err.println("S3Service: Lỗi Region không được hỗ trợ!");
+                    System.err.println("S3Service: Hãy thử các region sau:");
+                    System.err.println("  - us-east-1 (US East - N. Virginia)");
+                    System.err.println("  - us-west-2 (US West - Oregon)");
+                    System.err.println("  - eu-west-1 (Europe - Ireland)");
+                    System.err.println("  - ap-northeast-1 (Asia Pacific - Tokyo)");
+                }
+                
                 throw new RuntimeException("Không thể tạo S3 client: " + e.getMessage(), e);
             }
         }
@@ -111,7 +127,7 @@ public class S3Service {
             // Thêm thông tin debug
             if (e.getMessage() != null && e.getMessage().contains("SignatureDoesNotMatch")) {
                 System.err.println("S3Service: Đây là lỗi SignatureDoesNotMatch - kiểm tra:");
-                System.err.println("1. Region có đúng ap-southeast-2 không");
+                System.err.println("1. Region có đúng us-east-1 không");
                 System.err.println("2. Access Key và Secret Key có đúng không");
                 System.err.println("3. Thời gian hệ thống có đồng bộ không");
             }
@@ -150,6 +166,63 @@ public class S3Service {
         System.out.println("Secret Key Length: " + (secretAccessKey != null ? secretAccessKey.length() : "null"));
         System.out.println("Access Key Length: " + (accessKeyId != null ? accessKeyId.length() : "null"));
         System.out.println("================================================");
+    }
+
+    // Test kết nối với các region khác nhau
+    public Map<String, Boolean> testRegions() {
+        Map<String, Boolean> results = new HashMap<>();
+        String[] regions = {"us-east-1", "us-west-2", "eu-west-1", "ap-northeast-1", "ap-southeast-2"};
+        
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
+        
+        for (String testRegion : regions) {
+            try {
+                System.out.println("S3Service: Testing region: " + testRegion);
+                AmazonS3 testClient = AmazonS3ClientBuilder.standard()
+                        .withRegion(testRegion)
+                        .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                        .build();
+                
+                testClient.listBuckets();
+                results.put(testRegion, true);
+                System.out.println("S3Service: Region " + testRegion + " - SUCCESS");
+            } catch (Exception e) {
+                results.put(testRegion, false);
+                System.out.println("S3Service: Region " + testRegion + " - FAILED: " + e.getMessage());
+            }
+        }
+        
+        return results;
+    }
+
+    // Test credentials với STS
+    public boolean testCredentials() {
+        try {
+            System.out.println("S3Service: Testing credentials...");
+            getS3Client().listBuckets();
+            System.out.println("S3Service: Credentials are valid");
+            return true;
+        } catch (Exception e) {
+            System.err.println("S3Service: Credentials test failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Test S3 operations
+    public boolean testS3Operations() {
+        try {
+            System.out.println("S3Service: Testing S3 operations...");
+            
+            // Test basic operations
+            getS3Client().listBuckets();
+            getS3Client().listObjects(bucketName);
+            
+            System.out.println("S3Service: S3 operations test successful");
+            return true;
+        } catch (Exception e) {
+            System.err.println("S3Service: S3 operations test failed: " + e.getMessage());
+            return false;
+        }
     }
 
     // Test upload một file nhỏ

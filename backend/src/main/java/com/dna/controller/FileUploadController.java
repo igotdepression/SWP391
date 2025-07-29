@@ -137,7 +137,7 @@ public class FileUploadController {
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("connected", isConnected);
-            response.put("region", "ap-southeast-2");
+            response.put("region", "us-east-1");
             response.put("bucket", "bloodline-dna-files");
             response.put("timestamp", System.currentTimeMillis());
             
@@ -146,6 +146,56 @@ public class FileUploadController {
             Map<String, Object> response = new HashMap<>();
             response.put("status", "error");
             response.put("message", e.getMessage());
+            response.put("errorType", e.getClass().getSimpleName());
+            
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/test-credentials")
+    public ResponseEntity<Map<String, Object>> testCredentials() {
+        try {
+            System.out.println("=== Testing AWS Credentials ===");
+            
+            // Validate credentials format first
+            s3Service.validateCredentials();
+            
+            // Test credentials with STS
+            boolean credentialsValid = s3Service.testCredentials();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("credentialsValid", credentialsValid);
+            response.put("message", credentialsValid ? "AWS credentials are valid" : "AWS credentials are invalid");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Credentials test failed: " + e.getMessage());
+            response.put("errorType", e.getClass().getSimpleName());
+            
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/test-regions")
+    public ResponseEntity<Map<String, Object>> testRegions() {
+        try {
+            System.out.println("=== Testing AWS Regions ===");
+            
+            Map<String, Boolean> regionResults = s3Service.testRegions();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("regionResults", regionResults);
+            response.put("message", "Region testing completed");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Region testing failed: " + e.getMessage());
             response.put("errorType", e.getClass().getSimpleName());
             
             return ResponseEntity.badRequest().body(response);
@@ -190,6 +240,29 @@ public class FileUploadController {
             Map<String, String> response = new HashMap<>();
             response.put("status", "error");
             response.put("message", "Lỗi cập nhật bucket policy: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/test-s3-operations")
+    public ResponseEntity<Map<String, Object>> testS3Operations() {
+        try {
+            System.out.println("=== Testing S3 Operations ===");
+            
+            boolean operationsOk = s3Service.testS3Operations();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("operationsOk", operationsOk);
+            response.put("message", operationsOk ? "S3 operations are working" : "S3 operations failed");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "S3 operations test failed: " + e.getMessage());
+            response.put("errorType", e.getClass().getSimpleName());
+            
             return ResponseEntity.badRequest().body(response);
         }
     }
