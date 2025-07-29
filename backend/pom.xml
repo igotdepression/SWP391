@@ -118,6 +118,13 @@
     <artifactId>aws-java-sdk-s3</artifactId>
     <version>1.12.261</version>
 </dependency>
+
+<!-- JAXB API for Java 9+ compatibility -->
+<dependency>
+    <groupId>javax.xml.bind</groupId>
+    <artifactId>jaxb-api</artifactId>
+    <version>2.3.1</version>
+</dependency>
 </dependencies>
 
 <build>

@@ -41,7 +41,7 @@ public class BookingController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             // Log lỗi chi tiết ở đây: e.g., logger.error("Error creating booking", e);
-            return new ResponseEntity<>("An error occurred while creating the booking: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Đã xảy ra lỗi khi tạo booking: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

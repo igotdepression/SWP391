@@ -95,11 +95,11 @@ public class UserController {
             String fileUrl = userService.uploadAvatar(id, file);
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
-            response.put("message", "Avatar uploaded successfully");
+            response.put("message", "Upload avatar thành công");
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             Map<String, String> response = new HashMap<>();
-            response.put("error", "Failed to upload avatar: " + e.getMessage());
+            response.put("error", "Không thể upload avatar: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -121,11 +121,11 @@ public class UserController {
             String fileUrl = userService.uploadIdCard(id, file);
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
-            response.put("message", "ID card uploaded successfully");
+            response.put("message", "Upload CMND/CCCD thành công");
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             Map<String, String> response = new HashMap<>();
-            response.put("error", "Failed to upload ID card: " + e.getMessage());
+            response.put("error", "Không thể upload CMND/CCCD: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
