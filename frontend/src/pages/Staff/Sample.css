@@ -1,4 +1,3 @@
-/* Staff/Sample.css - Styled similar to Consultation */
 .sample-management-container {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
@@ -14,7 +13,7 @@
     width: 100%;
 }
 
-/* Sample Statistics Header */
+
 .sample-stats-header {
     margin-bottom: 30px;
 }
@@ -34,7 +33,7 @@
     gap: 12px;
     justify-content: flex-end;
     margin-bottom: 25px;
-    flex-wrap: nowrap; /* Không xuống dòng khi đủ 5 thẻ */
+    flex-wrap: nowrap; 
     justify-content: center;
     max-width: 100%;
 }
@@ -44,7 +43,7 @@
     flex-direction: row;
     align-items: center;
     background: #fff;
-    border-radius: 50px; /* Bo tròn góc lớn, không bị tròn như hình tròn */
+    border-radius: 50px;
     padding: 16px 20px;
     min-width: 0;
     flex: 1 1 0;
@@ -59,7 +58,7 @@
     transition: box-shadow 0.2s;
     max-width: 20%;
     margin: 0;
-    gap: 16px; /* Thêm khoảng cách giữa các phần tử */
+    gap: 16px; 
 }
 
 .sample-stat-card .stat-label {
@@ -82,7 +81,7 @@
     flex-shrink: 0;
 }
 
-/* Đặt lại .stat-info để nằm ngang */
+
 .sample-stat-card .stat-info {
     display: flex;
     flex-direction: row;
@@ -92,7 +91,7 @@
     gap: 0;
 }
 
-/* Modal Overlay for Edit Form */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -184,7 +183,7 @@
     background-color: #fff;
 }
 
-/* Readonly input styling */
+
 .readonly-input {
     background-color: #f1f5f9 !important;
     color: #64748b !important;
@@ -198,7 +197,7 @@
     background-color: #f1f5f9 !important;
 }
 
-/* Button container similar to sample */
+
 .button-container {
     display: flex;
     justify-content: center;
@@ -281,7 +280,7 @@
     }
 }
 
-/* Close button for modal */
+
 .modal-close {
     position: absolute;
     top: 15px;
@@ -397,7 +396,7 @@
     font-weight: 600;
 }
 
-/* Table styling - Same as Consultation */
+
 .table-responsive {
     overflow-x: auto;
     border-radius: 10px;
@@ -506,7 +505,7 @@
     text-transform: capitalize;
 }
 
-/* Status badges for sample types */
+
 .status-badge {
     padding: 5px 10px;
     border-radius: 4px;
@@ -566,7 +565,7 @@
     transform: translateY(0) scale(0.98);
 }
 
-/* View button styling */
+
 .btn-view {
     background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
     border-color: #22c55e;
@@ -585,7 +584,7 @@
     transform: translateY(0) scale(0.98);
 }
 
-/* Icon styling */
+
 .sample-btn-edit i,
 .btn-view i {
     font-size: 16px;
@@ -597,7 +596,7 @@
     transform: scale(1.1);
 }
 
-/* Ripple effect */
+
 .sample-btn-edit::before,
 .btn-view::before {
     content: '';
@@ -618,7 +617,7 @@
     height: 100%;
 }
 
-/* Tooltip styling */
+
 .sample-btn-edit,
 .btn-view {
     position: relative;
@@ -668,7 +667,7 @@
         font-size: 14px;
     }
     
-    /* Hide tooltips on mobile */
+   
     .sample-btn-edit::after,
     .btn-view::after {
         display: none;
@@ -692,14 +691,14 @@
     }
 }
 
-/* Accessibility improvements */
+
 .sample-btn-edit:focus,
 .btn-view:focus {
     outline: 2px solid currentColor;
     outline-offset: 2px;
 }
 
-/* Disabled state */
+
 .sample-btn-edit:disabled,
 .btn-view:disabled {
     opacity: 0.5;
@@ -713,7 +712,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Loading state */
+
 .sample-btn-edit.loading,
 .btn-view.loading {
     position: relative;
@@ -746,7 +745,7 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Table row hover effect */
+
 .data-table tbody tr:hover .sample-actions .sample-btn-edit,
 .data-table tbody tr:hover .sample-actions .btn-view {
     opacity: 1;
@@ -759,7 +758,7 @@
     transition: opacity 0.3s ease;
 }
 
-/* Additional enhancements */
+
 .sample-btn-edit:hover {
     background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
     box-shadow: 
@@ -774,7 +773,7 @@
         0 0 0 1px rgba(34, 197, 94, 0.1);
 }
 
-/* Button group styling */
+
 .sample-actions {
     border-radius: 8px;
     padding: 4px;
@@ -782,7 +781,7 @@
     backdrop-filter: blur(4px);
 }
 
-/* Animation for button appearance */
+
 @keyframes buttonFadeIn {
     from {
         opacity: 0;

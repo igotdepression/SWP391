@@ -1,853 +1,464 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; // Thêm imports
-import { Card, Button, Input, Select } from '../../components/ui/ui';
+// pages/Manager/TestResultManagement.jsx
+import React, { useEffect, useState } from 'react';
 import './TestResultManagement.css';
-import { bookingAPI } from '../../services/api';
-import { testResultAPI } from '../../services/api';
-import { detailResultAPI } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
-import api from '../../services/api'; // Thêm import này
+import { testResultAPI, detailResultAPI } from '../../services/api';
 
 export default function TestResultManagement() {
-
-    const location = useLocation(); // Thêm này
-    const navigate = useNavigate(); // Thêm này
-
-    // Sample data based on SQL structure - Extended with sample status and type
-    const [testResults, setTestResults] = useState([
-    ]);
-
-    // Sample detail results
-    const [detailResults, setDetailResults] = useState([
-    ]);
-
-    const [detailResultsFromApi, setDetailResultsFromApi] = useState([]);
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState('all');
+    const [testResults, setTestResults] = useState([]);
     const [selectedResult, setSelectedResult] = useState(null);
+    const [selectedDetails, setSelectedDetails] = useState([]);
     const [showDetailModal, setShowDetailModal] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    const [editingResult, setEditingResult] = useState(null);
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [newResult, setNewResult] = useState({
-        bookingID: '',
-        resultDate: '',
-        createdBy: '',
-        resultConclution: '',
-        resultFile: '',
-        customerName: '',
-        serviceName: '',
-        sampleStaffID: '',
-        patientID: '',
-        sampleMethod: '',
-        sampleReceiveDate: '',
-        sampleStatus: 'ready',
-        sampleType: 'Mẫu Chuẩn',
-    });
-    const [newDetailResults, setNewDetailResults] = useState([
-        { locusName: '', p1Allele1: '', p1Allele2: '', p2Allele1: '', p2Allele2: '', paternityIndex: '' }
-    ]);
-    const [bookingList, setBookingList] = useState([]);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [pendingAddResult, setPendingAddResult] = useState(false);
+    const [showSendModal, setShowSendModal] = useState(false);
+    const [actionType, setActionType] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [editingResult, setEditingResult] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
 
-    const { user } = useAuth();
+    useEffect(() => {
+        setLoading(true);
+        testResultAPI.getAllTestResults()
+            .then(res => setTestResults(res.data))
+            .catch(() => setTestResults([]))
+            .finally(() => setLoading(false));
+    }, []);
 
-    // Calculate statistics
-    const totalSamples = testResults.length;
-    const readySamples = testResults.filter(r => r.sampleStatus === 'ready').length;
-    const normalSamples = testResults.filter(r => r.sampleStatus === 'normal').length;
-    const specialSamples = testResults.filter(r => r.sampleStatus === 'special').length;
+    const getStatusBadge = (status) => {
+        const badges = {
+            pending: { text: 'Chờ xác nhận', class: 'status-pending' },
+            confirmed: { text: 'Đã xác nhận', class: 'status-confirmed' },
+            sent: { text: 'Đã gửi', class: 'status-sent' },
+            'Hoàn thành': { text: 'Hoàn thành', class: 'status-complete' },
+            'Chờ xác nhận': { text: 'Chờ xác nhận', class: 'status-pending' },
+            'Đã xác nhận': { text: 'Đã xác nhận', class: 'status-confirmed' },
+            'Đã gửi': { text: 'Đã gửi', class: 'status-sent' },
+            // Thêm các trạng thái khác nếu có
+        };
+        return badges[status] || { text: status || 'N/A', class: 'status-default' };
+    };
 
-    const filteredResults = testResults.filter(result => {
-        const matchesSearch = result.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            result.bookingID.toString().includes(searchTerm.toLowerCase()) ||
-            result.testResultID.toString().includes(searchTerm.toLowerCase()) ||
-            result.patientID.toString().includes(searchTerm.toLowerCase());
-        const matchesStatus = filterStatus === 'all' || result.sampleStatus === filterStatus;
-        return matchesSearch && matchesStatus;
-    });
+    const filteredResults = testResults.filter(result => 
+        filterStatus === 'all' || result.status === filterStatus
+    );
 
-    const handleViewDetails = async (result) => {
+    const handleViewDetail = async (result) => {
         setSelectedResult(result);
         setShowDetailModal(true);
-        setEditMode(false);
-        // Lấy chi tiết kết quả từ API
+        // Lấy chi tiết marker từ API, đảm bảo testResultID là số
         try {
-            const res = await detailResultAPI.getDetailResultsByTestResultId(result.testResultID);
-            setDetailResultsFromApi(res.data || []);
-        } catch (err) {
-            setDetailResultsFromApi([]);
+            const res = await detailResultAPI.getDetailResultsByTestResultId(Number(result.testResultID));
+            setSelectedDetails(res.data);
+        } catch {
+            setSelectedDetails([]);
         }
     };
 
-    const handleEditResult = (result) => {
+    const handleConfirmResult = (result) => {
         setSelectedResult(result);
-        setEditingResult({ ...result });
-        setShowDetailModal(true);
-        setEditMode(true);
+        setActionType('confirm');
+        setShowConfirmModal(true);
     };
 
-    const handleCloseModal = () => {
-        setShowDetailModal(false);
-        setSelectedResult(null);
-        setEditingResult(null);
-        setEditMode(false);
+    const handleSendResult = (result) => {
+        setSelectedResult(result);
+        setActionType('send');
+        setShowSendModal(true);
     };
 
-    const handleSaveResult = () => {
-        if (editingResult) {
-            setTestResults(prevResults =>
-                prevResults.map(r =>
-                    r.testResultID === editingResult.testResultID ? editingResult : r
-                )
-            );
-            handleCloseModal();
-            alert('Kết quả đã được cập nhật!');
+    const executeAction = async () => {
+        if (!selectedResult || !selectedResult.testResultID) {
+            alert('Không có dữ liệu để thực hiện thao tác!');
+            return;
         }
-    };
-
-    const getDetailResultsForTest = (testResultID) => {
-        // Nếu đang xem chi tiết, ưu tiên lấy từ API
-        if (showDetailModal && selectedResult && selectedResult.testResultID === testResultID && detailResultsFromApi.length > 0) {
-            return detailResultsFromApi;
+        setLoading(true);
+        try {
+            if (actionType === 'confirm') {
+                const updated = { ...selectedResult, status: 'confirmed' };
+                await testResultAPI.updateTestResult(selectedResult.testResultID, updated);
+            } else if (actionType === 'send') {
+                // Gọi API gửi kết quả thực sự
+                await testResultAPI.sendTestResult(selectedResult.testResultID);
+            }
+            // Reload danh sách
+            const res = await testResultAPI.getAllTestResults();
+            setTestResults(res.data);
+            setShowConfirmModal(false);
+            setShowSendModal(false);
+            setSelectedResult(null);
+        } catch (error) {
+            console.error('Error executing action:', error);
+        } finally {
+            setLoading(false);
         }
-        // Fallback: lấy từ local state (khi thêm mới)
-        return detailResults.filter(detail => detail.testResultID === testResultID);
     };
 
     const formatDate = (dateString) => {
-        if (!dateString) return 'Chưa có';
-        return new Date(dateString).toLocaleDateString('vi-VN');
-    };
-
-    const formatDateTime = (dateString) => {
-        if (!dateString) return 'Chưa có';
+        if (!dateString) return 'N/A';
         return new Date(dateString).toLocaleString('vi-VN');
     };
 
-    const getSampleTypeClass = (sampleType) => {
-        switch (sampleType) {
-            case 'Mẫu Chuẩn': return 'sample-ready';
-            case 'Mẫu Thông Thường': return 'sample-normal';
-            case 'Mẫu Đặc Biệt': return 'sample-special';
-            default: return 'sample-ready';
-        }
+    // Thêm hàm handleEditResult (tạm thời chỉ alert)
+    const handleEditResult = (result) => {
+        setEditingResult(result);
+        setShowEditModal(true);
     };
 
-    const getStatusClass = (status) => {
-        switch (status) {
-            case 'ready': return 'status-ready';
-            case 'processing': return 'status-processing';
-            case 'normal': return 'status-normal';
-            case 'special': return 'status-special';
-            default: return 'status-ready';
-        }
-    };
-
-    const getStatusText = (status) => {
-        switch (status) {
-            case 'ready': return 'Đã tiếp nhận';
-            case 'processing': return 'Đang xét nghiệm';
-            case 'normal': return 'Hoàn thành';
-            case 'special': return 'Đặc biệt';
-            default: return 'Đã tiếp nhận';
-        }
-    };
-
-    const handleOpenAddModal = async () => {
-        setShowAddModal(true);
-        setNewResult({
-            bookingID: '',
-            resultDate: '',
-            createdBy: user?.fullName || '',
-            resultConclution: '',
-            resultFile: '',
-            customerName: '',
-            serviceName: '',
-            sampleStaffID: '',
-            patientID: '',
-            sampleMethod: '',
-            sampleReceiveDate: '',
-            sampleStatus: 'ready',
-            sampleType: 'Mẫu Chuẩn',
-        });
-        setNewDetailResults([
-            { locusName: '', p1Allele1: '', p1Allele2: '', p2Allele1: '', p2Allele2: '', paternityIndex: '' }
-        ]);
-        // Gọi API lấy danh sách booking
+    const handleSaveEditResult = async (updatedResult) => {
+        setLoading(true);
         try {
-            const res = await bookingAPI.getAllBookingsForStaff();
-            setBookingList(res.data || []);
-        } catch (err) {
-            setBookingList([]);
-        }
-    };
-    const handleCloseAddModal = () => setShowAddModal(false);
-
-    // Chỉ lấy các booking không có trạng thái đã hoàn thành
-    const unfinishedBookings = bookingList.filter(r => r.sampleStatus !== 'normal');
-    const bookingOptions = Array.from(new Set(unfinishedBookings.map(r => r.bookingID)));
-    const bookingMap = {};
-    unfinishedBookings.forEach(r => { bookingMap[r.bookingID] = r; });
-
-    const handleAddDetailRow = () => {
-        setNewDetailResults(prev => ([...prev, { locusName: '', p1Allele1: '', p1Allele2: '', p2Allele1: '', p2Allele2: '', paternityIndex: '' }]));
-    };
-    const handleRemoveDetailRow = (idx) => {
-        setNewDetailResults(prev => prev.filter((_, i) => i !== idx));
-    };
-    const handleDetailChange = (idx, field, value) => {
-        setNewDetailResults(prev => prev.map((row, i) => i === idx ? { ...row, [field]: value } : row));
-    };
-    const handleNewResultChange = (field, value) => {
-        setNewResult(prev => ({ ...prev, [field]: value }));
-    };
-    const handleNewFileChange = (e) => {
-        if (e.target.files[0]) {
-            setNewResult(prev => ({
-                ...prev,
-                resultFile: e.target.files[0].name,
-                resultFileUrl: null // Sẽ được set sau khi upload lên S3
-            }));
-        }
-    };
-    const handleBookingSelect = (bookingID) => {
-        const info = bookingMap[bookingID] || {};
-        setNewResult(prev => ({
-            ...prev,
-            bookingID,
-            customerName: info.customerName || '',
-            serviceName: info.serviceName || '',
-            sampleStaffID: info.sampleStaffID || '',
-            patientID: info.patientID || '',
-            sampleMethod: info.sampleMethod || '',
-            sampleReceiveDate: info.sampleReceiveDate || '',
-            sampleStatus: info.sampleStatus || 'ready',
-            sampleType: info.sampleType || 'Mẫu Chuẩn',
-        }));
-    };
-    const handleAddResult = (e) => {
-        e.preventDefault();
-        setShowConfirmModal(true);
-        setPendingAddResult(true);
-    };
-    const handleConfirmAddResult = async () => {
-        try {
-            // Nếu có file được chọn, upload lên S3 trước
-            let resultFileUrl = null;
-            const fileInput = document.querySelector('input[type="file"]');
-            if (fileInput && fileInput.files[0]) {
-                const formData = new FormData();
-                formData.append('file', fileInput.files[0]);
-
-                // Upload file lên S3 thông qua backend
-                const uploadResponse = await fetch('http://localhost:8080/api/files/upload', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: formData
-                });
-
-                if (uploadResponse.ok) {
-                    const uploadResult = await uploadResponse.json();
-                    resultFileUrl = uploadResult.url;
-                } else {
-                    throw new Error('Upload file thất bại');
-                }
-            }
-
-            // Chuẩn bị dữ liệu gửi về backend
-            const payload = {
-                bookingID: newResult.bookingID,
-                resultDate: newResult.resultDate,
-                resultConclution: newResult.resultConclution,
-                resultFile: newResult.resultFile,
-                resultFileUrl: resultFileUrl, // URL từ S3
-                createdBy: newResult.createdBy,
-                detailResults: newDetailResults.filter(row => row.locusName).map(row => ({
-                    locusName: row.locusName,
-                    p1Allele1: row.p1Allele1,
-                    p1Allele2: row.p1Allele2,
-                    p2Allele1: row.p2Allele1,
-                    p2Allele2: row.p2Allele2,
-                    paternityIndex: row.paternityIndex ? Number(row.paternityIndex) : null
-                }))
-            };
-
-            // Tạo test result
-            await testResultAPI.createTestResult(payload);
-
-            // Cập nhật trạng thái booking thành hoàn thành
-            if (newResult.bookingID) {
-                try {
-                    await api.put(`/bookings/${newResult.bookingID}/status`, {
-                        status: 'Hoàn thành'
-                    });
-                } catch (bookingErr) {
-                    console.warn('Không thể cập nhật trạng thái booking:', bookingErr);
-                }
-            }
-
-            setShowAddModal(false);
-            setShowConfirmModal(false);
-            setPendingAddResult(false);
-
-            // Reset form
-            setNewResult({
-                bookingID: '',
-                resultDate: '',
-                createdBy: user?.fullName || '',
-                resultConclution: '',
-                resultFile: '',
-                customerName: '',
-                serviceName: '',
-                sampleStaffID: '',
-                patientID: '',
-                sampleMethod: '',
-                sampleReceiveDate: '',
-                sampleStatus: 'ready',
-                sampleType: 'Mẫu Chuẩn',
+            const currentUserFullName = localStorage.getItem('fullName') || 'Unknown';
+            const now = new Date().toISOString();
+            const { detailResults, ...rest } = updatedResult;
+            await testResultAPI.updateTestResult(updatedResult.testResultID, {
+                ...rest,
+                updatedBy: currentUserFullName,
+                updatedDate: now
             });
-            setNewDetailResults([
-                { locusName: '', p1Allele1: '', p1Allele2: '', p2Allele1: '', p2Allele2: '', paternityIndex: '' }
-            ]);
-
-            // Refresh data
-            await fetchTestResults();
-
-            // Hiển thị thông báo thành công
-            alert('Thêm kết quả thành công! Booking đã được chuyển sang trạng thái hoàn thành.');
-
-        } catch (err) {
-            console.error('Error adding result:', err);
-            alert('Lỗi khi thêm kết quả: ' + (err.message || 'Không xác định'));
-        }
-    };
-    const handleCancelAddResult = () => {
-        setShowConfirmModal(false);
-        setPendingAddResult(false);
-    };
-
-    // Tự động sinh kết luận khi nhập locus/allele
-    useEffect(() => {
-        // Chỉ áp dụng khi đang mở modal thêm mới
-        if (!showAddModal) return;
-        if (!newDetailResults || newDetailResults.length === 0) {
-            setNewResult(prev => ({ ...prev, resultConclution: '' }));
-            return;
-        }
-        const validIndexes = newDetailResults
-            .map(row => parseFloat(row.paternityIndex))
-            .filter(val => !isNaN(val));
-        if (validIndexes.length === 0) {
-            setNewResult(prev => ({ ...prev, resultConclution: 'Chưa đủ dữ liệu để kết luận.' }));
-        } else if (validIndexes.every(val => val > 1)) {
-            setNewResult(prev => ({ ...prev, resultConclution: 'Có quan hệ huyết thống (dương tính).' }));
-        } else if (validIndexes.some(val => val <= 1)) {
-            setNewResult(prev => ({ ...prev, resultConclution: 'Không đủ bằng chứng xác nhận quan hệ huyết thống (âm tính).' }));
-        }
-    }, [newDetailResults, showAddModal]);
-
-    // Lấy danh sách test result từ backend khi vào trang
-    const fetchTestResults = async () => {
-        try {
             const res = await testResultAPI.getAllTestResults();
-            setTestResults(res.data || []);
-        } catch (err) {
-            console.error('Error fetching test results:', err);
-            setTestResults([]);
+            setTestResults(res.data);
+            setShowEditModal(false);
+            setEditingResult(null);
+        } catch (error) {
+            alert('Cập nhật thất bại!');
+        } finally {
+            setLoading(false);
         }
     };
-
-    useEffect(() => {
-        // Lấy danh sách test result từ backend khi vào trang
-        const fetchTestResults = async () => {
-            try {
-                const res = await testResultAPI.getAllTestResults();
-                setTestResults(res.data || []);
-            } catch (err) {
-                setTestResults([]);
-            }
-        };
-        fetchTestResults();
-    }, []);
-
-    // Thêm useEffect để xử lý navigation state
-    useEffect(() => {
-        // Kiểm tra nếu được chuyển đến từ booking management
-        if (location.state?.openAddModal && location.state?.selectedBookingId) {
-            const { selectedBookingId, bookingInfo } = location.state;
-
-            // Mở modal thêm kết quả
-            setShowAddModal(true);
-
-            // Set thông tin booking được chọn
-            setNewResult(prev => ({
-                ...prev,
-                bookingID: selectedBookingId,
-                customerName: bookingInfo?.customerName || '',
-                serviceName: bookingInfo?.serviceName || bookingInfo?.service?.serviceName || '',
-                createdBy: user?.fullName || '',
-                resultDate: new Date().toISOString().split('T')[0]
-            }));
-
-            // Tự động load thông tin booking nếu có
-            if (selectedBookingId) {
-                handleBookingSelect(selectedBookingId);
-            }
-
-            // Clear navigation state để tránh mở lại modal khi component re-render
-            navigate(location.pathname, { replace: true, state: {} });
-        }
-    }, [location.state, user, navigate]);
-
-    // Kiểm tra nếu có data từ Booking
-    useEffect(() => {
-        const pendingTestResult = sessionStorage.getItem('pendingTestResult');
-        if (pendingTestResult) {
-            try {
-                const data = JSON.parse(pendingTestResult);
-
-                if (data.openAddModal) {
-                    // Mở modal thêm kết quả
-                    setShowAddModal(true);
-
-                    // Set thông tin booking được chọn
-                    setNewResult(prev => ({
-                        ...prev,
-                        bookingID: data.bookingID,
-                        customerName: data.bookingInfo.customerName || '',
-                        serviceName: data.bookingInfo.serviceName || '',
-                        createdBy: user?.fullName || '',
-                        resultDate: new Date().toISOString().split('T')[0]
-                    }));
-
-                    // Tự động load thông tin booking nếu có
-                    if (data.bookingID) {
-                        handleBookingSelect(data.bookingID);
-                    }
-
-                    // Clear sessionStorage sau khi sử dụng
-                    sessionStorage.removeItem('pendingTestResult');
-                }
-            } catch (error) {
-                console.error('Error parsing test result data:', error);
-                sessionStorage.removeItem('pendingTestResult');
-            }
-        }
-    }, []);
 
     return (
-        <div className="test-result-management-container">
-            {/* Statistics Section */}
-            <div className="statistics-section">
-                <h3 className="section-title">Danh sách kết quả xét nghiệm</h3>
-                <div className="testResult-stats-row">
-                    <div className="testResult-stat-card total">
-                        <div className="stat-value">{totalSamples}</div>
-                        <div className="stat-label">TỔNG MẪU</div>
-                    </div>
-                    <div className="testResult-stat-card standard">
-                        <div className="stat-value">{readySamples}</div>
-                        <div className="stat-label">MẪU CHUẨN</div>
-                    </div>
-                    <div className="testResult-stat-card normal">
-                        <div className="stat-value">{normalSamples}</div>
-                        <div className="stat-label">MẪU THÔNG THƯỜNG</div>
-                    </div>
-                    <div className="testResult-stat-card special">
-                        <div className="stat-value">{specialSamples}</div>
-                        <div className="stat-label">MẪU ĐẶC BIỆT</div>
-                    </div>
-                </div>
+        <div className="test-result-management">
+            <div className="page-header">
+                <h1>Quản lý kết quả xét nghiệm</h1>
+                <p>Xem, xác nhận và gửi kết quả xét nghiệm đến khách hàng</p>
             </div>
 
-            {/* Search and Filter Section */}
-            <div className="controls-section">
-
-                <div className="controls-row">
-                    <Select
-                        value={filterStatus}
+            {/* Filter Bar */}
+            <div className="filter-bar">
+                <div className="filter-group">
+                    <label>Trạng thái:</label>
+                    <select 
+                        value={filterStatus} 
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="status-filter"
+                        className="filter-select"
                     >
-                        <option value="all">Tất cả trạng thái</option>
-                        <option value="ready">Đã tiếp nhận</option>
-                        <option value="processing">Đang xét nghiệm</option>
-                        <option value="normal">Hoàn thành</option>
-                        <option value="special">Đặc biệt</option>
-                    </Select>
-                    <Input
-                        type="text"
-                        placeholder="Tìm kiếm theo mã mẫu, booking ID, hoặc participant ID..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input-main"
-                    />
-                    <Button className="add-testResult-btn" onClick={handleOpenAddModal}>+ Thêm kết quả</Button>
+                        <option value="all">Tất cả</option>
+                        <option value="pending">Chờ xác nhận</option>
+                        <option value="confirmed">Đã xác nhận</option>
+                        <option value="sent">Đã gửi</option>
+                    </select>
+                </div>
+                <div className="results-count">
+                    Tổng cộng: {filteredResults.length} kết quả
                 </div>
             </div>
 
-            {/* Table Section */}
-            <Card className="table-container">
-                {filteredResults.length > 0 ? (
-                    <table className="samples-table">
-                        <thead>
-                            <tr>
-                                <th>ID Kết quả</th>
-                                <th>Mã Booking</th>
-                                <th>Ngày kết quả</th>
-                                <th>Người tạo</th>
-                                <th>Ngày tạo</th>
-                                <th>Kết luận</th>
-                                <th>File kết quả</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredResults.map(result => (
-                                <tr key={result.testResultID}>
-                                    <td>{result.testResultID}</td>
-                                    <td>{result.bookingID}</td>
-                                    <td>{result.resultDate ? formatDate(result.resultDate) : 'Chưa có'}</td>
-                                    <td>{result.createdBy || 'Chưa có'}</td>
-                                    <td>{result.createdDate ? formatDateTime(result.createdDate) : 'Chưa có'}</td>
-                                    <td>{result.resultConclution || 'Chưa có'}</td>
-                                    <td>
-                                        {result.resultFileUrl ? (
-                                            <a href={result.resultFileUrl} target="_blank" rel="noopener noreferrer">
-                                                {result.resultFile || 'Xem file kết quả'}
-                                            </a>
-                                        ) : result.resultFile ? (
-                                            <a href={`http://localhost:8080/uploads/results/${result.resultFile}`} target="_blank" rel="noopener noreferrer">
-                                                {result.resultFile}
-                                            </a>
-                                        ) : (
-                                            <span>Chưa có</span>
-                                        )}
-                                    </td>
-                                    <td className="action-buttons">
-                                        <button className="btn-view" title="Xem" onClick={() => handleViewDetails(result)}>
-                                            <i className="fa fa-eye" aria-hidden="true"></i>
+            {/* Results Table */}
+            <div className="results-table-container">
+                <table className="results-table">
+                    <thead>
+                        <tr>
+                            <th>ID kết quả</th>
+                            <th>Mã đặt lịch</th>
+                            <th>Khách hàng</th>
+                            <th>Loại xét nghiệm</th>
+                            <th>Ngày có kết quả</th>
+                            <th>Kết luận</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredResults.map(result => (
+                            <tr key={result.testResultID}>
+                                <td className="result-id">{result.testResultID}</td>
+                                <td>{result.bookingID}</td>
+                                <td className="customer-name">{result.customerName}</td>
+                                <td>{result.testType}</td>
+                                <td>{formatDate(result.resultDate)}</td>
+                                <td className="conclusion">{result.resultConclution || result.resultConclusion || 'N/A'}</td>
+                                <td>
+                                    <span className={`status-badge ${getStatusBadge(result.status || result.bookingStatus).class}`}>
+                                        <span className="status-dot"></span>
+                                        {getStatusBadge(result.status || result.bookingStatus).text}
+                                    </span>
+                                </td>
+                                <td className="actions">
+                                    <button 
+                                        onClick={() => handleViewDetail(result)}
+                                        className="btn btn-info"
+                                        title="Xem chi tiết"
+                                    >
+                                        <i className="fas fa-eye"></i>
+                                    </button>
+                                    <button
+                                        onClick={() => handleEditResult(result)}
+                                        className="btn btn-warning"
+                                        title="Sửa kết quả"
+                                        style={{ marginLeft: 8 }}
+                                    >
+                                        <i className="fas fa-edit"></i>
+                                    </button>
+                                    {result.status === 'pending' && (
+                                        <button 
+                                            onClick={() => handleConfirmResult(result)}
+                                            className="btn btn-success"
+                                            title="Xác nhận kết quả"
+                                            style={{ marginLeft: 8 }}
+                                        >
+                                            <i className="fas fa-check"></i>
                                         </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p className="no-results">Không tìm thấy kết quả xét nghiệm nào.</p>
-                )}
-            </Card>
+                                    )}
+                                    {result.status === 'confirmed' && (
+                                        <button 
+                                            onClick={() => handleSendResult(result)}
+                                            className="btn btn-primary"
+                                            title="Gửi kết quả cho khách hàng"
+                                            style={{ marginLeft: 8 }}
+                                        >
+                                            <i className="fas fa-paper-plane"></i>
+                                        </button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
-            {/* Modal Overlay */}
-            {showDetailModal && (
-                <div className="modal-overlay" onClick={handleCloseModal}>
+            {/* Detail Modal */}
+            {showDetailModal && selectedResult && (
+                <div className="modal-overlay" onClick={() => setShowDetailModal(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2>{editMode ? 'Chỉnh sửa kết quả xét nghiệm' : 'Chi tiết kết quả xét nghiệm'}</h2>
-                            <button className="close-button" onClick={handleCloseModal}>×</button>
+                            <h2>Chi tiết kết quả xét nghiệm</h2>
+                            <button 
+                                className="close-btn"
+                                onClick={() => setShowDetailModal(false)}
+                            >
+                                ×
+                            </button>
                         </div>
-
                         <div className="modal-body">
-                            {selectedResult && (
-                                <>
-                                    <div className="result-info-section">
-                                        <h3>Thông tin chung</h3>
-                                        <div className="info-grid">
-                                            <div className="info-item">
-                                                <label>ID Kết quả:</label>
-                                                <span>{selectedResult.testResultID}</span>
-                                            </div>
-                                            <div className="info-item">
-                                                <label>Mã Booking:</label>
-                                                <span>{selectedResult.bookingID}</span>
-                                            </div>
-                                            <div className="info-item">
-                                                <label>Tên khách hàng:</label>
-                                                <span>{selectedResult.customerName}</span>
-                                            </div>
-                                            <div className="info-item">
-                                                <label>Dịch vụ:</label>
-                                                <span>{selectedResult.serviceName}</span>
-                                            </div>
-                                            <div className="info-item">
-                                                <label>Ngày kết quả:</label>
-                                                {editMode ? (
-                                                    <Input
-                                                        type="date"
-                                                        value={editingResult?.resultDate || ''}
-                                                        onChange={(e) => setEditingResult(prev => ({ ...prev, resultDate: e.target.value }))}
-                                                    />
-                                                ) : (
-                                                    <span>{formatDate(selectedResult.resultDate)}</span>
-                                                )}
-                                            </div>
-                                            <div className="info-item">
-                                                <label>Người tạo:</label>
-                                                {editMode ? (
-                                                    <Input
-                                                        value={editingResult?.createdBy || ''}
-                                                        onChange={(e) => setEditingResult(prev => ({ ...prev, createdBy: e.target.value }))}
-                                                    />
-                                                ) : (
-                                                    <span>{selectedResult.createdBy || 'Chưa có'}</span>
-                                                )}
-                                            </div>
-                                            <div className="info-item">
-                                                <label>Ngày tạo:</label>
-                                                <span>{formatDateTime(selectedResult.createdDate)}</span>
-                                            </div>
+                            <div className="result-info">
+                                <div className="info-row">
+                                    <span className="label">ID kết quả:</span>
+                                    <span className="value">{selectedResult.testResultID}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">Mã đặt lịch:</span>
+                                    <span className="value">{selectedResult.bookingID}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">Khách hàng:</span>
+                                    <span className="value">{selectedResult.customerName}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">Loại xét nghiệm:</span>
+                                    <span className="value">{selectedResult.serviceName || selectedResult.serviceType || 'N/A'}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">Ngày có kết quả:</span>
+                                    <span className="value">{formatDate(selectedResult.resultDate)}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">Trạng thái:</span>
+                                    <span className="value">{selectedResult.status || selectedResult.bookingStatus || 'N/A'}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">Người tạo:</span>
+                                    <span className="value">{selectedResult.createdBy}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">Ngày tạo:</span>
+                                    <span className="value">{formatDate(selectedResult.createdDate)}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">Kết luận:</span>
+                                    <span className="value conclusion">{selectedResult.resultConclution || selectedResult.resultConclusion || 'N/A'}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="label">File kết quả:</span>
+                                    <span className="value file-link">{selectedResult.resultFile}</span>
+                                </div>
+                                {selectedResult.updatedBy && (
+                                    <>
+                                        <div className="info-row">
+                                            <span className="label">Người cập nhật:</span>
+                                            <span className="value">{selectedResult.updatedBy}</span>
                                         </div>
-                                    </div>
+                                        <div className="info-row">
+                                            <span className="label">Ngày cập nhật:</span>
+                                            <span className="value">{formatDate(selectedResult.updatedDate)}</span>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
 
-                                    <div className="result-conclusion-section">
-                                        <h3>Kết luận</h3>
-                                        {editMode ? (
-                                            <textarea
-                                                value={editingResult?.resultConclution || ''}
-                                                onChange={(e) => setEditingResult(prev => ({ ...prev, resultConclution: e.target.value }))}
-                                                rows="4"
-                                                placeholder="Nhập kết luận xét nghiệm..."
-                                                className="conclusion-textarea"
-                                            />
-                                        ) : (
-                                            <p>{selectedResult.resultConclution || 'Chưa có kết luận'}</p>
-                                        )}
-                                    </div>
-
-                                    <div className="result-file-section">
-                                        <h3>File kết quả</h3>
-                                        {editMode ? (
-                                            <Input
-                                                type="file"
-                                                accept=".pdf,.doc,.docx"
-                                                onChange={(e) => {
-                                                    if (e.target.files[0]) {
-                                                        setEditingResult(prev => ({ ...prev, resultFile: e.target.files[0].name }));
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            selectedResult.resultFileUrl ? (
-                                                <a href={selectedResult.resultFileUrl} target="_blank" rel="noopener noreferrer">
-                                                    {selectedResult.resultFile || 'Xem file kết quả'}
-                                                </a>
-                                            ) : selectedResult.resultFile ? (
-                                                <a href={`http://localhost:8080/uploads/results/${selectedResult.resultFile}`} target="_blank" rel="noopener noreferrer">
-                                                    {selectedResult.resultFile}
-                                                </a>
-                                            ) : (
-                                                <span>Chưa có file kết quả</span>
-                                            )
-                                        )}
-                                    </div>
-
-                                    <div className="detail-results-section">
-                                        <h3>Chi tiết kết quả xét nghiệm ADN</h3>
-                                        {getDetailResultsForTest(selectedResult.testResultID).length > 0 ? (
-                                            <table className="detail-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Locus</th>
-                                                        <th>P1 Allele 1</th>
-                                                        <th>P1 Allele 2</th>
-                                                        <th>P2 Allele 1</th>
-                                                        <th>P2 Allele 2</th>
-                                                        <th>Paternity Index</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {getDetailResultsForTest(selectedResult.testResultID).map(detail => (
-                                                        <tr key={detail.detailResultID}>
-                                                            <td>{detail.locusName}</td>
-                                                            <td>{detail.p1Allele1 || '-'}</td>
-                                                            <td>{detail.p1Allele2 || '-'}</td>
-                                                            <td>{detail.p2Allele1 || '-'}</td>
-                                                            <td>{detail.p2Allele2 || '-'}</td>
-                                                            <td>{detail.paternityIndex ? detail.paternityIndex.toFixed(2) : '-'}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        ) : (
-                                            <p>Chưa có chi tiết kết quả</p>
-                                        )}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-
-                        <div className="modal-footer">
-                            {editMode ? (
-                                <>
-                                    <Button variant="primary" onClick={handleSaveResult}>
-                                        Lưu thay đổi
-                                    </Button>
-                                    <Button variant="outline" onClick={handleCloseModal}>
-                                        Hủy
-                                    </Button>
-                                </>
-                            ) : (
-                                <Button variant="outline" onClick={handleCloseModal}>
-                                    Đóng
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Add Result Modal */}
-            {showAddModal && (
-                <div className="modal-overlay" onClick={handleCloseAddModal}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2>Thêm kết quả xét nghiệm mới</h2>
-                            <button className="close-button" onClick={handleCloseAddModal}>×</button>
-                        </div>
-                        <form className="add-result-form" onSubmit={handleAddResult}>
-                            <div className="form-group">
-                                <label>Chọn Booking ID:</label>
-                                <select
-                                    value={newResult.bookingID}
-                                    onChange={e => handleBookingSelect(e.target.value)}
-                                    required
-                                >
-                                    <option value="">-- Chọn Booking --</option>
-                                    {bookingOptions.map(id => (
-                                        <option key={id} value={id}>{id}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Tên khách hàng:</label>
-                                <Input value={newResult.customerName} disabled />
-                            </div>
-                            <div className="form-group">
-                                <label>Dịch vụ:</label>
-                                <Input value={newResult.serviceName} disabled />
-                            </div>
-                            <div className="form-group">
-                                <label>Ngày kết quả:</label>
-                                <Input type="date" value={newResult.resultDate} onChange={e => handleNewResultChange('resultDate', e.target.value)} />
-                            </div>
-                            <div className="form-group">
-                                <label>Người tạo:</label>
-                                <Input value={newResult.createdBy} disabled />
-                            </div>
-                            <div className="form-group">
-                                <label>Kết luận:</label>
-                                <textarea
-                                    value={newResult.resultConclution}
-                                    readOnly
-                                    rows="3"
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>File kết quả (PDF, tùy chọn):</label>
-                                <Input type="file" accept=".pdf" onChange={handleNewFileChange} />
-                                {newResult.resultFile && <span className="file-name">{newResult.resultFile}</span>}
-                            </div>
-                            <div className="form-group">
-                                <label>Chi tiết locus/allele:</label>
+                            <div className="detail-results">
+                                <h3>Chi tiết các marker</h3>
                                 <table className="detail-table">
                                     <thead>
                                         <tr>
-                                            <th>Locus</th>
-                                            <th>P1 Allele 1</th>
-                                            <th>P1 Allele 2</th>
-                                            <th>P2 Allele 1</th>
-                                            <th>P2 Allele 2</th>
-                                            <th>Paternity Index</th>
-                                            <th></th>
+                                            <th>Marker</th>
+                                            <th>Allele 1</th>
+                                            <th>Allele 2</th>
+                                            <th>Kết quả</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {newDetailResults.map((row, idx) => (
-                                            <tr key={idx}>
-                                                <td><Input value={row.locusName} onChange={e => handleDetailChange(idx, 'locusName', e.target.value)} required /></td>
-                                                <td><Input value={row.p1Allele1} onChange={e => handleDetailChange(idx, 'p1Allele1', e.target.value)} /></td>
-                                                <td><Input value={row.p1Allele2} onChange={e => handleDetailChange(idx, 'p1Allele2', e.target.value)} /></td>
-                                                <td><Input value={row.p2Allele1} onChange={e => handleDetailChange(idx, 'p2Allele1', e.target.value)} /></td>
-                                                <td><Input value={row.p2Allele2} onChange={e => handleDetailChange(idx, 'p2Allele2', e.target.value)} /></td>
-                                                <td><Input type="number" step="0.01" value={row.paternityIndex} onChange={e => handleDetailChange(idx, 'paternityIndex', e.target.value)} /></td>
-                                                <td>
-                                                    {newDetailResults.length > 1 && (
-                                                        <button type="button" className="btn-remove-row" onClick={() => handleRemoveDetailRow(idx)}>-</button>
-                                                    )}
+                                        {selectedDetails.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={4} style={{ textAlign: 'center', color: '#888' }}>
+                                                    Không có dữ liệu chi tiết
                                                 </td>
                                             </tr>
-                                        ))}
+                                        ) : (
+                                            selectedDetails.map((detail, idx) => (
+                                                <tr key={detail.detailResultID || detail.locusName || idx}>
+                                                    <td>{detail.locusName}</td>
+                                                    <td>{detail.p1Allele1}</td>
+                                                    <td>{detail.p1Allele2}</td>
+                                                    <td>
+                                                        <span className="marker-result">{detail.paternityIndex !== undefined ? detail.paternityIndex : 'N/A'}</span>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
                                     </tbody>
                                 </table>
-                                <Button type="button" onClick={handleAddDetailRow} className="btn-add-row">+ Thêm locus</Button>
                             </div>
-                            <div className="modal-footer">
-                                <Button type="submit" variant="primary">Thêm kết quả</Button>
-                                <Button type="button" variant="outline" onClick={handleCloseAddModal}>Hủy</Button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             )}
 
-            {/* Confirm Add Result Modal */}
-            {showConfirmModal && (
-                <div className="modal-overlay" onClick={handleCancelAddResult}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+            {/* Confirm Modal */}
+            {showConfirmModal && selectedResult && (
+                <div className="modal-overlay">
+                    <div className="modal-content confirm-modal">
                         <div className="modal-header">
-                            <h2>Xác nhận thêm kết quả</h2>
+                            <h2>Xác nhận kết quả</h2>
                         </div>
                         <div className="modal-body">
-                            <h3>Thông tin chung</h3>
-                            <div className="info-grid">
-                                <div className="info-item"><label>Booking ID:</label> <span>{newResult.bookingID}</span></div>
-                                <div className="info-item"><label>Tên khách hàng:</label> <span>{newResult.customerName}</span></div>
-                                <div className="info-item"><label>Dịch vụ:</label> <span>{newResult.serviceName}</span></div>
-                                <div className="info-item"><label>Ngày kết quả:</label> <span>{newResult.resultDate}</span></div>
-                                <div className="info-item"><label>Người tạo:</label> <span>{newResult.createdBy}</span></div>
-                                <div className="info-item"><label>File kết quả:</label> <span>{newResult.resultFile || 'Chưa có'}</span></div>
+                            <p>Bạn có chắc chắn muốn xác nhận kết quả xét nghiệm này không?</p>
+                            <div className="confirm-info">
+                                <strong>ID kết quả:</strong> {selectedResult.testResultID}<br />
+                                <strong>Khách hàng:</strong> {selectedResult.customerName}<br />
+                                <strong>Kết luận:</strong> {selectedResult.resultConclusion}
                             </div>
-                            <h3>Kết luận</h3>
-                            <p>{newResult.resultConclution}</p>
-                            <h3>Chi tiết locus/allele</h3>
-                            <table className="detail-table">
-                                <thead>
-                                    <tr>
-                                        <th>Locus</th>
-                                        <th>P1 Allele 1</th>
-                                        <th>P1 Allele 2</th>
-                                        <th>P2 Allele 1</th>
-                                        <th>P2 Allele 2</th>
-                                        <th>Paternity Index</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {newDetailResults.filter(row => row.locusName).map((row, idx) => (
-                                        <tr key={idx}>
-                                            <td>{row.locusName}</td>
-                                            <td>{row.p1Allele1}</td>
-                                            <td>{row.p1Allele2}</td>
-                                            <td>{row.p2Allele1}</td>
-                                            <td>{row.p2Allele2}</td>
-                                            <td>{row.paternityIndex}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
                         </div>
                         <div className="modal-footer">
-                            <Button variant="primary" onClick={handleConfirmAddResult}>Xác nhận</Button>
-                            <Button variant="outline" onClick={handleCancelAddResult}>Hủy</Button>
+                            <button 
+                                className="btn btn-secondary"
+                                onClick={() => setShowConfirmModal(false)}
+                                disabled={loading}
+                            >
+                                Hủy
+                            </button>
+                            <button 
+                                className="btn btn-success"
+                                onClick={executeAction}
+                                disabled={loading}
+                            >
+                                {loading ? 'Đang xử lý...' : 'Xác nhận'}
+                            </button>
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Send Modal */}
+            {showSendModal && selectedResult && (
+                <div className="modal-overlay">
+                    <div className="modal-content send-modal">
+                        <div className="modal-header">
+                            <h2>Gửi kết quả cho khách hàng</h2>
+                        </div>
+                        <div className="modal-body">
+                            <p>Bạn có chắc chắn muốn gửi kết quả này cho khách hàng không?</p>
+                            <div className="send-info">
+                                <strong>ID kết quả:</strong> {selectedResult.testResultID}<br />
+                                <strong>Khách hàng:</strong> {selectedResult.customerName}<br />
+                                <strong>Loại xét nghiệm:</strong> {selectedResult.testType}<br />
+                                <strong>File kết quả:</strong> {selectedResult.resultFile}
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button 
+                                className="btn btn-secondary"
+                                onClick={() => setShowSendModal(false)}
+                                disabled={loading}
+                            >
+                                Hủy
+                            </button>
+                            <button 
+                                className="btn btn-primary"
+                                onClick={executeAction}
+                                disabled={loading}
+                            >
+                                {loading ? 'Đang gửi...' : 'Gửi kết quả'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Result Modal */}
+            {showEditModal && editingResult && (
+                <EditResultModal
+                    result={editingResult}
+                    onSave={handleSaveEditResult}
+                    onCancel={() => { setShowEditModal(false); setEditingResult(null); }}
+                />
             )}
         </div>
     );
 }
+
+// Modal sửa kết quả
+const EditResultModal = ({ result, onSave, onCancel }) => {
+    const [formData, setFormData] = useState({ ...result });
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <h3>Sửa kết quả xét nghiệm</h3>
+                <form onSubmit={e => { e.preventDefault(); onSave(formData); }}>
+                    <div className="form-group">
+                        <label>Kết luận:</label>
+                        <textarea
+                            value={formData.resultConclution || ''}
+                            onChange={e => setFormData({ ...formData, resultConclution: e.target.value })}
+                            rows={3}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Trạng thái:</label>
+                        <select
+                            value={formData.status || ''}
+                            onChange={e => setFormData({ ...formData, status: e.target.value })}
+                            required
+                        >
+                            <option value="pending">Chờ xác nhận</option>
+                            <option value="confirmed">Đã xác nhận</option>
+                            <option value="sent">Đã gửi</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label>File kết quả:</label>
+                        <input
+                            type="text"
+                            value={formData.resultFile || ''}
+                            onChange={e => setFormData({ ...formData, resultFile: e.target.value })}
+                        />
+                    </div>
+                    <div className="form-actions">
+                        <button type="submit" className="btn btn-primary">Lưu</button>
+                        <button type="button" className="btn btn-secondary" onClick={onCancel}>Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};

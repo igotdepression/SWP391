@@ -1,29 +1,29 @@
-/* Font hiện đại */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 .login-root {
   min-height: 100vh;
   display: flex;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); /* Nhẹ nhàng và hiện đại hơn */
-  overflow: hidden; /* Ngăn chặn scroll không mong muốn */
+  background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); 
+  overflow: hidden; 
 }
 
 .login-left {
   flex: 1;
-  background: linear-gradient(135deg, #0f4c75 0%, #1a5e90 100%); /* Sắc xanh sâu và sang trọng */
+  background: linear-gradient(135deg, #0f4c75 0%, #1a5e90 100%); 
   color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 48px 20px 40px 20px;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1); /* Bóng đổ mềm hơn */
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1); 
   position: relative;
   overflow: hidden;
 }
 
-/* Thêm các hình dạng trừu tượng cho nền bên trái */
+
 .login-left::before {
   content: '';
   position: absolute;
@@ -61,19 +61,19 @@
 }
 
 .login-logo {
-  width: 140px; /* Lớn hơn một chút */
+  width: 140px; 
   height: 140px;
   margin-bottom: 32px;
   border-radius: 50%;
   background: #fff;
   object-fit: contain;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Bóng đổ nổi bật hơn */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
-  animation: logoFadeIn 1s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animation mượt hơn */
+  animation: logoFadeIn 1s cubic-bezier(0.25, 0.8, 0.25, 1); 
 }
 
 .login-logo:hover {
-  transform: scale(1.08) rotate(7deg); /* Hiệu ứng hover mạnh hơn */
+  transform: scale(1.08) rotate(7deg); 
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
@@ -89,7 +89,7 @@
 }
 
 .login-left h2 {
-  font-size: 2.5rem; /* Kích thước lớn hơn */
+  font-size: 2.5rem; 
   font-weight: 700;
   margin-bottom: 16px;
   letter-spacing: 1.5px;
@@ -97,10 +97,10 @@
 }
 
 .login-left p {
-  font-size: 1.15rem; /* Kích thước lớn hơn */
-  margin-bottom: 40px; /* Khoảng cách lớn hơn */
+  font-size: 1.15rem;
+  margin-bottom: 40px; 
   text-align: center;
-  max-width: 320px; /* Chiều rộng tối đa tăng */
+  max-width: 320px; 
   opacity: 0.95;
   line-height: 1.6;
 }
@@ -110,8 +110,7 @@
   color: #fff;
   border: none;
   border-radius: 28px;
-  /* Kích thước padding này sẽ ít quan trọng hơn khi width là 100% */
-  padding: 15px 0; /* Đặt padding ngang về 0 hoặc một giá trị nhỏ, vì width 100% sẽ kiểm soát độ dài */
+  padding: 15px 0; 
   font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
@@ -120,11 +119,11 @@
   margin-top: 15px;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  width: 100%; /* Quan trọng: làm cho nút chiếm toàn bộ chiều rộng có thể */
-  max-width: 250px; /* Điều chỉnh max-width này để kiểm soát độ dài tối đa của nút */
+  width: 100%; 
+  max-width: 250px; 
 }
 .signup-btn:hover {
-  transform: translateY(-4px); /* Nhấc lên nhiều hơn */
+  transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   background: linear-gradient(90deg, #2a9d8f 0%, #38b2ac 100%);
 }
@@ -140,15 +139,15 @@
 
 .login-form {
   width: 100%;
-  max-width: 420px; /* Rộng hơn một chút */
+  max-width: 420px;
   background: #ffffff;
-  border-radius: 28px; /* Bo tròn nhiều hơn */
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); /* Bóng đổ mềm và lớn hơn */
-  padding: 50px 40px 40px 40px; /* Đệm lớn hơn */
+  border-radius: 28px; 
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); 
+  padding: 50px 40px 40px 40px; 
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  animation: formFadeIn 1s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animation mượt hơn */
+  animation: formFadeIn 1s cubic-bezier(0.25, 0.8, 0.25, 1); 
 }
 
 @keyframes formFadeIn {
@@ -163,43 +162,43 @@
 }
 
 .login-form h2 {
-  color: #0f4c75; /* Màu chữ tiêu đề khớp với bên trái */
-  font-size: 2rem; /* Lớn hơn */
+  color: #0f4c75; 
+  font-size: 2rem; 
   font-weight: 700;
-  margin-bottom: 35px; /* Khoảng cách lớn hơn */
+  margin-bottom: 35px; 
   text-align: center;
   letter-spacing: 1px;
 }
 
 .input-group {
   position: relative;
-  margin-bottom: 25px; /* Khoảng cách lớn hơn */
+  margin-bottom: 25px;
 }
 .input-group input {
   width: 100%;
-  padding: 15px 50px 15px 20px; /* Đệm lớn hơn */
-  border: 2px solid #e0e7ef; /* Viền rõ hơn */
-  border-radius: 22px; /* Bo tròn nhiều hơn */
-  font-size: 1.1rem; /* Chữ lớn hơn */
+  padding: 15px 50px 15px 20px; 
+  border: 2px solid #e0e7ef; 
+  border-radius: 22px;
+  font-size: 1.1rem; 
   outline: none;
-  background: #f8f9fa; /* Nền input nhẹ nhàng */
+  background: #f8f9fa;
   color: #333;
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Bóng đổ bên trong */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 .input-group input:focus {
-  border-color: #1a5e90; /* Màu viền khi focus */
-  box-shadow: 0 0 0 4px rgba(26, 94, 144, 0.2); /* Hiệu ứng highlight khi focus */
-  transform: translateY(-2px); /* Nhấc lên nhẹ nhàng */
+  border-color: #1a5e90;
+  box-shadow: 0 0 0 4px rgba(26, 94, 144, 0.2);
+  transform: translateY(-2px); 
 }
 
 .show-password {
   position: absolute;
-  right: 20px; /* Điều chỉnh vị trí */
+  right: 20px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 1rem;
-  color: #1a5e90; /* Màu khớp với theme */
+  color: #1a5e90;
   cursor: pointer;
   user-select: none;
   opacity: 0.9;
@@ -209,17 +208,17 @@
 .show-password:hover {
   color: #0f4c75;
   opacity: 1;
-  transform: translateY(-50%) scale(1.08); /* Hiệu ứng phóng to nhẹ */
+  transform: translateY(-50%) scale(1.08); 
 }
 
 .forgot-row {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px; /* Khoảng cách lớn hơn */
+  margin-bottom: 20px;
 }
 .forgot-link {
   color: #1a5e90;
-  font-size: 1.05rem; /* Lớn hơn */
+  font-size: 1.05rem; 
   text-decoration: none;
   transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
   opacity: 0.95;
@@ -234,24 +233,24 @@
 
 .error-msg {
   color: #d32f2f;
-  background: #ffebee; /* Nền báo lỗi nhẹ hơn */
-  border-radius: 12px; /* Bo tròn nhiều hơn */
+  background: #ffebee;
+  border-radius: 12px;
   padding: 10px 15px;
   margin-bottom: 20px;
   font-size: 1.05rem;
   text-align: center;
   animation: shake 0.5s ease-in-out;
-  border: 1px solid #ef9a9a; /* Viền nhẹ */
+  border: 1px solid #ef9a9a; 
 }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-8px); } /* Rung mạnh hơn */
+  25% { transform: translateX(-8px); } 
   75% { transform: translateX(8px); }
 }
 
 .signin-btn {
-  background: linear-gradient(90deg, #1a5e90 0%, #0f4c75 100%); /* Màu xanh khớp */
+  background: linear-gradient(90deg, #1a5e90 0%, #0f4c75 100%); 
   color: #fff;
   border: none;
   border-radius: 28px;
@@ -275,15 +274,15 @@
 .other-login-btns {
   display: flex;
   flex-direction: column;
-  gap: 18px; /* Khoảng cách lớn hơn */
+  gap: 18px; 
   margin-top: 30px;
   align-items: stretch;
 }
 
 .guest-btn {
-  background: #f0f4f8; /* Nền nhẹ nhàng */
+  background: #f0f4f8; 
   color: #0f4c75;
-  border: 1.5px solid #d9e2ec; /* Viền mỏng */
+  border: 1.5px solid #d9e2ec; 
   border-radius: 28px;
   padding: 14px 0;
   font-size: 1.1rem;
@@ -294,7 +293,7 @@
 }
 .guest-btn:hover {
   transform: translateY(-3px);
-  background: #e6edf4; /* Nền hơi sẫm hơn */
+  background: #e6edf4; 
   color: #1a5e90;
   border-color: #1a5e90;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
@@ -312,7 +311,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px; /* Khoảng cách icon và text lớn hơn */
+  gap: 12px; 
   transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
@@ -325,7 +324,7 @@
 }
 
 .google-svg {
-  width: 24px; /* Kích thước icon lớn hơn */
+  width: 24px; 
   height: 24px;
   display: inline-block;
   vertical-align: middle;
@@ -333,10 +332,10 @@
   transition: transform 0.2s ease;
 }
 .google-btn:hover .google-svg {
-  transform: scale(1.15); /* Phóng to icon mạnh hơn */
+  transform: scale(1.15); 
 }
 
-/* Media Queries cho Responsive Design */
+
 @media (max-width: 900px) {
   .login-root {
     flex-direction: column;
@@ -344,12 +343,12 @@
   .login-left, .login-right {
     flex: unset;
     width: 100%;
-    min-height: 280px; /* Chiều cao tối thiểu cho phần trái */
+    min-height: 280px; 
     padding: 30px 15px 20px 15px;
   }
   .login-form {
     max-width: 100%;
-    padding: 35px 25px 25px 25px; /* Điều chỉnh đệm cho mobile */
+    padding: 35px 25px 25px 25px; 
   }
   .login-logo {
     width: 110px;
