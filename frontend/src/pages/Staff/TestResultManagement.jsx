@@ -9,14 +9,11 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api'; // Thêm import này
 
 export default function TestResultManagement() {
-<<<<<<< HEAD
+
     const location = useLocation(); // Thêm này
     const navigate = useNavigate(); // Thêm này
 
-    // Sample data based on SQL structure - Extended with sample status
-=======
-    
->>>>>>> 5c138f067164a75797f12b39ef99d2f81e06c07c
+    // Sample data based on SQL structure - Extended with sample status and type
     const [testResults, setTestResults] = useState([
         {
             testResultID: 1,
@@ -34,7 +31,7 @@ export default function TestResultManagement() {
             patientID: 301,
             sampleMethod: 'Tại cơ sở',
             sampleReceiveDate: '2025-06-15',
-            sampleStatus: 'ready', 
+            sampleStatus: 'ready',
             sampleType: 'Mẫu Chuẩn'
         },
         {
@@ -538,11 +535,11 @@ export default function TestResultManagement() {
         if (pendingTestResult) {
             try {
                 const data = JSON.parse(pendingTestResult);
-                
+
                 if (data.openAddModal) {
                     // Mở modal thêm kết quả
                     setShowAddModal(true);
-                    
+
                     // Set thông tin booking được chọn
                     setNewResult(prev => ({
                         ...prev,
@@ -552,7 +549,7 @@ export default function TestResultManagement() {
                         createdBy: user?.fullName || '',
                         resultDate: new Date().toISOString().split('T')[0]
                     }));
-                    
+
                     // Tự động load thông tin booking nếu có
                     if (data.bookingID) {
                         handleBookingSelect(data.bookingID);
