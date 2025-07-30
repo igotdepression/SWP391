@@ -1,4 +1,3 @@
-// pages/Manager/ServicePrice.jsx
 import React, { useEffect, useState } from 'react';
 import { Card, Button } from '../../components/ui/ui';
 import './ServicePrice.css';

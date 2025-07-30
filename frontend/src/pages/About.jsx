@@ -11,8 +11,6 @@ function About() {
   const { goToProfile } = useNavigation();
   const tocRef = useRef();
   const [tocOpen, setTocOpen] = useState(false);
-
-  // Scroll to section
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -52,7 +50,7 @@ function About() {
                 )}
               </div>
 
-              {/* Giới thiệu chung */}
+              {}
               <section id="gioi-thieu">
                 <div className="about-intro-block">
                   <h2 className="about-intro-title">Giới thiệu chung về DNA CHAIN</h2>
@@ -81,7 +79,7 @@ function About() {
                 </div>
               </section>
 
-              {/* Sứ mệnh */}
+              {}
               <section id="su-menh">
                 <h2 className="about-section-subtitle">Sứ Mệnh Của DNA CHAIN</h2>
                 <ul>
@@ -91,7 +89,7 @@ function About() {
                 </ul>
               </section>
 
-              {/* Tầm nhìn */}
+              {}
               <section id="tam-nhin">
                 <h2 className="about-section-subtitle">Tầm Nhìn DNA CHAIN</h2>
                 <ul>
@@ -100,7 +98,7 @@ function About() {
                 </ul>
               </section>
 
-              {/* Giá trị cốt lõi */}
+              {}
               <section id="gia-tri">
                 <h2 className="about-section-subtitle">Giá Trị Cốt Lõi DNA CHAIN</h2>
                 <ul>

@@ -1,10 +1,8 @@
-/* ServicePage.css */
 .service-page {
   min-height: 100vh;
   background-color: #f8f9fa;
 }
 
-/* Header Styles */
 .service-header {
   background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%);
   color: white;
@@ -64,7 +62,7 @@
   transform: translateY(-2px);
 }
 
-/* Hero Section */
+
 .hero-section {
   position: relative;
   height: 500px;
@@ -138,10 +136,10 @@
   border-radius: 2px;
 }
 
-/* Services Grid */
+
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Giảm xuống 280px */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
   gap: 30px;
   margin-top: 40px;
 }
@@ -223,7 +221,7 @@
   box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
-/* ADN Information Section */
+
 .adn-info-section {
   padding: 80px 0;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);

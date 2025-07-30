@@ -8,7 +8,7 @@ export default function BlogDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    // Dữ liệu bài viết chi tiết (trong thực tế sẽ fetch từ API)
+    
     const articleDetails = {
         1: {
             title: 'Giới thiệu công nghệ xét nghiệm ADN',

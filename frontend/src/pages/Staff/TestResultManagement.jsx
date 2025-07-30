@@ -1,4 +1,3 @@
-// Staff/TestResultManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Input, Select } from '../../components/ui/ui';
 import './TestResultManagement.css';
@@ -9,7 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 
 
 export default function TestResultManagement() {
-    // Sample data based on SQL structure - Extended with sample status
+    
     const [testResults, setTestResults] = useState([
         {
             testResultID: 1,
@@ -27,7 +26,7 @@ export default function TestResultManagement() {
             patientID: 301,
             sampleMethod: 'Tại cơ sở',
             sampleReceiveDate: '2025-06-15',
-            sampleStatus: 'ready', // ready, processing, normal, special
+            sampleStatus: 'ready', 
             sampleType: 'Mẫu Chuẩn'
         },
         {
