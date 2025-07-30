@@ -1,6 +1,7 @@
 package com.dna.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "Consultant")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Consultant {
 
     @Id
@@ -25,6 +27,7 @@ public class Consultant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID", nullable = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "bookings", "samples", "blogPosts", "consultants"})
     private User staff;
 
     @Column(name = "name", nullable = false, length = 100)
@@ -47,6 +50,7 @@ public class Consultant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "confirmBy", nullable = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "bookings", "samples", "blogPosts", "consultants"})
     private User confirmedBy;
 
     @Column(name = "status", length = 255)

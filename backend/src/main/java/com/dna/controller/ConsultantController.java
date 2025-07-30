@@ -1,6 +1,7 @@
 package com.dna.controller;
 
 import com.dna.dto.ConsultationRequest;
+import com.dna.dto.ConsultationResponseDTO;
 import com.dna.entity.Consultant;
 import com.dna.service.ConsultantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/consultations")
@@ -36,7 +41,7 @@ public class ConsultantController {
             );
             
             logger.info("Successfully created consultation with ID: {}", newConsultation.getConsultantID());
-            return new ResponseEntity<>(newConsultation, HttpStatus.CREATED);
+            return new ResponseEntity<>(new ConsultationResponseDTO(newConsultation), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             logger.warn("Invalid consultation request: {}", e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -53,15 +58,26 @@ public class ConsultantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Consultant> getConsultationDetails(@PathVariable Integer id) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<ConsultationResponseDTO> getConsultationDetails(@PathVariable Integer id) {
         return consultantService.getConsultationById(id)
-                .map(consultation -> new ResponseEntity<>(consultation, HttpStatus.OK))
+                .map(consultation -> new ResponseEntity<>(new ConsultationResponseDTO(consultation), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getAllConsultations() {
-        return ResponseEntity.ok(consultantService.getAllConsultations());
+        try {
+            List<Consultant> consultations = consultantService.getAllConsultations();
+            List<ConsultationResponseDTO> consultationDTOs = consultations.stream()
+                    .map(ConsultationResponseDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(consultationDTOs);
+        } catch (Exception e) {
+            logger.error("Error fetching consultations", e);
+            return new ResponseEntity<>("An error occurred while fetching consultations: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Có thể thêm các endpoint khác như:

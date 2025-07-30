@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 
 @Service
+@Transactional
 public class ConsultantService {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsultantService.class);
@@ -122,10 +124,12 @@ public class ConsultantService {
     }
 
     // Các phương thức khác: lấy danh sách tư vấn, cập nhật trạng thái, ...
+    @Transactional(readOnly = true)
     public Optional<Consultant> getConsultationById(Integer id) {
         return consultantRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public java.util.List<Consultant> getAllConsultations() {
         return consultantRepository.findAll();
     }
