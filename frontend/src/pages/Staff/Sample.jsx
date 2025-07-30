@@ -1,10 +1,10 @@
 // Staff/Sample.jsx
 import React, { useState, useEffect } from 'react';
 import './Sample.css';
-import { sampleAPT } from '../../services/api'; // Đảm bảo import đúng
+import { sampleAPT } from '../../services/api'; 
 
 export default function Sample() {
-    // Statistics state
+    
     const [stats, setStats] = useState({
         totalSamples: 5,
         standardSamples: 2,
@@ -31,7 +31,7 @@ export default function Sample() {
         fetchSamples();
     }, []);
 
-    // Participant details data (matching SQL structure)
+ 
 
     const [searchTerm, setSearchTerm] = useState('');
     const [showAddForm, setShowAddForm] = useState(false);
@@ -70,7 +70,7 @@ export default function Sample() {
             const newSampleData = {
                 ...newSample,
                 sampleID: samples.length + 1,
-                userID: 201, // Current staff ID
+                userID: 201, 
                 status: 'pending',
                 receivedDate: newSample.receivedDate || new Date().toISOString().split('T')[0]
             };
@@ -104,11 +104,11 @@ export default function Sample() {
     const handleEditSample = (sample) => {
         setEditingSample(sample);
         setNewSample({
-            bookingID: sample.bookingID, // Chỉ để hiển thị, không cho phép sửa
-            participantID: sample.participantID, // Chỉ để hiển thị, không cho phép sửa
-            typeOfCollection: sample.typeOfCollection, // Cho phép sửa
-            sampleType: sample.sampleType, // Cho phép sửa
-            receivedDate: sample.receivedDate // Cho phép sửa
+            bookingID: sample.bookingID, 
+            participantID: sample.participantID,
+            typeOfCollection: sample.typeOfCollection, 
+            sampleType: sample.sampleType, 
+            receivedDate: sample.receivedDate 
         });
         setShowEditForm(true);
         setShowAddForm(false);
@@ -121,7 +121,7 @@ export default function Sample() {
                     sample.sampleID === editingSample.sampleID
                         ? {
                             ...sample,
-                            // Chỉ cập nhật các trường được phép sửa
+                          
                             typeOfCollection: newSample.typeOfCollection,
                             sampleType: newSample.sampleType,
                             receivedDate: newSample.receivedDate || sample.receivedDate

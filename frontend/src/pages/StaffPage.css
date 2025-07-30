@@ -436,11 +436,11 @@ body {
     font-size: 1rem;
 }
 
-.manager-profile-info {
+.staff-profile-info {
     display: flex;
     align-items: center;
     gap: 10px;
-    /* Các style khác cho manager-profile-info nếu có */
+    /* Các style khác cho staff-profile-info nếu có */
 }
 
 .header-user-profile-area {

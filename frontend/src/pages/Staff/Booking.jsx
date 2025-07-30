@@ -87,8 +87,8 @@ export default function Booking() {
     };
 
     const serviceOptions = [
-        "Xét nghiệm cha con",
-        "Xét nghiệm mẹ con",
+        "Xét nghiệm cha con",
+        "Xét nghiệm mẹ con",
         "Xét nghiệm ông cháu",
         "Xét nghiệm bà cháu",
         "Xét nghiệm anh em ruột",
@@ -103,9 +103,12 @@ export default function Booking() {
     );
 
     // Lấy danh sách gói dịch vụ duy nhất
-    const packageTypeOptions = Array.from(
-        new Set(bookings.map(b => b.service?.packageType || b.packageType).filter(Boolean))
-    );
+    const packageTypeOptions = [
+        "Tiêu chuẩn (2-5 ngày)",
+        "Lấy nhanh (6-24 tiếng)",
+        "Tiêu chuẩn (10-14 ngày)",
+        "Lấy nhanh (7-10 ngày)"
+    ];
 
     // Logic lọc nâng cao
     const filteredBookings = bookings.filter(b => {
@@ -335,15 +338,6 @@ export default function Booking() {
             });
         }
     };
-
-    useEffect(() => {
-        userAPI.getAllUsers()
-            .then(res => setUsers(res.data))
-            .catch(err => {
-                setUsers([]);
-                alert("Không thể tải danh sách user!");
-            });
-    }, []);
 
     useEffect(() => {
         api.get("/bookings/staff/all")
@@ -637,7 +631,7 @@ export default function Booking() {
                         </div>
                     ) : (
                         <div style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
-                            <p>Không tìm thấy đặt lịch nào phù hợp với tiêu chí tìm kiếm.</p>
+                            <p>😕 Không tìm thấy lịch hẹn phù hợp. Bạn có thể thay đổi bộ lọc để xem thêm kết quả.</p>
                             {(searchTerm || filterStatus !== "all" || filterService !== "all" ||
                                 filterServiceType !== "all" || filterPackageType !== "all" ||
                                 filterNumberSample !== "all" || filterAppointmentDate) && (

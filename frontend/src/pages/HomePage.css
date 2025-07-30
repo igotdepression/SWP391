@@ -1,19 +1,16 @@
-/* Styling for HomePage.jsx */
-
-/* Use colors similar to LoginPage/SignUpPage */
 :root {
-    --primary-dark-blue: #0a3d62; /* Xanh đậm */
-    --primary-blue: #2563eb;       /* Xanh dương chính */
-    --primary-green: #34A853;      /* Xanh lá cây */
-    --light-gray-bg: #f7faff;      /* Nền xám nhạt */
-    --medium-gray-border: #b0c4de; /* Màu border xám */
-    --dark-text: #222;             /* Màu chữ đậm */
-    --light-text: #fff;            /* Màu chữ sáng */
-    --shadow-light: rgba(10,61,98,0.07); /* Bóng đổ nhẹ */
-    --shadow-medium: rgba(10,61,98,0.10); /* Bóng đổ trung bình */
-    --section-bg-light: #eaf0fa;   /* Nền section sáng hơn */
-    --button-hover-blue: #1e4bbf;  /* Xanh dương hover */
-    --button-hover-green: #2d8b4b; /* Xanh lá hover */
+    --primary-dark-blue: #0a3d62;
+    --primary-blue: #2563eb;      
+    --primary-green: #34A853;      
+    --light-gray-bg: #f7faff;     
+    --medium-gray-border: #b0c4de; 
+    --dark-text: #222;             
+    --light-text: #fff;           
+    --shadow-light: rgba(10,61,98,0.07); 
+    --shadow-medium: rgba(10,61,98,0.10); 
+    --section-bg-light: #eaf0fa;   
+    --button-hover-blue: #1e4bbf; 
+    --button-hover-green: #2d8b4b; 
 }
 
 body {
@@ -38,7 +35,7 @@ body {
     background-color: #ffffff;
 }
 
-/* Header Styling (giữ nguyên hoặc điều chỉnh nếu cần cho mục mới) */
+
 .homepage-header {
     display: flex;
     justify-content: space-between;
@@ -193,32 +190,32 @@ body {
     background: #ffffff;
     gap: 0;
     min-height: 240px;
-    /* Có thể tăng min-height nếu bạn muốn banner cao hơn nữa */
+    
 }
 
 .adn-banner-img {
-    flex: 2; /* Tăng flex để ảnh chiếm nhiều không gian hơn */
+    flex: 2;
     min-width: 0;
     min-height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; /* Căn giữa ảnh trong cột */
-    padding: 20px; /* Thêm padding xung quanh ảnh */
+    align-items: center; 
+    padding: 20px;
 }
 
 .adn-banner-img img {
-    /* Đảm bảo ảnh chiếm hết không gian của .adn-banner-img mà không bị biến dạng */
-    width: 100%; /* Chiếm 100% chiều rộng của container */
-    max-width: 700px; /* Giới hạn kích thước tối đa của ảnh */
-    height: auto; /* Giữ tỷ lệ khung hình */
-    border-radius: 12px; /* Tăng bo tròn góc */
-    object-fit: cover; /* Đảm bảo ảnh bao phủ toàn bộ khu vực */
+   
+    width: 100%; 
+    max-width: 700px; 
+    height: auto;
+    border-radius: 12px; 
+    object-fit: cover;
     box-shadow: none;
 }
 
 .adn-banner-content {
-    flex: 1; /* Giảm flex để nội dung chiếm ít không gian hơn */
+    flex: 1; 
     min-width: 0;
     min-height: 180px;
     display: flex;
@@ -226,7 +223,7 @@ body {
     justify-content: center;
     align-items: left;
     text-align: center;
-    padding: 20px; /* Thêm padding cho nội dung */
+    padding: 20px; 
 }
 
 .adn-banner-intro {
@@ -244,7 +241,7 @@ body {
     width: 100%;
     font-size: 3rem;
     font-weight: 800;
-    color: var(--primary-blue); /* Sử dụng biến màu đã định nghĩa */
+    color: var(--primary-blue); 
     margin: 0 auto 0.5rem auto;
 }
 
@@ -290,44 +287,44 @@ body {
 }
 
 .adn-btn-main {
-    background: var(--primary-blue); /* Sử dụng biến màu */
+    background: var(--primary-blue); 
     color: #fff;
 }
 
 .adn-btn-main:hover {
-    background: var(--button-hover-blue); /* Sử dụng biến màu */
+    background: var(--button-hover-blue); 
 }
 
 .adn-btn-outline {
     background: #fff;
-    border: 2px solid var(--primary-blue); /* Sử dụng biến màu */
-    color: var(--primary-blue); /* Sử dụng biến màu */
+    border: 2px solid var(--primary-blue); 
+    color: var(--primary-blue); 
     font-weight: 700;
 }
 
 .adn-btn-outline:hover {
-    background: var(--primary-blue); /* Sử dụng biến màu */
+    background: var(--primary-blue); 
     color: #fff;
-    border-color: var(--primary-blue); /* Sử dụng biến màu */
+    border-color: var(--primary-blue); 
 }
 
 .adn-btn-small {
     padding: 7px 18px;
     font-size: 0.97rem;
     border-radius: 16px;
-    background: var(--primary-blue); /* Sử dụng biến màu */
+    background: var(--primary-blue); 
     color: #fff;
     margin-top: 12px;
     font-weight: 700;
 }
 
 .adn-btn-small:hover {
-    background: var(--button-hover-blue); /* Sử dụng biến màu */
+    background: var(--button-hover-blue); 
 }
 
 .adn-btn-more {
     background: #d9eaf6;
-    color: var(--primary-blue); /* Sử dụng biến màu */
+    color: var(--primary-blue); 
     font-size: 0.99rem;
     border-radius: 11px;
     padding: 6px 26px;
@@ -339,7 +336,7 @@ body {
 }
 
 .adn-btn-more:hover {
-    background: var(--primary-blue); /* Sử dụng biến màu */
+    background: var(--primary-blue); 
     color: #fff;
 }
 
@@ -352,23 +349,23 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
-    background: #ffffff; /* Nền trắng thống nhất */
+    background: #ffffff; 
     border-radius: 8px 8px 0 0;
     padding: 12px 34px 12px 24px;
-    border-bottom: 4px solid var(--primary-blue); /* Sử dụng biến màu */
-    /* font-family: var(--menu-font); - Removed as not defined */
+    border-bottom: 4px solid var(--primary-blue); 
+    
 }
 
 .adn-section-title {
     font-size: 1.25rem;
-    color: var(--dark-text); /* Sử dụng biến màu */
+    color: var(--dark-text); 
     font-weight: 700;
     letter-spacing: 1px;
 }
 
 .adn-section-icon {
     font-size: 1.38rem;
-    color: var(--primary-blue); /* Sử dụng biến màu */
+    color: var(--primary-blue);
     font-weight: bold;
     margin-right: 3px;
 }
@@ -479,7 +476,7 @@ body {
 .adn-service-name {
     font-size: 1.19rem;
     font-weight: 700;
-    color: var(--primary-blue); /* Sử dụng biến màu */
+    color: var(--primary-blue); 
     margin-bottom: 8px;
     margin-top: 8px;
     text-align: center;
@@ -493,7 +490,7 @@ body {
     text-align: center;
 }
 
-/* Experts Section */
+
 .experts-subtitle {
     text-align: center;
     font-size: 1.1rem;
@@ -599,7 +596,7 @@ body {
     text-align: center;
 }
 
-/* Responsive for Experts Section */
+
 @media (max-width: 1200px) {
     .experts-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -996,7 +993,7 @@ body {
   font-weight: 600;
 }
 
-/* ADVANTAGES SECTION - Thiết kế theo hình mẫu */
+
 .advantages-section {
   background: #ffffff;
   padding: 80px 0;
@@ -1050,7 +1047,7 @@ body {
   align-items: start;
 }
 
-/* Phần bên trái - Ảnh lab */
+
 .advantages-left {
   display: flex;
   flex-direction: column;
@@ -1127,7 +1124,7 @@ body {
     box-shadow: none;
 }
 
-/* Phần bên phải - Grid lợi thế */
+
 .advantages-right {
   padding-top: 0;
 }
@@ -1189,7 +1186,7 @@ body {
   font-size: 0.85em;
 }
 
-/* Responsive cho Advantages Section */
+
 @media (max-width: 1200px) {
   .advantages-container {
     gap: 40px;

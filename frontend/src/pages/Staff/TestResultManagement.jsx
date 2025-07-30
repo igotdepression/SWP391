@@ -1,4 +1,3 @@
-// Staff/TestResultManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'; // Thêm imports
 import { Card, Button, Input, Select } from '../../components/ui/ui';
@@ -10,10 +9,14 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api'; // Thêm import này
 
 export default function TestResultManagement() {
+<<<<<<< HEAD
     const location = useLocation(); // Thêm này
     const navigate = useNavigate(); // Thêm này
 
     // Sample data based on SQL structure - Extended with sample status
+=======
+    
+>>>>>>> 5c138f067164a75797f12b39ef99d2f81e06c07c
     const [testResults, setTestResults] = useState([
         {
             testResultID: 1,
@@ -31,7 +34,7 @@ export default function TestResultManagement() {
             patientID: 301,
             sampleMethod: 'Tại cơ sở',
             sampleReceiveDate: '2025-06-15',
-            sampleStatus: 'ready', // ready, processing, normal, special
+            sampleStatus: 'ready', 
             sampleType: 'Mẫu Chuẩn'
         },
         {

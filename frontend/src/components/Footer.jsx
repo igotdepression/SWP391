@@ -19,7 +19,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
-        {/* Cột 1: Logo và thông tin công ty */}
+      
         <div className="footer-section logo-section">
           <div className="footer-logo">
             <div className="logo-container">
@@ -83,7 +83,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Cột 4: Kết nối & Chính sách */}
+        
         <div className="footer-section connect-section">
           <h3 className="social-section-title">KẾT NỐI VỚI CHÚNG TÔI</h3>
           <div className="social-links">

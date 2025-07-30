@@ -1,4 +1,3 @@
-// pages/Manager/TestResultManagement.jsx
 import React, { useEffect, useState } from 'react';
 import './TestResultManagement.css';
 import { testResultAPI, detailResultAPI } from '../../services/api';

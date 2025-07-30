@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, Button, Input } from '../../components/ui/ui';
 import './PersonalInfo.css';
 import { userAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 export default function PersonalInfo() {
+    const { user } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -30,19 +32,74 @@ export default function PersonalInfo() {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const res = await userAPI.getUserProfile();
+                // Thử lấy profile từ localStorage trước
+                const userData = localStorage.getItem('user');
+                let userInfo = null;
+                
+                if (userData) {
+                    try {
+                        userInfo = JSON.parse(userData);
+                        console.log('User data from localStorage:', userInfo);
+                    } catch (e) {
+                        console.error('Error parsing user data:', e);
+                    }
+                }
+                
+                // Thử gọi API getUserProfile
+                let res;
+                try {
+                    res = await userAPI.getUserProfile();
+                    console.log('API Response:', res.data);
+                } catch (apiError) {
+                    console.log('API Error, using localStorage data:', apiError);
+                    // Nếu API fail, sử dụng dữ liệu từ localStorage
+                    if (userInfo) {
+                        res = { data: userInfo };
+                    } else if (user) {
+                        res = { data: user };
+                    } else {
+                        throw apiError;
+                    }
+                }
+                // Lấy ID và format nó
+                let rawId = res.data.userID || res.data.userId || user?.userID || '';
+                
+                // Nếu không có ID, tạo ID tạm thời từ email hoặc tên
+                if (!rawId) {
+                    const email = res.data.email || user?.email || '';
+                    const fullName = res.data.fullName || user?.fullName || '';
+                    
+                    // Tạo ID từ email hoặc tên
+                    if (email) {
+                        rawId = email.split('@')[0].length.toString();
+                    } else if (fullName) {
+                        rawId = fullName.length.toString();
+                    } else {
+                        rawId = '3'; // ID mặc định
+                    }
+                }
+                
+                const numericId = parseInt(rawId) || 3;
+                const formattedId = `MN${String(numericId).padStart(3, '0')}`;
+                
+                console.log('Raw ID:', rawId);
+                console.log('Numeric ID:', numericId);
+                console.log('Formatted ID:', formattedId);
+                
                 setPersonalData({
-                    userId: res.data.userId || '',
-                    userID: res.data.userId ? `MN${String(res.data.userId).padStart(3, '0')}` : '',
-                    roleName: res.data.role || '',
-                    fullName: res.data.fullName || '',
+                    userId: rawId,
+                    userID: formattedId,
+                    roleName: res.data.role || res.data.roleName || user?.role || '',
+                    fullName: res.data.fullName || user?.fullName || '',
                     phoneNumber: res.data.phoneNumber || '',
-                    email: res.data.email || '',
+                    email: res.data.email || user?.email || '',
                     password: '********',
                     dateOfBirth: res.data.dateOfBirth || '',
                     gender: res.data.gender || '',
                     address: res.data.address || '',
                 });
+                console.log('Personal Data after set:', personalData); // Debug log
+                console.log('AuthContext user:', user); // Debug log
             } catch (err) {
                 alert('Không thể tải thông tin cá nhân!');
             } finally {
@@ -74,7 +131,7 @@ export default function PersonalInfo() {
 
     const handleConfirmSave = async () => {
         try {
-            await userAPI.updateUserProfile({
+            console.log('Sending update data:', {
                 fullName: personalData.fullName,
                 phoneNumber: personalData.phoneNumber,
                 email: personalData.email,
@@ -82,11 +139,23 @@ export default function PersonalInfo() {
                 gender: personalData.gender,
                 address: personalData.address,
             });
+            
+            const response = await userAPI.updateUserProfile({
+                fullName: personalData.fullName,
+                phoneNumber: personalData.phoneNumber,
+                email: personalData.email,
+                dateOfBirth: personalData.dateOfBirth,
+                gender: personalData.gender,
+                address: personalData.address,
+            });
+            
+            console.log('Update response:', response);
             alert('Thông tin cá nhân đã được cập nhật!');
             setIsEditing(false);
             setShowConfirmModal(false);
         } catch (err) {
-            alert('Cập nhật thông tin thất bại!');
+            console.error('Update error:', err);
+            alert(`Cập nhật thông tin thất bại: ${err.message || 'Lỗi không xác định'}`);
             setShowConfirmModal(false);
         }
     };
@@ -123,8 +192,8 @@ export default function PersonalInfo() {
                 <h3>Thông tin cá nhân</h3>
                 <div className="info-grid">
                     <div className="info-item">
-                        <label>Mã người dùng:</label>
-                        <p>{personalData.userID}</p>
+                        <label>ID Manager:</label>
+                        <p>{personalData.userID || personalData.userId || 'N/A'}</p>
                     </div>
                     <div className="info-item">
                         <label>Vai trò:</label>

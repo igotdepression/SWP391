@@ -49,7 +49,7 @@
   transform: scale(1.05);
 }
 
-/* Ensure DNA CHAIN stays on one line */
+
 .logo-text-container {
   display: flex;
   flex-direction: column;
@@ -76,7 +76,7 @@
   text-overflow: ellipsis;
 }
 
-/* Section Headers */
+
 .footer-section h3 {
   font-size: 1.1rem;
   font-weight: 700;
@@ -89,7 +89,7 @@
   white-space: nowrap;
 }
 
-/* Special handling for social section title */
+
 .social-section-title {
   white-space: nowrap !important;
   overflow: hidden;
@@ -98,7 +98,7 @@
   margin-bottom: 20px !important;
 }
 
-/* Improve connect section spacing after removing certification logos */
+
 .connect-section {
   display: flex;
   flex-direction: column;
@@ -127,7 +127,7 @@
   margin-top: 30px !important;
 }
 
-/* Logo Section Specific */
+
 .logo-section {
   padding-right: 15px;
 }
@@ -136,22 +136,22 @@
   margin-bottom: 20px;
 }
 
-/* Contact Section */
+
 .contact-section {
   padding: 0 10px;
 }
 
-/* Services Section */
+
 .service-section {
   padding: 0 10px;
 }
 
-/* Connect Section - improved spacing after removing certification logos */
+
 .connect-section {
   padding-left: 5px;
 }
 
-/* Address and Contact Items */
+
 .address-item, .contact-item {
   display: flex;
   align-items: flex-start;
@@ -173,7 +173,7 @@
   color: rgba(255,255,255,0.9);
 }
 
-/* Company Description */
+
 .company-description {
   margin-top: 15px;
   padding-right: 10px;
@@ -187,7 +187,7 @@
   text-align: justify;
 }
 
-/* Contact Section */
+
 .contact-info {
   display: flex;
   flex-direction: column;
@@ -211,7 +211,7 @@
   flex-shrink: 0;
 }
 
-/* Lists */
+
 .footer-section ul {
   list-style: none;
   padding: 0;
@@ -257,7 +257,7 @@
   color: #60a5fa;
 }
 
-/* Social Links */
+
 .social-links {
   display: flex;
   gap: 15px;
@@ -292,7 +292,7 @@
   background: #0068ff;
 }
 
-/* Custom Zalo icon styling */
+
 .zalo-icon {
   font-weight: bold;
   font-size: 18px;
@@ -311,7 +311,7 @@
   background: #bd081c;
 }
 
-/* Footer Bottom */
+
 .footer-bottom {
   background: #1a365d;
   padding: 18px 0;
@@ -332,7 +332,7 @@
   font-weight: 400;
 }
 
-/* Partner Logos */
+
 .partner-logos {
   display: flex;
   flex-direction: column;
@@ -367,7 +367,7 @@
   font-style: italic;
 }
 
-/* Responsive Design */
+
 @media (max-width: 1024px) {
   .footer-content {
     grid-template-columns: 1fr 1fr;
@@ -429,7 +429,7 @@
     text-overflow: ellipsis;
   }
   
-  /* Special handling for social section title on mobile */
+ 
   .social-section-title {
     font-size: 0.9rem !important;
     letter-spacing: 0.3px !important;
@@ -466,7 +466,7 @@
     letter-spacing: 0.3px;
   }
   
-  /* Ensure social section header fits on one line */
+
   .footer-section h3 {
     font-size: 0.9rem;
     white-space: nowrap;
@@ -500,7 +500,7 @@
     padding: 5px;
   }
   
-  /* Extra small screen adjustments for section headers */
+
   .footer-section h3 {
     font-size: 0.8rem;
     letter-spacing: 0.3px;

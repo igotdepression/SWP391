@@ -1,4 +1,3 @@
-/* Test Result Management Beautiful CSS */
 .test-result-management-container {
     padding: 20px;
     background: #ffffff;
@@ -83,11 +82,11 @@
 }
 
 /* Specific status colors for Test Result Management */
-.status-badge.status-pending_upload { background-color: #ffe0b2; color: #ff6f00; } /* Orange-ish */
-.status-badge.status-uploaded { background-color: #d1ecf1; color: #0a5666; } /* Light blue-green */
-.status-badge.status-pending_review { background-color: #e6e6fa; color: #551a8b; } /* Light purple */
-.status-badge.status-reviewed { background-color: #d4edda; color: #155724; } /* Green */
-.status-badge.status-delivered { background-color: #cfe2ff; color: #073b4c; } /* Darker blue for delivered */
+.status-badge.status-pending_upload { background-color: #ffe0b2; color: #ff6f00; } 
+.status-badge.status-uploaded { background-color: #d1ecf1; color: #0a5666; } 
+.status-badge.status-pending_review { background-color: #e6e6fa; color: #551a8b; } 
+.status-badge.status-reviewed { background-color: #d4edda; color: #155724; }
+.status-badge.status-delivered { background-color: #cfe2ff; color: #073b4c; }
 
 
 .test-result-detail-card p {
@@ -111,7 +110,7 @@
 }
 
 .file-input {
-    display: block; /* Make it take full width */
+    display: block; 
     margin-bottom: 10px;
 }
 
@@ -129,7 +128,7 @@
     margin-right: 10px;
 }
 
-/* Action Buttons */
+
 .action-buttons {
     display: flex;
     gap: 8px;
@@ -176,7 +175,7 @@
     color: white;
 }
 
-/* Modal Styles */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -384,7 +383,7 @@
     justify-content: center;
     align-items: center;
     height: 200px;
-    fontSize: 16px;
+    font-size: 16px;
     color: #666;
 }
 
@@ -444,7 +443,7 @@
     transition: box-shadow 0.2s;
     max-width: 20%;
     margin: 0;
-    gap: 16px; /* Thêm khoảng cách giữa các phần tử */
+    gap: 16px; 
 }
 
 .testResult-stat-card .stat-label {
@@ -467,7 +466,7 @@
     flex-shrink: 0;
 }
 
-/* Đặt lại .stat-info để nằm ngang */
+
 .testResult-stat-card .stat-info {
     display: flex;
     flex-direction: row;
@@ -539,7 +538,7 @@
     background: #2563eb;
 }
 
-/* Table Container */
+
 .table-container {
     background: white;
     border-radius: 12px;
@@ -549,7 +548,7 @@
     margin-bottom: 20px;
 }
 
-/* Table styling */
+
 .samples-table {
     width: 100%;
     max-width: 100%;

@@ -62,7 +62,7 @@ function HomePage() {
   const [progressAnimated, setProgressAnimated] = useState(false);
   const progressRef = useRef(null);
 
-  // Form state cho consultation
+
   const [consultationForm, setConsultationForm] = useState({
     name: '',
     phone: '',
@@ -74,7 +74,7 @@ function HomePage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Intersection Observer cho progress bars
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -87,8 +87,8 @@ function HomePage() {
         });
       },
       {
-        threshold: 0.5, // Kích hoạt khi 50% element hiển thị
-        rootMargin: '-50px 0px', // Offset để animation mượt hơn
+        threshold: 0.5, 
+        rootMargin: '-50px 0px', 
       }
     );
 
@@ -101,7 +101,7 @@ function HomePage() {
         observer.unobserve(progressRef.current);
       }
     };
-  }, []); // Chỉ chạy 1 lần khi mount
+  }, []); 
 
   const handlePrevLabSlide = () => {
     setLabSlideIdx(labSlideIdx === 0 ? labSlides.length - 1 : labSlideIdx - 1);
@@ -116,7 +116,7 @@ function HomePage() {
     navigate('/');
   };
 
-  // Hàm xử lý khi người dùng click vào dịch vụ
+ 
   const handleServiceClick = (route) => {
     navigate(route);
     setTimeout(() => {
@@ -132,7 +132,7 @@ function HomePage() {
       alert('Bạn chưa đăng nhập. Vui lòng đăng nhập để sử dụng chức năng này.');
     } else {
       navigate(route);
-      // Đảm bảo scroll đến đầu trang sau khi navigate
+      
       setTimeout(() => {
         window.scrollTo({
           top: 0,
@@ -364,7 +364,7 @@ function HomePage() {
             </div>
             <div className="advantages-subtitle">
               <div className="dna-icon">🧬</div>
-              <p>Đem tới chất lượng dịch vụ tốt nhất về xét nghiệm ADN cho người Việt Nam</p>
+              <p>Đem tới chất lượng dịch vụ tốt nhất về xét nghiệm ADN cho mọi người</p>
             </div>
 
             <div className="advantages-container">
@@ -433,7 +433,7 @@ function HomePage() {
             </div>
           </section>
 
-          {/* Consultation Form Section - moved to end of page */}
+          
           <section className="adn-section homepage-consultation-section" id="consultation">
             <div className="adn-section-title-group" >
               <span className="adn-section-icon">+</span>
@@ -509,19 +509,7 @@ function HomePage() {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label htmlFor="preferredTime">Thời gian mong muốn được liên hệ</label>
-                      <select
-                        id="preferredTime"
-                        name="preferredTime"
-                        value={consultationForm.preferredTime}
-                        onChange={handleConsultationInputChange}
-                      >
-                        <option value="">Chọn thời gian</option>
-                        <option value="morning">Buổi sáng (8h-12h)</option>
-                        <option value="afternoon">Buổi chiều (13h-17h)</option>
-                        <option value="evening">Buổi tối (18h-20h)</option>
-                        <option value="anytime">Bất kỳ lúc nào</option>
-                      </select>
+                    
                     </div>
                   </div>
 

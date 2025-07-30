@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '../hooks/useNavigation';
 import { getAvatarColor, getInitials } from '../utils/avatarUtils';
-import './Header.css'; // Đảm bảo import CSS
+import './Header.css'; 
 
 export default function Header() {
     const { user, logout } = useAuth();
@@ -21,16 +21,16 @@ export default function Header() {
     };
 
     return (
-        <header className="adn-header"> {/* Sử dụng class mới */}
-            <div className="adn-header-content"> {/* Thêm div bọc nội dung */}
+        <header className="adn-header"> {}
+            <div className="adn-header-content"> {}
 
                 <div className="adn-footer-logo">
-                    {/* Đảm bảo logo là một phần của Link để click được */}
+                    {}
                     <Link to="/home">
                         <img src="/logo.png" alt="ADN Logo" />
                     </Link>
                 </div>
-                <nav className="adn-header-nav"> {/* Sử dụng class mới */}
+                <nav className="adn-header-nav"> {}
                     <ul>
                         <li>
                             <NavLink
@@ -92,8 +92,8 @@ export default function Header() {
                         </li>
                     </ul>
                 </nav>
-                <div className="adn-header-right"> {/* Thêm div bọc phần bên phải */}
-                    <div className="adn-header-search"> {/* Sử dụng class mới */}
+                <div className="adn-header-right"> {}
+                    <div className="adn-header-search"> {}
                         <input type="text" placeholder="Tìm kiếm..." className="header-search-input" />
                     </div>
 
