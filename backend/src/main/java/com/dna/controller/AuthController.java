@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*; // Import các annotation cho 
 import org.springframework.web.bind.annotation.PathVariable; // Import PathVariable
 import java.time.LocalDateTime; // Import LocalDateTime
 import org.springframework.transaction.annotation.Transactional; // Import Transactional
+import com.dna.service.EmailService; // Import EmailService
 
 @RestController // Đánh dấu class là REST controller
 @RequestMapping("/api/auth") // Định nghĩa route gốc cho controller này
@@ -51,6 +52,9 @@ public class AuthController { // Định nghĩa class AuthController
     
     @Autowired // Inject PasswordResetTokenRepository
     private PasswordResetTokenRepository passwordResetTokenRepository; // Repository thao tác với password reset tokens
+    
+    @Autowired // Inject EmailService
+    private EmailService emailService; // Service gửi email
 
     @PostMapping("/login") // Định nghĩa endpoint POST /login
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) { // Hàm xử lý đăng nhập
@@ -138,8 +142,9 @@ public class AuthController { // Định nghĩa class AuthController
             PasswordResetToken resetToken = new PasswordResetToken(token, user, expiryDate);
             passwordResetTokenRepository.save(resetToken);
             
-            // TODO: Implement email sending logic here
-            // Send email with reset link: /reset-password?token={token}
+            // Gửi email với link reset password
+            String resetLink = "https://dna-chain-bloodline.vercel.app/reset-password?token=" + token;
+            emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
             
             log.info("Forgot password email sent successfully for: {}", request.getEmail()); // Ghi log khi gửi email thành công
             return ResponseEntity.ok("Đã gửi email hướng dẫn đặt lại mật khẩu. Vui lòng kiểm tra hộp thư của bạn."); // Trả về thông báo thành công
