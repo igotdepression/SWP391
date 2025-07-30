@@ -159,25 +159,25 @@ export default function BlogDetail() {
 
                 <h3>⚗️ Bước 2: Xử lý sơ bộ và bảo quản</h3>
                 <h4>Quy trình xử lý theo loại mẫu:</h4>
-                
-                <div class="sample-processing">
-                    <div class="process-type">
+
+                <div className="sample-processing">
+                    <div className="process-type">
                         <h4>Tế bào niêm mạc miệng:</h4>
                         <ul>
-                            <li>Ngâm cotton swab trong buffer lysis</li>
-                            <li>Lắc nhẹ để tế bào tách ra</li>
-                            <li>Ly tâm để thu tế bào</li>
-                            <li>Loại bỏ debris và tạp chất</li>
+                            <li>Ngâm cotton swab trong buffer lysis chuyên dụng</li>
+                            <li>Lắc nhẹ trong 10-15 phút để tế bào tách ra hoàn toàn</li>
+                            <li>Ly tâm ở tốc độ 3000 rpm trong 5 phút để thu tế bào</li>
+                            <li>Loại bỏ debris và tạp chất qua màng lọc 0.22μm</li>
                         </ul>
                     </div>
                     
-                    <div class="process-type">
+                    <div className="process-type">
                         <h4>Mẫu máu:</h4>
                         <ul>
-                            <li>Ly tâm tách huyết tương và hồng cầu</li>
-                            <li>Thu lấy lớp buffy coat (chứa bạch cầu)</li>
-                            <li>Rửa loại bỏ hemoglobin</li>
-                            <li>Chuẩn bị cho bước chiết xuất</li>
+                            <li>Ly tâm ở 2500 rpm trong 10 phút để tách huyết tương và hồng cầu</li>
+                            <li>Thu lấy lớp buffy coat (chứa bạch cầu và tiểu cầu)</li>
+                            <li>Rửa 3 lần bằng PBS để loại bỏ hemoglobin</li>
+                            <li>Chuẩn bị pellet tế bào cho bước chiết xuất ADN</li>
                         </ul>
                     </div>
                 </div>
@@ -1294,12 +1294,12 @@ export default function BlogDetail() {
                 <h3>⏰ Bước 4: Chọn thời gian và địa điểm</h3>
                 
                 <h4>Hệ thống lịch hẹn thông minh:</h4>
-                <ul>
-                    <li><strong>Calendar view:</strong> Xem lịch trống theo tháng</li>
-                    <li><strong>Time slot:</strong> Chọn khung giờ phù hợp</li>
-                    <li><strong>Real-time update:</strong> Cập nhật lịch trống ngay lập tức</li>
-                    <li><strong>Multiple locations:</strong> Chọn địa điểm thuận tiện</li>
-                </ul>
+<ul>
+    <li><strong>Calendar view:</strong> Xem lịch trống theo tháng</li>
+    <li><strong>Time slot:</strong> Chọn khung giờ phù hợp</li>
+    <li><strong>Real-time update:</strong> Cập nhật lịch trống ngay lập tức</li>
+    <li><strong>Địa điểm thuận tiện:</strong> Tại trung tâm hoặc tại nhà</li> // ✅ Sửa
+</ul>
 
                 <h4>Khung giờ làm việc:</h4>
                 <div class="working-hours">
@@ -1337,11 +1337,10 @@ export default function BlogDetail() {
                 </div>
 
                 <h4>Lựa chọn địa điểm:</h4>
-                <ul>
-                    <li><strong>Trung tâm chính:</strong> Địa chỉ trụ sở, đầy đủ thiết bị</li>
-                    <li><strong>Chi nhánh:</strong> Các điểm giao dịch tại các quận</li>
-                    <li><strong>Tại nhà:</strong> Chỉ cho ADN dân sự (phụ phí di chuyển)</li>
-                </ul>
+<ul>
+    <li><strong>Tại trung tâm:</strong> Địa chỉ trụ sở chính, đầy đủ thiết bị hiện đại</li>
+    <li><strong>Tại nhà:</strong> Chỉ cho ADN dân sự (có phụ phí di chuyển)</li>
+</ul>
 
                 <h3>💳 Bước 5: Thanh toán qua VNPay</h3>
                 
@@ -1438,15 +1437,15 @@ export default function BlogDetail() {
 
                 <h3>📞 Hỗ trợ khách hàng 24/7</h3>
                 
-                <h4>Các kênh hỗ trợ:</h4>
-                <ul>
-                    <li><strong>Hotline:</strong> 1900 1234 (miễn phí từ điện thoại bàn)</li>
-                    <li><strong>Zalo OA:</strong> Tìm kiếm "DNA Testing Vietnam"</li>
-                    <li><strong>Facebook Messenger:</strong> Fanpage chính thức</li>
-                    <li><strong>Live Chat:</strong> Trên website trong giờ hành chính</li>
-                    <li><strong>Email:</strong> support@dnatest.vn</li>
-                </ul>
-
+               <h4>Các kênh hỗ trợ:</h4>
+<ul>
+    <li><strong>Hotline:</strong> 1900 1234 (miễn phí từ điện thoại bàn)</li>
+    <li><strong>Zalo OA:</strong> Tìm kiếm "DNA Testing Vietnam"</li>
+    <li><strong>Facebook Messenger:</strong> Fanpage chính thức</li>
+    <li><strong>Live Chat:</strong> Trên website trong giờ hành chính</li>
+    <li><strong>Email:</strong> support@dnatest.vn</li>
+    <li><strong>Trực tiếp tại trung tâm:</strong> Tư vấn face-to-face</li> // ✅ Thêm
+</ul>
                 <h4>Thời gian hỗ trợ:</h4>
                 <ul>
                     <li><strong>Hotline:</strong> 24/7 cho khẩn cấp</li>
@@ -1541,13 +1540,13 @@ export default function BlogDetail() {
                     </div>
                     
                     <div class="characteristic-item">
-                        <h4>🏡 Điểm lấy mẫu</h4>
-                        <ul>
-                            <li><strong>Tại nhà:</strong> Tự lấy mẫu theo hướng dẫn</li>
-                            <li><strong>Tại trung tâm:</strong> Được hỗ trợ chuyên nghiệp</li>
-                            <li><strong>Linh hoạt thời gian:</strong> Không bị ràng buộc lịch hẹn nghiêm ngặt</li>
-                            <li><strong>Thuận tiện:</strong> Phù hợp với lịch trình cá nhân</li>
-                        </ul>
+                        <h4>Điểm lấy mẫu</h4>
+<ul>
+    <li><strong>Tại trung tâm:</strong> Được hỗ trợ chuyên nghiệp</li>
+    <li><strong>Tại nhà:</strong> Tự lấy mẫu theo hướng dẫn (ADN dân sự)</li>
+    <li><strong>Linh hoạt thời gian:</strong> Phù hợp với lịch trình cá nhân</li>
+    <li><strong>Thuận tiện:</strong> Lựa chọn theo nhu cầu</li> // ✅ Sửa
+</ul>
                     </div>
                 </div>
 
@@ -1590,13 +1589,14 @@ export default function BlogDetail() {
                     </div>
                     
                     <div class="characteristic-item">
-                        <h4>🏢 Điểm lấy mẫu</h4>
-                        <ul>
-                            <li><strong>Bắt buộc tại trung tâm:</strong> Không được lấy mẫu tại nhà</li>
-                            <li><strong>Có giám sát:</strong> Nhân viên chứng kiến toàn bộ quá trình</li>
-                            <li><strong>Xác thực danh tính:</strong> Kiểm tra CMND/CCCD gốc</li>
-                            <li><strong>Chụp ảnh:</strong> Lưu trữ hình ảnh người tham gia</li>
-                        </ul>
+                       <h4>🏢 Điểm lấy mẫu</h4>
+<ul>
+    <li><strong>Bắt buộc tại trung tâm:</strong> Không được lấy mẫu tại nhà</li>
+    <li><strong>Có giám sát:</strong> Nhân viên chứng kiến toàn bộ quá trình</li>
+    <li><strong>Xác thực danh tính:</strong> Kiểm tra CMND/CCCD gốc</li>
+    <li><strong>Chụp ảnh:</strong> Lưu trữ hình ảnh người tham gia</li>
+    <li><strong>Địa điểm duy nhất:</strong> Tại trụ sở chính với đầy đủ thiết bị</li> // ✅ Thêm
+</ul>
                     </div>
                 </div>
 

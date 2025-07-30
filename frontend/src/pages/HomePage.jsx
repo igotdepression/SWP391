@@ -544,7 +544,7 @@ function HomePage() {
 
                   <div className="form-note">
                     <p>* Các thông tin bạn cung cấp sẽ được bảo mật tuyệt đối và chỉ phục vụ mục đích tư vấn.</p>
-                    <p>📞 Hotline: <strong>1900 1234</strong> | 📧 Email: <strong>tuvan@adnchain.com</strong></p>
+                    <p>📞 Hotline: <strong>1900 1234</strong> | 📧 Email: <strong>dnachain@gmail.com</strong></p>
                   </div>
                 </form>
               </div>

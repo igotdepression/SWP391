@@ -96,8 +96,7 @@ const Footer = () => {
           </div>
           <h3 className="quick-links">HỖ TRỢ</h3>
           <ul>
-            <li><a href="#booking" onClick={() => handleAdnTypeClick("/booking")}>Đặt lịch hẹn</a></li>
-            <li><a href="#consultation" onClick={() => handleAdnTypeClick("/consultation")}>Đăng ký tư vấn</a></li>
+            <li><a href="#booking" onClick={() => handleAdnTypeClick("/booking-create")}>Đặt lịch hẹn</a></li>
           </ul>
         </div>
       </div>
