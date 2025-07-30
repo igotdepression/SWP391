@@ -127,7 +127,7 @@ public class AuthController { // Định nghĩa class AuthController
             }
             
             // Xóa các token cũ của user này
-            passwordResetTokenRepository.deleteByUser_Id(user.getUserID().longValue());
+            passwordResetTokenRepository.deleteByUser_UserID(user.getUserID());
             
             // Tạo token mới
             String token = java.util.UUID.randomUUID().toString();
