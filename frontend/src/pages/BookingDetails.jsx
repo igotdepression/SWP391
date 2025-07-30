@@ -118,7 +118,7 @@ export default function BookingDetails() {
             const numberSample = bookingData.numSamples;
             
             // Calculate: price * (numberSample - 2) * extraSampleFee
-            const totalPrice = basePrice * Math.max(0, numberSample - 2) * extraSampleFee;
+            const totalPrice = basePrice +  Math.max(0, numberSample - 2) * extraSampleFee;
             const serviceId = selectedService.serviceID;
             const userId = user?.userID || user?.userId || localStorage.getItem('userID');
             
