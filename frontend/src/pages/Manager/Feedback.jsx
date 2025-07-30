@@ -312,7 +312,7 @@ export default function Feedback() {
                                     </td>
                                     <td>
                                         <span className={`status-badge ${getStatusColor(feedback.status)}`}>
-                                            {feedback.status === 'Đã trả lời' ? '✅ Đã trả lời' : '⏳ Chờ xác nhận'}
+                                            {feedback.status === 'Đã trả lời' ? '✅ Đã trả lời' : '⏳ Chờ phản hồi'}
                                         </span>
                                     </td>
                                     <td className="action-cell">

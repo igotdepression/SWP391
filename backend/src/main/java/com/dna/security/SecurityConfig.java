@@ -77,6 +77,7 @@ public class SecurityConfig {
                     "/uploads/**", // Cho phép truy cập tất cả file uploads
                     "/uploads/results/**" // Cho phép truy cập file kết quả
                 ).permitAll()
+                .requestMatchers("/api/users/*/avatar", "/api/users/*/idcard").authenticated() // Cho phép upload avatar và idcard cho user đã đăng nhập
                 .requestMatchers("/api/files/**").hasAnyRole("STAFF", "MANAGER", "ADMIN") // Cho phép upload file cho staff
                 // THÊM DÒNG NÀY ĐỂ CẤP QUYỀN CHO ENDPOINT CỦA STAFF
                 .requestMatchers("/api/staff/**").hasRole("STAFF") // Hoặc .hasAnyRole("STAFF", "ADMIN") nếu có vai trò ADMIN

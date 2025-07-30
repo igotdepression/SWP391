@@ -794,7 +794,7 @@
 }
 
 /* Article Image */
-.article-image {
+.blog-article-image {
     margin-bottom: 3rem;
     text-align: center;
     position: relative;
@@ -803,8 +803,8 @@
     justify-content: center;
 }
 
-.article-image img {
-    max-width: 100%;
+.blog-article-image img {
+    width: auto;
     height: auto;
     border-radius: 20px;
     box-shadow: 
@@ -814,7 +814,7 @@
     display: block;
 }
 
-.article-image img:hover {
+.blog-article-image img:hover {
     transform: scale(1.02);
     box-shadow: 
         0 30px 80px rgba(0, 0, 0, 0.12),

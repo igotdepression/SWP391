@@ -180,7 +180,7 @@ export default function ManagerPage() {
                                 </div>
                                 <div className="header-user-info">
                                     <div>{user.fullName || user.email}</div>
-                                    <div className="user-id">ID: {user.id}</div>
+                                    <div className="user-id">ID: {user.userID || user.id || 'N/A'}</div>
                                 </div>
                             </div>
                         </div>

@@ -170,14 +170,42 @@ public class UserService {
 
     // Upload avatar cho user
     public String uploadAvatar(Integer userId, MultipartFile file) throws IOException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        String fileUrl = s3Service.uploadFile(file);
-        user.setAvatarUrl(fileUrl);
-        userRepository.save(user);
-        
-        return fileUrl;
+        try {
+            System.out.println("=== UserService: Bắt đầu upload avatar ===");
+            System.out.println("User ID: " + userId);
+            
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+            
+            System.out.println("User found: " + user.getFullName());
+            System.out.println("File name: " + file.getOriginalFilename());
+            System.out.println("File size: " + file.getSize());
+            
+            // Test S3 connection first
+            System.out.println("UserService: Testing S3 connection...");
+            boolean s3Connected = s3Service.testConnection();
+            System.out.println("UserService: S3 connection test result: " + s3Connected);
+            
+            if (!s3Connected) {
+                throw new RuntimeException("S3 connection failed");
+            }
+            
+            String fileUrl = s3Service.uploadFile(file);
+            System.out.println("UserService: File uploaded to S3: " + fileUrl);
+            
+            user.setAvatarUrl(fileUrl);
+            userRepository.save(user);
+            System.out.println("UserService: Avatar URL saved to database");
+            
+            System.out.println("=== UserService: Upload avatar thành công ===");
+            return fileUrl;
+        } catch (Exception e) {
+            System.err.println("=== UserService: Lỗi upload avatar ===");
+            System.err.println("Error type: " + e.getClass().getSimpleName());
+            System.err.println("Error message: " + e.getMessage());
+            e.printStackTrace();
+            throw new IOException("Không thể upload avatar: " + e.getMessage(), e);
+        }
     }
 
     // Upload ID card cho user

@@ -103,7 +103,7 @@ export const userAPI = {
         return api.get('/users/profile');
     },
     updateUserProfile: (profileData) => {
-        return api.put('/users/profile', profileData);
+        return api.put('/users/profile/update', profileData);
     },
     createUser: (userData) => {
         return api.post('/users', userData);
