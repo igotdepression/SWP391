@@ -9,6 +9,8 @@ import com.dna.entity.Role; // Import entity Role
 import com.dna.entity.User; // Import entity User
 import com.dna.repository.RoleRepository; // Import repository RoleRepository
 import com.dna.repository.UserRepository; // Import repository UserRepository
+import com.dna.repository.PasswordResetTokenRepository; // Import repository PasswordResetTokenRepository
+import com.dna.entity.PasswordResetToken; // Import entity PasswordResetToken
 import com.dna.security.JwtTokenProvider; // Import class JwtTokenProvider để tạo JWT
 import jakarta.validation.Valid; // Import annotation Valid để validate dữ liệu
 import org.slf4j.Logger; // Import Logger để ghi log
@@ -22,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder; // Impor
 import org.springframework.security.crypto.password.PasswordEncoder; // Import PasswordEncoder để mã hóa mật khẩu
 import org.springframework.web.bind.annotation.*; // Import các annotation cho REST controller
 import org.springframework.web.bind.annotation.PathVariable; // Import PathVariable
+import java.time.LocalDateTime; // Import LocalDateTime
 
 @RestController // Đánh dấu class là REST controller
 @RequestMapping("/api/auth") // Định nghĩa route gốc cho controller này
@@ -44,6 +47,9 @@ public class AuthController { // Định nghĩa class AuthController
 
     @Autowired // Inject JwtTokenProvider
     private JwtTokenProvider tokenProvider; // Tạo và xác thực JWT
+    
+    @Autowired // Inject PasswordResetTokenRepository
+    private PasswordResetTokenRepository passwordResetTokenRepository; // Repository thao tác với password reset tokens
 
     @PostMapping("/login") // Định nghĩa endpoint POST /login
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) { // Hàm xử lý đăng nhập
@@ -112,15 +118,26 @@ public class AuthController { // Định nghĩa class AuthController
             log.info("Forgot password request for email: {}", request.getEmail()); // Ghi log khi có yêu cầu quên mật khẩu
             
             // Kiểm tra email có tồn tại trong hệ thống không
-            if (!userRepository.existsByEmail(request.getEmail())) {
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElse(null);
+            
+            if (user == null) {
                 log.warn("Forgot password failed: Email {} not found", request.getEmail()); // Ghi log nếu email không tồn tại
                 return ResponseEntity.badRequest().body("Email không tồn tại trong hệ thống"); // Trả về lỗi nếu email không tồn tại
             }
             
+            // Xóa các token cũ của user này
+            passwordResetTokenRepository.deleteByUser_Id(user.getUserID().longValue());
+            
+            // Tạo token mới
+            String token = java.util.UUID.randomUUID().toString();
+            LocalDateTime expiryDate = LocalDateTime.now().plusHours(1); // Token có hiệu lực 1 giờ
+            
+            PasswordResetToken resetToken = new PasswordResetToken(token, user, expiryDate);
+            passwordResetTokenRepository.save(resetToken);
+            
             // TODO: Implement email sending logic here
-            // 1. Generate reset token
-            // 2. Save token to database with expiration
-            // 3. Send email with reset link
+            // Send email with reset link: /reset-password?token={token}
             
             log.info("Forgot password email sent successfully for: {}", request.getEmail()); // Ghi log khi gửi email thành công
             return ResponseEntity.ok("Đã gửi email hướng dẫn đặt lại mật khẩu. Vui lòng kiểm tra hộp thư của bạn."); // Trả về thông báo thành công
@@ -136,13 +153,32 @@ public class AuthController { // Định nghĩa class AuthController
         try {
             log.info("Reset password request for token: {}", request.getToken()); // Ghi log khi có yêu cầu đặt lại mật khẩu
             
-            // TODO: Implement token verification and password reset logic
-            // 1. Verify token is valid and not expired
-            // 2. Find user by token
-            // 3. Update password
-            // 4. Delete or mark token as used
+            // Tìm token trong database
+            PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(request.getToken())
+                    .orElse(null);
             
-            log.info("Password reset successfully for token: {}", request.getToken()); // Ghi log khi đặt lại mật khẩu thành công
+            if (resetToken == null) {
+                log.warn("Reset password failed: Invalid token {}", request.getToken()); // Ghi log nếu token không hợp lệ
+                return ResponseEntity.badRequest().body("Token không hợp lệ"); // Trả về lỗi nếu token không hợp lệ
+            }
+            
+            // Kiểm tra token có hết hạn không
+            if (resetToken.isExpired()) {
+                log.warn("Reset password failed: Expired token {}", request.getToken()); // Ghi log nếu token đã hết hạn
+                passwordResetTokenRepository.delete(resetToken); // Xóa token hết hạn
+                return ResponseEntity.badRequest().body("Token đã hết hạn"); // Trả về lỗi nếu token đã hết hạn
+            }
+            
+            // Cập nhật mật khẩu cho user
+            User user = resetToken.getUser();
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            userRepository.save(user);
+            
+            // Đánh dấu token đã sử dụng
+            resetToken.setUsed(true);
+            passwordResetTokenRepository.save(resetToken);
+            
+            log.info("Password reset successfully for user: {}", user.getEmail()); // Ghi log khi đặt lại mật khẩu thành công
             return ResponseEntity.ok("Đặt lại mật khẩu thành công!"); // Trả về thông báo thành công
             
         } catch (Exception e) {
@@ -156,12 +192,22 @@ public class AuthController { // Định nghĩa class AuthController
         try {
             log.info("Verifying reset token: {}", token); // Ghi log khi xác thực token
             
-            // TODO: Implement token verification logic
-            // 1. Check if token exists in database
-            // 2. Check if token is not expired
-            // 3. Check if token is not used
+            // Tìm token trong database
+            PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(token)
+                    .orElse(null);
             
-            // For now, return success (temporary implementation)
+            if (resetToken == null) {
+                log.warn("Token verification failed: Invalid token {}", token); // Ghi log nếu token không hợp lệ
+                return ResponseEntity.badRequest().body("Token không hợp lệ"); // Trả về lỗi nếu token không hợp lệ
+            }
+            
+            // Kiểm tra token có hết hạn không
+            if (resetToken.isExpired()) {
+                log.warn("Token verification failed: Expired token {}", token); // Ghi log nếu token đã hết hạn
+                passwordResetTokenRepository.delete(resetToken); // Xóa token hết hạn
+                return ResponseEntity.badRequest().body("Token đã hết hạn"); // Trả về lỗi nếu token đã hết hạn
+            }
+            
             log.info("Reset token verified successfully: {}", token); // Ghi log khi xác thực token thành công
             return ResponseEntity.ok("Token hợp lệ"); // Trả về thông báo token hợp lệ
             
