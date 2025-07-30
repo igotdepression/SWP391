@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @RestController
 @RequestMapping("/api/consultations")
@@ -39,6 +40,9 @@ public class ConsultantController {
         } catch (IllegalArgumentException e) {
             logger.warn("Invalid consultation request: {}", e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (DataIntegrityViolationException e) {
+            logger.error("Database constraint violation while creating consultation", e);
+            return new ResponseEntity<>("Database constraint error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             logger.error("Error creating consultation request", e);
             return new ResponseEntity<>("An error occurred while processing your request: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

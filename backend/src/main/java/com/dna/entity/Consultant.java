@@ -24,7 +24,7 @@ public class Consultant {
     private Integer consultantID;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userID", nullable = true) // Cho phép null
+    @JoinColumn(name = "userID", nullable = true)
     private User staff;
 
     @Column(name = "name", nullable = false, length = 100)
@@ -39,14 +39,14 @@ public class Consultant {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "consultantDate", nullable = true) // Cho phép null
+    @Column(name = "consultantDate", nullable = true)
     private LocalDate consultantDate;
 
-    @Column(name = "notes", length = 255)
+    @Column(name = "notes", length = 255, nullable = true)
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "confirmBy")
+    @JoinColumn(name = "confirmBy", nullable = true)
     private User confirmedBy;
 
     @Column(name = "status", length = 255)
