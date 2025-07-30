@@ -25,3 +25,5 @@ services:
         value: ap-southeast-2
       - key: AWS_S3_BUCKET_NAME
         value: bloodline-dna-files-v3
+      - key: ALLOWED_ORIGINS
+        value: http://localhost:3000,https://dna-chain-wed-fpt-89yn.vercel.app,https://dna-chain-bloodline.vercel.app,https://dna-chain-bl.vercel.app

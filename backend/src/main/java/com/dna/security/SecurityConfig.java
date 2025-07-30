@@ -104,7 +104,9 @@ public class SecurityConfig {
             "https://dna-chain-wed-fpt-89yn.vercel.app",
             "https://dna-chain-wed-fpt-89yn.vercel.app/",
             "https://dna-chain-bloodline.vercel.app",
-            "https://dna-chain-bloodline.vercel.app/"
+            "https://dna-chain-bloodline.vercel.app/",
+            "https://dna-chain-bl.vercel.app",
+            "https://dna-chain-bl.vercel.app/"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList(
