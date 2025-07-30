@@ -40,6 +40,9 @@ public class ConsultantController {
         } catch (IllegalArgumentException e) {
             logger.warn("Invalid consultation request: {}", e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (IllegalStateException e) {
+            logger.error("System state error while creating consultation: {}", e.getMessage());
+            return new ResponseEntity<>("System configuration error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (DataIntegrityViolationException e) {
             logger.error("Database constraint violation while creating consultation", e);
             return new ResponseEntity<>("Database constraint error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
