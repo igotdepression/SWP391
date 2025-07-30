@@ -1,15 +1,19 @@
-// Staff/TestResultManagement.jsx
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom'; // Thêm imports
 import { Card, Button, Input, Select } from '../../components/ui/ui';
 import './TestResultManagement.css';
 import { bookingAPI } from '../../services/api';
 import { testResultAPI } from '../../services/api';
 import { detailResultAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-
+import api from '../../services/api'; // Thêm import này
 
 export default function TestResultManagement() {
-    // Sample data based on SQL structure - Extended with sample status
+
+    const location = useLocation(); // Thêm này
+    const navigate = useNavigate(); // Thêm này
+
+    // Sample data based on SQL structure - Extended with sample status and type
     const [testResults, setTestResults] = useState([
         {
             testResultID: 1,
@@ -27,7 +31,7 @@ export default function TestResultManagement() {
             patientID: 301,
             sampleMethod: 'Tại cơ sở',
             sampleReceiveDate: '2025-06-15',
-            sampleStatus: 'ready', // ready, processing, normal, special
+            sampleStatus: 'ready',
             sampleType: 'Mẫu Chuẩn'
         },
         {
@@ -183,9 +187,9 @@ export default function TestResultManagement() {
 
     const filteredResults = testResults.filter(result => {
         const matchesSearch = result.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              result.bookingID.toString().includes(searchTerm.toLowerCase()) ||
-                              result.testResultID.toString().includes(searchTerm.toLowerCase()) ||
-                              result.patientID.toString().includes(searchTerm.toLowerCase());
+            result.bookingID.toString().includes(searchTerm.toLowerCase()) ||
+            result.testResultID.toString().includes(searchTerm.toLowerCase()) ||
+            result.patientID.toString().includes(searchTerm.toLowerCase());
         const matchesStatus = filterStatus === 'all' || result.sampleStatus === filterStatus;
         return matchesSearch && matchesStatus;
     });
@@ -327,8 +331,8 @@ export default function TestResultManagement() {
     };
     const handleNewFileChange = (e) => {
         if (e.target.files[0]) {
-            setNewResult(prev => ({ 
-                ...prev, 
+            setNewResult(prev => ({
+                ...prev,
                 resultFile: e.target.files[0].name,
                 resultFileUrl: null // Sẽ được set sau khi upload lên S3
             }));
@@ -362,7 +366,7 @@ export default function TestResultManagement() {
             if (fileInput && fileInput.files[0]) {
                 const formData = new FormData();
                 formData.append('file', fileInput.files[0]);
-                
+
                 // Upload file lên S3 thông qua backend
                 const uploadResponse = await fetch('http://localhost:8080/api/files/upload', {
                     method: 'POST',
@@ -371,7 +375,7 @@ export default function TestResultManagement() {
                     },
                     body: formData
                 });
-                
+
                 if (uploadResponse.ok) {
                     const uploadResult = await uploadResponse.json();
                     resultFileUrl = uploadResult.url;
@@ -397,13 +401,53 @@ export default function TestResultManagement() {
                     paternityIndex: row.paternityIndex ? Number(row.paternityIndex) : null
                 }))
             };
-            
+
+            // Tạo test result
             await testResultAPI.createTestResult(payload);
+
+            // Cập nhật trạng thái booking thành hoàn thành
+            if (newResult.bookingID) {
+                try {
+                    await api.put(`/bookings/${newResult.bookingID}/status`, {
+                        status: 'Hoàn thành'
+                    });
+                } catch (bookingErr) {
+                    console.warn('Không thể cập nhật trạng thái booking:', bookingErr);
+                }
+            }
+
             setShowAddModal(false);
             setShowConfirmModal(false);
             setPendingAddResult(false);
-            alert('Thêm kết quả thành công!');
+
+            // Reset form
+            setNewResult({
+                bookingID: '',
+                resultDate: '',
+                createdBy: user?.fullName || '',
+                resultConclution: '',
+                resultFile: '',
+                customerName: '',
+                serviceName: '',
+                sampleStaffID: '',
+                patientID: '',
+                sampleMethod: '',
+                sampleReceiveDate: '',
+                sampleStatus: 'ready',
+                sampleType: 'Mẫu Chuẩn',
+            });
+            setNewDetailResults([
+                { locusName: '', p1Allele1: '', p1Allele2: '', p2Allele1: '', p2Allele2: '', paternityIndex: '' }
+            ]);
+
+            // Refresh data
+            await fetchTestResults();
+
+            // Hiển thị thông báo thành công
+            alert('Thêm kết quả thành công! Booking đã được chuyển sang trạng thái hoàn thành.');
+
         } catch (err) {
+            console.error('Error adding result:', err);
             alert('Lỗi khi thêm kết quả: ' + (err.message || 'Không xác định'));
         }
     };
@@ -432,6 +476,17 @@ export default function TestResultManagement() {
         }
     }, [newDetailResults, showAddModal]);
 
+    // Lấy danh sách test result từ backend khi vào trang
+    const fetchTestResults = async () => {
+        try {
+            const res = await testResultAPI.getAllTestResults();
+            setTestResults(res.data || []);
+        } catch (err) {
+            console.error('Error fetching test results:', err);
+            setTestResults([]);
+        }
+    };
+
     useEffect(() => {
         // Lấy danh sách test result từ backend khi vào trang
         const fetchTestResults = async () => {
@@ -445,108 +500,173 @@ export default function TestResultManagement() {
         fetchTestResults();
     }, []);
 
+    // Thêm useEffect để xử lý navigation state
+    useEffect(() => {
+        // Kiểm tra nếu được chuyển đến từ booking management
+        if (location.state?.openAddModal && location.state?.selectedBookingId) {
+            const { selectedBookingId, bookingInfo } = location.state;
+
+            // Mở modal thêm kết quả
+            setShowAddModal(true);
+
+            // Set thông tin booking được chọn
+            setNewResult(prev => ({
+                ...prev,
+                bookingID: selectedBookingId,
+                customerName: bookingInfo?.customerName || '',
+                serviceName: bookingInfo?.serviceName || bookingInfo?.service?.serviceName || '',
+                createdBy: user?.fullName || '',
+                resultDate: new Date().toISOString().split('T')[0]
+            }));
+
+            // Tự động load thông tin booking nếu có
+            if (selectedBookingId) {
+                handleBookingSelect(selectedBookingId);
+            }
+
+            // Clear navigation state để tránh mở lại modal khi component re-render
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state, user, navigate]);
+
+    // Kiểm tra nếu có data từ Booking
+    useEffect(() => {
+        const pendingTestResult = sessionStorage.getItem('pendingTestResult');
+        if (pendingTestResult) {
+            try {
+                const data = JSON.parse(pendingTestResult);
+
+                if (data.openAddModal) {
+                    // Mở modal thêm kết quả
+                    setShowAddModal(true);
+
+                    // Set thông tin booking được chọn
+                    setNewResult(prev => ({
+                        ...prev,
+                        bookingID: data.bookingID,
+                        customerName: data.bookingInfo.customerName || '',
+                        serviceName: data.bookingInfo.serviceName || '',
+                        createdBy: user?.fullName || '',
+                        resultDate: new Date().toISOString().split('T')[0]
+                    }));
+
+                    // Tự động load thông tin booking nếu có
+                    if (data.bookingID) {
+                        handleBookingSelect(data.bookingID);
+                    }
+
+                    // Clear sessionStorage sau khi sử dụng
+                    sessionStorage.removeItem('pendingTestResult');
+                }
+            } catch (error) {
+                console.error('Error parsing test result data:', error);
+                sessionStorage.removeItem('pendingTestResult');
+            }
+        }
+    }, []);
+
     return (
         <div className="test-result-management-container">
-                {/* Statistics Section */}
-                <div className="statistics-section">
-                    <h3 className="section-title">Danh sách kết quả xét nghiệm</h3>
-                    <div className="testResult-stats-row">
-                            <div className="testResult-stat-card total">
-                                <div className="stat-value">{totalSamples}</div>
-                                <div className="stat-label">TỔNG MẪU</div>
-                            </div>
-                            <div className="testResult-stat-card standard">
-                                <div className="stat-value">{readySamples}</div>
-                                <div className="stat-label">MẪU CHUẨN</div>
-                            </div>
-                            <div className="testResult-stat-card normal">
-                                <div className="stat-value">{normalSamples}</div>
-                                <div className="stat-label">MẪU THÔNG THƯỜNG</div>
-                            </div>
-                            <div className="testResult-stat-card special">
-                                <div className="stat-value">{specialSamples}</div>
-                                <div className="stat-label">MẪU ĐẶC BIỆT</div>
-                            </div>
-                        </div>
-                </div>
-
-                {/* Search and Filter Section */}
-                <div className="controls-section">
-                    
-                    <div className="controls-row">
-                        <Select
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            className="status-filter"
-                        >
-                            <option value="all">Tất cả trạng thái</option>
-                            <option value="ready">Đã tiếp nhận</option>
-                            <option value="processing">Đang xét nghiệm</option>
-                            <option value="normal">Hoàn thành</option>
-                            <option value="special">Đặc biệt</option>
-                        </Select>
-                        <Input
-                            type="text"
-                            placeholder="Tìm kiếm theo mã mẫu, booking ID, hoặc participant ID..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="search-input-main"
-                        />
-                        <Button className="add-testResult-btn" onClick={handleOpenAddModal}>+ Thêm kết quả</Button>
+            {/* Statistics Section */}
+            <div className="statistics-section">
+                <h3 className="section-title">Danh sách kết quả xét nghiệm</h3>
+                <div className="testResult-stats-row">
+                    <div className="testResult-stat-card total">
+                        <div className="stat-value">{totalSamples}</div>
+                        <div className="stat-label">TỔNG MẪU</div>
+                    </div>
+                    <div className="testResult-stat-card standard">
+                        <div className="stat-value">{readySamples}</div>
+                        <div className="stat-label">MẪU CHUẨN</div>
+                    </div>
+                    <div className="testResult-stat-card normal">
+                        <div className="stat-value">{normalSamples}</div>
+                        <div className="stat-label">MẪU THÔNG THƯỜNG</div>
+                    </div>
+                    <div className="testResult-stat-card special">
+                        <div className="stat-value">{specialSamples}</div>
+                        <div className="stat-label">MẪU ĐẶC BIỆT</div>
                     </div>
                 </div>
+            </div>
 
-                {/* Table Section */}
-                <Card className="table-container">
-                    {filteredResults.length > 0 ? (
-                        <table className="samples-table">
-                            <thead>
-                                <tr>
-                                    <th>ID Kết quả</th>
-                                    <th>Mã Booking</th>
-                                    <th>Ngày kết quả</th>
-                                    <th>Người tạo</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Kết luận</th>
-                                    <th>File kết quả</th>
-                                    <th>Hành động</th>
+            {/* Search and Filter Section */}
+            <div className="controls-section">
+
+                <div className="controls-row">
+                    <Select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="status-filter"
+                    >
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="ready">Đã tiếp nhận</option>
+                        <option value="processing">Đang xét nghiệm</option>
+                        <option value="normal">Hoàn thành</option>
+                        <option value="special">Đặc biệt</option>
+                    </Select>
+                    <Input
+                        type="text"
+                        placeholder="Tìm kiếm theo mã mẫu, booking ID, hoặc participant ID..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-input-main"
+                    />
+                    <Button className="add-testResult-btn" onClick={handleOpenAddModal}>+ Thêm kết quả</Button>
+                </div>
+            </div>
+
+            {/* Table Section */}
+            <Card className="table-container">
+                {filteredResults.length > 0 ? (
+                    <table className="samples-table">
+                        <thead>
+                            <tr>
+                                <th>ID Kết quả</th>
+                                <th>Mã Booking</th>
+                                <th>Ngày kết quả</th>
+                                <th>Người tạo</th>
+                                <th>Ngày tạo</th>
+                                <th>Kết luận</th>
+                                <th>File kết quả</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredResults.map(result => (
+                                <tr key={result.testResultID}>
+                                    <td>{result.testResultID}</td>
+                                    <td>{result.bookingID}</td>
+                                    <td>{result.resultDate ? formatDate(result.resultDate) : 'Chưa có'}</td>
+                                    <td>{result.createdBy || 'Chưa có'}</td>
+                                    <td>{result.createdDate ? formatDateTime(result.createdDate) : 'Chưa có'}</td>
+                                    <td>{result.resultConclution || 'Chưa có'}</td>
+                                    <td>
+                                        {result.resultFileUrl ? (
+                                            <a href={result.resultFileUrl} target="_blank" rel="noopener noreferrer">
+                                                {result.resultFile || 'Xem file kết quả'}
+                                            </a>
+                                        ) : result.resultFile ? (
+                                            <a href={`http://localhost:8080/uploads/results/${result.resultFile}`} target="_blank" rel="noopener noreferrer">
+                                                {result.resultFile}
+                                            </a>
+                                        ) : (
+                                            <span>Chưa có</span>
+                                        )}
+                                    </td>
+                                    <td className="action-buttons">
+                                        <button className="btn-view" title="Xem" onClick={() => handleViewDetails(result)}>
+                                            <i className="fa fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {filteredResults.map(result => (
-                                    <tr key={result.testResultID}>
-                                        <td>{result.testResultID}</td>
-                                        <td>{result.bookingID}</td>
-                                        <td>{result.resultDate ? formatDate(result.resultDate) : 'Chưa có'}</td>
-                                        <td>{result.createdBy || 'Chưa có'}</td>
-                                        <td>{result.createdDate ? formatDateTime(result.createdDate) : 'Chưa có'}</td>
-                                        <td>{result.resultConclution || 'Chưa có'}</td>
-                                        <td>
-                                            {result.resultFileUrl ? (
-                                                <a href={result.resultFileUrl} target="_blank" rel="noopener noreferrer">
-                                                    {result.resultFile || 'Xem file kết quả'}
-                                                </a>
-                                            ) : result.resultFile ? (
-                                                <a href={`http://localhost:8080/uploads/results/${result.resultFile}`} target="_blank" rel="noopener noreferrer">
-                                                    {result.resultFile}
-                                                </a>
-                                            ) : (
-                                                <span>Chưa có</span>
-                                            )}
-                                        </td>
-                                        <td className="action-buttons">
-                                            <button className="btn-view" title="Xem" onClick={() => handleViewDetails(result)}>
-                                                <i className="fa fa-eye" aria-hidden="true"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p className="no-results">Không tìm thấy kết quả xét nghiệm nào.</p>
-                    )}
-                </Card>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p className="no-results">Không tìm thấy kết quả xét nghiệm nào.</p>
+                )}
+            </Card>
 
             {/* Modal Overlay */}
             {showDetailModal && (
@@ -556,7 +676,7 @@ export default function TestResultManagement() {
                             <h2>{editMode ? 'Chỉnh sửa kết quả xét nghiệm' : 'Chi tiết kết quả xét nghiệm'}</h2>
                             <button className="close-button" onClick={handleCloseModal}>×</button>
                         </div>
-                        
+
                         <div className="modal-body">
                             {selectedResult && (
                                 <>
@@ -585,7 +705,7 @@ export default function TestResultManagement() {
                                                     <Input
                                                         type="date"
                                                         value={editingResult?.resultDate || ''}
-                                                        onChange={(e) => setEditingResult(prev => ({...prev, resultDate: e.target.value}))}
+                                                        onChange={(e) => setEditingResult(prev => ({ ...prev, resultDate: e.target.value }))}
                                                     />
                                                 ) : (
                                                     <span>{formatDate(selectedResult.resultDate)}</span>
@@ -596,7 +716,7 @@ export default function TestResultManagement() {
                                                 {editMode ? (
                                                     <Input
                                                         value={editingResult?.createdBy || ''}
-                                                        onChange={(e) => setEditingResult(prev => ({...prev, createdBy: e.target.value}))}
+                                                        onChange={(e) => setEditingResult(prev => ({ ...prev, createdBy: e.target.value }))}
                                                     />
                                                 ) : (
                                                     <span>{selectedResult.createdBy || 'Chưa có'}</span>
@@ -614,7 +734,7 @@ export default function TestResultManagement() {
                                         {editMode ? (
                                             <textarea
                                                 value={editingResult?.resultConclution || ''}
-                                                onChange={(e) => setEditingResult(prev => ({...prev, resultConclution: e.target.value}))}
+                                                onChange={(e) => setEditingResult(prev => ({ ...prev, resultConclution: e.target.value }))}
                                                 rows="4"
                                                 placeholder="Nhập kết luận xét nghiệm..."
                                                 className="conclusion-textarea"
@@ -632,7 +752,7 @@ export default function TestResultManagement() {
                                                 accept=".pdf,.doc,.docx"
                                                 onChange={(e) => {
                                                     if (e.target.files[0]) {
-                                                        setEditingResult(prev => ({...prev, resultFile: e.target.files[0].name}));
+                                                        setEditingResult(prev => ({ ...prev, resultFile: e.target.files[0].name }));
                                                     }
                                                 }}
                                             />

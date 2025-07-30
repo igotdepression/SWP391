@@ -112,9 +112,13 @@ export default function BookingDetails() {
                 return;
             }
 
-            // Tính toán giá tiền
-            const pricePerSample = selectedService.price || 0;
-            const totalPrice = bookingData.numSamples * pricePerSample;
+            // Tính toán giá tiền theo công thức mới: service.price * (numberSample - 2) * service.extraSampleFee
+            const basePrice = selectedService.price || 0;
+            const extraSampleFee = selectedService.extraSampleFee || 1;
+            const numberSample = bookingData.numSamples;
+            
+            // Calculate: price * (numberSample - 2) * extraSampleFee
+            const totalPrice = basePrice * Math.max(0, numberSample - 2) * extraSampleFee;
             const serviceId = selectedService.serviceID;
             const userId = user?.userID || user?.userId || localStorage.getItem('userID');
             
@@ -144,7 +148,6 @@ export default function BookingDetails() {
                     bookingData: {
                         ...bookingData,
                         bookingID: createdBooking.bookingID || createdBooking.id, // Flexible field name
-                        pricePerSample,
                         totalPrice
                     }
                 }

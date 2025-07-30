@@ -29,7 +29,33 @@ export default function StaffPage() {
     useEffect(() => {
         localStorage.setItem("staff_active_menu", activeMenuItem);
     }, [activeMenuItem]);
+    useEffect(() => {
+        localStorage.setItem("staff_active_menu", activeMenuItem);
+    }, [activeMenuItem]);
 
+    // THÊM ĐOẠN CODE NÀY VÀO ĐÂY
+    useEffect(() => {
+        const handleSwitchToTestResults = (event) => {
+            const { bookingID, bookingInfo, openAddModal } = event.detail;
+            
+            // Chuyển sang tab test results
+            setActiveMenuItem('testResults');
+            
+            // Store data để TestResultManagement component sử dụng
+            sessionStorage.setItem('pendingTestResult', JSON.stringify({
+                bookingID,
+                bookingInfo,
+                openAddModal
+            }));
+        };
+
+        window.addEventListener('switchToTestResults', handleSwitchToTestResults);
+        
+        return () => {
+            window.removeEventListener('switchToTestResults', handleSwitchToTestResults);
+        };
+    }, []);
+    
     // Các state dữ liệu mẫu cho Staff (không còn employee hay order chung)
     const [bookings, setBookings] = useState([
         { id: "BOOK001", customer: "Khách hàng An", date: "2024-06-25", status: "Chưa xác nhận" },

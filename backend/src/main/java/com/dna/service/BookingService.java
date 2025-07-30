@@ -60,10 +60,20 @@ public class BookingService {
         booking.setBookingDate(LocalDate.now()); 
         booking.setAppointmentDate(bookingRequestDTO.getAppointmentDate().toLocalDate());
         booking.setStatus("Chờ xác nhận"); 
-        BigDecimal totalPrice = service.getPrice().multiply(BigDecimal.valueOf(bookingRequestDTO.getParticipants().size()));
+        
+        // Calculate total price using new formula: service.price * (numberSample - 2) * service.extraSampleFee
+        Integer numberSample = bookingRequestDTO.getNumberSample();
+        BigDecimal basePrice = service.getPrice();
+        BigDecimal extraSampleFee = service.getExtraSampleFee();
+        
+        // Calculate: price * (numberSample - 2) * extraSampleFee
+        BigDecimal totalPrice = basePrice
+            .multiply(BigDecimal.valueOf(Math.max(0, numberSample - 2))) // (numberSample - 2), minimum 0
+            .multiply(extraSampleFee != null ? extraSampleFee : BigDecimal.ONE); // multiply by extraSampleFee
+        
         booking.setTotalPrice(totalPrice);
         booking.setUpdateDate(LocalDate.now()); 
-        booking.setNumberSample(bookingRequestDTO.getNumberSample());
+        booking.setNumberSample(numberSample);
 
         // Map participants
         List<Participant> participants = bookingRequestDTO.getParticipants().stream().map(dto -> {

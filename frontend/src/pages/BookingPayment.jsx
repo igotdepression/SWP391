@@ -33,9 +33,8 @@ export default function BookingPayment() {
         }
     }, [bookingData, navigate, user, authLoading]);
 
-    // Lấy tổng tiền và giá 1 mẫu từ bookingData (ưu tiên dữ liệu truyền sang)
-    const pricePerSample = bookingData?.pricePerSample || 0;
-    const totalPrice = bookingData?.totalPrice || (bookingData?.numSamples * pricePerSample);
+    // Lấy tổng tiền từ bookingData (đã được tính theo công thức mới ở backend)
+    const totalPrice = bookingData?.totalPrice || 0;
 
     const handleProcessPayment = async () => {
         if (!paymentMethod) {
