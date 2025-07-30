@@ -116,7 +116,14 @@ export default function BookingDetails() {
             const pricePerSample = selectedService.price || 0;
             const totalPrice = bookingData.numSamples * pricePerSample;
             const serviceId = selectedService.serviceID;
-            const userId = user?.userId || 1; // Fallback userId nếu không có
+            const userId = user?.userID || user?.userId || localStorage.getItem('userID');
+            
+            // Kiểm tra xem có user ID hợp lệ không
+            if (!userId) {
+                alert('Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.');
+                navigate('/login');
+                return;
+            }
 
             // Chuẩn bị payload để call API tạo booking
             const payload = {

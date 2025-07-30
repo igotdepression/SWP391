@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
             
             // Save auth data
             localStorage.setItem('token', token);
-            const userData = { email: userEmail, fullName, role, userID: userId, avatarUrl };
+            const userData = { email: userEmail, fullName, role, userID: userId, userId: userId, avatarUrl };
             localStorage.setItem('user', JSON.stringify(userData));
             localStorage.setItem('userID', userId); // Lưu userID riêng biệt
             
