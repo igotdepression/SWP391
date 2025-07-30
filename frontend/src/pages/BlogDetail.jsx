@@ -1150,10 +1150,6 @@ export default function BlogDetail() {
         },
         6: {
             title: 'Hướng dẫn đặt lịch hẹn xét nghiệm',
-            author: 'Đội hỗ trợ khách hàng',
-            date: '2025-01-10',
-            readTime: '12 phút đọc',
-            category: 'Hướng dẫn xét nghiệm',
             image: '/logo.png',
             content: `
                 <h2>📅 Hướng dẫn đặt lịch hẹn xét nghiệm ADN online - Đơn giản và tiện lợi</h2>
@@ -2245,7 +2241,7 @@ export default function BlogDetail() {
                                 <span className="read-time">{article.readTime}</span>
                                 <span className="category">{article.category}</span>
                             </div>
-                            <img src={article.image} alt={article.title} className="article-image" />
+                            <img src={article.image} alt={article.title} className="blog-article-image" />
                         </div>
 
                         <div className="article-body" dangerouslySetInnerHTML={{ __html: article.content }} />
