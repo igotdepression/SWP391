@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext'; // Import context xác thực
 import LoginPage from './pages/LoginPage'; // Import trang đăng nhập
 import SignUpPage from './pages/SignUpPage'; // Import trang đăng ký
+import ForgotPassword from './pages/ForgotPassword'; // Import trang quên mật khẩu
+import ResetPassword from './pages/ResetPassword'; // Import trang đặt lại mật khẩu
 import HomePage from './pages/HomePage'; // Import trang chủ
 import PersonalInfoPage from './pages/PersonalInfoPage'; // Import trang thông tin cá nhân
 import StaffPage from './pages/StaffPage'; // Import trang nhân viên
@@ -67,15 +69,17 @@ function App() { // Component App chính
         <Routes> {/* Định nghĩa các route */}
           <Route path="/login" element={<LoginPage />} /> {/* Route trang đăng nhập */}
           <Route path="/signup" element={<SignUpPage />} /> {/* Route trang đăng ký */}
+          <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Route trang quên mật khẩu */}
+          <Route path="/reset-password" element={<ResetPassword />} /> {/* Route trang đặt lại mật khẩu */}
           <Route path="/home" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN', 'GUEST']}><HomePage /></ProtectedRoute>} /> {/* Route trang chủ, bảo vệ bởi ProtectedRoute */}
           {/*<Route path="/personal-info" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><PersonalInfoPage /></ProtectedRoute>} /> */} // Route cũ đã comment
           <Route path="/personal-info" element={<PersonalInfoPage />} /> {/* Route thông tin cá nhân */}
           <Route path="/staff" element={<StaffPage />} /> {/* Route trang nhân viên */}
           <Route path="/manager" element={<ManagerPage />} /> {/* Route trang quản lý */}
           <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN']}><Admin /></ProtectedRoute>} /> {/* Route admin, chỉ cho ADMIN */}
-          <Route path="/booking-create" element={<BookingCreate />} /> {/* Route tạo booking */}
-          <Route path="/booking-details" element={<BookingDetails />} /> {/* Route chi tiết booking */}
-          <Route path='/booking-payment' element={<BookingPayment />} /> {/* Route thanh toán booking */}
+          <Route path="/booking-create" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><BookingCreate /></ProtectedRoute>} /> {/* Route tạo booking */}
+          <Route path="/booking-details" element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><BookingDetails /></ProtectedRoute>} /> {/* Route chi tiết booking */}
+          <Route path='/booking-payment' element={<ProtectedRoute allowedRoles={['CUSTOMER', 'STAFF', 'MANAGER', 'ADMIN']}><BookingPayment /></ProtectedRoute>} /> {/* Route thanh toán booking */}
           <Route path='/blogpost' element={<BlogPost />} /> {/* Route blog */}
           <Route path='/blog/article/:id' element={<BlogDetail />} /> {/* Route chi tiết bài viết */}
           <Route path="/feedback" element={<SendFeedback />} /> {/* Route gửi phản hồi */}

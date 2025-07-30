@@ -3,10 +3,14 @@ package com.dna.controller; // Khai báo package chứa controller
 import com.dna.dto.LoginRequest; // Import class LoginRequest
 import com.dna.dto.LoginResponse; // Import class LoginResponse
 import com.dna.dto.RegisterRequest; // Import class RegisterRequest
+import com.dna.dto.ForgotPasswordRequest; // Import class ForgotPasswordRequest
+import com.dna.dto.ResetPasswordRequest; // Import class ResetPasswordRequest
 import com.dna.entity.Role; // Import entity Role
 import com.dna.entity.User; // Import entity User
 import com.dna.repository.RoleRepository; // Import repository RoleRepository
 import com.dna.repository.UserRepository; // Import repository UserRepository
+import com.dna.repository.PasswordResetTokenRepository; // Import repository PasswordResetTokenRepository
+import com.dna.entity.PasswordResetToken; // Import entity PasswordResetToken
 import com.dna.security.JwtTokenProvider; // Import class JwtTokenProvider để tạo JWT
 import jakarta.validation.Valid; // Import annotation Valid để validate dữ liệu
 import org.slf4j.Logger; // Import Logger để ghi log
@@ -19,6 +23,10 @@ import org.springframework.security.core.Authentication; // Import Authenticatio
 import org.springframework.security.core.context.SecurityContextHolder; // Import SecurityContextHolder để lưu context xác thực
 import org.springframework.security.crypto.password.PasswordEncoder; // Import PasswordEncoder để mã hóa mật khẩu
 import org.springframework.web.bind.annotation.*; // Import các annotation cho REST controller
+import org.springframework.web.bind.annotation.PathVariable; // Import PathVariable
+import java.time.LocalDateTime; // Import LocalDateTime
+import org.springframework.transaction.annotation.Transactional; // Import Transactional
+import com.dna.service.EmailService; // Import EmailService
 
 @RestController // Đánh dấu class là REST controller
 @RequestMapping("/api/auth") // Định nghĩa route gốc cho controller này
@@ -41,6 +49,12 @@ public class AuthController { // Định nghĩa class AuthController
 
     @Autowired // Inject JwtTokenProvider
     private JwtTokenProvider tokenProvider; // Tạo và xác thực JWT
+    
+    @Autowired // Inject PasswordResetTokenRepository
+    private PasswordResetTokenRepository passwordResetTokenRepository; // Repository thao tác với password reset tokens
+    
+    @Autowired // Inject EmailService
+    private EmailService emailService; // Service gửi email
 
     @PostMapping("/login") // Định nghĩa endpoint POST /login
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) { // Hàm xử lý đăng nhập
@@ -101,5 +115,113 @@ public class AuthController { // Định nghĩa class AuthController
     public ResponseEntity<?> testConnection() { // Hàm kiểm tra kết nối backend
         log.info("Test endpoint called"); // Ghi log khi gọi endpoint test
         return ResponseEntity.ok("Backend connection successful!"); // Trả về thông báo kết nối thành công
+    }
+    
+    @PostMapping("/forgot-password") // Định nghĩa endpoint POST /forgot-password
+    @Transactional // Thêm annotation để đảm bảo transaction
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) { // Hàm xử lý quên mật khẩu
+        try {
+            log.info("Forgot password request for email: {}", request.getEmail()); // Ghi log khi có yêu cầu quên mật khẩu
+            
+            // Kiểm tra email có tồn tại trong hệ thống không
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElse(null);
+            
+            if (user == null) {
+                log.warn("Forgot password failed: Email {} not found", request.getEmail()); // Ghi log nếu email không tồn tại
+                return ResponseEntity.badRequest().body("Email không tồn tại trong hệ thống"); // Trả về lỗi nếu email không tồn tại
+            }
+            
+            // Xóa các token cũ của user này
+            passwordResetTokenRepository.deleteByUserId(user.getUserID());
+            
+            // Tạo token mới
+            String token = java.util.UUID.randomUUID().toString();
+            LocalDateTime expiryDate = LocalDateTime.now().plusHours(1); // Token có hiệu lực 1 giờ
+            
+            PasswordResetToken resetToken = new PasswordResetToken(token, user, expiryDate);
+            passwordResetTokenRepository.save(resetToken);
+            
+            // Gửi email với link reset password
+            String resetLink = "https://dna-chain-bloodline.vercel.app/reset-password?token=" + token;
+            emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+            
+            log.info("Forgot password email sent successfully for: {}", request.getEmail()); // Ghi log khi gửi email thành công
+            return ResponseEntity.ok("Đã gửi email hướng dẫn đặt lại mật khẩu. Vui lòng kiểm tra hộp thư của bạn."); // Trả về thông báo thành công
+            
+        } catch (Exception e) {
+            log.error("Forgot password failed: {}", e.getMessage(), e); // Ghi log khi quên mật khẩu thất bại
+            return ResponseEntity.badRequest().body("Có lỗi xảy ra. Vui lòng thử lại sau."); // Trả về lỗi khi quên mật khẩu thất bại
+        }
+    }
+    
+    @PostMapping("/reset-password") // Định nghĩa endpoint POST /reset-password
+    @Transactional // Thêm annotation để đảm bảo transaction
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) { // Hàm xử lý đặt lại mật khẩu
+        try {
+            log.info("Reset password request for token: {}", request.getToken()); // Ghi log khi có yêu cầu đặt lại mật khẩu
+            
+            // Tìm token trong database
+            PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(request.getToken())
+                    .orElse(null);
+            
+            if (resetToken == null) {
+                log.warn("Reset password failed: Invalid token {}", request.getToken()); // Ghi log nếu token không hợp lệ
+                return ResponseEntity.badRequest().body("Token không hợp lệ"); // Trả về lỗi nếu token không hợp lệ
+            }
+            
+            // Kiểm tra token có hết hạn không
+            if (resetToken.isExpired()) {
+                log.warn("Reset password failed: Expired token {}", request.getToken()); // Ghi log nếu token đã hết hạn
+                passwordResetTokenRepository.delete(resetToken); // Xóa token hết hạn
+                return ResponseEntity.badRequest().body("Token đã hết hạn"); // Trả về lỗi nếu token đã hết hạn
+            }
+            
+            // Cập nhật mật khẩu cho user
+            User user = resetToken.getUser();
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            userRepository.save(user);
+            
+            // Đánh dấu token đã sử dụng
+            resetToken.setUsed(true);
+            passwordResetTokenRepository.save(resetToken);
+            
+            log.info("Password reset successfully for user: {}", user.getEmail()); // Ghi log khi đặt lại mật khẩu thành công
+            return ResponseEntity.ok("Đặt lại mật khẩu thành công!"); // Trả về thông báo thành công
+            
+        } catch (Exception e) {
+            log.error("Reset password failed: {}", e.getMessage(), e); // Ghi log khi đặt lại mật khẩu thất bại
+            return ResponseEntity.badRequest().body("Có lỗi xảy ra. Vui lòng thử lại sau."); // Trả về lỗi khi đặt lại mật khẩu thất bại
+        }
+    }
+    
+    @GetMapping("/verify-reset-token/{token}") // Định nghĩa endpoint GET /verify-reset-token/{token}
+    public ResponseEntity<?> verifyResetToken(@PathVariable String token) { // Hàm xác thực token reset
+        try {
+            log.info("Verifying reset token: {}", token); // Ghi log khi xác thực token
+            
+            // Tìm token trong database
+            PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(token)
+                    .orElse(null);
+            
+            if (resetToken == null) {
+                log.warn("Token verification failed: Invalid token {}", token); // Ghi log nếu token không hợp lệ
+                return ResponseEntity.badRequest().body("Token không hợp lệ"); // Trả về lỗi nếu token không hợp lệ
+            }
+            
+            // Kiểm tra token có hết hạn không
+            if (resetToken.isExpired()) {
+                log.warn("Token verification failed: Expired token {}", token); // Ghi log nếu token đã hết hạn
+                passwordResetTokenRepository.delete(resetToken); // Xóa token hết hạn
+                return ResponseEntity.badRequest().body("Token đã hết hạn"); // Trả về lỗi nếu token đã hết hạn
+            }
+            
+            log.info("Reset token verified successfully: {}", token); // Ghi log khi xác thực token thành công
+            return ResponseEntity.ok("Token hợp lệ"); // Trả về thông báo token hợp lệ
+            
+        } catch (Exception e) {
+            log.error("Token verification failed: {}", e.getMessage(), e); // Ghi log khi xác thực token thất bại
+            return ResponseEntity.badRequest().body("Token không hợp lệ hoặc đã hết hạn"); // Trả về lỗi khi token không hợp lệ
+        }
     }
 } // Kết thúc class AuthController

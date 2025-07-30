@@ -120,7 +120,7 @@ public class PaymentController {
                 
                 if (booking != null) {
                     // Cập nhật trạng thái booking
-                    booking.setStatus("PAID");
+                    booking.setStatus("Đã thanh toán");
                     bookingRepository.save(booking);
 
                     // Tạo payment record

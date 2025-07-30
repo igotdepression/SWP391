@@ -65,12 +65,14 @@ export default function Header() {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink
-                                to="/booking-create"
-                                className={({ isActive }) => isActive ? "active" : ""}
-                            >
-                                <span className="nav-icon"></span> ĐẶT LỊCH HẸN
-                            </NavLink>
+                            {user && user.role !== 'GUEST' && (
+                                <NavLink
+                                    to="/booking-create"
+                                    className={({ isActive }) => isActive ? "active" : ""}
+                                >
+                                    <span className="nav-icon"></span> ĐẶT LỊCH HẸN
+                                </NavLink>
+                            )}
                         </li>
                         <li>
                             {user && user.role === 'MANAGER' && (

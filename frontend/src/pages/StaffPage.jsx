@@ -29,7 +29,11 @@ export default function StaffPage() {
     useEffect(() => {
         localStorage.setItem("staff_active_menu", activeMenuItem);
     }, [activeMenuItem]);
+    useEffect(() => {
+        localStorage.setItem("staff_active_menu", activeMenuItem);
+    }, [activeMenuItem]);
 
+    // THÊM ĐOẠN CODE NÀY VÀO ĐÂY
     useEffect(() => {
         const handleSwitchToTestResults = (event) => {
             const { bookingID, bookingInfo, openAddModal } = event.detail;
@@ -51,12 +55,24 @@ export default function StaffPage() {
             window.removeEventListener('switchToTestResults', handleSwitchToTestResults);
         };
     }, []);
-
+    
     // Các state dữ liệu mẫu cho Staff (không còn employee hay order chung)
-    const [bookings, setBookings] = useState([]);
-    const [consultations, setConsultations] = useState([]);
-    const [samples, setSamples] = useState([]);
-    const [testResultsData, setTestResultsData] = useState([]);
+    const [bookings, setBookings] = useState([
+        { id: "BOOK001", customer: "Khách hàng An", date: "2024-06-25", status: "Chưa xác nhận" },
+        { id: "BOOK002", customer: "Khách hàng Bình", date: "2024-06-25", status: "Đã xác nhận" },
+    ]);
+    const [consultations, setConsultations] = useState([
+        { id: "CONS001", customer: "Khách hàng C", date: "2024-06-26", status: "Mới" },
+        { id: "CONS002", customer: "Khách hàng D", date: "2024-06-27", status: "Đã phản hồi" },
+    ]);
+    const [samples, setSamples] = useState([
+        { id: "SAMPLE001", bookingId: "BOOK001", status: "Chưa nhận mẫu" },
+        { id: "SAMPLE002", bookingId: "BOOK002", status: "Đang xử lý" },
+    ]);
+    const [testResultsData, setTestResultsData] = useState([ // Đổi tên để tránh trùng với component TestResultManagement
+        { id: "TR001", sampleId: "SAMPLE001", status: "Đang chờ" },
+        { id: "TR002", sampleId: "SAMPLE002", status: "Đã có kết quả" },
+    ]);
 
     // Các state cho tìm kiếm
     const [bookingSearchTerm, setBookingSearchTerm] = useState("");

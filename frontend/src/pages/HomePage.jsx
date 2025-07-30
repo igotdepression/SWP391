@@ -153,13 +153,32 @@ function HomePage() {
   const handleConsultationSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
+    // Map service type codes to Vietnamese names
+    const getServiceTypeName = (serviceType) => {
+      const serviceTypeMap = {
+        'paternity': 'Xét nghiệm ADN cha con',
+        'maternity': 'Xét nghiệm ADN mẹ con',
+        'grandpa': 'Xét nghiệm ADN ông cháu',
+        'grandma': 'Xét nghiệm ADN bà cháu',
+        'sibling': 'Xét nghiệm ADN anh em',
+        'other': 'Khác'
+      };
+      return serviceTypeMap[consultationForm.serviceType] || consultationForm.serviceType;
+    };
+    
+    const requestData = {
+      name: consultationForm.name,
+      phone: consultationForm.phone,
+      type: getServiceTypeName(consultationForm.serviceType),
+      note: consultationForm.message
+    };
+    
+    console.log('Submitting consultation request:', requestData);
+    
     try {
-      await api.post('/consultations/request', {
-        name: consultationForm.name,
-        phone: consultationForm.phone,
-        type: consultationForm.serviceType,
-        note: consultationForm.message
-      });
+      const response = await api.post('/consultations/request', requestData);
+      console.log('Consultation request successful:', response.data);
       alert('Đăng ký tư vấn thành công! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
       setConsultationForm({
         name: '',
@@ -170,6 +189,7 @@ function HomePage() {
         preferredTime: ''
       });
     } catch (error) {
+      console.error('Consultation request failed:', error.response?.data || error.message);
       alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
     } finally {
       setIsSubmitting(false);

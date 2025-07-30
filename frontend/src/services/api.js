@@ -89,6 +89,9 @@ export const authAPI = {
     login: (email, password) => api.post('/auth/login', { email, password }),
     register: (fullName, email, password, phoneNumber, address) => 
         api.post('/auth/register', { fullName, email, password, phoneNumber, address }),
+    forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+    resetPassword: (token, newPassword) => api.post('/auth/reset-password', { token, newPassword }),
+    verifyResetToken: (token) => api.get(`/auth/verify-reset-token/${token}`),
 };
 
 // User API

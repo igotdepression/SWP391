@@ -62,7 +62,7 @@ public class BookingController {
     @DeleteMapping("/{bookingId}")
     public ResponseEntity<String> cancelBooking(@PathVariable Integer bookingId) {
         try {
-            bookingService.updateBookingStatus(bookingId, "CANCELLED");
+            bookingService.updateBookingStatus(bookingId, "Đã hủy");
             return new ResponseEntity<>("Booking cancelled successfully.", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

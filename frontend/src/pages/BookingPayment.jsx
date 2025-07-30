@@ -33,9 +33,8 @@ export default function BookingPayment() {
         }
     }, [bookingData, navigate, user, authLoading]);
 
-    // Lấy tổng tiền và giá 1 mẫu từ bookingData (ưu tiên dữ liệu truyền sang)
-    const pricePerSample = bookingData?.pricePerSample || 0;
-    const totalPrice = bookingData?.totalPrice || (bookingData?.numSamples * pricePerSample);
+    // Lấy tổng tiền từ bookingData (đã được tính theo công thức mới ở backend)
+    const totalPrice = bookingData?.totalPrice || 0;
 
     const handleProcessPayment = async () => {
         if (!paymentMethod) {
@@ -76,7 +75,7 @@ export default function BookingPayment() {
                 throw new Error(errorMsg);
             }
             alert('Thanh toán đã được ghi nhận!');
-            navigate('/booking-history');
+            navigate('/home');
         } catch (error) {
             alert('Xử lý thanh toán thất bại. Vui lòng thử lại. Lỗi: ' + error.message);
             setIsConfirmed(false);

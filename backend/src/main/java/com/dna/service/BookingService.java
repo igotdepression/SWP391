@@ -59,11 +59,21 @@ public class BookingService {
         booking.setService(service);
         booking.setBookingDate(LocalDate.now()); 
         booking.setAppointmentDate(bookingRequestDTO.getAppointmentDate().toLocalDate());
-        booking.setStatus("PENDING"); 
-        BigDecimal totalPrice = service.getPrice().multiply(BigDecimal.valueOf(bookingRequestDTO.getParticipants().size()));
+        booking.setStatus("Chờ xác nhận"); 
+        
+        // Calculate total price using new formula: service.price * (numberSample - 2) * service.extraSampleFee
+        Integer numberSample = bookingRequestDTO.getNumberSample();
+        BigDecimal basePrice = service.getPrice();
+        BigDecimal extraSampleFee = service.getExtraSampleFee();
+        
+        // Calculate: price * (numberSample - 2) * extraSampleFee
+        BigDecimal totalPrice = basePrice
+            .multiply(BigDecimal.valueOf(Math.max(0, numberSample - 2))) // (numberSample - 2), minimum 0
+            .multiply(extraSampleFee != null ? extraSampleFee : BigDecimal.ONE); // multiply by extraSampleFee
+        
         booking.setTotalPrice(totalPrice);
         booking.setUpdateDate(LocalDate.now()); 
-        booking.setNumberSample(bookingRequestDTO.getNumberSample());
+        booking.setNumberSample(numberSample);
 
         // Map participants
         List<Participant> participants = bookingRequestDTO.getParticipants().stream().map(dto -> {
@@ -149,6 +159,28 @@ public class BookingService {
         log.info("Attempting to update status for booking ID {} to: {}", bookingId, newStatus);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
+
+        // Validate trạng thái hợp lệ
+        String[] validStatuses = {
+            "Chưa thanh toán", 
+            "Đã thanh toán", 
+            "Đang xử lý", 
+            "Hoàn thành", 
+            "Đã hủy"
+        };
+        
+        boolean isValidStatus = false;
+        for (String status : validStatuses) {
+            if (status.equals(newStatus)) {
+                isValidStatus = true;
+                break;
+            }
+        }
+        
+        if (!isValidStatus) {
+            throw new IllegalArgumentException("Trạng thái không hợp lệ: " + newStatus + 
+                ". Các trạng thái hợp lệ: " + String.join(", ", validStatuses));
+        }
 
         booking.setStatus(newStatus);
         booking.setUpdateDate(LocalDate.now());
