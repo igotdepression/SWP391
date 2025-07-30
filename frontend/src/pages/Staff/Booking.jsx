@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom'; // Thêm import này
 import Card from "../../components/Card";
 import "./Booking.css";
-import { MdCheckCircle, MdCancel, MdArrowForward, MdVisibility, MdEdit, MdPerson, MdSort, MdSortByAlpha } from "react-icons/md";
+import { MdCheckCircle, MdCancel, MdArrowForward, MdVisibility, MdEdit, MdPerson, MdSort, MdSortByAlpha, MdAdd } from "react-icons/md";
 import { ThermometerIcon } from "lucide-react";
 import api from "../../services/api";
 import { userAPI } from '../../services/api';
@@ -9,21 +10,21 @@ import { userAPI } from '../../services/api';
 const getNextStatus = (current, serviceType) => {
     if (
         current === "Chờ xác nhận" ||
-        current === "Không xác nhận" ||
-        current === "PENDING" ||
-        current === "REJECTED"
+        current === "Không xác nhận"
     ) return "Chờ lấy mẫu";
-    if (current === "Chờ lấy mẫu" || current === "WAITING_SAMPLE" || current === "PROCESSING") return "Chờ kết quả";
-    if (current === "Chờ kết quả" || current === "WAITING_RESULT") {
+    if (current === "Chờ lấy mẫu") return "Chờ kết quả";
+    if (current === "Chờ kết quả") {
         return serviceType === "Hành chính" ? "Chờ giám định pháp lý" : "Hoàn thành";
     }
-    if (current === "Chờ giám định pháp lý" || current === "WAITING_LEGAL") return "Hoàn thành";
-    if (current === "Hoàn thành" || current === "COMPLETED") return "Hoàn thành";
+    if (current === "Chờ giám định pháp lý") return "Hoàn thành";
+    if (current === "Hoàn thành") return "Hoàn thành";
     return current;
 };
 
 // Xóa mảng users cứng, thay bằng state và lấy từ API
 export default function Booking() {
+    const navigate = useNavigate(); // Thêm này
+
     const [users, setUsers] = useState([]);
     const [bookings, setBookings] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -54,14 +55,6 @@ export default function Booking() {
         "Hoàn thành": { label: "Hoàn thành", className: "hoan-thanh" },
         "Đã hủy": { label: "Đã hủy", className: "da-huy" },
         "Không xác nhận": { label: "Không xác nhận", className: "khong-xac-nhan" },
-        "PENDING": { label: "Chờ xác nhận", className: "cho-xac-nhan" },
-        "PROCESSING": { label: "Đang xử lý", className: "cho-lay-mau" },
-        "WAITING_SAMPLE": { label: "Chờ lấy mẫu", className: "cho-lay-mau" },
-        "WAITING_RESULT": { label: "Chờ kết quả", className: "cho-ket-qua" },
-        "WAITING_LEGAL": { label: "Chờ giám định pháp lý", className: "cho-giam-dinh-phap-ly" },
-        "COMPLETED": { label: "Hoàn thành", className: "hoan-thanh" },
-        "CANCELLED": { label: "Đã hủy", className: "da-huy" },
-        "REJECTED": { label: "Không xác nhận", className: "khong-xac-nhan" },
     };
 
     const availableStatuses = [
@@ -75,25 +68,18 @@ export default function Booking() {
     const getStatusColor = (status) => {
         switch (status) {
             case "Chờ xác nhận":
-            case "PENDING":
                 return "#f07903";
             case "Chờ lấy mẫu":
+                return "#c701a3ff";
             case "Chờ kết quả":
+                return "#030ff0ff";
             case "Chờ giám định pháp lý":
-            case "Đang xử lý":
-            case "PROCESSING":
-            case "WAITING_SAMPLE":
-            case "WAITING_RESULT":
-            case "WAITING_LEGAL":
-                return "#f07903";
+                return "#9103f0ff";
             case "Hoàn thành":
-            case "COMPLETED":
-                return "#16a34a";
+                return "#00833bff";
             case "Không xác nhận":
-            case "REJECTED":
                 return "#dc2626";
             case "Đã hủy":
-            case "CANCELLED":
                 return "#6b7280";
             default:
                 return "#222";
@@ -239,10 +225,26 @@ export default function Booking() {
 
     const handleNextStep = async (bookingID) => {
         const booking = bookings.find(b => b.bookingID === bookingID);
+
         if (booking.status === "Chờ lấy mẫu") {
             setCurrentBooking(booking);
             setSampleInfos(Array(booking.numberSample).fill(""));
             setShowSampleModal(true);
+        } else if (booking.status === "Chờ kết quả") {
+            if (window.confirm("Chuyển đến trang quản lý kết quả xét nghiệm để thêm kết quả cho đơn này?")) {
+                // Dispatch event để StaffPage chuyển tab
+                window.dispatchEvent(new CustomEvent('switchToTestResults', {
+                    detail: {
+                        bookingID: bookingID,
+                        bookingInfo: {
+                            ...booking,
+                            customerName: booking.user?.fullName || booking.customerName,
+                            serviceName: booking.service?.serviceName || booking.serviceName
+                        },
+                        openAddModal: true
+                    }
+                }));
+            }
         } else {
             if (!window.confirm("Bạn có chắc chắn muốn chuyển trạng thái đơn này?")) return;
             const nextStatus = getNextStatus(booking.status, booking.serviceType);
@@ -259,22 +261,45 @@ export default function Booking() {
         });
     };
 
-    const handleConfirmSamples = () => {
+    const handleConfirmSamples = async () => {
         if (sampleInfos.some(id => !id)) {
             alert("Vui lòng chọn đầy đủ ID mẫu cho tất cả các mẫu!");
             return;
         }
         if (!window.confirm("Bạn có chắc chắn muốn xác nhận và chuyển trạng thái đơn này?")) return;
-        setBookings(prev =>
-            prev.map(b =>
-                b.bookingID === currentBooking.bookingID
-                    ? { ...b, status: "Chờ kết quả", sampleInfos }
-                    : b
-            )
-        );
-        setShowSampleModal(false);
-        setCurrentBooking(null);
-        setSampleInfos([]);
+
+        try {
+            // 1. Cập nhật trạng thái booking thành "Chờ kết quả" trong database
+            await updateBookingStatus(currentBooking.bookingID, "Chờ kết quả");
+
+            // 2. Lưu thông tin sample IDs vào database (nếu backend hỗ trợ)
+            if (sampleInfos.length > 0) {
+                try {
+                    await api.put(`/bookings/${currentBooking.bookingID}/samples`, {
+                        sampleInfos: sampleInfos,
+                        sampleIds: sampleInfos.filter(id => id) // Lọc ra các ID không rỗng
+                    });
+                    console.log('Đã lưu thông tin mẫu thành công');
+                } catch (sampleErr) {
+                    console.warn('Không thể lưu thông tin mẫu:', sampleErr);
+                    // Có thể tiếp tục vì việc chính là cập nhật trạng thái
+                }
+            }
+
+            // 3. Reload lại danh sách bookings từ database để đồng bộ
+            await reloadBookings();
+
+            // 4. Đóng modal và reset state
+            setShowSampleModal(false);
+            setCurrentBooking(null);
+            setSampleInfos([]);
+
+            alert("Đã xác nhận mẫu và chuyển trạng thái thành công!");
+
+        } catch (err) {
+            console.error('Error updating booking status:', err);
+            alert("Lỗi khi cập nhật trạng thái: " + (err.message || 'Không xác định'));
+        }
     };
 
     const handleViewDetail = (booking) => {
@@ -511,7 +536,7 @@ export default function Booking() {
                                                 <div className="status-action-row status-action-row--pending">
                                                     <span
                                                         className={`status-badge status-badge--${getStatusClass(b.status)}`}
-                                                        style={{ color: getStatusColor(b.status), borderColor: getStatusColor(b.status) }}
+                                                        style={{ color: getStatusColor(b.status), borderColor: getStatusColor(b.status), fontSize: '12px' }}
                                                     >
                                                         {getStatusLabel(b.status)}
                                                     </span>
@@ -540,6 +565,21 @@ export default function Booking() {
                                                             title="Chỉnh sửa và gửi lại xác nhận"
                                                             onClick={() => handleEditAndResubmit(b)}
                                                         />
+                                                    ) : b.status === "Chờ kết quả" ? (
+                                                        // Button đặc biệt cho trạng thái "Chờ kết quả"
+                                                        <button
+                                                            className="status-btn status-btn--add-result"
+                                                            title="Thêm kết quả xét nghiệm để hoàn thành đơn"
+                                                            onClick={() => handleNextStep(b.bookingID)}
+                                                        >
+                                                            <MdArrowForward
+                                                                size={22}
+                                                                color="#2563eb"
+                                                                className="arrow-forward-icon"
+                                                                title="Chuyển bước tiếp"
+                                                                onClick={() => handleNextStep(b.bookingID)}
+                                                            />
+                                                        </button>
                                                     ) : (
                                                         !["Hoàn thành", "Đã hủy", "Không xác nhận"].includes(b.status) && (
                                                             <MdArrowForward
@@ -642,8 +682,10 @@ export default function Booking() {
                                     </select>
                                 </div>
                             ))}
-                            <button onClick={handleConfirmSamples} className="confirm-btn" style={{ marginRight: 8 }}>Xác nhận</button>
-                            <button onClick={() => setShowSampleModal(false)} className="reject-btn">Hủy</button>
+                            <div className="modal-actions">
+                                <button onClick={handleConfirmSamples} className="confirm-btn" style={{ marginRight: 8 }}>Xác nhận</button>
+                                <button onClick={() => setShowSampleModal(false)} className="reject-btn">Hủy</button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -653,10 +695,6 @@ export default function Booking() {
                         <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>Chi tiết đơn #{viewBooking.bookingID}</h3>
                             <p><b>Mã Đơn:</b> {viewBooking.bookingID}</p>
-                            <p><b>Mã KH:</b> {viewBooking.user?.userID || viewBooking.userID}</p>
-                            <p><b>Dịch vụ:</b> {viewBooking.serviceName || ''}</p>
-                            <p><b>Loại dịch vụ:</b> {viewBooking.service?.serviceType || ''}</p>
-                            <p><b>Gói dịch vụ:</b> {viewBooking.service?.packageType || ''}</p>
                             <p><b>Số mẫu:</b> {viewBooking.numberSample}</p>
                             <p><b>Ngày đặt:</b> {viewBooking.bookingDate}</p>
                             <p><b>Ngày hẹn:</b> {viewBooking.appointmentDate}</p>
@@ -722,14 +760,7 @@ export default function Booking() {
                             </h3>
 
                             {editBooking.status === "Không xác nhận" && (
-                                <div style={{
-                                    background: "#fef2f2",
-                                    border: "1px solid #fecaca",
-                                    borderRadius: "8px",
-                                    padding: "12px",
-                                    marginBottom: "16px",
-                                    color: "#dc2626"
-                                }}>
+                                <div>
                                     <strong>Thông báo:</strong> Đơn này đã bị từ chối. Bạn có thể chỉnh sửa thông tin và gửi lại để xác nhận.
                                 </div>
                             )}
@@ -841,17 +872,28 @@ export default function Booking() {
                                 {editBooking.status === "Không xác nhận" ? (
                                     <button
                                         className="confirm-btn"
-                                        onClick={() => {
+                                        onClick={async () => {
                                             if (window.confirm("Xác nhận chỉnh sửa và gửi lại đơn để xác nhận?")) {
-                                                setBookings(prev =>
-                                                    prev.map(b =>
-                                                        b.bookingID === editBooking.bookingID
-                                                            ? { ...editBooking, status: "Chờ xác nhận" }
-                                                            : b
-                                                    )
-                                                );
-                                                setEditBooking(null);
-                                                alert("Đơn đã được chỉnh sửa và gửi lại để xác nhận!");
+                                                try {
+                                                    // Cập nhật thông tin booking và chuyển trạng thái về "Chờ xác nhận"
+                                                    const updatedBooking = {
+                                                        ...editBooking,
+                                                        status: "Chờ xác nhận"
+                                                    };
+
+                                                    // Gọi API cập nhật booking
+                                                    await api.put(`/bookings/${editBooking.bookingID}`, updatedBooking);
+
+                                                    // Reload lại danh sách từ database
+                                                    await reloadBookings();
+
+                                                    setEditBooking(null);
+                                                    alert("Đơn đã được chỉnh sửa và gửi lại để xác nhận!");
+
+                                                } catch (err) {
+                                                    console.error('Error updating booking:', err);
+                                                    alert("Lỗi khi cập nhật đơn: " + (err.message || 'Không xác định'));
+                                                }
                                             }
                                         }}
                                     >
@@ -860,17 +902,22 @@ export default function Booking() {
                                 ) : (
                                     <button
                                         className="confirm-btn"
-                                        onClick={() => {
+                                        onClick={async () => {
                                             if (window.confirm("Xác nhận lưu thay đổi?")) {
-                                                setBookings(prev =>
-                                                    prev.map(b =>
-                                                        b.bookingID === editBooking.bookingID
-                                                            ? { ...editBooking }
-                                                            : b
-                                                    )
-                                                );
-                                                setEditBooking(null);
-                                                alert("Thông tin đơn đã được cập nhật!");
+                                                try {
+                                                    // Gọi API cập nhật thông tin booking
+                                                    await api.put(`/bookings/${editBooking.bookingID}`, editBooking);
+
+                                                    // Reload lại danh sách từ database
+                                                    await reloadBookings();
+
+                                                    setEditBooking(null);
+                                                    alert("Thông tin đơn đã được cập nhật!");
+
+                                                } catch (err) {
+                                                    console.error('Error updating booking:', err);
+                                                    alert("Lỗi khi cập nhật đơn: " + (err.message || 'Không xác định'));
+                                                }
                                             }
                                         }}
                                     >

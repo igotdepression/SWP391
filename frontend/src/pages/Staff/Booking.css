@@ -152,18 +152,13 @@
 /* Controls */
 /* Booking controls styling - horizontal layout */
 .booking-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
+    margin: 16px 10px 0 10px;
     flex-wrap: nowrap; /* Không cho phép xuống dòng */
     padding: 16px;
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(34, 197, 94, 0.08) 100%);
     border-radius: 12px;
-    border: 2px solid rgba(37, 99, 235, 0.15);
-    justify-content: flex-start;
-    overflow-x: auto; /* Cho phép scroll ngang nếu cần */
-    max-width: 100%;
+    width: 100%;
+    white-space: nowrap; /* Ngăn chữ xuống dòng */
 }
 
 /* Search input styling */
@@ -179,6 +174,7 @@
     transition: all 0.3s ease;
     outline: none;
     flex-shrink: 1; /* Cho phép co lại một chút */
+    margin-right: 20px;
 }
 
 .search-input:focus {
@@ -205,6 +201,7 @@
     cursor: pointer;
     flex-shrink: 0; /* Không cho co lại */
     white-space: nowrap;
+    margin-right: 20px;
 }
 
 .filter-select:focus,
@@ -264,7 +261,7 @@
 }
 .data-table th,
 .data-table td {
-    padding: 12px 10px;
+    padding: 12px 12px;
     text-align: center;
     border-bottom: 1px solid #e5e7eb;
 }
@@ -457,50 +454,60 @@
 }
 
 /* Modal */
+/* Modal nhập thông tin mẫu - CSS cải tiến */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(4px);
 }
 
 .modal-content {
     background: white;
-    border-radius: 12px;
-    padding: 24px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    position: relative;
     animation: modalSlideIn 0.3s ease-out;
 }
 
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
+/* Modal header với gradient text */
 .modal-content h3 {
-    margin: 0 0 20px 0;
+    margin: 0 0 24px 0;
+    font-size: 24px;
+    font-weight: 700;
     color: #1f2937;
-    font-size: 20px;
-    font-weight: 600;
     text-align: center;
     border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 12px;
+    padding-bottom: 16px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+}
+
+.modal-content h3::before {
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+    font-size: 28px;
+    background: none;
+    -webkit-text-fill-color: initial;
 }
 
 .form-group {
@@ -553,51 +560,112 @@
     margin: 0;
 }
 
-/* Buttons styling */
+
+/* Enhanced buttons */
 .modal-content .confirm-btn {
-    background: linear-gradient(135deg, #10b981, #059669);
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 500;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    margin-right: 12px;
-    transition: all 0.2s ease;
-    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+    position: relative;
+    overflow: hidden;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.modal-content .confirm-btn::before {
+    content: '✓';
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.modal-content .confirm-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.modal-content .confirm-btn:hover::after {
+    width: 300px;
+    height: 300px;
 }
 
 .modal-content .confirm-btn:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
-}
-
-.modal-content .confirm-btn:active {
-    transform: translateY(0);
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
 }
 
 .modal-content .reject-btn {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 500;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+    position: relative;
+    overflow: hidden;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.modal-content .reject-btn::before {
+    content: '✕';
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.modal-content .reject-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.modal-content .reject-btn:hover::after {
+    width: 300px;
+    height: 300px;
 }
 
 .modal-content .reject-btn:hover {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
 }
 
-.modal-content .reject-btn:active {
-    transform: translateY(0);
+.modal-actions{
+flex-wrap: nowrap; 
 }
+
 
 /* Button container */
 .modal-content .button-container {
@@ -620,12 +688,143 @@
     margin-bottom: 16px;
 }
 
+
+/* Sample input rows */
+.sample-input-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(29, 78, 216, 0.05) 100%);
+    border-radius: 12px;
+    border: 2px solid rgba(59, 130, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.sample-input-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 2px 0 0 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sample-input-row:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(29, 78, 216, 0.08) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.12);
+}
+
+.sample-input-row:hover::before {
+    opacity: 1;
+}
+
+/* Sample labels với icons */
+.sample-input-row label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 16px;
+    min-width: 100px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.sample-input-row label::before {
+    content: '🔬';
+    font-size: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Sample select với styling nâng cao */
+.sample-input-row select {
+    flex: 1;
+    padding: 14px 16px;
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+    font-size: 15px;
+    background: white;
+    color: #374151;
+    transition: all 0.3s ease;
+    outline: none;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    position: relative;
+}
+
+.sample-input-row select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: #fefefe;
+    transform: translateY(-1px);
+}
+
+.sample-input-row select:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sample-input-row select option {
+    padding: 12px;
+    font-weight: 500;
+    background: white;
+}
+
+.sample-input-row select option:first-child {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.sample-input-row select option:hover {
+    background: #f3f4f6;
+}
+
+/* Success state */
+.sample-input-row.selected {
+    border-color: #22c55e;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(22, 163, 74, 0.05) 100%);
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.1);
+}
+
+.sample-input-row.selected::before {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    opacity: 1;
+}
+
+.sample-input-row.selected label::before {
+    content: '✅';
+    animation: bounce 0.5s ease;
+}
+
+.sample-input-row.selected select {
+    border-color: #22c55e;
+    background: #f0fdf4;
+}
+
+@keyframes bounce {
+    0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+    40%, 43% { transform: translate3d(0, -8px, 0); }
+    70% { transform: translate3d(0, -4px, 0); }
+    90% { transform: translate3d(0, -2px, 0); }
+}
+
 /* Status Badge Styling */
 .status-badge {
     display: inline-block;
-    padding: 2px 18px;
+    padding: 2px 10px;
     border-radius: 20px;
-    font-size: 15px;
+    font-size: 12px;
     font-weight: 500;
     border: 2px solid transparent;
     background: #fff;
@@ -640,51 +839,38 @@
 .status-badge--cho-xac-nhan {
     border-color: #f07903;
     color: #fff;
-    background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+    background: linear-gradient(90deg, #f07903 0%, #f07903 100%);
     box-shadow: 0 2px 8px 0 rgba(251,191,36,0.10);
 }
-.status-badge--cho-xac-nhan:hover {
-    background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
-    filter: brightness(1.08);
+.status-badge--cho-lay-mau {
+    border-color: #9d00ff;
+    color: #fff;
+    background: linear-gradient(90deg, #9822ff 0%, #9d00ff 100%);
+    box-shadow: 0 2px 8px 0 rgba(22,163,74,0.10);
 }
-
-.status-badge--cho-lay-mau,
-.status-badge--cho-ket-qua,
-.status-badge--cho-giam-dinh-phap-ly,
-.status-badge--dang-xu-ly {
-    border-color: #f07903;
-    color: #f07903;
-    background: #fff7e6;
-    box-shadow: 0 2px 8px 0 rgba(240,121,3,0.07);
+.status-badge--cho-ket-qua {
+    border-color: #0062ff;
+    color: #fff;
+    background: linear-gradient(90deg, #3877ff 0%, #0062ff 100%);
+    box-shadow: 0 2px 8px 0 rgba(22,163,74,0.10);
 }
-.status-badge--cho-lay-mau:hover,
-.status-badge--cho-ket-qua:hover,
-.status-badge--cho-giam-dinh-phap-ly:hover,
-.status-badge--dang-xu-ly:hover {
-    background: #ffe7c2;
-    filter: brightness(1.05);
+.status-badge--cho-giam-dinh-phap-ly {
+    border-color: #008d71;
+    color: #fff;
+    background: linear-gradient(90deg, #008d71 0%, #008d71 100%);
+    box-shadow: 0 2px 8px 0 rgba(22,163,74,0.10);
 }
-
 .status-badge--hoan-thanh {
     border-color: #16a34a;
     color: #fff;
     background: linear-gradient(90deg, #4ade80 0%, #16a34a 100%);
     box-shadow: 0 2px 8px 0 rgba(22,163,74,0.10);
 }
-.status-badge--hoan-thanh:hover {
-    background: linear-gradient(90deg, #16a34a 0%, #4ade80 100%);
-    filter: brightness(1.08);
-}
-
 .status-badge--da-huy {
     border-color: #6b7280;
     color: #6b7280;
     background: #f3f4f6;
     box-shadow: 0 2px 8px 0 rgba(107,114,128,0.07);
-}
-.status-badge--da-huy:hover {
-    background: #e5e7eb;
-    filter: brightness(1.05);
 }
 
 .status-badge--khong-xac-nhan {
@@ -692,10 +878,6 @@
     color: #fff;
     background: linear-gradient(90deg, #f87171 0%, #dc2626 100%);
     box-shadow: 0 2px 8px 0 rgba(220,38,38,0.10);
-}
-.status-badge--khong-xac-nhan:hover {
-    background: linear-gradient(90deg, #dc2626 0%, #f87171 100%);
-    filter: brightness(1.08);
 }
 
 /* Stats Container */
@@ -846,153 +1028,72 @@
 .status-action-row--pending {
     display: flex;
     align-items: center;
-    gap: 8px;
+    flex-wrap: nowrap; /* Ngăn không cho xuống dòng */
+    min-width: 0;
 }
 
 .status-btn {
     background: none;
     border: none;
     outline: none;
-    padding: 2px 4px;
-    margin-left: 2px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
+    justify-content: center;
     transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
-    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
     cursor: pointer;
+    flex-shrink: 0; /* Ngăn button bị co lại */
+    height: 36px; /* Đảm bảo height cố định */
 }
+
 .status-btn--confirm {
     color: #22c55e;
 }
+
 .status-btn--confirm:hover {
-    background: #e0fbe6;
-    box-shadow: 0 2px 8px 0 rgba(34,197,94,0.10);
     transform: scale(1.08);
 }
+
 .status-btn--reject {
     color: #f87171;
 }
+
 .status-btn--reject:hover {
-    background: #fee2e2;
-    box-shadow: 0 2px 8px 0 rgba(248,113,113,0.10);
     transform: scale(1.08);
 }
 
-/* Responsive design - chỉ áp dụng cho màn hình rất nhỏ */
-@media (max-width: 1200px) {
-    .booking-controls {
-        gap: 8px;
-    }
-    
-    .search-input {
-        min-width: 220px;
-        max-width: 300px;
-    }
-    
-    .filter-select {
-        min-width: 120px;
-        max-width: 150px;
-        font-size: 12px;
-        padding: 10px 8px;
-    }
-    
-    .reset-filters-btn {
-        padding: 10px 14px;
-        min-width: 110px;
-        font-size: 12px;
-    }
+/* Container cho confirm và reject buttons */
+.confirm-reject-buttons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
 }
 
-@media (max-width: 1000px) {
-    .booking-controls {
-        gap: 6px;
-        padding: 12px;
-    }
-    
-    .search-input {
-        min-width: 200px;
-        max-width: 250px;
-        font-size: 13px;
-    }
-    
-    .filter-select {
-        min-width: 110px;
-        max-width: 140px;
-        font-size: 12px;
-        padding: 8px 6px;
-    }
-    
-    .reset-filters-btn {
-        padding: 8px 12px;
-        min-width: 100px;
-        font-size: 12px;
-    }
-}
-
-/* Chỉ khi màn hình quá nhỏ mới cho xuống dòng */
+/* Responsive design */
 @media (max-width: 768px) {
-    .booking-controls {
-        flex-wrap: wrap;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        overflow-x: visible;
+    .status-btn {
+        min-width: 32px;
+        height: 32px;
     }
     
-    .search-input {
-        min-width: unset;
-        max-width: unset;
-        width: 100%;
-        flex-shrink: unset;
+    .status-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .status-action-row--pending {
+        gap: 2px;
     }
     
-    .filter-select {
-        min-width: unset;
-        max-width: unset;
-        width: 100%;
-        flex-shrink: unset;
+    .status-btn {
+        min-width: 28px;
+        height: 28px;
     }
     
-    .reset-filters-btn {
-        width: 100%;
-        min-width: unset;
+    .status-btn svg {
+        width: 14px;
+        height: 14px;
     }
-}
-
-/* Styling cho scroll ngang */
-.booking-controls::-webkit-scrollbar {
-    height: 4px;
-}
-
-.booking-controls::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-}
-
-.booking-controls::-webkit-scrollbar-thumb {
-    background: rgba(37, 99, 235, 0.3);
-    border-radius: 2px;
-}
-
-.booking-controls::-webkit-scrollbar-thumb:hover {
-    background: rgba(37, 99, 235, 0.5);
-}
-
-/* Focus within styling for better UX */
-.booking-controls:focus-within {
-    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
-}
-
-/* Loading state for filters */
-.filter-select:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background-color: #f9fafb;
-}
-
-.reset-filters-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
 }
