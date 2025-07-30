@@ -565,6 +565,39 @@ body {
   background-color: var(--status-waiting-sample-text);
 }
 
+.status-badge.status-paid {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #4CAF50;
+}
+
+.status-badge.status-paid::before {
+  content: "💰";
+  background-color: #4CAF50;
+}
+
+.status-badge.status-processing {
+  background-color: #FFF3E0;
+  color: #F57C00;
+  border: 1px solid #FF9800;
+}
+
+.status-badge.status-processing::before {
+  content: "⚙️";
+  background-color: #FF9800;
+}
+
+.status-badge.status-cancelled {
+  background-color: #FFEBEE;
+  color: #D32F2F;
+  border: 1px solid #F44336;
+}
+
+.status-badge.status-cancelled::before {
+  content: "❌";
+  background-color: #F44336;
+}
+
 /* Action button in table */
 .table-responsive .download-btn {
   padding: 6px 16px;

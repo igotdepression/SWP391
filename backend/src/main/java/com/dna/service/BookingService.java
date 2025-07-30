@@ -59,7 +59,7 @@ public class BookingService {
         booking.setService(service);
         booking.setBookingDate(LocalDate.now()); 
         booking.setAppointmentDate(bookingRequestDTO.getAppointmentDate().toLocalDate());
-        booking.setStatus("PENDING"); 
+        booking.setStatus("Chờ xác nhận"); 
         BigDecimal totalPrice = service.getPrice().multiply(BigDecimal.valueOf(bookingRequestDTO.getParticipants().size()));
         booking.setTotalPrice(totalPrice);
         booking.setUpdateDate(LocalDate.now()); 
@@ -149,6 +149,28 @@ public class BookingService {
         log.info("Attempting to update status for booking ID {} to: {}", bookingId, newStatus);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
+
+        // Validate trạng thái hợp lệ
+        String[] validStatuses = {
+            "Chưa thanh toán", 
+            "Đã thanh toán", 
+            "Đang xử lý", 
+            "Hoàn thành", 
+            "Đã hủy"
+        };
+        
+        boolean isValidStatus = false;
+        for (String status : validStatuses) {
+            if (status.equals(newStatus)) {
+                isValidStatus = true;
+                break;
+            }
+        }
+        
+        if (!isValidStatus) {
+            throw new IllegalArgumentException("Trạng thái không hợp lệ: " + newStatus + 
+                ". Các trạng thái hợp lệ: " + String.join(", ", validStatuses));
+        }
 
         booking.setStatus(newStatus);
         booking.setUpdateDate(LocalDate.now());
