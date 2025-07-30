@@ -162,7 +162,7 @@ export default function StaffPage() {
     };
 
     return (
-        <div className="manager-page-container"> {/* Giữ nguyên classname này */}
+        <div className="staff-page-container"> {/* Giữ nguyên classname này */}
             {/* Sidebar */}
             <aside className="sidebar">
                 <div className="sidebar-header">
@@ -224,14 +224,14 @@ export default function StaffPage() {
 
                     {/* Phần thông tin staff ở góc phải */}
                     {user && ( // Chỉ hiển thị nếu có thông tin user
-                        <div className="manager-profile-info"> {/* Giữ nguyên classname này */}
+                        <div className="staff-profile-info"> {/* Giữ nguyên classname này */}
                             <div className="header-user-profile-area">
                                 <div className="header-profile-icon-placeholder" style={{ backgroundColor: getAvatarColor(user.fullName || 'Staff') }}>
                                     {getInitials(user.fullName || 'Staff')}
                                 </div>
                                 <div className="header-user-info">
                                     <div>{user.fullName || 'Staff'}</div>
-                                    <div className="user-id">ID: {user.id }</div>
+                                    <div className="user-id">ID: {user.userID || user.id || 'N/A'}</div>
                                 </div>
                             </div>
                         </div>

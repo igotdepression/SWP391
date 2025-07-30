@@ -16,6 +16,7 @@ import DoctorDetail from './pages/DoctorDetail'; // Import trang chi tiết bác
 import ServicePage from './pages/ServicePage'; // Import trang dịch vụ
 import SendFeedback from './pages/SendFeedback'; // Import trang gửi phản hồi
 import BlogPost from './pages/BlogPost'; // Import trang blog
+import BlogDetail from './pages/BlogDetail'; // Import trang chi tiết blog
 
 // Import các trang service
 import FatherChild from './pages/Service/Father-child'; // Import dịch vụ cha-con
@@ -76,6 +77,7 @@ function App() { // Component App chính
           <Route path="/booking-details" element={<BookingDetails />} /> {/* Route chi tiết booking */}
           <Route path='/booking-payment' element={<BookingPayment />} /> {/* Route thanh toán booking */}
           <Route path='/blogpost' element={<BlogPost />} /> {/* Route blog */}
+          <Route path='/blog/article/:id' element={<BlogDetail />} /> {/* Route chi tiết bài viết */}
           <Route path="/feedback" element={<SendFeedback />} /> {/* Route gửi phản hồi */}
 
           <Route path="/services" element={<ServicePage />} /> {/* Route trang dịch vụ */}

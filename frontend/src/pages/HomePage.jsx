@@ -26,28 +26,32 @@ const labSlides = [
 const services = [
   {
     id: 1,
-    name: 'Xét nghiệm ADN cha con',
-    description: 'Dịch vụ xác định mối quan hệ huyết thống giữa cha và con với độ chính xác lên đến 99.999%.',
-    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCJ5A6YSvh59XtclfXWw-aPPSAQ_wEu6TyFA&s'
+    name: "Xét nghiệm ADN cha con",
+    description: "Xác định mối quan hệ huyết thống giữa cha và con với độ chính xác cao nhất",
+    image: "https://bestselfatlanta.com/wp-content/uploads/2017/05/father-son.jpg",
+    route: "/services/father-child"
   },
   {
     id: 2,
-    name: 'Xét nghiệm ADN mẹ con',
-    description: 'Xác định mối quan hệ huyết thống giữa mẹ và con, cam kết bảo mật và chính xác.',
-    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWNpWoDGmekMYkfIqMbrrunR5kNUtmul7RtA&s'
+    name: "Xét nghiệm ADN mẹ con",
+    description: "Kiểm tra mối quan hệ huyết thống giữa mẹ và con một cách chính xác",
+    image: "https://static.wixstatic.com/media/bd583d_35da8d7c9c0e4f4496fa6ed9da8d405f~mv2.jpg/v1/fill/w_319,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/42-31107334.jpg",
+    route: "/services/mother-child"
   },
   {
     id: 3,
-    name: 'Xét nghiệm ADN ông cháu',
-    description: 'Dịch vụ kiểm tra mối quan hệ huyết thống giữa ông và cháu, áp dụng trong các trường hợp đặc biệt.',
-    img: 'data:image/jpeg;base64,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'
+    name: "Xét nghiệm ADN ông cháu",
+    description: "Xác định mối quan hệ huyết thống giữa ông và cháu qua nhiều thế hệ",
+    image: "https://live.staticflickr.com/5323/17735673811_47a36ffa1e_b.jpg",
+    route: "/services/grandfather-grandchild"
   },
   {
     id: 4,
-    name: 'Xét nghiệm ADN bà cháu',
-    description: 'Kiểm chứng mối liên hệ huyết thống giữa bà và cháu một cách chính xác.',
-    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzv8GihBuCraZppBlTs7Pw7JkXt6KobneZig&s'
-  }
+    name: "Xét nghiệm ADN bà cháu",
+    description: "Kiểm tra mối quan hệ huyết thống giữa bà và cháu với độ tin cậy cao",
+    image: "https://herviewfromhome.com/wp-content/uploads/2024/10/shutterstock_1926117458.jpg",
+    route: "/services/grandmother-grandchild"
+  },
 ];
 
 function HomePage() {
@@ -112,15 +116,29 @@ function HomePage() {
     navigate('/');
   };
 
-  const handleRestrictedAction = (actionType) => {
+  // Hàm xử lý khi người dùng click vào dịch vụ
+  const handleServiceClick = (route) => {
+    navigate(route);
+    setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
+  };
+
+  const handleRestrictedAction = (route) => {
     if (!user || user.role === 'GUEST') {
       alert('Bạn chưa đăng nhập. Vui lòng đăng nhập để sử dụng chức năng này.');
     } else {
-      if (actionType === 'register') {
-        goToBookingCreate();
-      } else if (actionType === 'advice') {
-        goToContact();
-      }
+      navigate(route);
+      // Đảm bảo scroll đến đầu trang sau khi navigate
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
     }
   };
 
@@ -136,27 +154,27 @@ function HomePage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-        await api.post('/consultations/request', {
-            name: consultationForm.name,
-            phone: consultationForm.phone,
-            type: consultationForm.serviceType,
-            note: consultationForm.message
-        });
-        alert('Đăng ký tư vấn thành công! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
-        setConsultationForm({
-            name: '',
-            phone: '',
-            email: '',
-            serviceType: '',
-            message: '',
-            preferredTime: ''
-        });
+      await api.post('/consultations/request', {
+        name: consultationForm.name,
+        phone: consultationForm.phone,
+        type: consultationForm.serviceType,
+        note: consultationForm.message
+      });
+      alert('Đăng ký tư vấn thành công! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
+      setConsultationForm({
+        name: '',
+        phone: '',
+        email: '',
+        serviceType: '',
+        message: '',
+        preferredTime: ''
+      });
     } catch (error) {
-        alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+      alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
-};
+  };
 
   const handleScrollToConsultation = () => {
     const consultationSection = document.getElementById('consultation');
@@ -192,7 +210,7 @@ function HomePage() {
                 </div>
               </div>
               <div className="adn-banner-actions">
-                <button className="adn-btn adn-btn-main" onClick={() => handleRestrictedAction('register')}>Đăng ký xét nghiệm ngay</button>
+                <button className="adn-btn adn-btn-main" onClick={() => handleRestrictedAction("/booking-create")}>Đăng ký xét nghiệm ngay</button>
                 <button className="adn-btn adn-btn-outline" onClick={handleScrollToConsultation}>Đặt lịch tư vấn miễn phí</button>
               </div>
             </div>
@@ -230,15 +248,20 @@ function HomePage() {
               <span className="adn-section-title">DỊCH VỤ CHÍNH</span>
             </div>
             <div className="adn-service-list">
-              {services.map((s) => (
-                <div className="adn-service-card" key={s.id}>
-                  <div className="adn-service-image">
-                    <img src={s.img} alt={s.name} />
+              {services.map(service => (
+                <div key={service.id} className="adn-service-card">
+                  <div className="service-image">
+                    <img src={service.image} alt={service.name} />
                   </div>
-                  <div className="adn-service-name">{s.name}</div>
-                  <div className="adn-service-desc">{s.description}</div>
-                  <div>
-                    <a href="#detail" className="adn-btn adn-btn-small">Xem chi tiết</a>
+                  <div className="service-content">
+                    <h3 className="adn-service-name">{service.name}</h3>
+                    <p className="adn-service-desc">{service.description}</p>
+                    <button
+                      className="adn-btn adn-btn-small"
+                      onClick={() => handleServiceClick(service.route)}
+                    >
+                      Tìm hiểu thêm
+                    </button>
                   </div>
                 </div>
               ))}
@@ -352,9 +375,15 @@ function HomePage() {
                 </div>
                 <div className="consultation-cta">
                   <p>Đặt lịch hẹn tư vấn <strong>miễn phí</strong> cùng đội ngũ chuyên gia</p>
-                  <button className="schedule-btn" onClick={() => handleRestrictedAction('advice')}>
-                    Đặt lịch ngay →
-                  </button>
+                  <NavLink
+                    to="/booking-create"
+                    className={({ isActive }) => isActive ? "active" : ""}
+                  >
+                    <button className="schedule-btn" onClick={() => handleRestrictedAction("/booking-create")}>
+                      Đặt lịch ngay →
+                    </button>
+                  </NavLink>
+
                 </div>
               </div>
 
@@ -405,20 +434,20 @@ function HomePage() {
           </section>
 
           {/* Consultation Form Section - moved to end of page */}
-          <section className="adn-section consultation-section" id="consultation">
+          <section className="adn-section homepage-consultation-section" id="consultation">
             <div className="adn-section-title-group" >
               <span className="adn-section-icon">+</span>
               <span className="adn-section-title" >ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</span>
             </div>
 
-            <div className="consultation-container">
-              <div className="consultation-intro">
+            <div className="homepage-consultation-container">
+              <div className="homepage-consultation-intro">
                 <h3>Nhận tư vấn chuyên sâu từ các chuyên gia</h3>
                 <p>Để lại thông tin của bạn, chúng tôi sẽ liên hệ tư vấn miễn phí về dịch vụ xét nghiệm ADN phù hợp nhất.</p>
               </div>
 
-              <div className="consultation-form-wrapper">
-                <form className="consultation-form" onSubmit={handleConsultationSubmit}>
+              <div className="homepage-consultation-form-wrapper">
+                <form className="homepage-consultation-form" onSubmit={handleConsultationSubmit}>
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="name">Họ và tên *</label>

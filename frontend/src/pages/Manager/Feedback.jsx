@@ -253,21 +253,21 @@ export default function Feedback() {
                 </div>
 
                 {/* Statistics */}
-                <div className="feedback-stats">
-                    <div className="stat-item">
-                        <span className="stat-number">{feedbacks.length}</span>
+                <div className="feedback-stats-row">
+                    <div className="feedback-stat-card">
+                        <span className="stat-value">{feedbacks.length}</span>
                         <span className="stat-label">Tổng feedback</span>
                     </div>
-                    <div className="stat-item">
-                        <span className="stat-number">{feedbacks.filter(f => f.status === 'Chờ xác nhận').length}</span>
+                    <div className="feedback-stat-card">
+                        <span className="stat-value">{feedbacks.filter(f => f.status === 'Chờ xác nhận').length}</span>
                         <span className="stat-label">Chờ trả lời</span>
                     </div>
-                    <div className="stat-item">
-                        <span className="stat-number">{feedbacks.filter(f => f.status === 'Đã trả lời').length}</span>
+                    <div className="feedback-stat-card">
+                        <span className="stat-value">{feedbacks.filter(f => f.status === 'Đã trả lời').length}</span>
                         <span className="stat-label">Đã trả lời</span>
                     </div>
-                    <div className="stat-item">
-                        <span className="stat-number">
+                    <div className="feedback-stat-card">
+                        <span className="stat-value">
                             {feedbacks.length > 0 ? (feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length).toFixed(1) : '0'}
                         </span>
                         <span className="stat-label">Đánh giá TB</span>
@@ -312,7 +312,7 @@ export default function Feedback() {
                                     </td>
                                     <td>
                                         <span className={`status-badge ${getStatusColor(feedback.status)}`}>
-                                            {feedback.status === 'Đã trả lời' ? '✅ Đã trả lời' : '⏳ Chờ xác nhận'}
+                                            {feedback.status === 'Đã trả lời' ? '✅ Đã trả lời' : '⏳ Chờ phản hồi'}
                                         </span>
                                     </td>
                                     <td className="action-cell">

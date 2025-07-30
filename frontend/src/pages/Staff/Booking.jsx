@@ -101,8 +101,8 @@ export default function Booking() {
     };
 
     const serviceOptions = [
-        "Xét nghiệm cha con",
-        "Xét nghiệm mẹ con",
+        "Xét nghiệm cha con",
+        "Xét nghiệm mẹ con",
         "Xét nghiệm ông cháu",
         "Xét nghiệm bà cháu",
         "Xét nghiệm anh em ruột",
@@ -117,9 +117,12 @@ export default function Booking() {
     );
 
     // Lấy danh sách gói dịch vụ duy nhất
-    const packageTypeOptions = Array.from(
-        new Set(bookings.map(b => b.service?.packageType || b.packageType).filter(Boolean))
-    );
+    const packageTypeOptions = [
+        "Tiêu chuẩn (2-5 ngày)",
+        "Lấy nhanh (6-24 tiếng)",
+        "Tiêu chuẩn (10-14 ngày)",
+        "Lấy nhanh (7-10 ngày)"
+    ];
 
     // Logic lọc nâng cao
     const filteredBookings = bookings.filter(b => {
@@ -312,15 +315,6 @@ export default function Booking() {
     };
 
     useEffect(() => {
-        userAPI.getAllUsers()
-            .then(res => setUsers(res.data))
-            .catch(err => {
-                setUsers([]);
-                alert("Không thể tải danh sách user!");
-            });
-    }, []);
-
-    useEffect(() => {
         api.get("/bookings/staff/all")
             .then(res => setBookings(res.data))
             .catch(err => {
@@ -344,8 +338,8 @@ export default function Booking() {
                     <div className="booking-header-row">
                         <h2 className="booking-title">Danh sách Đặt lịch</h2>
                         {/* Phần thống kê tổng quan */}
-                        <div className="consultation-stats-row">
-                            <div className="stat-card stat-card--total">
+                        <div className="booking-stats-row">
+                            <div className="booking-stat-card total">
                                 <div className="stat-icon">
                                     <MdVisibility size={24} />
                                 </div>
@@ -353,7 +347,7 @@ export default function Booking() {
                                 <span className="stat-value">{bookings.length}</span>
                             </div>
 
-                            <div className="stat-card stat-card--pending">
+                            <div className="booking-stat-card pending">
                                 <div className="stat-icon">
                                     <MdCheckCircle size={24} />
                                 </div>
@@ -363,7 +357,7 @@ export default function Booking() {
                                 </span>
                             </div>
 
-                            <div className="stat-card stat-card--processing">
+                            <div className="booking-stat-card processing">
                                 <div className="stat-icon">
                                     <MdArrowForward size={24} />
                                 </div>
@@ -375,7 +369,7 @@ export default function Booking() {
                                 </span>
                             </div>
 
-                            <div className="stat-card stat-card--completed">
+                            <div className="booking-stat-card completed">
                                 <div className="stat-icon">
                                     <MdCheckCircle size={24} />
                                 </div>
@@ -385,7 +379,7 @@ export default function Booking() {
                                 </span>
                             </div>
 
-                            <div className="stat-card stat-card--cancelled">
+                            <div className="booking-stat-card cancelled">
                                 <div className="stat-icon">
                                     <MdCancel size={24} />
                                 </div>
@@ -399,14 +393,13 @@ export default function Booking() {
                         </div>
 
                         {/* Phần tìm kiếm và bộ lọc */}
-                        <div className="booking-controls" style={{ flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+                        <div className="booking-controls">
                             <input
                                 type="text"
                                 placeholder="Tìm kiếm theo mã đơn, mã KH, tên khách hàng, SĐT, dịch vụ..."
                                 value={searchTerm}
                                 onChange={e => setSearchTerm(e.target.value)}
                                 className="search-input"
-                                style={{ minWidth: 300 }}
                             />
 
                             <select
@@ -456,14 +449,6 @@ export default function Booking() {
                             <button
                                 onClick={resetFilters}
                                 className="reset-filters-btn"
-                                style={{
-                                    padding: "8px 16px",
-                                    backgroundColor: "#f3f4f6",
-                                    border: "1px solid #d1d5db",
-                                    borderRadius: "6px",
-                                    cursor: "pointer",
-                                    fontSize: "14px"
-                                }}
                             >
                                 Đặt lại bộ lọc
                             </button>
@@ -606,7 +591,7 @@ export default function Booking() {
                         </div>
                     ) : (
                         <div style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
-                            <p>Không tìm thấy đặt lịch nào phù hợp với tiêu chí tìm kiếm.</p>
+                            <p>😕 Không tìm thấy lịch hẹn phù hợp. Bạn có thể thay đổi bộ lọc để xem thêm kết quả.</p>
                             {(searchTerm || filterStatus !== "all" || filterService !== "all" ||
                                 filterServiceType !== "all" || filterPackageType !== "all" ||
                                 filterNumberSample !== "all" || filterAppointmentDate) && (
@@ -632,7 +617,7 @@ export default function Booking() {
                 {/* Modal nhập thông tin mẫu */}
                 {showSampleModal && (
                     <div className="modal-overlay">
-                        <div className="modal-content" style={{maxWidth: 900}}>
+                        <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>Nhập thông tin mẫu ({currentBooking?.numberSample} mẫu)</h3>
                             {sampleInfos.map((info, idx) => (
                                 <div key={idx} className="sample-input-row">
@@ -659,7 +644,7 @@ export default function Booking() {
                 {/* Modal xem chi tiết đơn */}
                 {viewBooking && (
                     <div className="modal-overlay">
-                        <div className="modal-content" style={{maxWidth: 900}}>
+                        <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>Chi tiết đơn #{viewBooking.bookingID}</h3>
                             <p><b>Mã Đơn:</b> {viewBooking.bookingID}</p>
                             <p><b>Mã KH:</b> {viewBooking.user?.userID || viewBooking.userID}</p>
@@ -706,7 +691,7 @@ export default function Booking() {
                 {/* Modal xem thông tin người dùng */}
                 {viewUser && (
                     <div className="modal-overlay">
-                        <div className="modal-content" style={{maxWidth: 900}}>
+                        <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>Thông tin người đăng ký</h3>
                             <p><b>Mã KH:</b> {viewUser.userID}</p>
                             <p><b>Họ tên:</b> {viewUser.customerName}</p>
@@ -722,7 +707,7 @@ export default function Booking() {
                 {/* Modal chỉnh sửa thông tin đơn */}
                 {editBooking && (
                     <div className="modal-overlay">
-                        <div className="modal-content" style={{maxWidth: 900}}>
+                        <div className="modal-content" style={{ maxWidth: 900 }}>
                             <h3>
                                 {editBooking.status === "Không xác nhận"
                                     ? `Chỉnh sửa đơn bị từ chối #${editBooking.bookingID}`
@@ -763,12 +748,12 @@ export default function Booking() {
                                 <label>Dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.serviceName || editBooking.service || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            serviceName: e.target.value 
-                                        } 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            serviceName: e.target.value
+                                        }
                                     })}
                                 >
                                     {serviceOptions.map(s => (
@@ -780,11 +765,11 @@ export default function Booking() {
                                 <label>Loại dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.serviceType || editBooking.serviceType || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            serviceType: e.target.value 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            serviceType: e.target.value
                                         },
                                         serviceType: e.target.value
                                     })}
@@ -798,11 +783,11 @@ export default function Booking() {
                                 <label>Gói dịch vụ:</label>
                                 <select
                                     value={editBooking.service?.packageType || editBooking.packageType || ''}
-                                    onChange={e => setEditBooking({ 
-                                        ...editBooking, 
-                                        service: { 
-                                            ...editBooking.service, 
-                                            packageType: e.target.value 
+                                    onChange={e => setEditBooking({
+                                        ...editBooking,
+                                        service: {
+                                            ...editBooking.service,
+                                            packageType: e.target.value
                                         },
                                         packageType: e.target.value
                                     })}

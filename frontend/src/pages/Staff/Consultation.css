@@ -1,12 +1,14 @@
 /* consultation.css */
 
 /* General container styling */
-.consultation-container {
+.consultation--container {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    padding: 20px;
+    max-width: 100%;
 }
 
 .consultation-content {
@@ -16,7 +18,7 @@
 }
 
 /* Card styling */
-.consultation-list-card {
+.consultation-header-card {
     background-color: #ffffff; /* Light grey background */
     border-radius: 12px; /* Slightly more rounded corners for the card */
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* More prominent shadow */
@@ -27,7 +29,7 @@
 }
 
 /* Header styling */
-.consultation-list-card h2 {
+.consultation-header-card h2 {
     color: #2c3e50; /* Darker heading color */
     margin-bottom: 25px;
     text-align: center;
@@ -256,7 +258,7 @@
 }
 
 /* No consultations message */
-.consultation-list-card > p {
+.consultation-header-card > p {
     text-align: center;
     color: #6c757d;
     margin-top: 30px;
@@ -622,7 +624,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 992px) {
-    .consultation-list-card {
+    .consultation-header-card {
         padding: 25px;
     }
     .data-table th,
@@ -672,10 +674,10 @@
 }
 
 @media (max-width: 480px) {
-    .consultation-list-card {
+    .consultation-header-card {
         padding: 15px;
     }
-    .consultation-list-card h2 {
+    .consultation-header-card h2 {
         font-size: 1.8em;
     }
     .data-table th,
@@ -789,21 +791,22 @@
 /* Thống kê dạng card trắng, border gradient, bóng, số lớn bên trái, nội dung bên phải */
 .consultation-stats-row {
     display: flex;
-    gap: 18px;
-    margin: 0 0 18px 30px;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-bottom: 25px;
     flex-wrap: nowrap; /* Không xuống dòng khi đủ 5 thẻ */
     justify-content: space-between;
-    width: 100%;
     max-width: 100%;
 }
 
-.stat-card {
+.consultation-stat-card {
     display: flex;
     flex-direction: row;
     align-items: center;
     background: #fff;
     border-radius: 50px; /* Bo tròn góc lớn, không bị tròn như hình tròn */
-    padding: 18px 24px 16px 18px;
+    padding: 16px 20px;
     min-width: 0;
     flex: 1 1 0;
     box-shadow: 0 4px 18px 0 rgba(80,112,255,0.13);
@@ -820,14 +823,14 @@
     gap: 16px; /* Thêm khoảng cách giữa các phần tử */
 }
 
-.stat-card .stat-icon {
+.consultation-stat-card .stat-icon {
     width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    margin: 0 12px 0 0;
+    margin: 0 5px 0 0;
     font-size: 1.7em;
     background: #e0edfd; /* Màu nền mặc định xanh dương nhạt */
     color: #2563eb;      /* Màu icon mặc định xanh dương đậm */
@@ -836,48 +839,49 @@
 }
 
 /* Màu icon riêng cho từng loại */
-.stat-card.total .stat-icon {
+.consultation-stat-card.total .stat-icon {
     background: #e5e7eb;
     color: #64748b;
 }
-.stat-card.new .stat-icon {
+.consultation-stat-card.new .stat-icon {
     background: #e0edfd;
     color: #2563eb;
 }
-.stat-card.in-progress .stat-icon {
+.consultation-stat-card.in-progress .stat-icon {
     background: #fff4e0;
     color: #ff9800;
 }
-.stat-card.completed .stat-icon {
+.consultation-stat-card.completed .stat-icon {
     background: #e6f9f0;
     color: #22c55e;
 }
-.stat-card.cancelled .stat-icon {
+.consultation-stat-card.cancelled .stat-icon {
     background: #ffeaea;
     color: #ef4444;
 }
 
-.stat-card .stat-label {
+.consultation-stat-card .stat-label {
     font-size: 1.08em;
     color: #475569;
     font-weight: 500;
-    margin: 0 10px 0 0;
+    margin: 0;
     white-space: nowrap;
 }
 
-.stat-card .stat-value {
+.consultation-stat-card .stat-value {
     font-size: 2.1em;
     font-weight: 800;
     color: #2563eb;
-    margin: 0 0 0 auto;
+    margin-right: 10px;
     min-width: 40px;
-    text-align: right;
+    text-align: left;
+    white-space: nowrap;
     line-height: 1;
     flex-shrink: 0;
 }
 
 /* Đặt lại .stat-info để nằm ngang */
-.stat-card .stat-info {
+.consultation-stat-card .stat-info {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -891,13 +895,13 @@
     .consultation-stats-row {
         flex-wrap: wrap;
     }
-    .stat-card {
+    .consultation-stat-card {
         max-width: 48%;
         margin-bottom: 14px;
     }
 }
 @media (max-width: 700px) {
-    .stat-card {
+    .consultation-stat-card {
         max-width: 100%;
     }
 }

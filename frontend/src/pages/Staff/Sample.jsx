@@ -11,7 +11,7 @@ export default function Sample() {
         normalSamples: 2,
         specialSamples: 1
     });
-    
+
     const participantDetails = {};
     const [samples, setSamples] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -30,21 +30,21 @@ export default function Sample() {
         };
         fetchSamples();
     }, []);
-    
+
     // Participant details data (matching SQL structure)
-    
+
     const [searchTerm, setSearchTerm] = useState('');
     const [showAddForm, setShowAddForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
     const [showParticipantDetail, setShowParticipantDetail] = useState(false);
     const [selectedParticipant, setSelectedParticipant] = useState(null);
     const [editingSample, setEditingSample] = useState(null);
-    const [newSample, setNewSample] = useState({ 
-        bookingID: '', 
-        participantID: '', 
-        typeOfCollection: '', 
-        sampleType: '', 
-        receivedDate: '' 
+    const [newSample, setNewSample] = useState({
+        bookingID: '',
+        participantID: '',
+        typeOfCollection: '',
+        sampleType: '',
+        receivedDate: ''
     });
     const [selectedSample, setSelectedSample] = useState(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
@@ -77,7 +77,7 @@ export default function Sample() {
             setSamples(prev => [...prev, newSampleData]);
             setNewSample({ bookingID: '', participantID: '', typeOfCollection: '', sampleType: '', receivedDate: '' });
             setShowAddForm(false);
-            
+
             // Update stats
             setStats(prev => ({
                 ...prev,
@@ -86,7 +86,7 @@ export default function Sample() {
                 normalSamples: newSample.sampleType === 'Mẫu thông thường' ? prev.normalSamples + 1 : prev.normalSamples,
                 specialSamples: newSample.sampleType === 'Mẫu đặc biệt' ? prev.specialSamples + 1 : prev.specialSamples,
             }));
-            
+
             alert('Mẫu xét nghiệm mới đã được thêm!');
         } else {
             alert('Vui lòng điền đầy đủ thông tin mẫu xét nghiệm.');
@@ -118,23 +118,23 @@ export default function Sample() {
         if (newSample.typeOfCollection && newSample.sampleType) {
             setSamples(prevSamples =>
                 prevSamples.map(sample =>
-                    sample.sampleID === editingSample.sampleID 
-                        ? { 
-                            ...sample, 
+                    sample.sampleID === editingSample.sampleID
+                        ? {
+                            ...sample,
                             // Chỉ cập nhật các trường được phép sửa
                             typeOfCollection: newSample.typeOfCollection,
                             sampleType: newSample.sampleType,
                             receivedDate: newSample.receivedDate || sample.receivedDate
-                          }
+                        }
                         : sample
                 )
             );
-            
+
             // Reset form
             setNewSample({ bookingID: '', participantID: '', typeOfCollection: '', sampleType: '', receivedDate: '' });
             setShowEditForm(false);
             setEditingSample(null);
-            
+
             alert('Mẫu xét nghiệm đã được cập nhật!');
         } else {
             alert('Vui lòng điền đầy đủ thông tin có thể sửa đổi.');
@@ -145,7 +145,7 @@ export default function Sample() {
         if (window.confirm('Bạn có chắc chắn muốn xóa mẫu xét nghiệm này?')) {
             const sampleToDelete = samples.find(sample => sample.sampleID === sampleID);
             setSamples(prevSamples => prevSamples.filter(sample => sample.sampleID !== sampleID));
-            
+
             // Update stats
             if (sampleToDelete) {
                 setStats(prev => ({
@@ -156,7 +156,7 @@ export default function Sample() {
                     specialSamples: sampleToDelete.sampleType === 'Mẫu đặc biệt' ? prev.specialSamples - 1 : prev.specialSamples,
                 }));
             }
-            
+
             alert('Mẫu xét nghiệm đã được xóa!');
         }
     };
@@ -201,22 +201,22 @@ export default function Sample() {
             <div className="sample-content">
                 {/* Statistics Header */}
                 <div className="sample-stats-header">
-                    <h2>Quản lý Mẫu Xét nghiệm</h2>
+                    <h3>Danh sách mẫu xét nghiệm</h3>
                     <div className="sample-stats-row">
-                        <div className="stat-card sample-stat-total">
-                            <div className="stat-number">{stats.totalSamples}</div>
+                        <div className="sample-stat-card total">
+                            <div className="stat-value">{stats.totalSamples}</div>
                             <div className="stat-label">TỔNG MẪU</div>
                         </div>
-                        <div className="stat-card sample-stat-standard">
-                            <div className="stat-number">{stats.standardSamples}</div>
+                        <div className="sample-stat-card standard">
+                            <div className="stat-value">{stats.standardSamples}</div>
                             <div className="stat-label">MẪU CHUẨN</div>
                         </div>
-                        <div className="stat-card sample-stat-normal">
-                            <div className="stat-number">{stats.normalSamples}</div>
+                        <div className="sample-stat-card normal">
+                            <div className="stat-value">{stats.normalSamples}</div>
                             <div className="stat-label">MẪU THÔNG THƯỜNG</div>
                         </div>
-                        <div className="stat-card sample-stat-special">
-                            <div className="stat-number">{stats.specialSamples}</div>
+                        <div className="sample-stat-card special">
+                            <div className="stat-value">{stats.specialSamples}</div>
                             <div className="stat-label">MẪU ĐẶC BIỆT</div>
                         </div>
                     </div>
@@ -236,7 +236,7 @@ export default function Sample() {
                                 ×
                             </button>
                             <h3>Thêm mẫu xét nghiệm mới</h3>
-                            <p style={{textAlign: 'center', color: '#6b7280', fontSize: '14px', marginBottom: '20px'}}>
+                            <p style={{ textAlign: 'center', color: '#6b7280', fontSize: '14px', marginBottom: '20px' }}>
                                 Mã mẫu sẽ được hệ thống tự động sinh ra
                             </p>
                             <div className="add-sample-form">
@@ -318,7 +318,7 @@ export default function Sample() {
                                 ×
                             </button>
                             <h3>Chỉnh sửa mẫu xét nghiệm #{editingSample?.sampleID}</h3>
-                            <p style={{textAlign: 'center', color: '#6b7280', fontSize: '14px', marginBottom: '20px'}}>
+                            <p style={{ textAlign: 'center', color: '#6b7280', fontSize: '14px', marginBottom: '20px' }}>
                                 Chỉ có thể sửa: Phương thức lấy mẫu, Loại mẫu và Ngày nhận mẫu
                             </p>
                             <div className="add-sample-form">
@@ -427,7 +427,7 @@ export default function Sample() {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div className="participant-detail-section">
                                     <h4>Thông tin quan hệ</h4>
                                     <div className="participant-detail-grid">
@@ -480,7 +480,7 @@ export default function Sample() {
 
                 {/* Sample List Card */}
                 <div className="sample-list-card">
-                    <h3>Danh sách mẫu xét nghiệm</h3>
+                    
 
                     {/* Search and Filter Controls */}
                     <div className="sample-controls">
@@ -491,7 +491,7 @@ export default function Sample() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="search-input"
                         />
-                        <button 
+                        <button
                             className="add-button"
                             onClick={() => {
                                 setShowAddForm(!showAddForm);
@@ -529,7 +529,7 @@ export default function Sample() {
                                             <td>{sample.bookingID}</td>
                                             <td>{sample.userID}</td>
                                             <td>
-                                                <button 
+                                                <button
                                                     className="participant-link"
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -546,10 +546,10 @@ export default function Sample() {
                                                         (sample.typeOfCollection === "Tại cơ sở"
                                                             ? "center"
                                                             : sample.typeOfCollection === "Tại nhà"
-                                                            ? "home"
-                                                            : sample.typeOfCollection === "Tự lấy mẫu"
-                                                            ? "self"
-                                                            : "")
+                                                                ? "home"
+                                                                : sample.typeOfCollection === "Tự lấy mẫu"
+                                                                    ? "self"
+                                                                    : "")
                                                     }
                                                 >
                                                     {sample.typeOfCollection}
@@ -562,10 +562,10 @@ export default function Sample() {
                                                         (sample.sampleType === "Mẫu đặc biệt"
                                                             ? "special"
                                                             : sample.sampleType === "Mẫu thông thường"
-                                                            ? "normal"
-                                                            : sample.sampleType === "Mẫu chuẩn"
-                                                            ? "standard"
-                                                            : "")
+                                                                ? "normal"
+                                                                : sample.sampleType === "Mẫu chuẩn"
+                                                                    ? "standard"
+                                                                    : "")
                                                     }
                                                 >
                                                     {sample.sampleType}
@@ -573,24 +573,24 @@ export default function Sample() {
                                             </td>
                                             <td>{sample.receivedDate}</td>
                                             <td className="sample-actions">
-  <button 
-    className="btn-edit" 
-    onClick={() => handleEditSample(sample)}
-    title="Sửa thông tin"
-  >
-    <i className="fa fa-pen" aria-hidden="true"></i>
-  </button>
-  <button 
-    className="btn-view" 
-    onClick={() => {
-      setSelectedSample(sample);
-      setShowDetailModal(true);
-    }}
-    title="Xem chi tiết"
-  >
-    <i className="fa fa-eye" aria-hidden="true"></i>
-  </button>
-</td>
+                                                <button
+                                                    className="sample-btn-edit"
+                                                    onClick={() => handleEditSample(sample)}
+                                                    title="Sửa thông tin"
+                                                >
+                                                    <i className="fa fa-pen" aria-hidden="true"></i>
+                                                </button>
+                                                <button
+                                                    className="btn-view"
+                                                    onClick={() => {
+                                                        setSelectedSample(sample);
+                                                        setShowDetailModal(true);
+                                                    }}
+                                                    title="Xem chi tiết"
+                                                >
+                                                    <i className="fa fa-eye" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

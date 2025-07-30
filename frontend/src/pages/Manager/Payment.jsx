@@ -157,50 +157,9 @@ export default function Payment() {
     return (
         <div className="payment-management-container">
             <Card className="payment-card">
-                {loading && <div className="loading-spinner">Đang tải dữ liệu thanh toán...</div>}
                 {error && <div className="error-message">{error}</div>}
                 {/* Revenue Chart */}
                 <RevenueChart payments={payments} loading={loading} error={error} />
-
-                {/* Statistics - horizontal layout */}
-                <div className="payment-stats">
-                    <div className="stat-item">
-                        <div className="stat-content">
-                            <TrendingUp className="stat-icon" size={28} />
-                            <div className="stat-text">
-                                <span className="stat-label">Tổng giao dịch</span>
-                                <span className="stat-number">{payments.length}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="stat-item">
-                        <div className="stat-content">
-                            <CheckCircle className="stat-icon" size={28} />
-                            <div className="stat-text">
-                                <span className="stat-label">Thành công</span>
-                                <span className="stat-number">{payments.filter(p => p.status === 'Hoàn thành').length}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="stat-item">
-                        <div className="stat-content">
-                            <Clock className="stat-icon" size={28} />
-                            <div className="stat-text">
-                                <span className="stat-label">Tỷ lệ thành công</span>
-                                <span className="stat-number">{successRate}%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="stat-item">
-                        <div className="stat-content">
-                            <DollarSign className="stat-icon" size={28} />
-                            <div className="stat-text">
-                                <span className="stat-label">Tổng doanh thu</span>
-                                <span className="stat-number">{formatCurrency(totalRevenue)}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Filters */}
                 <div className="payment-filters">

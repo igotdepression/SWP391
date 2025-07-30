@@ -23,11 +23,19 @@ import PersonalInfo from './Manager/PersonalInfo';
 export default function ManagerPage() {
     const { user } = useAuth(); // Lấy thông tin người dùng từ AuthContext
     const navigate = useNavigate();
-    const [activeMenuItem, setActiveMenuItem] = useState("blogpost");
 
     const [detailOrder, setDetailOrder] = useState(null);
 
     const [orderSearchTerm, setOrderSearchTerm] = useState("");
+
+    const [activeMenuItem, setActiveMenuItem] = useState(() => {
+            return localStorage.getItem("manager_active_menu") || "banggia";
+        });
+    
+        // Khi activeMenuItem thay đổi thì lưu vào localStorage
+        useEffect(() => {
+            localStorage.setItem("manager_active_menu", activeMenuItem);
+        }, [activeMenuItem]);
 
     const sidebarMenuItems = [
         // { key: "blogpost", label: "Quản lý bài đăng", icon: <FaNewspaper /> },
@@ -37,17 +45,6 @@ export default function ManagerPage() {
         { key: "testResults", label: "Quản lý kết quả xét nghiệm", icon: <FaVial /> },
         { key: "personalInfo", label: "Thông tin cá nhân", icon: <FaUserAlt /> },
     ];
-
-    const getActiveMenuLabel = () => {
-        const activeItem = sidebarMenuItems.find(item => item.key === activeMenuItem);
-        if (activeItem) {
-            // if (activeItem.key === "blogpost") {
-            //     return "Quản lý bài đăng";
-            // }
-            return activeItem.label;
-        }
-        return "Trang quản lý";
-    };
 
     const handleLogout = () => {
         console.log("Logged out");
@@ -183,7 +180,7 @@ export default function ManagerPage() {
                                 </div>
                                 <div className="header-user-info">
                                     <div>{user.fullName || user.email}</div>
-                                    <div className="user-id">ID: {user.id}</div>
+                                    <div className="user-id">ID: {user.userID || user.id || 'N/A'}</div>
                                 </div>
                             </div>
                         </div>

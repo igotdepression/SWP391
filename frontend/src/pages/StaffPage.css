@@ -33,7 +33,7 @@ body {
     color: var(--dark-text);
 }
 
-.manager-page-container { /* Changed from .layout-container to match ManagerPage.jsx */
+.staff-page-container { /* Changed from .layout-container to match ManagerPage.jsx */
     display: flex;
     min-height: 100vh;
 }
@@ -167,6 +167,9 @@ body {
 .sidebar-footer .logout-button:hover {
     background-color: #c82333;
 }
+
+
+/* Main content area */
 
 
 /* Main content area */
@@ -433,11 +436,11 @@ body {
     font-size: 1rem;
 }
 
-.manager-profile-info {
+.staff-profile-info {
     display: flex;
     align-items: center;
     gap: 10px;
-    /* Các style khác cho manager-profile-info nếu có */
+    /* Các style khác cho staff-profile-info nếu có */
 }
 
 .header-user-profile-area {

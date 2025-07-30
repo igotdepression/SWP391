@@ -81,7 +81,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('CUSTOMER', 'STAFF', 'MANAGER')")
-    @PutMapping("/profile")
+    @PutMapping("/profile/update")
     public ResponseEntity<UserDTO> updateCustomerProfile(Authentication authentication, @RequestBody UserDTO userDTO) {
         String email = authentication.getName();
         UserDTO updated = userService.updateCustomerProfileByEmail(email, userDTO);

@@ -7,238 +7,282 @@ import Footer from '../components/Footer';
 
 export default function BlogPost() {
     const navigate = useNavigate();
-    const [activeSection, setActiveSection] = useState('overview');
+    const [activeCategory, setActiveCategory] = useState('all');
 
-    const sections = [
-        { id: 'overview', title: 'Tổng quan về ADN', icon: '🧬' },
-        { id: 'structure', title: 'Cấu trúc ADN', icon: '🔬' },
-        { id: 'function', title: 'Chức năng của ADN', icon: '⚙️' },
-        { id: 'testing', title: 'Xét nghiệm ADN', icon: '🧪' },
-        { id: 'applications', title: 'Ứng dụng thực tế', icon: '💡' },
-        { id: 'faq', title: 'Câu hỏi thường gặp', icon: '❓' }
+    const categories = [
+        { id: 'all', title: 'Tất cả bài viết', count: 8 },
+        { id: 'dna-knowledge', title: 'Kiến thức về ADN', count: 5 },
+        { id: 'testing-guide', title: 'Hướng dẫn xét nghiệm', count: 3 }
     ];
 
-    const scrollToSection = (sectionId) => {
-        setActiveSection(sectionId);
-        const element = document.getElementById(sectionId);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+    const articles = [
+        // Mục Kiến thức về ADN (5 bài viết)
+        {
+            id: 1,
+            category: 'dna-knowledge',
+            title: 'Giới thiệu công nghệ xét nghiệm ADN',
+            excerpt: 'Tìm hiểu về công nghệ xét nghiệm ADN hiện đại, nguyên lý hoạt động và ưu điểm vượt trội của phương pháp STR (Short Tandem Repeat) trong việc xác định huyết thống với độ chính xác cao.',
+            image: '/logo.png',
+            date: '2025-01-15',
+            readTime: '6 phút đọc',
+            author: 'Đội ngũ chuyên gia',
+            isHot: true,
+            content: 'Công nghệ xét nghiệm ADN đã phát triển mạnh mẽ...'
+        },
+        {
+            id: 2,
+            category: 'dna-knowledge',
+            title: 'Quy trình phân tích mẫu ADN',
+            excerpt: 'Khám phá quy trình phân tích mẫu ADN từ khâu tiếp nhận, xử lý sơ bộ, chiết tách ADN, khuếch đại PCR đến phân tích kết quả bằng hệ thống tự động hiện đại.',
+            image: '/logo.png',
+            date: '2025-01-14',
+            readTime: '8 phút đọc',
+            author: 'Đội kỹ thuật xét nghiệm',
+            content: 'Quy trình phân tích mẫu ADN đòi hỏi độ chính xác cao...'
+        },
+        {
+            id: 3,
+            category: 'dna-knowledge',
+            title: 'Hệ thống quản lý và truy xuất mẫu',
+            excerpt: 'Tìm hiểu về hệ thống quản lý mẫu thông minh với công nghệ mã vạch và QR code, đảm bảo theo dõi toàn bộ quá trình từ thu thập đến phân tích kết quả.',
+            image: '/logo.png',
+            date: '2025-01-13',
+            readTime: '7 phút đọc',
+            author: 'Đội công nghệ thông tin',
+            content: 'Hệ thống quản lý mẫu hiện đại giúp đảm bảo...'
+        },
+        {
+            id: 4,
+            category: 'dna-knowledge',
+            title: 'Độ chính xác và độ tin cậy',
+            excerpt: 'Phân tích về độ chính xác 99.99% của xét nghiệm ADN, các yếu tố ảnh hưởng đến kết quả và biện pháp kiểm soát chất lượng đảm bảo độ tin cậy cao nhất.',
+            image: '/logo.png',
+            date: '2025-01-12',
+            readTime: '6 phút đọc',
+            author: 'Đội kiểm soát chất lượng',
+            content: 'Độ chính xác là yếu tố quan trọng nhất...'
+        },
+        {
+            id: 5,
+            category: 'dna-knowledge',
+            title: 'Chính sách bảo mật thông tin',
+            excerpt: 'Tìm hiểu về chính sách bảo mật nghiêm ngặt, quyền riêng tư khách hàng và các biện pháp an toàn thông tin theo tiêu chuẩn quốc tế trong lĩnh vực xét nghiệm ADN.',
+            image: '/logo.png',
+            date: '2025-01-11',
+            readTime: '5 phút đọc',
+            author: 'Đội bảo mật thông tin',
+            content: 'Chính sách bảo mật được xây dựng theo tiêu chuẩn cao nhất...'
+        },
+
+        // Mục Hướng dẫn xét nghiệm (3 bài viết)
+        {
+            id: 6,
+            category: 'testing-guide',
+            title: 'Hướng dẫn đặt lịch hẹn xét nghiệm',
+            excerpt: 'Hướng dẫn chi tiết cách đặt lịch hẹn xét nghiệm ADN online, các bước chuẩn bị cần thiết và quy trình thanh toán an toàn qua VNPay.',
+            image: '/logo.png',
+            date: '2025-01-10',
+            readTime: '7 phút đọc',
+            author: 'Đội hỗ trợ khách hàng',
+            content: 'Việc đặt lịch hẹn xét nghiệm rất đơn giản...'
+        },
+        {
+            id: 7,
+            category: 'testing-guide',
+            title: 'Phân biệt ADN Dân sự và Pháp lý',
+            excerpt: 'Giải thích rõ ràng sự khác biệt giữa xét nghiệm ADN Dân sự (mục đích cá nhân) và ADN Pháp lý (có giá trị tại tòa án), quy trình và yêu cầu của từng loại.',
+            image: '/logo.png',
+            date: '2025-01-09',
+            readTime: '6 phút đọc',
+            author: 'Đội tư vấn pháp lý',
+            content: 'Sự khác biệt giữa ADN dân sự và pháp lý...'
+        },
+        {
+            id: 13,
+            category: 'testing-guide',
+            title: 'Chuẩn bị mẫu và quy trình lấy mẫu',
+            excerpt: 'Hướng dẫn chi tiết cách chuẩn bị và thu thập các loại mẫu (tế bào niêm mạc, máu, tóc, móng), bảo quản mẫu và những lưu ý quan trọng.',
+            image: '/logo.png',
+            date: '2025-01-03',
+            readTime: '7 phút đọc',
+            author: 'Đội kỹ thuật lấy mẫu',
+            content: 'Việc chuẩn bị mẫu đúng cách rất quan trọng...'
         }
+    ];
+
+    const filteredArticles = activeCategory === 'all' 
+        ? articles 
+        : articles.filter(article => article.category === activeCategory);
+
+    const handleCategoryChange = (categoryId) => {
+        setActiveCategory(categoryId);
+    };
+
+    const handleReadMore = (articleId) => {
+        // Navigate to article detail page with article ID
+        navigate(`/blog/article/${articleId}`);
     };
 
     return (
-        
-        <div className="dna-info-container">
+        <div className="knowledge-container">
             <Header/>
 
-            {/* Navigation */}
-            <nav className="dna-nav">
-                <div className="nav-container">
-                    {sections.map((section) => (
-                        <button
-                            key={section.id}
-                            className={`nav-item ${activeSection === section.id ? 'active' : ''}`}
-                            onClick={() => scrollToSection(section.id)}
-                        >
-                            <span className="nav-icon">{section.icon}</span>
-                            <span className="nav-title">{section.title}</span>
-                        </button>
-                    ))}
+            {/* Hero Section */}
+            <section className="knowledge-hero">
+                <div className="hero-content">
+                    <div className="hero-text">
+                        <div className="hero-badge">🧬 Hệ thống xét nghiệm ADN hàng đầu</div>
+                        <h1>TRI THỨC & KIẾN THỨC XÉT NGHIỆM ADN</h1>
+                        <p>Khám phá kho tàng kiến thức về xét nghiệm ADN với 8 bài viết chuyên sâu được chia thành 2 chuyên mục chính: 5 bài viết về kiến thức khoa học ADN và 3 hướng dẫn thực hành xét nghiệm. Hệ thống tiên phong trong lĩnh vực xét nghiệm ADN tại Việt Nam với công nghệ STR hiện đại.</p>
+                        <div className="hero-highlights">
+                            <div className="highlight-item">
+                                <span className="highlight-icon">📚</span>
+                                <span>5 bài viết kiến thức ADN</span>
+                            </div>
+                            <div className="highlight-item">
+                                <span className="highlight-icon">📋</span>
+                                <span>3 hướng dẫn xét nghiệm</span>
+                            </div>
+                            <div className="highlight-item">
+                                <span className="highlight-icon">🔬</span>
+                                <span>Công nghệ STR tiên tiến</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="hero-stats-container">
+                        <div className="hero-stats">
+                            <div className="stat-item">
+                                <div className="stat-number">99.99%</div>
+                                <div className="stat-label">Độ chính xác</div>
+                                <div className="stat-detail">Kết quả dương tính</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-number">5-7</div>
+                                <div className="stat-label">Ngày có kết quả</div>
+                                <div className="stat-detail">Thời gian xử lý nhanh</div>
+                            </div>
+
+                            <div className="stat-item">
+                                <div className="stat-number">8</div>
+                                <div className="stat-label">Bài viết chuyên sâu</div>
+                                <div className="stat-detail">Kiến thức và hướng dẫn</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </nav>
+            </section>
 
-            {/* Main Content */}
-            <main className="dna-content">
-                {/* Tổng quan */}
-                <section id="overview" className="content-section">
-                    <div className="section-header">
-                        <h2>🧬 Tổng quan về ADN</h2>
+            {/* Category Filter */}
+            <section className="category-section">
+                <div className="container">
+                    <div className="category-tabs">
+                        {categories.map((category) => (
+                            <button
+                                key={category.id}
+                                className={`category-tab ${activeCategory === category.id ? 'active' : ''}`}
+                                onClick={() => handleCategoryChange(category.id)}
+                            >
+                                {category.title}
+                                <span className="count">({category.count})</span>
+                            </button>
+                        ))}
                     </div>
-                    <div className="content-grid">
-                        <div className="content-card">
-                            <h3>ADN là gì?</h3>
-                            <p>
-                                ADN (Acid deoxyribonucleic) là phân tử mang thông tin di truyền của tất cả 
-                                các sinh vật sống. Nó chứa đựng các hướng dẫn cần thiết để xây dựng và 
-                                duy trì sự sống.
-                            </p>
-                        </div>
-                        <div className="content-card">
-                            <h3>Tầm quan trọng</h3>
-                            <p>
-                                ADN quyết định các đặc điểm di truyền như màu mắt, màu tóc, chiều cao, 
-                                và cả khả năng mắc một số bệnh tật. Nó là "bản thiết kế" của cơ thể.
-                            </p>
-                        </div>
-                        <div className="content-card">
-                            <h3>Khám phá lịch sử</h3>
-                            <p>
-                                ADN được khám phá lần đầu vào năm 1869 bởi Friedrich Miescher, 
-                                và cấu trúc xoắn kép được James Watson và Francis Crick mô tả năm 1953.
-                            </p>
-                        </div>
-                    </div>
-                </section>
+                </div>
+            </section>
 
-                {/* Cấu trúc */}
-                <section id="structure" className="content-section">
-                    <div className="section-header">
-                        <h2>🔬 Cấu trúc ADN</h2>
-                    </div>
-                    <div className="structure-content">
-                        <div className="structure-visual">
-                            <div className="dna-helix">
-                                <div className="helix-strand strand-1"></div>
-                                <div className="helix-strand strand-2"></div>
-                            </div>
-                        </div>
-                        <div className="structure-info">
-                            <h3>Cấu trúc xoắn kép</h3>
-                            <ul>
-                                <li><strong>4 bazơ nitơ:</strong> Adenine (A), Thymine (T), Guanine (G), Cytosine (C)</li>
-                                <li><strong>Nguyên tắc bổ sung:</strong> A luôn ghép với T, G luôn ghép với C</li>
-                                <li><strong>Đường phosphate:</strong> Tạo thành xương sống của ADN</li>
-                                <li><strong>Chiều dài:</strong> Mỗi tế bào chứa khoảng 3 tỷ cặp bazơ</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Chức năng */}
-                <section id="function" className="content-section">
-                    <div className="section-header">
-                        <h2>⚙️ Chức năng của ADN</h2>
-                    </div>
-                    <div className="function-grid">
-                        <div className="function-card">
-                            <div className="function-icon">📝</div>
-                            <h3>Lưu trữ thông tin</h3>
-                            <p>ADN chứa đựng toàn bộ thông tin di truyền cần thiết để tạo ra và duy trì sự sống.</p>
-                        </div>
-                        <div className="function-card">
-                            <div className="function-icon">🔄</div>
-                            <h3>Nhân đôi</h3>
-                            <p>ADN có khả năng tự nhân đôi để truyền thông tin di truyền cho thế hệ tiếp theo.</p>
-                        </div>
-                        <div className="function-card">
-                            <div className="function-icon">🧪</div>
-                            <h3>Tổng hợp protein</h3>
-                            <p>ADN cung cấp thông tin để tổng hợp các protein cần thiết cho cơ thể.</p>
-                        </div>
-                        <div className="function-card">
-                            <div className="function-icon">🎯</div>
-                            <h3>Điều hòa gen</h3>
-                            <p>ADN kiểm soát việc bật/tắt các gen trong các tình huống khác nhau.</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Xét nghiệm ADN */}
-                <section id="testing" className="content-section">
-                    <div className="section-header">
-                        <h2>🧪 Xét nghiệm ADN</h2>
-                    </div>
-                    <div className="testing-content">
-                        <div className="testing-types">
-                            <h3>Các loại xét nghiệm ADN</h3>
-                            <div className="test-type">
-                                <h4>🔍 Xét nghiệm huyết thống</h4>
-                                <p>Xác định mối quan hệ cha mẹ - con cái với độ chính xác 99.9%</p>
-                            </div>
-                            <div className="test-type">
-                                <h4>🌳 Xét nghiệm dòng dõi</h4>
-                                <p>Truy tìm nguồn gốc tổ tiên và di cư của dòng họ</p>
-                            </div>
-                            <div className="test-type">
-                                <h4>🏥 Xét nghiệm y học</h4>
-                                <p>Phát hiện nguy cơ mắc bệnh di truyền và lựa chọn điều trị</p>
-                            </div>
-                        </div>
-                        <div className="testing-process">
-                            <h3>Quy trình xét nghiệm</h3>
-                            <div className="process-steps">
-                                <div className="step">
-                                    <div className="step-number">1</div>
-                                    <h4>Lấy mẫu</h4>
-                                    <p>Nước bọt hoặc máu</p>
+            {/* Featured Article */}
+            {activeCategory === 'all' && (
+                <section className="featured-section">
+                    <div className="container">
+                        <h2 className="section-title">Bài viết nổi bật</h2>
+                        <div className="featured-articles">
+                            {articles.filter(article => article.isHot).map((article) => (
+                                <div key={article.id} className="featured-card">
+                                    <div className="featured-image">
+                                        <img src={article.image} alt={article.title} />
+                                        <div className="featured-badge">Nổi bật</div>
+                                    </div>
+                                    <div className="featured-content">
+                                        <div className="featured-category">
+                                            {categories.find(cat => cat.id === article.category)?.title}
+                                        </div>
+                                        <h3 className="featured-title">{article.title}</h3>
+                                        <p className="featured-excerpt">{article.excerpt}</p>
+                                        <div className="featured-meta">
+                                            <span className="author">{article.author}</span>
+                                            <span className="date">{new Date(article.date).toLocaleDateString('vi-VN')}</span>
+                                            <span className="read-time">{article.readTime}</span>
+                                        </div>
+                                        <button 
+                                            className="read-more-btn"
+                                            onClick={() => handleReadMore(article.id)}
+                                            style={{ marginTop: '1rem' }}
+                                        >
+                                            Đọc thêm
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="step">
-                                    <div className="step-number">2</div>
-                                    <h4>Tách ADN</h4>
-                                    <p>Tách ADN từ mẫu sinh học</p>
-                                </div>
-                                <div className="step">
-                                    <div className="step-number">3</div>
-                                    <h4>Phân tích</h4>
-                                    <p>So sánh các đoạn ADN</p>
-                                </div>
-                                <div className="step">
-                                    <div className="step-number">4</div>
-                                    <h4>Kết quả</h4>
-                                    <p>Báo cáo chi tiết</p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </section>
+            )}
 
-                {/* Ứng dụng */}
-                <section id="applications" className="content-section">
-                    <div className="section-header">
-                        <h2>💡 Ứng dụng thực tế</h2>
-                    </div>
-                    <div className="applications-grid">
-                        <div className="app-card">
-                            <div className="app-icon">👨‍👩‍👧‍👦</div>
-                            <h3>Pháp y</h3>
-                            <p>Nhận dạng nạn nhân, xác định hung thủ trong các vụ án hình sự</p>
-                        </div>
-                        <div className="app-card">
-                            <div className="app-icon">🏥</div>
-                            <h3>Y học</h3>
-                            <p>Chẩn đoán bệnh di truyền, điều trị cá nhân hóa</p>
-                        </div>
-                        <div className="app-card">
-                            <div className="app-icon">🌾</div>
-                            <h3>Nông nghiệp</h3>
-                            <p>Tạo giống cây trồng, vật nuôi có năng suất cao</p>
-                        </div>
-                        <div className="app-card">
-                            <div className="app-icon">🔬</div>
-                            <h3>Nghiên cứu</h3>
-                            <p>Phát triển thuốc mới, hiểu về sự tiến hóa</p>
+            {/* Articles List */}
+            <main className="articles-main">
+                <div className="container">
+                    <div className="articles-header">
+                        <h2 className="section-title">
+                            {(() => {
+                                if (activeCategory === 'all') return 'Tất cả bài viết';
+                                if (activeCategory === 'dna-knowledge') return 'Kiến thức về ADN';
+                                return 'Hướng dẫn xét nghiệm';
+                            })()}
+                        </h2>
+                        <div className="articles-count">
+                            {filteredArticles.length} bài viết
                         </div>
                     </div>
-                </section>
-
-                {/* FAQ */}
-                <section id="faq" className="content-section">
-                    <div className="section-header">
-                        <h2>❓ Câu hỏi thường gặp</h2>
+                    
+                    <div className="articles-grid">
+                        {filteredArticles.map((article) => (
+                            <article key={article.id} className="article-card">
+                                <div className="article-image">
+                                    <img src={article.image} alt={article.title} />
+                                    <div className="article-category">
+                                        {categories.find(cat => cat.id === article.category)?.title}
+                                    </div>
+                                    {article.isHot && <div className="hot-badge">Hot</div>}
+                                </div>
+                                <div className="article-content">
+                                    <h2 className="article-title">{article.title}</h2>
+                                    <p className="article-excerpt">{article.excerpt}</p>
+                                    <div className="article-meta">
+                                        <div className="meta-info">
+                                            <span className="author">{article.author}</span>
+                                            <span className="date">{new Date(article.date).toLocaleDateString('vi-VN')}</span>
+                                            <span className="read-time">{article.readTime}</span>
+                                        </div>
+                                        <button 
+                                            className="read-more-btn"
+                                            onClick={() => handleReadMore(article.id)}
+                                        >
+                                            Đọc thêm
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
                     </div>
-                    <div className="faq-list">
-                        <div className="faq-item">
-                            <h3>Xét nghiệm ADN có đau không?</h3>
-                            <p>Không, việc lấy mẫu nước bọt hoàn toàn không đau và rất đơn giản.</p>
-                        </div>
-                        <div className="faq-item">
-                            <h3>Kết quả xét nghiệm có chính xác không?</h3>
-                            <p>Độ chính xác của xét nghiệm huyết thống lên đến 99.9% khi loại trừ và 99.99% khi xác nhận.</p>
-                        </div>
-                        <div className="faq-item">
-                            <h3>Mất bao lâu để có kết quả?</h3>
-                            <p>Thông thường từ 5-10 ngày làm việc, tùy thuộc vào loại xét nghiệm.</p>
-                        </div>
-                        <div className="faq-item">
-                            <h3>Thông tin có được bảo mật không?</h3>
-                            <p>Hoàn toàn bảo mật. Chúng tôi tuân thủ nghiêm ngặt các quy định về bảo vệ dữ liệu cá nhân.</p>
-                        </div>
-                    </div>
-                </section>
+                </div>
             </main>
 
-            {/* Footer CTA */}
-            
             <Footer/>
         </div>
     );
