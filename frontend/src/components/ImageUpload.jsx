@@ -57,9 +57,16 @@ const ImageUpload = ({ userId, type = 'avatar', onUploadSuccess, currentImageUrl
                 setFile(null);
                 setPreview(null);
                 alert('Upload thành công!');
+            } else {
+                setError('Upload thất bại - không nhận được URL');
             }
         } catch (error) {
-            setError(error.message || 'Upload thất bại');
+            console.error('Upload error:', error);
+            if (error.response && error.response.data && error.response.data.error) {
+                setError(error.response.data.error);
+            } else {
+                setError(error.message || 'Upload thất bại');
+            }
         } finally {
             setLoading(false);
         }

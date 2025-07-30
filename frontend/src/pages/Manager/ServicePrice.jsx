@@ -408,7 +408,7 @@ const AddServiceModal = ({ onSave, onCancel }) => {
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h3>Thêm Dịch vụ Mới</h3>
+                <h3>Thêm dịch vụ mới</h3>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Tên dịch vụ:</label>
@@ -437,8 +437,8 @@ const AddServiceModal = ({ onSave, onCancel }) => {
                             onChange={(e) => setFormData({ ...formData, packageType: e.target.value })}
                             required
                         >
-                            <option value="Tiêu chuẩn">Tiêu chuẩn</option>
-                            <option value="Lấy nhanh">Lấy nhanh</option>
+                            <option value="Tiêu chuẩn">Tiêu chuẩn (2-5 ngày)</option>
+                            <option value="Lấy nhanh">Lấy nhanh (6-24 tiếng)</option>
                         </select>
                     </div>
                     <div className="form-group">
