@@ -583,9 +583,9 @@ const PersonalInfoPage = () => {
       {/* Sidebar */}
       <div className="sidebar">
         <div className="profile-summary">
-          <div className="avatar" style={{ background: getAvatarColor(user?.fullName) }}>
-            {getInitials(user?.fullName) || 'N/A'}
-          </div>
+        <div className="sidebar-header">
+                    <img src="/logo.png" onClick={() => navigate('/home')} alt="Logo" className="logo" />
+                </div>
           <div className="profile-name">{user?.fullName || 'Chưa đăng nhập'}</div>
           <div className="profile-info">
             <div>{user?.email || ''}</div>
@@ -638,7 +638,7 @@ const PersonalInfoPage = () => {
                 handleMenuItemClick('notes');
               }}
             >
-              <span className="menu-icon">📝</span> Ghi chú
+   
             </a>
           </li>
         </ul>

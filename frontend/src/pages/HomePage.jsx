@@ -154,10 +154,23 @@ function HomePage() {
     e.preventDefault();
     setIsSubmitting(true);
     
+    // Map service type codes to Vietnamese names
+    const getServiceTypeName = (serviceType) => {
+      const serviceTypeMap = {
+        'paternity': 'Xét nghiệm ADN cha con',
+        'maternity': 'Xét nghiệm ADN mẹ con',
+        'grandpa': 'Xét nghiệm ADN ông cháu',
+        'grandma': 'Xét nghiệm ADN bà cháu',
+        'sibling': 'Xét nghiệm ADN anh em',
+        'other': 'Khác'
+      };
+      return serviceTypeMap[consultationForm.serviceType] || consultationForm.serviceType;
+    };
+    
     const requestData = {
       name: consultationForm.name,
       phone: consultationForm.phone,
-      type: consultationForm.serviceType,
+      type: getServiceTypeName(consultationForm.serviceType),
       note: consultationForm.message
     };
     

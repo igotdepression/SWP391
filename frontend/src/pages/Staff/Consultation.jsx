@@ -36,12 +36,31 @@ export default function Consultation() {
         newStatusSelection: ''
     });
 
+    // Hàm chuyển đổi type sang tên dịch vụ tiếng Việt
+    const getServiceTypeName = (type) => {
+        // Nếu type đã là tên tiếng Việt đầy đủ, trả về nguyên giá trị
+        if (type && type.includes('Xét nghiệm ADN')) {
+            return type;
+        }
+        
+        // Nếu type là mã code tiếng Anh, chuyển đổi sang tiếng Việt
+        const serviceTypeMap = {
+            'paternity': 'Xét nghiệm ADN cha con',
+            'maternity': 'Xét nghiệm ADN mẹ con',
+            'grandpa': 'Xét nghiệm ADN ông cháu',
+            'grandma': 'Xét nghiệm ADN bà cháu',
+            'sibling': 'Xét nghiệm ADN anh em',
+            'other': 'Khác'
+        };
+        return serviceTypeMap[type] || type;
+    };
+
     // Lọc và tìm kiếm yêu cầu tư vấn
     const filteredConsultations = consultations.filter(consultation => {
         const matchesSearch =
-            consultation.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            consultation.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            consultation.type.some(t => t.toLowerCase().includes(searchTerm.toLowerCase()));
+            (consultation.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (consultation.phone || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (consultation.type || '').toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = filterStatus === 'all' || consultation.status === filterStatus;
         return matchesSearch && matchesStatus;
     });
@@ -94,7 +113,7 @@ export default function Consultation() {
         if (consultation) {
             setConsultations(prevConsultations =>
                 prevConsultations.map(c =>
-                    c.id === consultation.id ? { ...c, notes: noteContent } : c
+                    c.consultantID === consultation.consultantID ? { ...c, notes: noteContent } : c
                 )
             );
             // Cập nhật lại consultation trong modal config để hiển thị ngay lập tức
@@ -125,7 +144,7 @@ export default function Consultation() {
             if (confirmUpdate) {
                 setConsultations(prev =>
                     prev.map(item =>
-                        item.id === c.id ? { ...item, status: newStatus } : item
+                        item.consultantID === c.consultantID ? { ...item, status: newStatus } : item
                     )
                 );
             }
@@ -142,7 +161,7 @@ export default function Consultation() {
             if (confirmUpdate) {
                 setConsultations(prevConsultations =>
                     prevConsultations.map(c =>
-                        c.id === consultation.id
+                        c.consultantID === consultation.consultantID
                             ? { ...c, status: newStatusSelection }
                             : c
                     )
@@ -197,7 +216,7 @@ export default function Consultation() {
             <div className="modal-overlay">
                 <Card className={`modal-content ${type === 'detail' ? 'consultation-detail-modal' : 'consultation-note-modal'}`}>
                     {/* Nút đóng dấu X */}
-                    <h3>Chi tiết đơn tư vấn: {consultation.id}</h3>
+                    <h3>Chi tiết đơn tư vấn: {consultation.consultantID}</h3>
                     <button
                         className="modal-close-x"
                         onClick={onClose}
@@ -208,11 +227,11 @@ export default function Consultation() {
 
                     {type === 'detail' && (
                         <div className="consultation-detail-info">
-                            <div><strong>Mã yêu cầu:</strong> {consultation.id}</div>
-                            <div><strong>Khách hàng:</strong> {consultation.customerName}</div>
-                            <div><strong>Số điện thoại:</strong> {consultation.phoneNumber}</div>
-                            <div><strong>Loại tư vấn:</strong> {consultation.type.join(', ')}</div>
-                            <div><strong>Ngày yêu cầu:</strong> {consultation.requestDate}</div>
+                                                    <div><strong>Mã yêu cầu:</strong> {consultation.consultantID}</div>
+                        <div><strong>Khách hàng:</strong> {consultation.name}</div>
+                        <div><strong>Số điện thoại:</strong> {consultation.phone}</div>
+                            <div><strong>Dịch vụ quan tâm:</strong> {getServiceTypeName(consultation.type)}</div>
+                            <div><strong>Ngày yêu cầu:</strong> {consultation.createdDate}</div>
                             <div>
                                 <strong>Trạng thái:</strong>
                                 <span className={`status-badge status-${consultation.status}`} style={{ marginLeft: 8 }}>
@@ -222,7 +241,7 @@ export default function Consultation() {
                             <div style={{ marginTop: 12 }}>
                                 <strong>Nội dung chi tiết khách hàng cần tư vấn:</strong>
                                 <div className="consultation-content-text">
-                                    {consultation.contents || "Chưa có nội dung chi tiết."}
+                                    {consultation.content || "Chưa có nội dung chi tiết."}
                                 </div>
                             </div>
                         </div>
@@ -332,7 +351,7 @@ export default function Consultation() {
                                             <th>Mã Yêu cầu</th>
                                             <th>Khách hàng</th>
                                             <th>Số điện thoại</th>
-                                            <th>Loại tư vấn</th>
+                                            <th>Dịch vụ quan tâm</th>
                                             <th>Ngày yêu cầu</th>
                                             <th>Trạng thái</th>
                                             <th>Thao tác</th>
@@ -340,15 +359,15 @@ export default function Consultation() {
                                     </thead>
                                     <tbody>
                                         {filteredConsultations.map(c => (
-                                            <tr key={c.id}>
-                                                <td>{c.id}</td>
-                                                <td>{c.customerName}</td>
-                                                <td>{c.phoneNumber}</td>
-                                                <td>{c.type.join(', ')}</td>
-                                                <td>{c.requestDate}</td>
+                                                                        <tr key={c.consultantID}>
+                                <td>{c.consultantID}</td>
+                                <td>{c.name}</td>
+                                <td>{c.phone}</td>
+                                <td>{getServiceTypeName(c.type)}</td>
+                                <td>{c.createdDate}</td>
                                                 <td style={{ position: "relative" }}>
                                                     <Select
-                                                        id={`status-select-${c.id}`}
+                                                        id={`status-select-${c.consultantID}`}
                                                         value={c.status}
                                                         onChange={e => handleStatusChangeInTable(c, e.target.value)}
                                                         className={`status-dropdown status-${c.status} no-arrow`}

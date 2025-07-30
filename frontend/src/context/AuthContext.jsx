@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
             console.error('Login error:', error);
             return { 
                 success: false, 
-                error: error.response?.data?.message || 'Login failed' 
+                error: 'Tài khoản hoặc mật khẩu không đúng' 
             };
         }
     };

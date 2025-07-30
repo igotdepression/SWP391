@@ -28,8 +28,17 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
+    // Kiểm tra email và password có được nhập không
+    if (!email.trim() || !password.trim()) {
+      setError('Vui lòng nhập đầy đủ email và mật khẩu');
+      setLoading(false);
+      return;
+    }
+    
     const result = await login(email, password);
     setLoading(false);
+    
     if (!result.success) {
       setError(result.error);
     } else {
@@ -109,16 +118,17 @@ const LoginPage = () => {
               Quên mật khẩu?
             </button>
           </div>
-          {error && <div className="error-msg">{error}</div>}
+          {error && (
+            <div className="error-msg" role="alert">
+              {error}
+            </div>
+          )}
           <button className="signin-btn" type="submit" disabled={loading}>
             {loading ? 'Đang đăng nhập...' : 'ĐĂNG NHẬP'}
           </button>
           <div className="other-login-btns">
             <button type="button" className="guest-btn" onClick={handleGuestLogin}>
               Đăng nhập với tư cách Khách
-            </button>
-            <button type="button" className="google-btn" onClick={handleGoogleLogin}>
-              <GoogleIcon /> Đăng nhập bằng Google
             </button>
           </div>
         </form>

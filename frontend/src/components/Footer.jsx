@@ -1,10 +1,13 @@
 import React from 'react';
 import './Footer.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 
 const Footer = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  
   // Hàm xử lý khi người dùng click vào loại xét nghiệm ADN
   const handleAdnTypeClick = (route) => {
     navigate(route);
@@ -16,10 +19,26 @@ const Footer = () => {
       }, 100);
   };
 
+  // Hàm xử lý booking với kiểm tra authentication
+  const handleBookingClick = (route) => {
+    if (!user || user.role === 'GUEST') {
+      alert('Bạn chưa đăng nhập. Vui lòng đăng nhập để sử dụng chức năng này.');
+      navigate('/login');
+    } else {
+      navigate(route);
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+  };
+
   return (
     <footer className="footer">
       <div className="footer-content">
-        {/* Cột 1: Logo và thông tin công ty */}
+      
         <div className="footer-section logo-section">
           <div className="footer-logo">
             <div className="logo-container">
@@ -83,7 +102,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Cột 4: Kết nối & Chính sách */}
+        
         <div className="footer-section connect-section">
           <h3 className="social-section-title">KẾT NỐI VỚI CHÚNG TÔI</h3>
           <div className="social-links">
@@ -96,8 +115,7 @@ const Footer = () => {
           </div>
           <h3 className="quick-links">HỖ TRỢ</h3>
           <ul>
-            <li><a href="#booking" onClick={() => handleAdnTypeClick("/booking")}>Đặt lịch hẹn</a></li>
-            <li><a href="#consultation" onClick={() => handleAdnTypeClick("/consultation")}>Đăng ký tư vấn</a></li>
+            <li><a href="#booking" onClick={() => handleBookingClick("/booking-create")}>Đặt lịch hẹn</a></li>
           </ul>
         </div>
       </div>

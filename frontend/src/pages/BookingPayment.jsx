@@ -75,7 +75,7 @@ export default function BookingPayment() {
                 throw new Error(errorMsg);
             }
             alert('Thanh toán đã được ghi nhận!');
-            navigate('/booking-history');
+            navigate('/home');
         } catch (error) {
             alert('Xử lý thanh toán thất bại. Vui lòng thử lại. Lỗi: ' + error.message);
             setIsConfirmed(false);

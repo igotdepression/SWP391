@@ -787,3 +787,26 @@ body {
       text-align: left;
   }
 } 
+.sidebar-header { /* This is the container for the user avatar and text */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar-header .logo {
+      width: 150px; /* Consistent with LoginPage */
+      height: 150px; /* Consistent with LoginPage */
+      margin: 0 auto 15px;
+      border-radius: 50%; /* Make it round */
+      background: var(--light-text); /* White background */
+      object-fit: contain; /* Ensure logo fits */
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08); /* Shadow from LoginPage */
+      transition: transform 0.3s, box-shadow 0.3s; /* Add transition for hover effects */
+  }
+  .sidebar-header .logo:hover {
+      transform: scale(1.05) rotate(5deg); /* Hover effect from LoginPage */
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12); /* Stronger shadow on hover */
+  }

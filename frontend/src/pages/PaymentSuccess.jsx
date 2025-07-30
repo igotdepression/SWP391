@@ -38,7 +38,9 @@ export default function PaymentSuccess() {
     }, [location, user, authLoading, navigate]);
 
     const handleGoToBookingHistory = () => {
-        navigate('/booking-history');
+        // TODO: Implement booking history page
+        // For now, navigate to home page
+        navigate('/home');
     };
 
     const handleGoToHome = () => {
