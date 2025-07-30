@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder; // Import P
 import org.springframework.web.bind.annotation.*; // Import các annotation cho REST controller
 import org.springframework.web.bind.annotation.PathVariable; // Import PathVariable
 import java.time.LocalDateTime; // Import LocalDateTime
+import org.springframework.transaction.annotation.Transactional; // Import Transactional
 
 @RestController // Đánh dấu class là REST controller
 @RequestMapping("/api/auth") // Định nghĩa route gốc cho controller này
@@ -113,6 +114,7 @@ public class AuthController { // Định nghĩa class AuthController
     }
     
     @PostMapping("/forgot-password") // Định nghĩa endpoint POST /forgot-password
+    @Transactional // Thêm annotation để đảm bảo transaction
     public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) { // Hàm xử lý quên mật khẩu
         try {
             log.info("Forgot password request for email: {}", request.getEmail()); // Ghi log khi có yêu cầu quên mật khẩu
@@ -127,7 +129,7 @@ public class AuthController { // Định nghĩa class AuthController
             }
             
             // Xóa các token cũ của user này
-            passwordResetTokenRepository.deleteByUser_UserID(user.getUserID());
+            passwordResetTokenRepository.deleteByUserId(user.getUserID());
             
             // Tạo token mới
             String token = java.util.UUID.randomUUID().toString();
@@ -149,6 +151,7 @@ public class AuthController { // Định nghĩa class AuthController
     }
     
     @PostMapping("/reset-password") // Định nghĩa endpoint POST /reset-password
+    @Transactional // Thêm annotation để đảm bảo transaction
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) { // Hàm xử lý đặt lại mật khẩu
         try {
             log.info("Reset password request for token: {}", request.getToken()); // Ghi log khi có yêu cầu đặt lại mật khẩu

@@ -2,6 +2,9 @@ package com.dna.repository;
 
 import com.dna.entity.PasswordResetToken;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,5 +16,7 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
     
     Optional<PasswordResetToken> findByTokenAndUsedFalse(String token);
     
-    void deleteByUser_UserID(Integer userID);
+    @Modifying
+    @Query("DELETE FROM PasswordResetToken p WHERE p.user.userID = :userID")
+    void deleteByUserId(@Param("userID") Integer userID);
 } 
